@@ -92,29 +92,12 @@ fun RenderContext.overview() {
         div("w-3/4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12") {
             pages.forEach {
                 a(
-                    """-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50 hover:ring-2 hover:ring-white 
+                    """-m-3 p-3 pr-5 flex items-start rounded-lg hover:bg-gray-50 hover:ring-2 hover:ring-white 
                     | ring-offset-2 ring-offset-primary-600 hover:outline-none shadow-lg rounded-lg bg-white 
                     | opacity-80 hover:opacity-100 transition ease-in-out duration-150""".trimMargin()
                 ) {
                     href("#")
-                    /* <!-- Heroicon name: outline/support --> */
-                    svg("flex-shrink-0 h-6 w-6 text-primary-800") {
-                        xmlns("http://www.w3.org/2000/svg")
-                        fill("none")
-                        viewBox("0 0 24 24")
-                        attr("stroke", "currentColor")
-                        attr("aria-hidden", "true")
-                        path {
-                            attr("stroke-linecap", "round")
-                            attr("stroke-linejoin", "round")
-                            attr("stroke-width", "2")
-                            d(
-                                """M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536  
-                                | 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 
-                                | 4 4 0 018 0z""".trimMargin()
-                            )
-                        }
-                    }
+                    icon("flex-shrink-0 h-6 w-6 text-primary-800", content = HeroIcons.support)
                     div("ml-4") {
                         p("text-base font-medium text-gray-900") { +it.value.title }
                         p("mt-1 text-sm text-gray-500") { +it.value.description }
