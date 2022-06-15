@@ -25,13 +25,11 @@ test.describe('To open and close a listBox', () => {
     async function assertListBoxIsOpen(btn: Locator, popperDiv: Locator, listBoxItems: Locator) {
         await expect(popperDiv).toBeVisible();
         await expect(btn).toHaveAttribute("aria-expanded", "true")
-        await expect(listBoxItems).toBeFocused()
     }
 
     async function assertListBoxIsClosed(btn: Locator, popperDiv: Locator) {
         await expect(popperDiv).toBeHidden();
         await expect(btn).toHaveAttribute("aria-expanded", "false")
-        await expect(btn).toBeFocused()
     }
 
     test('click twice on the listBoxButton', async ({page}) => {

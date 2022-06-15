@@ -64,7 +64,7 @@ test.describe('To open and close a menu', () => {
             const [btn, popperDiv, menuItems] = await createLocators(page)
 
             /* Need some delay actions because it was not performed correctly */
-            await page.mouse.click(0, 0, {delay:1000});
+            await page.mouse.click(0, 0, {delay: 1000});
             await btn.focus()
             await assertMenuIsClosed(btn, popperDiv)
 
@@ -188,9 +188,9 @@ test.describe("Navigating", () => {
         });
     }
 
-    for(const data of [
-        {shortcut:"Home", target: "first", id: "1"},
-        {shortcut:"End", target: "last", id: "6"}
+    for (const data of [
+        {shortcut: "Home", target: "first", id: "1"},
+        {shortcut: "End", target: "last", id: "6"}
     ]) {
         test(`by pressing "${data.shortcut}" will jump to ${data.target} item`, async ({page}) => {
             const btn = page.locator('#menu-button');
@@ -207,12 +207,13 @@ test.describe("Navigating", () => {
 });
 
 test.describe("To select an item from a menu open the menuItems", () => {
-    
-    test("then click on one item", async ({page}) => {
+
+    test("click on one item", async ({page}) => {
         async function getMenuItem(itemName: String) {
             const menuItem = page.locator("#" + itemName);
             return menuItem;
         }
+
         async function getMenuItemText(itemName: String) {
             const menuItemText = page.locator("#" + itemName).textContent();
             return menuItemText;
@@ -220,7 +221,7 @@ test.describe("To select an item from a menu open the menuItems", () => {
 
         const btn = page.locator('#menu-button');
         const result = page.locator('#result');
-        
+
         await btn.click();
         await (await getMenuItem("menu-item-1")).click();
         await expect(result).toContainText(await getMenuItemText("menu-item-1"));
@@ -243,49 +244,27 @@ test.describe("To select an item from a menu open the menuItems", () => {
     });
 
     for (const key of ["Enter", "Space"]) {
+        for (const spec of [
+            {id: "#menu-item-1", arrowDowns: 0, text: "Archive"},
+            {id: "#menu-item-2", arrowDowns: 1, text: "Move"},
+            {id: "#menu-item-3", arrowDowns: 2, text: "Delete"},
+            {id: "#menu-item-4", arrowDowns: 3, text: "Edit"},
+            {id: "#menu-item-6", arrowDowns: 4, text: "Encrypt"},
+        ]) {
+            test(`press ${spec.arrowDowns} times down and then press ${key} on item`, async ({page, browserName}) => {
+                test.slow(browserName === 'webkit', 'This test for Menu is slow on Mac');
 
-        test(`then press ${key} on item`, async ({page, browserName}) => {
-            test.slow(browserName === 'webkit', 'This test for DataCollection is slow on Mac');
+                const btn = await page.locator('#menu-button');
+                const result = await page.locator('#result');
+                const menuItem1 = await page.locator(spec.id);
 
-            const menuItem1 = page.locator('#menu-item-1');
-            const menuItem2 = page.locator('#menu-item-2');
-            const menuItem3 = page.locator('#menu-item-3');
-            const menuItem4 = page.locator('#menu-item-4');
-            const menuItem6 = page.locator('#menu-item-6');
-    
-            const btn = page.locator('#menu-button');
-            const result = page.locator('#result');
-            
-            /* Delay only on action for this test */
-            await btn.click({delay:1000});
-            await (menuItem1).press(key, {delay: 1000});
-            await expect(result).toContainText(await menuItem1.textContent());
-
-            await btn.click({delay:1000});
-            await (menuItem1).press("ArrowDown", {delay: 1000});
-            await (menuItem2).press(key, {delay: 1000});
-            await expect(result).toContainText(await menuItem2.textContent());
-
-            await btn.click({delay:1000});
-            await (menuItem1).press("ArrowDown", {delay: 1000});
-            await (menuItem2).press("ArrowDown", {delay: 1000});
-            await (menuItem3).press(key, {delay: 1000});
-            await expect(result).toContainText(await menuItem3.textContent());
-
-            await btn.click({delay:1000});
-            await (menuItem1).press("ArrowDown", {delay: 1000});
-            await (menuItem2).press("ArrowDown", {delay: 1000});
-            await (menuItem3).press("ArrowDown", {delay: 1000});
-            await (menuItem4).press(key, {delay: 1000});
-            await expect(result).toContainText(await menuItem4.textContent());
-
-            await btn.click({delay:1000});
-            await (menuItem1).press("ArrowDown", {delay: 1000});
-            await (menuItem2).press("ArrowDown", {delay: 1000});
-            await (menuItem3).press("ArrowDown", {delay: 1000});
-            await (menuItem4).press("ArrowDown", {delay: 1000});
-            await (menuItem6).press(key, {delay: 1000});
-            await expect(result).toContainText(await menuItem6.textContent());
-        });
+                await btn.click({delay: 500});
+                for (let times = 0; times < spec.arrowDowns; times++) {
+                    await (menuItem1).press("ArrowDown");
+                }
+                await (menuItem1).press(key, {delay: 500});
+                await expect(result).toContainText(spec.text);
+            });
+        }
     }
 });

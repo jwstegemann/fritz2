@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.map
 
 fun RenderContext.inputFieldDemo() {
 
-    val name = storeOf("", id="inputField")
+    val name = storeOf("", id = "inputField")
 
     div("max-w-sm") {
 
@@ -46,10 +46,15 @@ fun RenderContext.inputFieldDemo() {
             }
         }
 
-        div("""mt-4 p-2.5
+        div(
+            """mt-4 p-2.5
             | bg-primary-100 rounded shadow-sm
             | ring-2 ring-primary-500 
-            | text-sm text-primary-800""".trimMargin(), id = "result") {
+            | text-sm text-primary-800
+            | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800""".trimMargin(),
+            id = "result"
+        ) {
+            attr("tabindex", "0")
             span("font-medium") { +"Name: " }
             span { name.data.renderText() }
         }
