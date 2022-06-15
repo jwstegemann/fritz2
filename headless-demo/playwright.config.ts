@@ -56,7 +56,9 @@ const config: PlaywrightTestConfig = {
         ...devices['Desktop Chrome'],
       },
     },
-
+      // currently only the desktop chrome tests are major and stable!
+      // all others may need further improvements and optimizations!
+/**
     {
       name: 'firefox',
       use: {
@@ -74,7 +76,7 @@ const config: PlaywrightTestConfig = {
       },
     },
 
-    /* Test against mobile viewports. */
+    // Test against mobile viewports.
      {
        name: 'Mobile Chrome',
        use: {
@@ -106,7 +108,7 @@ const config: PlaywrightTestConfig = {
       },
     },
 
-    /* Test against branded browsers. */
+    // Test against branded browsers.
     {
       name: 'Microsoft Edge',
       use: {
@@ -119,6 +121,7 @@ const config: PlaywrightTestConfig = {
         channel: 'chrome',
       },
     },
+ */
   ],
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
