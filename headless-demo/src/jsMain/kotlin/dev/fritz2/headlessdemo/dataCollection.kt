@@ -13,8 +13,8 @@ import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLTableRowElement
 
-fun RenderContext.filterInput(filterStore: RootStore<String>) {
-    inputField("relative my-4 grow") {
+fun RenderContext.filterInput(id: String, filterStore: RootStore<String>) {
+    inputField("relative my-4 grow", id) {
         value(filterStore)
         div("absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none") {
             icon("w-5 h-5 text-primary-600", content = HeroIcons.search)
@@ -99,11 +99,11 @@ fun RenderContext.collectionDemo() {
 fun RenderContext.dataTableDemo(amount: Int) {
     val persons = FakePersons(amount)
     val storedPersons = storeOf(persons)
-    val selectionStore = storeOf(listOf(persons[3], persons[6]))
+    val selectionStore = storeOf(persons.take(2))
     val storedFilteredSize = storeOf(0)
 
     val filterStore = storeOf("")
-    filterInput(filterStore)
+    filterInput("dataTable-filter", filterStore)
 
     dataCollection<Person>(
         """relative h-96 border border-primary-400
@@ -126,7 +126,7 @@ fun RenderContext.dataTableDemo(amount: Int) {
                             compareByDescending(Person::fullName),
                             initialize = sortIcons,
                             classes = "focus:outline-none",
-                            id = "datatable-sort-name"
+                            id = "dataTable-sort-name"
                         )
                     }
                     column("eMail") {
@@ -176,6 +176,7 @@ fun RenderContext.dataTableDemo(amount: Int) {
             | ring-2 ring-primary-500""".trimMargin(),
         id = "result"
     ) {
+        attr("data-selected-count", selectionStore.data.map { it.count() })
         p("font-medium text-sm") {
             selectionStore.data.map { it.count() }
                 .combine(storedFilteredSize.data) { sel, count -> "Selected ($sel/$count):" }
@@ -203,7 +204,7 @@ fun RenderContext.gridListDemo(amount: Int) {
         selection.multi(selectionStore)
 
         div("flex items-center justify-end h-10 max-w-sm mt-4") {
-            filterInput(filterStore)
+            filterInput(id = "gridList-filter", filterStore)
 
             dataCollectionSortButton(
                 compareBy(Person::fullName),
@@ -303,6 +304,7 @@ fun RenderContext.gridListDemo(amount: Int) {
             | ring-2 ring-primary-500""".trimMargin(),
         id = "result"
     ) {
+        attr("data-selected-count", selectionStore.data.map { it.count() })
         p("font-medium text-sm") {
             selectionStore.data.map { it.count() }
                 .combine(storedFilteredSize.data) { sel, count -> "Selected ($sel/$count):" }
