@@ -70,7 +70,7 @@ fun RenderContext.collectionDemo() {
     )
 
     tabGroup("w-full", id = "tabGroup") {
-        tabList("max-w-sm flex p-1 space-x-1 bg-primary-900 rounded-md") {
+        tabList("max-w-sm flex p-1 space-x-1 bg-primary-900/20 rounded-md") {
             examples.forEach { (category, _, _) ->
                 tab(
                     """w-full py-2.5 leading-5
