@@ -10,7 +10,7 @@ eleventyNavigation:
     order: 70
 teaser: true
 demoHash: popover
-demoHeight: 26rem
+demoHeight: 28rem
 ---
 
 ## Basic Example
@@ -26,14 +26,14 @@ floating container created by `popOverPanel` is shown as well.
 data class Solution(val name: String, val description: String, val icon: String)
 
 val solutions = listOf(
-    Solution("Insights", "Measure actions your users take", HeroIcons.academic_cap),
-    Solution("Automations", "Create your own targeted content", HeroIcons.adjustments),
-    Solution("Reports", "Keep track of your growth", HeroIcons.archive)
+    Solution("fritz2", "Cool web framework for building modern SPAs", fritz2),
+    Solution("Headless", "Create fully functional and customized components", HeroIcons.academic_cap),
+    Solution("Tailwind", "Nice CSS framework for styling your application", HeroIcons.color_swatch)
 )
 
 popOver {
     popOverButton {
-        span { +"Solutions" }
+        span { +"Open Popover" }
     }
 
     popOverPanel {
@@ -63,7 +63,7 @@ popover panel.
 ```kotlin
 popOverButton {
     className(opened.map { if (it) "" else "text-opacity-90" })
-    span { +"Solutions" }
+    opened.map { if (it) "Close Popover" else "Open Popover" }.renderText()
 }
 ```
 

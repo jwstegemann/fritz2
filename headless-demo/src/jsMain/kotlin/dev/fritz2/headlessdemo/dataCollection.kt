@@ -87,7 +87,7 @@ fun RenderContext.collectionDemo() {
         }
         tabPanels("mt-2") {
             examples.forEach { (_, example, amount) ->
-                panel("focus:outline-none"){
+                panel("focus:outline-none") {
                     example(this, amount)
                 }
             }
@@ -182,7 +182,7 @@ fun RenderContext.dataTableDemo(amount: Int) {
                 .combine(storedFilteredSize.data) { sel, count -> "Selected ($sel/$count):" }
                 .renderText(into = this)
         }
-        ul("text-sm") {
+        ul("text-sm md:grid md:grid-flow-col md:grid-rows-2") {
             selectionStore.data.map { it.map { it.fullName } }.renderEach {
                 li { +it }
             }
@@ -310,7 +310,7 @@ fun RenderContext.gridListDemo(amount: Int) {
                 .combine(storedFilteredSize.data) { sel, count -> "Selected ($sel/$count):" }
                 .renderText(into = this)
         }
-        ul("text-sm") {
+        ul("text-sm md:grid md:grid-flow-col md:grid-rows-2") {
             selectionStore.data.map { it.map { it.fullName } }.renderEach {
                 li { +it }
             }

@@ -78,10 +78,10 @@ access to all attributes of the generated tag, such as `className` or `attr`!
 
 ```kotlin
 someComponent(/* params */) {
-    // Scope von `someComponent` == some `Tag` + specific extra props (`initialize`-Parameter)
+    // Scope of `someComponent` == some `Tag` + specific extra props (`initialize`-Parameter)
 
     someBrick(/* params */) {
-        // Scope von `SomeBrick` == some `Tag` + specific extra props + props from outer Scope! (`initialize`-Parameter)
+        // Scope of `SomeBrick` == some `Tag` + specific extra props + props from outer Scope! (`initialize`-Parameter)
     }
 }
 ```
@@ -187,7 +187,7 @@ Again, the `Label` attributes can serve as an example. These mostly actually gen
 
 ```kotlin
 inputField() {
-    inputFieldLabel(tag = RenderContext::span) { // Scope von `HTMLSpanElement`
+    inputFieldLabel(tag = RenderContext::span) { // Scope of `HTMLSpanElement`
         +"Some Label Text"
     }
 }

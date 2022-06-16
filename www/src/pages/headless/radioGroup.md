@@ -10,7 +10,7 @@ eleventyNavigation:
     order: 80
 teaser: true
 demoHash: radioGroup
-demoHeight: 22rem
+demoHeight: 30rem
 ---
 
 ## Basic Example

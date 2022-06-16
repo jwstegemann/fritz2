@@ -333,7 +333,6 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
                 }
 
                 active.flatMapLatest { isActive ->
-                    console.log("XXX")
                     mousemoves.mapNotNull {
                         if (!isActive) (item to false)
                         else null

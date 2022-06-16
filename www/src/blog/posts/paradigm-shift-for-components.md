@@ -73,7 +73,7 @@ it possible to implement two different design concepts with the same components.
 
 ## Problems of the naive approach
 
-Unfortunately, we now see this approach as a failure!
+Unfortunately, we now consider this approach as a failure!
 
 We have identified the following problems with it:
 
