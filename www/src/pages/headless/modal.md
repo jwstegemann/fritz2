@@ -11,7 +11,7 @@ eleventyNavigation:
     order: 60
 teaser: true
 demoHash: modal
-demoHeight: 24rem
+demoHeight: 28rem
 ---
 
 ## Basic Example

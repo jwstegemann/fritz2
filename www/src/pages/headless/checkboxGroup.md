@@ -10,7 +10,7 @@ eleventyNavigation:
     order: 10
 teaser: true
 demoHash: checkboxGroup
-demoHeight: 27rem
+demoHeight: 28rem
 ---
 
 ## Basic Example
