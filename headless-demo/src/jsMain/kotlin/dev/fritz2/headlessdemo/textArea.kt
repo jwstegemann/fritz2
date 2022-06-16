@@ -14,8 +14,10 @@ fun RenderContext.textAreaDemo() {
         textArea {
             value(description)
             placeholder("fritz2 is super cool")
-            textareaLabel("""block mb-1.5 ml-1
-                | text-sm font-medium text-primary-800""".trimMargin()) {
+            textareaLabel(
+                """block mb-1.5 ml-1
+                | text-sm font-medium text-primary-800""".trimMargin()
+            ) {
                 +"Describe the framework"
             }
             div("mt-1") {
@@ -46,10 +48,15 @@ fun RenderContext.textAreaDemo() {
             }
         }
 
-        div("""mt-6 p-2.5
+        div(
+            """mt-6 p-2.5
             | bg-primary-100 rounded shadow-sm
             | ring-2 ring-primary-500 
-            | text-sm text-primary-800""".trimMargin(), id = "result") {
+            | text-sm text-primary-800
+            | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800""".trimMargin(),
+            id = "result"
+        ) {
+            attr("tabindex", "0")
             span("font-medium") { +"Description: " }
             span { description.data.renderText() }
         }
