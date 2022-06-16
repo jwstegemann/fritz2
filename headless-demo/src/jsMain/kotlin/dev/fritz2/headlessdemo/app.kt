@@ -7,23 +7,33 @@ import dev.fritz2.routing.routerOf
 data class DemoPage(val title: String, val description: String, val content: RenderContext.() -> Unit)
 
 val pages = mapOf(
-    "listbox" to DemoPage(
-        "Headless Listbox",
-        """Listboxes are a great foundation for building custom, accessible select menus for your app, 
-            |complete with robust support for keyboard navigation.""".trimMargin(),
-        RenderContext::listboxDemo
-    ),
     "checkboxGroup" to DemoPage(
         "Headless Checkboxgroup",
         """Checkbox groups give you the same functionality as native HTML checkbox inputs, without any of the styling. 
             |They're perfect for building out custom UIs for multi selection.""".trimMargin(),
         RenderContext::checkboxGroupDemo
     ),
-    "radioGroup" to DemoPage(
-        "Headless Radiogroup",
-        """Radio Groups give you the same functionality as native HTML radio inputs, without any of the styling. 
-            |They're perfect for building out custom UIs for single selection.""".trimMargin(),
-        RenderContext::radioGroupDemo
+    "dataCollection" to DemoPage(
+        "Headless DataCollection",
+        """A collection handles sorting, filtering of and selecting item form a collection.""".trimMargin(),
+        RenderContext::collectionDemo
+    ),
+    "disclosure" to DemoPage(
+        "Headless Disclosure",
+        """A simple, accessible foundation for building custom UIs that show and hide content, like togglable
+            | accordion panels.""".trimMargin(),
+        RenderContext::disclosureDemo
+    ),
+    "inputfield" to DemoPage(
+        "Headless Input",
+        "Easily create accessible, fully customizable single line text inputs.",
+        RenderContext::inputFieldDemo
+    ),
+    "listbox" to DemoPage(
+        "Headless Listbox",
+        """Listboxes are a great foundation for building custom, accessible select menus for your app, 
+            |complete with robust support for keyboard navigation.""".trimMargin(),
+        RenderContext::listboxDemo
     ),
     "menu" to DemoPage(
         "Headless Menu",
@@ -37,33 +47,17 @@ val pages = mapOf(
             | navigation.""".trimMargin(),
         RenderContext::modalDemo
     ),
-    "disclosure" to DemoPage(
-        "Headless Disclosure",
-        """A simple, accessible foundation for building custom UIs that show and hide content, like togglable
-            | accordion panels.""".trimMargin(),
-        RenderContext::disclosureDemo
-    ),
     "popover" to DemoPage(
         "Headless Popover",
         """Popovers are perfect for floating panels with arbitrary content like navigation menus, mobile menus and
             | flyout menus.""".trimMargin(),
         RenderContext::popOverDemo
     ),
-    "tabGroup" to DemoPage(
-        "Headless Tabs",
-        """Easily create accessible, fully customizable tab interfaces, with robust focus management and keyboard
-            | navigation support.""".trimMargin(),
-        RenderContext::tabsDemo
-    ),
-    "inputfield" to DemoPage(
-        "Headless Input",
-        "Easily create accessible, fully customizable single line text inputs.",
-        RenderContext::inputFieldDemo
-    ),
-    "textarea" to DemoPage(
-        "Headless Textarea",
-        "Easily create accessible, fully customizable multi-line text inputs.",
-        RenderContext::textAreaDemo
+    "radioGroup" to DemoPage(
+        "Headless Radiogroup",
+        """Radio Groups give you the same functionality as native HTML radio inputs, without any of the styling. 
+            |They're perfect for building out custom UIs for single selection.""".trimMargin(),
+        RenderContext::radioGroupDemo
     ),
     "switch" to DemoPage(
         "Headless Switch",
@@ -71,10 +65,16 @@ val pages = mapOf(
             |semantics and keyboard navigation as native checkbox elements.""".trimMargin(),
         RenderContext::switchDemo
     ),
-    "dataCollection" to DemoPage(
-        "Headless DataCollection",
-        """A collection handles sorting, filtering of and selecting item form a collection.""".trimMargin(),
-        RenderContext::collectionDemo
+    "tabGroup" to DemoPage(
+        "Headless Tabs",
+        """Easily create accessible, fully customizable tab interfaces, with robust focus management and keyboard
+            | navigation support.""".trimMargin(),
+        RenderContext::tabsDemo
+    ),
+    "textarea" to DemoPage(
+        "Headless Textarea",
+        "Easily create accessible, fully customizable multi-line text inputs.",
+        RenderContext::textAreaDemo
     ),
     "tooltip" to DemoPage(
         "Headless Tooltip",
