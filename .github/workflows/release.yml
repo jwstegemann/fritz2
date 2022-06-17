@@ -61,4 +61,4 @@ jobs:
           fqdn: www.fritz2.dev
           build_dir: ./www/_site
         env:
-          GITHUB_PAT: ${{ secrets.FRITZ2_WEB_TOKEN }}
+          GH_PAT: ${{ secrets.FRITZ2_WEB_TOKEN }}
