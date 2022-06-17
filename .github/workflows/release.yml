@@ -28,6 +28,30 @@ jobs:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
 
+      - name: Set up Nodejs 16
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: Generating API docs
+        run: ./gradlew dokkaHtmlMultiModule
+
+      - name: Build Demos
+        run: ./gradlew headless-demo:build examples-demo:build metadataToWww
+
+      - name: Build Webpage
+        working-directory: ./www
+        run: npm install && npm run build
+
+      - name: Copy api docs to webpage
+        run: mkdir -p ./www/_site/api && cp -r ./api/* ./www/_site/api
+
+      - name: Copy headless-demo files to webpage
+        run: mkdir -p ./www/_site/headless-demo && cp ./headless-demo/build/distributions/* ./www/_site/headless-demo
+
+      - name: Copy examples-demo files to webpage
+        run: mkdir -p ./www/_site/examples-demo && cp ./examples-demo/build/distributions/* ./www/_site/examples-demo
+
       - name: Releasing www page
         if: success()
         uses: crazy-max/ghaction-github-pages@v2
