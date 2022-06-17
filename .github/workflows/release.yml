@@ -5,6 +5,8 @@ on:
     types: [published]
 
 jobs:
+  www:
+    uses: ./.github/workflows/www.yml
   release:
     runs-on: ubuntu-latest
     steps:
@@ -25,10 +27,6 @@ jobs:
           GPG_SIGNING_PASSPHRASE: ${{ secrets.GPG_SIGNING_PASSPHRASE }}
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-
-      - name: Run publish www workflow
-        if: success()
-        uses: ./.github/workflows/www.yml
 
       - name: Releasing www page
         if: success()
