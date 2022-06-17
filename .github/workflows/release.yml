@@ -28,7 +28,7 @@ jobs:
 
       - name: Run publish www workflow
         if: success()
-        uses: ./.github/workflows/www.yml
+        uses: ./.github/workflows/www
 
       - name: Releasing www page
         if: success()
