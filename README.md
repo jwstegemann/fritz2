@@ -1,4 +1,4 @@
-![fritz2](https://www.fritz2.dev/img/fritz2_logo_dark.png)
+![fritz2](https://www.fritz2.dev/img/fritz2_header.png)
 
 [![Actions Status](https://github.com/jwstegemann/fritz2/workflows/build/badge.svg)](https://github.com/jwstegemann/fritz2/actions)
 [![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)
