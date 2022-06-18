@@ -1,4 +1,4 @@
-![fritz2](https://www.fritz2.dev/images/fritz2_logo_grey.png)
+![fritz2](https://www.fritz2.dev/img/fritz2_logo_dark.png)
 
 [![Actions Status](https://github.com/jwstegemann/fritz2/workflows/build/badge.svg)](https://github.com/jwstegemann/fritz2/actions)
 [![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)
@@ -6,8 +6,8 @@
 [![IR](https://img.shields.io/badge/Kotlin%2FJS-IR%20supported-yellow)](https://kotl.in/jsirsupported)
 [![Kotlin](https://img.shields.io/badge/kotlin-1.6-blue.svg?logo=kotlin)](http://kotlinlang.org)
 [![Examples](https://img.shields.io/badge/examples-showcase-yellow)](https://examples.fritz2.dev/)
-[![API](https://img.shields.io/badge/API-dokka-green)](https://api.fritz2.dev/)
-[![Docs](https://img.shields.io/badge/docs-online-violet)](https://docs.fritz2.dev/)
+[![API](https://img.shields.io/badge/API-dokka-green)](https://fritz2.dev/api)
+[![Docs](https://img.shields.io/badge/docs-online-violet)](https://fritz2.dev/docs)
 [![Slack chat](https://img.shields.io/badge/kotlinlang-%23fritz2-B37700?logo=slack)](https://kotlinlang.slack.com/messages/fritz2)
 
 fritz2 is an ***extremely lightweight***, well-performing, independent library to build 
@@ -40,7 +40,7 @@ No intermediate layer (like a virtual DOM) is needed. fritz2 requires no additio
 which parts of your component have to be re-rendered. 
 fritz2 also supports **two-way data binding** out-of-the-box to update your model by listening on events:
 
-![State management in fritz2](https://docs.fritz2.dev/images/fritz2_state_management.png)
+![State management in fritz2](https://fritz2.dev/img/fritz2_cycle_of_life.png)
 
 Utilizing Kotlin's multiplatform-abilities, you'll write the code of your data classes only once and use 
 it on your client and server (i.e. in a [SpringBoot](https://github.com/jamowei/fritz2-spring-todomvc)- or 
@@ -59,13 +59,13 @@ This is also true for your model-validation-code, which can quickly become far m
 - backend-repositories (Rest APIs, WebSockets, LocalStorage, etc.)
 - webcomponents
 - easy to learn
-- [documentation](https://docs.fritz2.dev/)
+- [documentation](https://fritz2.dev/docs)
 - [examples](https://examples.fritz2.dev/) i.e. implementing the specification of [TodoMVC](http://todomvc.com/)
 
 ## How to try it?
 
 * Take a look at our hosted [examples](https://examples.fritz2.dev/)
-* Or set up a new project on your own, following our [documentation](https://docs.fritz2.dev/GettingStarted.html)
+* Or set up a new project on your own, following our [documentation](https://www.fritz2.dev/docs/start/)
 
 ## Overall Goals
 
