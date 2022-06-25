@@ -249,7 +249,7 @@ You can map the elements of the `Flow` to a specific action-type before connecti
 This way you can also add information from the rendering-context to the action. 
 You may also use any other source for a `Flow` like recurring timer events or even external events.
 
-If you need to purposefully fire an action at some point in your code (to init a `Store` for example) use 
+If you need to purposefully fire an action somewhere inside a `RenderContext` or a `Store` you can directly invoke a `Handler`: 
 ```kotlin
 //call handler with data
 someStore.someHandler(someValue)
