@@ -29,23 +29,28 @@ fun RenderContext.listboxDemo() {
             value(bestCharacter)
             listboxLabel("sr-only", tag = RenderContext::span) { +"Choose the best Star Wars character" }
             listboxButton(
-                """flex items-center justify-end w-full py-2 pl-3 pr-3 text-left bg-white rounded-lg 
-                | shadow-md cursor-default focus:outline-none focus:ring-2 focus:ring-opacity-75 
-                | focus:ring-white focus:ring-offset-blue-700 focus:ring-offset-2 
-                | focus:border-blue-600 sm:text-sm""".trimMargin()
+                """flex items-center justify-end w-full py-2.5 px-4 
+                    | bg-white rounded cursor-default
+                    | border border-primary-600 
+                    | font-sans text-sm text-left text-primary-800
+                    | hover:border-primary-800 
+                    | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800""".trimMargin()
             ) {
                 span("block truncate w-full") {
                     value.data.renderText()
                 }
-                svg("w-5 h-5 text-gray-400") { content(HeroIcons.selector) }
+                icon("w-5 h-5 text-gray-600", content = HeroIcons.selector)
             }
 
             listboxItems(
-                """w-full py-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black 
-                    | ring-opacity-5 focus:outline-none sm:text-sm""".trimMargin(),
-                tag = RenderContext::ul
+                """w-full max-h-60 py-1 overflow-auto origin-top  
+                    | bg-white rounded shadow-md divide-y divide-gray-100
+                    | ring-1 ring-primary-600 ring-opacity-5 
+                    | focus:outline-none""".trimMargin(),
+                        tag = RenderContext::ul
             ) {
                 placement = Placement.bottomStart
+                distance = 5
 
                 transition(opened,
                     "transition duration-100 ease-out",
@@ -59,28 +64,30 @@ fun RenderContext.listboxDemo() {
                 characters.forEach { (entry, disabledState) ->
                     listboxItem(
                         entry,
-                        "w-full cursor-default select-none relative py-2 pl-10 pr-4",
+                        """w-full relative py-2 pl-10 pr-4
+                            | cursor-default select-none disabled:opacity-50
+                            | text-sm""".trimMargin(),
                         tag = RenderContext::li
                     ) {
                         className(active.combine(disabled) { a, d ->
                             if (a && !d) {
-                                "text-blue-900 bg-blue-100"
+                                "bg-primary-600 text-white"
                             } else {
-                                if (d) "text-gray-300" else "text-gray-900"
+                                if (d) "text-slate-400" else "text-primary-800"
                             }
                         })
 
                         disable(disabledState)
 
                         span {
-                            className(selected.map { if (it) "font-medium" else "font-normal" })
+                            className(selected.map { if (it) "font-semibold" else "font-normal" })
                             +entry
                         }
 
                         selected.render {
                             if (it) {
-                                span("text-blue-600 absolute inset-y-0 left-0 flex items-center pl-3") {
-                                    svg("w-5 h-5") { content(HeroIcons.check) }
+                                span("absolute left-0 inset-y-0 flex items-center pl-3") {
+                                    icon("w-5 h-5", content = HeroIcons.check)
                                 }
                             }
                         }
@@ -94,8 +101,11 @@ fun RenderContext.listboxDemo() {
             }
         }
 
-        div("bg-gray-300 mt-4 p-2 rounded-lg ring-2 ring-gray-50", id = "result") {
-            em { +"Selected: " }
+        div("""mt-4 p-2.5
+            | bg-primary-100 rounded shadow-sm
+            | ring-2 ring-primary-500 
+            | text-sm text-primary-800""".trimMargin(), id = "result") {
+            span("font-medium") { +"Selected: " }
             span { bestCharacter.data.renderText() }
         }
     }

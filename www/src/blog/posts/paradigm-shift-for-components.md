@@ -73,7 +73,7 @@ it possible to implement two different design concepts with the same components.
 
 ## Problems of the naive approach
 
-Unfortunately, we now see this approach as a failure!
+Unfortunately, we now consider this approach as a failure!
 
 We have identified the following problems with it:
 
@@ -324,8 +324,8 @@ In the future there will be more blog articles around the topic "component build
 
 As already clearly mentioned, the old components (and the styling API) are no longer part of fritz2.
 
-But we will continue to offer patches for serious issues on the `0.14` branch for the next nine month from now, so
-everybody should have time until the end of the year 2022 to migrate to the new headless approach.
+But we will continue to offer patches for serious issues on the `0.14` branch until end of 2022, so there is much time
+left to migrate to the new headless approach.
 
 We would love to hear some feedback about the migration path you take!
 

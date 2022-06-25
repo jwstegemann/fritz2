@@ -47,7 +47,7 @@ val action = storeOf("")
 
 menu {
     menuButton {
-        +"Options"
+        +"Open Menu"
     }
 
     menuItems {

@@ -1,7 +1,6 @@
 package dev.fritz2.headlessdemo
 
 import dev.fritz2.core.RenderContext
-import dev.fritz2.core.fill
 import dev.fritz2.core.storeOf
 import dev.fritz2.headless.components.checkboxGroup
 import kotlinx.coroutines.flow.map
@@ -21,41 +20,36 @@ fun RenderContext.checkboxGroupDemo() {
     div("max-w-sm") {
         checkboxGroup<HTMLFieldSetElement, Newsletter>(tag = RenderContext::fieldset) {
             value(subscriptions)
-            checkboxGroupLabel("text-base font-medium text-gray-900", tag = RenderContext::legend) {
+            checkboxGroupLabel("py-2 sr-only", tag = RenderContext::legend) {
                 +"Select some mailing lists"
             }
-            div("mt-4 grid grid-cols-1 gap-y-4") {
+            div("space-y-2") {
                 mailingList.forEach { option ->
-                    checkboxGroupOption(option, id = option.id.toString()) {
+                    checkboxGroupOption(option, "rounded-md", option.id.toString()) {
+                        className(selected.map {
+                            if (it) "bg-primary-700 hover:bg-primary-800 text-white"
+                            else "bg-primary-100 hover:bg-primary-200 text-primary-800"
+                        })
+
                         checkboxGroupOptionToggle(
-                            """relative bg-white border rounded-lg shadow-sm p-2 flex cursor-pointer 
-                            | focus:outline-none focus:border-2""".trimMargin(),
-                            tag = RenderContext::label
+                            """grid grid-rows-3 grid-cols-[auto_1fr] gap-1 p-4
+                                | text-base font-sans cursor-pointer rounded-md
+                                | focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600""".trimMargin()
                         ) {
-                            className(selected.map {
-                                if (it) "ring-2 ring-blue-600 border-transparent"
-                                else "border-gray-300"
-                            })
-                            div("flex-1 flex") {
-                                div("flex flex-col") {
-                                    checkboxGroupOptionLabel("block text-sm font-medium text-gray-900") {
-                                        +option.title
-                                    }
-                                    checkboxGroupOptionDescription("flex items-center text-sm text-gray-500") {
-                                        +option.description
-                                    }
-                                    checkboxGroupOptionDescription("mt-2 text-sm font-medium text-gray-900") {
-                                        +"${option.users} users"
+                            div("row-span-3 pr-2") {
+                                div(
+                                    """flex items-center w-5 h-5 mt-0.5
+                                        | bg-white border rounded""".trimMargin()
+                                ) {
+                                    selected.render(into = this) {
+                                        if (it) icon("w-5 h-5 text-primary-700", content = HeroIcons.check)
                                     }
                                 }
                             }
-                            selected.render {
-                                if (it) {
-                                    svg("h-5 w-5 text-blue-700") {
-                                        content(HeroIcons.check_circle)
-                                        fill("currentColor")
-                                    }
-                                }
+                            checkboxGroupOptionLabel("-mt-0.5 font-medium cursor-pointer") { +option.title }
+                            checkboxGroupOptionDescription("text-sm") { +option.description }
+                            checkboxGroupOptionDescription("mt-2 text-xs") {
+                                +"${option.users} users"
                             }
                         }
                     }
@@ -63,13 +57,12 @@ fun RenderContext.checkboxGroupDemo() {
             }
         }
 
-        div("bg-gray-300 mt-4 p-2 rounded-lg ring-2 ring-gray-50", id = "result") {
-            em { +"Selected: " }
-            ul("") {
-                subscriptions.data.renderEach {
-                    li { +"(${it.id}) ${it.title}" }
-                }
-            }
+        div(
+            "bg-primary-100 mt-4 p-2.5 rounded ring-2 ring-primary-500 text-sm text-primary-800 shadow-sm",
+            id = "result"
+        ) {
+            span("font-medium") { +"Selected: " }
+            span { subscriptions.data.map { s -> s.joinToString { it.title } }.renderText() }
         }
     }
 }

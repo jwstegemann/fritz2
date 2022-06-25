@@ -2,7 +2,6 @@ package dev.fritz2.headlessdemo
 
 
 import dev.fritz2.core.RenderContext
-import dev.fritz2.core.fill
 import dev.fritz2.core.transition
 import dev.fritz2.headless.components.popOver
 import dev.fritz2.headless.foundation.utils.popper.Placement
@@ -10,30 +9,45 @@ import kotlinx.coroutines.flow.map
 
 
 fun RenderContext.popOverDemo() {
-    data class Solution(val name: String, val description: String, val icon: String)
+    data class Solution(val name: String, val description: String, val icon: RenderContext.() -> Unit)
 
     val solutions = listOf(
-        Solution("Insights", "Measure actions your users take", HeroIcons.academic_cap),
-        Solution("Automations", "Create your own targeted content", HeroIcons.adjustments),
-        Solution("Reports", "Keep track of your growth", HeroIcons.archive)
+        Solution(
+            "fritz2", "Cool web framework for building modern SPAs",
+            { fritz2("w-10 h-10 text-primary-800") }
+        ),
+        Solution(
+            "Headless", "Create fully functional and customized components",
+            { icon("w-10 h-10 text-primary-800", content = HeroIcons.academic_cap) }
+        ),
+        Solution(
+            "Tailwind", "Nice CSS framework for styling your application",
+            { icon("w-10 h-10 text-primary-800", content = HeroIcons.color_swatch) }
+        )
     )
 
     popOver(id = "popOver") {
         popOverButton(
-            """w-32 inline-flex justify-center rounded-md border border-transparent 
-            | shadow-sm px-4 py-2 bg-blue-700 text-base font-medium text-white hover:bg-blue-800 
-            | focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 sm:col-start-2 
-            | sm:text-sm""".trimMargin()
+            """inline-flex justify-center w-40 px-4 py-2 sm:col-start-2
+            | rounded shadow-sm bg-primary-800
+            | border border-transparent
+            | text-sm text-white
+            | hover:bg-primary-900
+            | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin()
         ) {
             className(opened.map { if (it) "" else "text-opacity-90" })
-            span { +"Solutions" }
-            svg("ml-2 h-5 w-5 group-hover:text-opacity-80 transition ease-in-out duration-150") {
-                content(HeroIcons.chevron_down)
-                fill("currentColor")
+            opened.map { if (it) "Close Popover" else "Open Popover" }.renderText()
+            opened.render { isOpen ->
+                icon("w-5 h-5 ml-2 -mr-1", content = if (isOpen) HeroIcons.chevron_up else HeroIcons.chevron_down)
             }
         }
 
-        popOverPanel("bg-white z-10 max-w-sm px-4 sm:px-0 lg:max-w-3xl focus:outline-none overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5") {
+        popOverPanel(
+            """z-10 max-w-sm lg:max-w-3xl px-0  
+            | bg-white overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5
+            | focus:outline-none
+            """.trimMargin()
+        ) {
             placement = Placement.bottomStart
 
             transition(
@@ -49,39 +63,36 @@ fun RenderContext.popOverDemo() {
             div("relative grid gap-8 p-7 lg:grid-cols-2") {
                 solutions.forEach { item ->
                     a(
-                        """flex items-center p-2 -m-3 transition duration-150 ease-in-out rounded-lg 
-                                |hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-blue-600 
-                                |focus-visible:ring-opacity-50""".trimMargin()
+                        """flex items-center p-2 -m-3 
+                        | transition duration-150 ease-in-out rounded-lg 
+                        | hover:bg-primary-200 
+                        | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin()
                     ) {
                         attr("key", "{$item.name}")
+                        attr("tabindex", "0")
                         div(
-                            """flex items-center justify-center flex-shrink-0 w-10 h-10 p-1 rounded-lg 
-                                    | bg-orange-100 sm:h-12 sm:w-12""".trimMargin()
+                            """flex items-center justify-center flex-shrink-0 w-10 h-10 sm:h-12 sm:w-12 p-1 
+                            | rounded-lg 
+                            | bg-primary-100""".trimMargin()
                         ) {
-                            icon("w-10 h-10 text-orange-600", content = item.icon)
+                            item.icon(this)
                         }
                         div("ml-4") {
-                            p("text-sm font-medium text-gray-900") { +item.name }
-                            p("text-sm text-gray-500") { +item.description }
+                            p("text-sm font-medium text-primary-900") { +item.name }
+                            p("text-sm text-primary-800") { +item.description }
                         }
                     }
                 }
 
             }
-            div("p-4 bg-gray-50") {
-                a(
-                    """flow-root px-2 py-2 transition duration-150 ease-in-out rounded-md hover:bg-gray-100 
-                            |focus:outline-none focus-visible:ring focus-visible:ring-blue-600 
-                            |focus-visible:ring-opacity-50""".trimMargin()
-                ) {
-                    span("flex items-center") {
-                        span("text-sm font-medium text-gray-900") {
-                            +"Documentation"
-                        }
+            div("flow-root p-4 transition duration-150 ease-in-out bg-primary-100") {
+                span("flex items-center") {
+                    span("text-sm font-medium text-primary-900") {
+                        +"Advice"
                     }
-                    span("block text-sm text-gray-500") {
-                        +"Start integrating products and tools"
-                    }
+                }
+                span("block text-sm text-primary-800") {
+                    +"Start using a powerful tech-stack for beautiful, modern SPAs."
                 }
             }
         }
