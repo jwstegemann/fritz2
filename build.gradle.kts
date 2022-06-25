@@ -7,17 +7,12 @@ plugins {
     signing
 }
 
-// needed to work on Apple Silicon. Should be fixed by 1.6.20 (https://youtrack.jetbrains.com/issue/KT-49109#focus=Comments-27-5259190.0-0)
-rootProject.plugins.withType<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin> {
-    rootProject.the<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension>().nodeVersion = "16.0.0"
-}
-
 // consider moving to idiomatic solution of gradle for dependency sharing once it is ready:
 // https://docs.gradle.org/current/userguide/platforms.html
 extra.apply {
     // Dependencies
     set("kotlinVersion", "1.7.0")
-    set("coroutinesVersion", "1.6.1") // upgrade to 1.6.2 causes issues with atomicfu?
+    set("coroutinesVersion", "1.6.3")
     set("kotlinpoetVersion", "1.12.0")
     set("compileTestingVersion", "1.4.9")
     set("logbackVersion", "1.2.11")
