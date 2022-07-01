@@ -52,6 +52,39 @@ interface Lens<P, T> {
 }
 
 /**
+ * uses an existing [Lens] to create [Lens] with nullable types
+ *
+ * when reading from a null-parent, the parameter value will also be null (similar to _parent?.value_)
+ * when writing a null value to a non-nullable field, default value will be written or (if default is null) the change will be discarded
+ */
+inline fun <P : Any, reified T> Lens<P, T>.orNull(default: P? = null) = object : Lens<P?, T?> {
+    private val lens = this@orNull
+    override val id: String = lens.id
+    override fun get(parent: P?): T? = parent?.let { lens.get(parent) }
+    override fun set(parent: P?, value: T?): P? = parent?.let {
+        if (value is T) { // T might be already nullable
+            lens.set(parent, value)
+        } else {
+            value?.let { lens.set(parent, value) } ?: default ?: parent
+        }
+    }
+}
+
+/**
+ * uses an existing [Lens] with a nullable parameter type to create a non-nullable lens with default values
+ *
+ * when reading a null value, the default will be returned (similar to _parent.value ?: default_)
+ * when writing the default value, it will be replaced with null
+ */
+fun <P, T> Lens<P, T?>.orElse(default: T): Lens<P, T> = object : Lens<P, T> {
+    private val lens: Lens<P, T?> = this@orElse
+    override val id: String = lens.id
+    override fun get(parent: P): T = lens.get(parent) ?: default
+    override fun set(parent: P, value: T): P = lens.set(parent, value.takeUnless { it == default })
+}
+
+
+/**
  * convenience function to create a [Lens]
  *
  * @param id of the [Lens]
