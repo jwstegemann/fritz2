@@ -82,7 +82,7 @@ val pages = mapOf(
         RenderContext::tooltipDemo
     ),
     "toast" to DemoPage(
-        "Headless Toasts",
+        "Headless Toast",
         """Display notification-like content in different positions of the screen.""".trimMargin(),
         RenderContext::toastDemo
     )
