@@ -80,6 +80,11 @@ val pages = mapOf(
         "Headless Tooltip",
         """Some information that is displayed, whenever you hover a target element using your pointer device.""".trimMargin(),
         RenderContext::tooltipDemo
+    ),
+    "toast" to DemoPage(
+        "Headless Toasts",
+        """Display notification-like content in different positions of the screen.""".trimMargin(),
+        RenderContext::toastDemo
     )
 )
 

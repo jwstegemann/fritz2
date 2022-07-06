@@ -6,14 +6,15 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.HTMLLIElement
 import org.w3c.dom.HTMLUListElement
 
 
 enum class ToastPosition {
-    TopLeft, TopRight, TopCenter, BottomLeft, BottomRight, BottomCenter;
+    TopLeft, TopCenter, TopRight, BottomLeft, BottomCenter, BottomRight;
 
     companion object {
-        val bottomPositions = listOf(BottomLeft, BottomRight, BottomCenter)
+        val bottomPositions = listOf(BottomLeft, BottomCenter, BottomRight)
     }
 }
 
@@ -69,7 +70,7 @@ class Toast<C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CC>>,
-        content: Tag<CC>.(Handler<Unit>) -> Tag<HTMLElement>
+        content: Tag<CC>.(Handler<Unit>) -> Unit
     ): Tag<CC> = tag(this, classes, id, scope) {
         // The Toast's factory function sets the id in the scope.
         // Since the close-button brick can only be invoked within the context of a Toast, the id should always be set.
@@ -82,7 +83,7 @@ class Toast<C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         classes: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Tag<HTMLButtonElement>.(Handler<Unit>) -> Tag<HTMLElement>
+        content: Tag<HTMLButtonElement>.(Handler<Unit>) -> Unit
     ): Tag<HTMLButtonElement> = toastCloseButton(classes, id, scope, RenderContext::button, content)
 }
 
@@ -121,5 +122,5 @@ fun RenderContext.toast(
     position: ToastPosition = ToastPosition.TopRight,
     duration: Long = 5000L,
     scope: (ScopeContext.() -> Unit) = {},
-    content: Toast<HTMLUListElement>.() -> Unit
-) = toast(classes, id, toastId, position, duration, scope, RenderContext::ul, content)
+    content: Toast<HTMLLIElement>.() -> Unit
+) = toast(classes, id, toastId, position, duration, scope, RenderContext::li, content)
