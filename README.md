@@ -40,7 +40,8 @@ No intermediate layer (like a virtual DOM) is needed. fritz2 requires no additio
 which parts of your component have to be re-rendered. 
 fritz2 also supports **two-way data binding** out-of-the-box to update your model by listening on events:
 
-![State management in fritz2](https://fritz2.dev/img/fritz2_cycle_of_life.png)
+[//]: # (![State management in fritz2]&#40;https://fritz2.dev/img/fritz2_cycle_of_life.png&#41;)
+![State management in fritz2](https://raw.githubusercontent.com/jwstegemann/fritz2/gh-pages/img/fritz2_cycle_of_life.png)
 
 Utilizing Kotlin's multiplatform-abilities, you'll write the code of your data classes only once and use 
 it on your client and server (i.e. in a [SpringBoot](https://github.com/jamowei/fritz2-spring-todomvc)- or 
