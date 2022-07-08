@@ -36,17 +36,18 @@ kotlin {
 /**
  * KSP support - start
  */
-dependencies {
-    add("kspMetadata",  project(":lenses-annotation-processor"))
+ksp {
+
 }
+
 kotlin.sourceSets.commonMain { kotlin.srcDir("build/generated/ksp/commonMain/kotlin") }
-tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().all {
-    if (name != "kspKotlinMetadata") dependsOn("kspKotlinMetadata")
+
+// Fixes webpack-cli incompatibility by pinning the newest version.
+// https://youtrack.jetbrains.com/issue/KTIJ-22030
+rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
+    versions.webpackCli.version = "4.10.0"
 }
-// needed to work on Apple Silicon. Should be fixed by 1.6.20 (https://youtrack.jetbrains.com/issue/KT-49109#focus=Comments-27-5259190.0-0)
-rootProject.plugins.withType<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin> {
-    rootProject.the<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension>().nodeVersion = "16.0.0"
-}
+
 /**
  * KSP support - end
  */
