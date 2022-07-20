@@ -78,7 +78,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
                 addComponentStructureInfo(
                     "checkboxGroupValidationMessages",
                     this@checkboxGroupValidationMessages.scope,
-                    this
+                    this@CheckboxGroup
                 )
                 tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
                     validationMessages = this
