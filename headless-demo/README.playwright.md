@@ -2,6 +2,12 @@
 
 We use [Playwright](https://playwright.dev/) as UI testing tool.
 
+To run the tests just type:
+
+```text
+npx playwright test    
+```
+
 ## General Design Principles
 
 - Write one test for all platforms! (Headless components are meant to work the same on all platforms after all!)

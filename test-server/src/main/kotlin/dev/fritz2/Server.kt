@@ -96,7 +96,8 @@ fun Application.main() {
         anyHost()
         host("localhost")
         allowXHttpMethodOverride()
-        allowCredentials = true
+        // throws error wit latest ktor
+//        allowCredentials = true
         allowNonSimpleContentTypes = true
     }
 
