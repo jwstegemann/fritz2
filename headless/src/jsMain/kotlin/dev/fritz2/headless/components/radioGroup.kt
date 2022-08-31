@@ -94,16 +94,18 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         tag: TagFactory<Tag<CV>>,
         initialize: ValidationMessages<CV>.() -> Unit
     ) {
-        value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
-            if (isNotEmpty) {
-                addComponentStructureInfo(
-                    "radioGroupValidationMessages",
-                    this@radioGroupValidationMessages.scope,
-                    this@RadioGroup
-                )
-                tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
-                    validationMessages = this
-                    initialize(ValidationMessages(value.validationMessages, this))
+        div(MOUNT_POINT_STYLE_CLASS) {
+            value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render(into = this) { isNotEmpty ->
+                if (isNotEmpty) {
+                    addComponentStructureInfo(
+                        "radioGroupValidationMessages",
+                        this@radioGroupValidationMessages.scope,
+                        this@div
+                    )
+                    tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
+                        validationMessages = this
+                        initialize(ValidationMessages(value.validationMessages, this))
+                    }
                 }
             }
         }

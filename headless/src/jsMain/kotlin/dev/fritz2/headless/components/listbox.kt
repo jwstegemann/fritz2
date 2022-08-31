@@ -130,16 +130,18 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         tag: TagFactory<Tag<CV>>,
         initialize: ValidationMessages<CV>.() -> Unit
     ) {
-        value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
-            if (isNotEmpty) {
-                addComponentStructureInfo(
-                    "listboxValidationMessages",
-                    this@listboxValidationMessages.scope,
-                    this@Listbox
-                )
-                tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
-                    validationMessages = this
-                    initialize(ValidationMessages(value.validationMessages, this))
+        div(MOUNT_POINT_STYLE_CLASS) {
+            value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
+                if (isNotEmpty) {
+                    addComponentStructureInfo(
+                        "listboxValidationMessages",
+                        this@listboxValidationMessages.scope,
+                        this@div
+                    )
+                    tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
+                        validationMessages = this
+                        initialize(ValidationMessages(value.validationMessages, this))
+                    }
                 }
             }
         }

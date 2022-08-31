@@ -140,8 +140,12 @@ internal class BuildContext(
     }
 }
 
+/**
+ * Defines the dedicated style class, that any mount-point will get by default.
+ * Its only purpose is to exclude the mount-point tag to appear in the visual representation of the DOM.
+ */
+const val MOUNT_POINT_STYLE_CLASS = "mount-point"
 
-internal const val MOUNT_POINT_STYLE_CLASS = "mount-point"
 internal val SET_MOUNT_POINT_DATA_ATTRIBUTE: Tag<HTMLElement>.() -> Unit = {
     attr("data-mount-point", true)
 }
@@ -170,7 +174,7 @@ inline fun <T> mountSimple(parentJob: Job, upstream: Flow<T>, crossinline collec
 
 /**
  * Mounts a [Flow] of [Patch]es to the DOM either
- *  - creating a new context-[Div] as a child of the receiver
+ *  - creating a new context-Div as a child of the receiver
  *  - or, if [into] is set, replacing all children of this [Tag].
  *
  * @param into if set defines the target to mount the content to (replacing its static content)
