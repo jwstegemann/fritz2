@@ -177,7 +177,7 @@ be some clickable element, which triggers the `close` handler and thus the dialo
 ```kotlin
 modal() {
     var restoreFocus: Boolean
-    var setInitialFocus: Boolean    
+    var setInitialFocus: InitialFocus = InsistToSet // DoNotSet, TryToSet, InsistToSet    
     // inherited by `OpenClose`
     val openState: DatabindingProperty<Boolean>
     val opened: Flow<Boolean>
