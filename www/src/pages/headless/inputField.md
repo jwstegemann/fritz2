@@ -1,7 +1,16 @@
 ---
-title: InputField description: "An InputField offers a single line of text input."
-layout: layouts/docs.njk permalink: /headless/inputfield/ eleventyNavigation:
-key: inputfield title: InputField parent: headless order: 30 teaser: true demoHash: inputfield demoHeight: 14rem
+title: InputField
+description: "An InputField offers a single line of text input."
+layout: layouts/docs.njk
+permalink: /headless/inputfield/
+eleventyNavigation:
+    key: inputfield
+    title: InputField
+    parent: headless
+    order: 30
+teaser: true
+demoHash: inputfield
+demoHeight: 14rem
 ---
 
 ## Basic Example
