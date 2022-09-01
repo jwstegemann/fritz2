@@ -93,6 +93,8 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
     private var label: Tag<HTMLElement>? = null
     private var descriptions: MutableList<Tag<HTMLElement>> = mutableListOf()
 
+    private val toggleId by lazy { "$componentId-toggle" }
+
     override fun render() {
         attr("id", componentId)
         toggle?.apply {
@@ -120,7 +122,7 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
         content: Tag<CT>.() -> Unit
     ) : Tag<CT> {
         addComponentStructureInfo("switchToggle", this@switchToggle.scope, this)
-        return tag(this, classes, "$componentId-toggle", scope) {
+        return tag(this, classes, toggleId, scope) {
             content()
             renderSwitchCore(this)
         }.also { toggle = it }
@@ -170,7 +172,7 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
         content: Tag<HTMLLabelElement>.() -> Unit
     ) = switchLabel(classes, scope, RenderContext::label) {
         content()
-        `for`(componentId)
+        `for`(toggleId)
     }
 
     /**
