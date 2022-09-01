@@ -94,3 +94,13 @@ fun <K, V> Store<Map<K, V>>.sub(key: K): SubStore<Map<K, V>, V> {
     val lens = lensOf<K, V>(key)
     return SubStore(this, lens)
 }
+/**
+ * on a [Store] of nullable data this creates a [SubStore] with a nullable parent and non-nullable value.
+ * It can be called using a [Lens] on a non-nullable parent (that can be created by using the @Lenses-annotation),
+ * but you have to ensure, that the resulting [SubStore] is never used, when it's parent's value is null.
+ * Otherwise, a [NullPointerException] is thrown.
+ *
+ * @param lens [Lens] to use to create the [SubStore]
+ */
+fun <P, T> Store<P?>.sub(lens: Lens<P & Any,T>): SubStore<P?, T> = sub(lens.toNullableLens())
+
