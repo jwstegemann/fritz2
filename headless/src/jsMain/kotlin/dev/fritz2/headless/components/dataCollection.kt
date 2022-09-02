@@ -90,11 +90,11 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
 
     val data = CollectionDataProperty<T>()
 
-    inline fun isSame(a: T?, b: T) = data.value?.idProvider?.let { id ->
+    private fun isSame(a: T?, b: T) = data.value?.idProvider?.let { id ->
         a != null && id(a) == id(b)
     } ?: (a == b)
 
-    inline fun indexOfItem(list: List<T>, item: T?) =
+    private fun indexOfItem(list: List<T>, item: T?) =
         if (item == null) -1
         else data.value?.idProvider?.let { id ->
             list.indexOfFirst { id(it) == id(item) }
@@ -296,7 +296,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
             } handledBy activeItem.update
 
             if (selection.isSet) {
-                selectItem(items.flatMapLatest { list ->
+                selectItem(items.flatMapLatest {
                     activeItem.data.flatMapLatest { current ->
                         keydowns.filter {
                             setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it))

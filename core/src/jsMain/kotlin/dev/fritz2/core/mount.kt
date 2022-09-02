@@ -118,7 +118,14 @@ internal class MountContext<T : HTMLElement>(
     override val job: Job,
     val target: Tag<T>,
     mountScope: Scope = target.scope,
-) : RenderContext, MountPointImpl() {
+) : Tag<HTMLElement>, MountPointImpl() {
+
+    override val domNode: HTMLElement = target.domNode
+    override val id = target.id
+    override val baseClass = target.baseClass
+    override fun addToClasses(classesToAdd: String) = target.addToClasses(classesToAdd)
+    override fun addToClasses(classesToAdd: Flow<String>) = target.addToClasses(classesToAdd)
+    override val annex: RenderContext = target.annex
 
     override val scope: Scope = Scope(mountScope).apply { set(MOUNT_POINT_KEY, this@MountContext) }
 
@@ -217,7 +224,7 @@ internal fun <V> RenderContext.mountPatches(
  * @param child Node to insert or append
  * @param index place to insert or append
  */
-private inline fun insertOrAppend(target: Node, child: Node, index: Int) {
+private fun insertOrAppend(target: Node, child: Node, index: Int) {
     if (index == target.childNodes.length) target.appendChild(child)
     else target.childNodes.item(index)?.let {
         target.insertBefore(child, it)
@@ -282,7 +289,7 @@ private suspend inline fun insertMany(target: Node, mountPoints: MutableMap<Node
  * @param from position index
  * @param to position index
  */
-private inline fun move(target: Node, from: Int, to: Int) {
+private fun move(target: Node, from: Int, to: Int) {
     val itemToMove = target.childNodes.item(from)
     if (itemToMove != null) insertOrAppend(target, itemToMove, to)
 }
