@@ -1,6 +1,5 @@
 package dev.fritz2.core
 
-import dev.fritz2.core.*
 import kotlinx.browser.document
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -118,7 +117,14 @@ internal class MountContext<T : HTMLElement>(
     override val job: Job,
     val target: Tag<T>,
     mountScope: Scope = target.scope,
-) : RenderContext, MountPointImpl() {
+) : Tag<HTMLElement>, MountPointImpl() {
+
+    override val domNode: HTMLElement = target.domNode
+    override val id = target.id
+    override val baseClass = target.baseClass
+    override fun addToClasses(classesToAdd: String) = target.addToClasses(classesToAdd)
+    override fun addToClasses(classesToAdd: Flow<String>) = target.addToClasses(classesToAdd)
+    override val annex: RenderContext = target.annex
 
     override val scope: Scope = Scope(mountScope).apply { set(MOUNT_POINT_KEY, this@MountContext) }
 
@@ -170,7 +176,7 @@ inline fun <T> mountSimple(parentJob: Job, upstream: Flow<T>, crossinline collec
 
 /**
  * Mounts a [Flow] of [Patch]es to the DOM either
- *  - creating a new context-[Div] as a child of the receiver
+ *  - creating a new context-Div as a child of the receiver
  *  - or, if [into] is set, replacing all children of this [Tag].
  *
  * @param into if set defines the target to mount the content to (replacing its static content)
@@ -217,7 +223,7 @@ internal fun <V> RenderContext.mountPatches(
  * @param child Node to insert or append
  * @param index place to insert or append
  */
-private inline fun insertOrAppend(target: Node, child: Node, index: Int) {
+private fun insertOrAppend(target: Node, child: Node, index: Int) {
     if (index == target.childNodes.length) target.appendChild(child)
     else target.childNodes.item(index)?.let {
         target.insertBefore(child, it)
@@ -264,7 +270,7 @@ private suspend inline fun insertMany(target: Node, mountPoints: MutableMap<Node
     repeat(count) {
         itemToDelete?.let {
             mountPoints.remove(it)?.let { mountPoint ->
-                (MainScope() + parentJob).launch() {
+                (MainScope() + parentJob).launch {
                     mountPoint.job.cancelChildren()
                     mountPoint.runBeforeUnmounts()
                     target.removeChild(it)
@@ -282,7 +288,7 @@ private suspend inline fun insertMany(target: Node, mountPoints: MutableMap<Node
  * @param from position index
  * @param to position index
  */
-private inline fun move(target: Node, from: Int, to: Int) {
+private fun move(target: Node, from: Int, to: Int) {
     val itemToMove = target.childNodes.item(from)
     if (itemToMove != null) insertOrAppend(target, itemToMove, to)
 }

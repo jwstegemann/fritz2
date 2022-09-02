@@ -3,12 +3,9 @@ package dev.fritz2.core
 import dev.fritz2.checkSingleFlow
 import dev.fritz2.runTest
 import kotlinx.browser.document
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.promise
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.HTMLOptionElement
@@ -19,6 +16,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
+@OptIn(DelicateCoroutinesApi::class)
 class MountTests {
 
     @Test

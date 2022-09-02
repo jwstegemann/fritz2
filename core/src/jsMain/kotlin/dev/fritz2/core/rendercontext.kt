@@ -22,7 +22,7 @@ interface RenderContext : WithJob, WithScope {
      * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
      * @param content [RenderContext] for rendering the data to the DOM
      */
-    fun <V> Flow<V>.render(into: Tag<HTMLElement>? = null, content: RenderContext.(V) -> Unit) {
+    fun <V> Flow<V>.render(into: Tag<HTMLElement>? = null, content: Tag<*>.(V) -> Unit) {
         val target = into?.apply(SET_MOUNT_POINT_DATA_ATTRIBUTE)
             ?: div(MOUNT_POINT_STYLE_CLASS, content = SET_MOUNT_POINT_DATA_ATTRIBUTE)
 
@@ -85,8 +85,9 @@ interface RenderContext : WithJob, WithScope {
         into: Tag<HTMLElement>? = null,
         content: RenderContext.(Store<V>) -> HtmlTag<HTMLElement>
     ) {
+        val store = this
         data.renderEach(idProvider, into) { value ->
-            content(this@renderEach.sub(value, idProvider))
+            content(store.sub(value, idProvider))
         }
     }
 
