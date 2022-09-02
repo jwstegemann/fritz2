@@ -54,18 +54,16 @@ abstract class AbstractSwitch<C : HTMLElement>(tag: Tag<C>, private val explicit
         tag: TagFactory<Tag<CV>>,
         initialize: ValidationMessages<CV>.() -> Unit
     ) {
-        div(MOUNT_POINT_STYLE_CLASS) {
-            value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
-                if (isNotEmpty) {
-                    addComponentStructureInfo(
-                        "switchValidationMessages",
-                        this@switchValidationMessages.scope,
-                        this@div
-                    )
-                    tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
-                        validationMessages = this
-                        initialize(ValidationMessages(value.validationMessages, this))
-                    }
+        value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
+            if (isNotEmpty) {
+                addComponentStructureInfo(
+                    "switchValidationMessages",
+                    this@switchValidationMessages.scope,
+                    this
+                )
+                tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
+                    validationMessages = this
+                    initialize(ValidationMessages(value.validationMessages, this))
                 }
             }
         }

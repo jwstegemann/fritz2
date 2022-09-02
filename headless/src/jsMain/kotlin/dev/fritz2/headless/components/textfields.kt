@@ -89,18 +89,16 @@ abstract class Textfield<C : HTMLElement, CT : Tag<HTMLElement>>(tag: Tag<C>, id
         tag: TagFactory<Tag<CV>>,
         initialize: ValidationMessages<CV>.() -> Unit
     ) {
-        div(MOUNT_POINT_STYLE_CLASS) {
-            value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
-                if (isNotEmpty) {
-                    addComponentStructureInfo(
-                        "textfieldValidationMessages",
-                        this@textfieldValidationMessages.scope,
-                        this@div
-                    )
-                    tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
-                        validationMessages = this
-                        initialize(ValidationMessages(value.validationMessages, this))
-                    }
+        value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
+            if (isNotEmpty) {
+                addComponentStructureInfo(
+                    "textfieldValidationMessages",
+                    this@textfieldValidationMessages.scope,
+                    this
+                )
+                tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
+                    validationMessages = this
+                    initialize(ValidationMessages(value.validationMessages, this))
                 }
             }
         }
