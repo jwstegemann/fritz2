@@ -18,7 +18,7 @@ demoHeight: 14rem
 An InputField is created with the `inputField` component factory function. Within its scope a `string` based data
 binding named `value` has to be initialized.
 
-Optionally, a placeholder text can be set using the `placeholder` attribute hook.
+Optionally, the type can be set using the `type` attribute hook; the default value is ``text``.
 
 Furthermore, the actual input element must be created using `inputTextfield`.
 
@@ -27,8 +27,10 @@ val name = storeOf("")
 
 inputField {
     value(name)
-    placeholder("The name is...")
-    inputTextfield { }
+    type("text")
+    inputTextfield {
+        placeholder("The name is...")
+    }
 }
 ```
 
@@ -45,37 +47,15 @@ val name = storeOf("")
 
 inputField {
     value(name)
-    placeholder("The name is...")
     inputLabel {
         +"Enter the framework's name"
     }
-    inputTextfield { }
+    inputTextfield {
+        placeholder("The name is...")
+    }
     inputDescription {
         +"The name should reflect the concept of the whole framework."
     }
-}
-```
-
-## Deactivate
-
-The InputField component supports the (dynamic) deactivation and activation of the input field. To do this, the boolean
-Attribute hook `disabled` must be set accordingly.
-
-```kotlin
-val toggle = storeOf(false) 
-
-button {
-    +"Enable / Disable"
-    clicks.map{ !toggle.current } handledBy toggle.update
-}
-
-inputField {
-    value(name)
-    
-    // values on the `FLow` will disable or enable the input field
-    disabled(toggle.data)
-    
-    inputTextfield { }
 }
 ```
 
@@ -89,7 +69,7 @@ its scope as a data stream `msgs`.
 inputField {
     value(name)
     inputTextfield { }
-    
+
     inputValidationMessages(tag = RenderContext::ul) {
         msgs.renderEach { li { +it.message } }
     }
@@ -109,23 +89,22 @@ focused.
 |----------------------------------------------------------------------|---------------------|
 | Any key that will trigger a `change` event like [[Tab]] or [[Enter]] | updates the `value` |
 
-For more details which key will trigger a change, refer to this 
+For more details which key will trigger a change, refer to this
 [documentation](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/change_event)
 
 ## API
 
 ### Summary / Sketch
+
 ```kotlin
 inputField() {
     val value: DatabindingProperty<String>
-    val placeHolder: AttributeHook<String>
-    val disabled: BooleanAttributeHook
+    val type: AttributeHook<String>
 
     inputTextfield() { }
     inputLabel() { }
     inputDescription() { } // use multiple times
-    inputValidationMessages() { 
-        msgs: Flow<List<ComponentValidationMessage>>
+    inputValidationMessages() { msgs: Flow<List<ComponentValidationMessage>>
     }
 }
 ```
@@ -139,9 +118,7 @@ Default-Tag: `div`
 | Scope property | Typ                           | Description                                             |
 |----------------|-------------------------------|---------------------------------------------------------|
 | `value`        | `DatabindingProperty<String>` | Mandatory (two-way) data-binding for the input value.   |
-| `placeHolder`  | `AttributeHook<String>`       | Optional hook to (dynamically) set a placeholder.       |
-| `disabled`     | `BooleanAttributeHook`        | Optional hook to (dynamically) enable or disable input. |
-
+| `type`         | `AttributeHook<String>`       | Optional hook to (dynamically) set the type.            |
 
 ### inputTextfield
 
@@ -151,7 +128,6 @@ Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Tag: `input` (not customizable!)
 
-
 ### inputLabel
 
 Available in the scope of: `inputField`
@@ -160,7 +136,6 @@ Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `label`
 
-
 ### inputDescription
 
 Available in the scope of: `inputField`
@@ -168,7 +143,6 @@ Available in the scope of: `inputField`
 Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `p`
-
 
 ### inputValidationMessages
 

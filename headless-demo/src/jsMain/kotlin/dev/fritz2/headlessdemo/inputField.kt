@@ -2,6 +2,7 @@ package dev.fritz2.headlessdemo
 
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.classes
+import dev.fritz2.core.placeholder
 import dev.fritz2.core.storeOf
 import dev.fritz2.headless.components.inputField
 import kotlinx.coroutines.flow.map
@@ -14,7 +15,6 @@ fun RenderContext.inputFieldDemo() {
 
         inputField("mb-8") {
             value(name)
-            placeholder("The name is...")
             inputLabel("block mb-1.5 ml-1 text-sm font-medium text-primary-800") {
                 +"Enter the framework's name"
             }
@@ -39,6 +39,7 @@ fun RenderContext.inputFieldDemo() {
                                 | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800""".trimMargin()
                         )
                     })
+                    placeholder("The name is...")
                 }
             }
             inputDescription("ml-1 mt-2 text-xs text-primary-700") {

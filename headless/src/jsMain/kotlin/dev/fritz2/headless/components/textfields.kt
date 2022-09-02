@@ -20,8 +20,6 @@ import org.w3c.dom.*
 abstract class Textfield<C : HTMLElement, CT : Tag<HTMLElement>>(tag: Tag<C>, id: String?) : Tag<C> by tag {
 
     val value = DatabindingProperty<String>()
-    abstract val placeholder: AttributeHook<CT, String>
-    abstract val disabled: BooleanAttributeHook<CT>
 
     val componentId: String by lazy { id ?: value.id ?: Id.next() }
     protected val fieldId by lazy { "$componentId-field" }
@@ -126,12 +124,6 @@ abstract class Textfield<C : HTMLElement, CT : Tag<HTMLElement>>(tag: Tag<C>, id
 class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
     Textfield<C, HtmlTag<HTMLInputElement>>(tag, id) {
 
-    override val placeholder =
-        AttributeHook(HtmlTag<HTMLInputElement>::placeholder, HtmlTag<HTMLInputElement>::placeholder)
-    override val disabled = BooleanAttributeHook(
-        HtmlTag<HTMLInputElement>::disabled,
-        HtmlTag<HTMLInputElement>::disabled
-    )
     val type = AttributeHook(HtmlTag<HTMLInputElement>::type, HtmlTag<HTMLInputElement>::type).apply { this("text") }
 
     fun RenderContext.inputTextfield(
@@ -144,7 +136,7 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
             attr(Aria.invalid, "true".whenever(value.hasError))
             value.handler?.invoke(changes.values())
             value(value.data)
-            hook(placeholder, type, disabled)
+            hook(type)
         }.also { field = it }
     }
 
@@ -300,11 +292,6 @@ fun RenderContext.inputField(
 class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
     Textfield<C, HtmlTag<HTMLTextAreaElement>>(tag, id) {
 
-    override val placeholder =
-        AttributeHook(HtmlTag<HTMLTextAreaElement>::placeholder, HtmlTag<HTMLTextAreaElement>::placeholder)
-    override val disabled =
-        BooleanAttributeHook(HtmlTag<HTMLTextAreaElement>::disabled, HtmlTag<HTMLTextAreaElement>::disabled)
-
     fun RenderContext.textareaTextfield(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
@@ -315,7 +302,6 @@ class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
             attr(Aria.invalid, "true".whenever(value.hasError))
             value.handler?.invoke(changes.values())
             value(value.data)
-            hook(placeholder, disabled)
         }.also { field = it }
     }
 

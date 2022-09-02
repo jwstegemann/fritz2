@@ -2,6 +2,7 @@ package dev.fritz2.headlessdemo
 
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.classes
+import dev.fritz2.core.placeholder
 import dev.fritz2.core.storeOf
 import dev.fritz2.headless.components.textArea
 import kotlinx.coroutines.flow.map
@@ -13,7 +14,6 @@ fun RenderContext.textAreaDemo() {
     div("max-w-sm") {
         textArea {
             value(description)
-            placeholder("fritz2 is super cool")
             textareaLabel(
                 """block mb-1.5 ml-1
                 | text-sm font-medium text-primary-800""".trimMargin()
@@ -41,6 +41,7 @@ fun RenderContext.textAreaDemo() {
                                 | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800""".trimMargin()
                         )
                     })
+                    placeholder("fritz2 is super cool")
                 }
             }
             textareaDescription("block ml-1 text-xs text-primary-700") {

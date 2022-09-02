@@ -114,6 +114,8 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
         private var label: Tag<HTMLElement>? = null
         private var descriptions: MutableList<Tag<HTMLElement>> = mutableListOf()
 
+        private val toggleId = "${optionId}-toggle"
+
         fun render() {
             toggle?.apply {
                 label?.let { attr(Aria.labelledby, it.id) }
@@ -140,7 +142,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
             content: Tag<CT>.() -> Unit
         ): Tag<CT> {
             addComponentStructureInfo("checkboxGroupOptionToggle", this@checkboxGroupOptionToggle.scope, this)
-            return tag(this, classes, "${optionId}-toggle", scope) {
+            return tag(this, classes, toggleId, scope) {
                 content()
                 attr("role", Aria.Role.checkbox)
                 attr(Aria.checked, selected.asString())
@@ -195,7 +197,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
             content: Tag<CL>.() -> Unit
         ): Tag<CL> {
             addComponentStructureInfo("checkboxGroupOptionLabel", this@checkboxGroupOptionLabel.scope, this)
-            return tag(this, classes, "$optionId-label", scope, content).also { label = it }
+            return tag(this, classes, "${optionId}-toggle", scope, content).also { label = it }
         }
 
         /**

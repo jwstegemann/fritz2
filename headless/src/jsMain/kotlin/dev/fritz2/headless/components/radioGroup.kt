@@ -136,6 +136,8 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         private var label: Tag<HTMLElement>? = null
         private var descriptions: MutableList<Tag<HTMLElement>> = mutableListOf()
 
+        private val toggleId = "$optionId-toggle"
+
         fun render() {
             toggle?.apply {
                 label?.let { attr(Aria.labelledby, it.id) }
@@ -162,7 +164,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
             content: Tag<CT>.() -> Unit
         ): Tag<CT> {
             addComponentStructureInfo("radioGroupOptionToggle", this@radioGroupOptionToggle.scope, this)
-            return tag(this, classes, "$optionId-toggle", scope) {
+            return tag(this, classes, toggleId, scope) {
                 content()
                 attr("role", Aria.Role.radio)
                 attr(Aria.checked, selected.asString())
@@ -226,7 +228,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
             content: Tag<HTMLLabelElement>.() -> Unit
         ) = radioGroupOptionLabel(classes, scope, RenderContext::label) {
             content()
-            `for`(optionId)
+            `for`(toggleId)
         }
 
         /**
