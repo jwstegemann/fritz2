@@ -1,6 +1,5 @@
 package dev.fritz2.core
 
-import dev.fritz2.core.*
 import kotlinx.browser.document
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -177,7 +176,7 @@ inline fun <T> mountSimple(parentJob: Job, upstream: Flow<T>, crossinline collec
 
 /**
  * Mounts a [Flow] of [Patch]es to the DOM either
- *  - creating a new context-[Div] as a child of the receiver
+ *  - creating a new context-Div as a child of the receiver
  *  - or, if [into] is set, replacing all children of this [Tag].
  *
  * @param into if set defines the target to mount the content to (replacing its static content)
@@ -271,7 +270,7 @@ private suspend inline fun insertMany(target: Node, mountPoints: MutableMap<Node
     repeat(count) {
         itemToDelete?.let {
             mountPoints.remove(it)?.let { mountPoint ->
-                (MainScope() + parentJob).launch() {
+                (MainScope() + parentJob).launch {
                     mountPoint.job.cancelChildren()
                     mountPoint.runBeforeUnmounts()
                     target.removeChild(it)
