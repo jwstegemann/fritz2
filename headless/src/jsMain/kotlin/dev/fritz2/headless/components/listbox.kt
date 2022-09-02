@@ -132,7 +132,11 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
     ) {
         value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
             if (isNotEmpty) {
-                addComponentStructureInfo("listboxValidationMessages", this@listboxValidationMessages.scope, this)
+                addComponentStructureInfo(
+                    "listboxValidationMessages",
+                    this@listboxValidationMessages.scope,
+                    this
+                )
                 tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
                     validationMessages = this
                     initialize(ValidationMessages(value.validationMessages, this))

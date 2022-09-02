@@ -96,7 +96,11 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
     ) {
         value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
             if (isNotEmpty) {
-                addComponentStructureInfo("radioGroupValidationMessages", this@radioGroupValidationMessages.scope, this)
+                addComponentStructureInfo(
+                    "radioGroupValidationMessages",
+                    this@radioGroupValidationMessages.scope,
+                    this
+                )
                 tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
                     validationMessages = this
                     initialize(ValidationMessages(value.validationMessages, this))

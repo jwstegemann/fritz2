@@ -146,8 +146,12 @@ internal class BuildContext(
     }
 }
 
+/**
+ * Defines the dedicated style class, that any mount-point will get by default.
+ * Its only purpose is to exclude the mount-point tag to appear in the visual representation of the DOM.
+ */
+const val MOUNT_POINT_STYLE_CLASS = "mount-point"
 
-internal const val MOUNT_POINT_STYLE_CLASS = "mount-point"
 internal val SET_MOUNT_POINT_DATA_ATTRIBUTE: Tag<HTMLElement>.() -> Unit = {
     attr("data-mount-point", true)
 }

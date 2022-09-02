@@ -55,8 +55,12 @@ abstract class AbstractSwitch<C : HTMLElement>(tag: Tag<C>, private val explicit
         initialize: ValidationMessages<CV>.() -> Unit
     ) {
         value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
-            if(isNotEmpty) {
-                addComponentStructureInfo("switchValidationMessages", this@switchValidationMessages.scope, this)
+            if (isNotEmpty) {
+                addComponentStructureInfo(
+                    "switchValidationMessages",
+                    this@switchValidationMessages.scope,
+                    this
+                )
                 tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
                     validationMessages = this
                     initialize(ValidationMessages(value.validationMessages, this))
@@ -120,7 +124,7 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CT>>,
         content: Tag<CT>.() -> Unit
-    ) : Tag<CT> {
+    ): Tag<CT> {
         addComponentStructureInfo("switchToggle", this@switchToggle.scope, this)
         return tag(this, classes, toggleId, scope) {
             content()
@@ -153,7 +157,7 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CL>>,
         content: Tag<CL>.() -> Unit
-    ) : Tag<CL> {
+    ): Tag<CL> {
         addComponentStructureInfo("switchLabel", this@switchLabel.scope, this)
         return tag(this, classes, "$componentId-label", scope, content).apply {
             value.handler?.invoke(value.data.flatMapLatest { state -> clicks.map { !state } })
@@ -186,7 +190,7 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CL>>,
         content: Tag<CL>.() -> Unit
-    ) : Tag<CL> {
+    ): Tag<CL> {
         addComponentStructureInfo("switchDescription", this@switchDescription.scope, this)
         return tag(
             this,
