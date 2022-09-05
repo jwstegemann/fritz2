@@ -1,9 +1,6 @@
 package dev.fritz2.headlessdemo
 
-import dev.fritz2.core.RenderContext
-import dev.fritz2.core.classes
-import dev.fritz2.core.placeholder
-import dev.fritz2.core.storeOf
+import dev.fritz2.core.*
 import dev.fritz2.headless.components.inputField
 import kotlinx.coroutines.flow.map
 
@@ -40,6 +37,7 @@ fun RenderContext.inputFieldDemo() {
                         )
                     })
                     placeholder("The name is...")
+                    type("text")
                 }
             }
             inputDescription("ml-1 mt-2 text-xs text-primary-700") {

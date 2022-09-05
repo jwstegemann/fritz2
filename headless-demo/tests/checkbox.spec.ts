@@ -17,7 +17,7 @@ test.describe('Checking', () => {
 
     for (const num of ["1", "2", "3"]) {
 
-        test(`unique result for checkbox ${num} and verify in result when selected throug click`, async ({page}) =>{
+        test(`unique result for checkbox ${num} and verify in result when selected through click`, async ({page}) =>{
             /* locator for each checkbox label (tag: checkboxGroupLabel) */
             const label = await page.locator(`#checkboxGroup-${num}-label`).textContent(); 
             /* locator for each checkbox toggle (tag: checkboxGroupOptionToggle) */

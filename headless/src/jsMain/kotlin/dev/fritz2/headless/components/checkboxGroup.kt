@@ -195,7 +195,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
             content: Tag<CL>.() -> Unit
         ): Tag<CL> {
             addComponentStructureInfo("checkboxGroupOptionLabel", this@checkboxGroupOptionLabel.scope, this)
-            return tag(this, classes, "${optionId}-toggle", scope, content).also { label = it }
+            return tag(this, classes, "${optionId}-label", scope, content).also { label = it }
         }
 
         /**
