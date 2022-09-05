@@ -17,7 +17,7 @@ import org.w3c.dom.*
  *      [official documentation](https://www.fritz2.dev/headless/textarea/)
  *
  */
-abstract class Textfield<C : HTMLElement, CT : Tag<HTMLElement>>(tag: Tag<C>, id: String?) : Tag<C> by tag {
+abstract class Textfield<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
 
     val value = DatabindingProperty<String>()
 
@@ -120,9 +120,7 @@ abstract class Textfield<C : HTMLElement, CT : Tag<HTMLElement>>(tag: Tag<C>, id
  * For more information refer to the [official documentation](https://www.fritz2.dev/headless/inputfield/)
  */
 class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
-    Textfield<C, HtmlTag<HTMLInputElement>>(tag, id) {
-
-    val type = AttributeHook(HtmlTag<HTMLInputElement>::type, HtmlTag<HTMLInputElement>::type).apply { this("text") }
+    Textfield<C>(tag, id) {
 
     fun RenderContext.inputTextfield(
         classes: String? = null,
@@ -134,7 +132,6 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
             attr(Aria.invalid, "true".whenever(value.hasError))
             value.handler?.invoke(changes.values())
             value(value.data)
-            hook(type)
         }.also { field = it }
     }
 
@@ -221,8 +218,6 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
  * ```kotlin
  * inputField() {
  *     val value: DatabindingProperty<String>
- *     val placeHolder: AttributeHook<String>
- *     val disabled: BooleanAttributeHook
  *
  *     inputTextfield() { }
  *     inputLabel() { }
@@ -258,8 +253,6 @@ fun <C : HTMLElement> RenderContext.inputField(
  * ```kotlin
  * inputField() {
  *     val value: DatabindingProperty<String>
- *     val placeHolder: AttributeHook<String>
- *     val disabled: BooleanAttributeHook
  *
  *     inputTextfield() { }
  *     inputLabel() { }
@@ -288,7 +281,7 @@ fun RenderContext.inputField(
  * For more information refer to the [official documentation](https://www.fritz2.dev/headless/textarea/)
  */
 class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
-    Textfield<C, HtmlTag<HTMLTextAreaElement>>(tag, id) {
+    Textfield<C>(tag, id) {
 
     fun RenderContext.textareaTextfield(
         classes: String? = null,
@@ -386,8 +379,6 @@ class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
  * ```kotlin
  * textArea() {
  *     val value: DatabindingProperty<String>
- *     val placeHolder: AttributeHook<String>
- *     val disabled: BooleanAttributeHook
  *
  *     textareaTextfield() { }
  *     textareaLabel() { }
@@ -423,8 +414,6 @@ fun <C : HTMLElement> RenderContext.textArea(
  * ```kotlin
  * textArea() {
  *     val value: DatabindingProperty<String>
- *     val placeHolder: AttributeHook<String>
- *     val disabled: BooleanAttributeHook
  *
  *     textareaTextfield() { }
  *     textareaLabel() { }

@@ -18,8 +18,6 @@ demoHeight: 14rem
 An InputField is created with the `inputField` component factory function. Within its scope a `string` based data
 binding named `value` has to be initialized.
 
-Optionally, the type can be set using the `type` attribute hook; the default value is ``text``.
-
 Furthermore, the actual input element must be created using `inputTextfield`.
 
 ```kotlin
@@ -27,8 +25,9 @@ val name = storeOf("")
 
 inputField {
     value(name)
-    type("text")
     inputTextfield {
+        // set common ``<input>`` tag attributes
+        type("text")
         placeholder("The name is...")
     }
 }
@@ -99,7 +98,6 @@ For more details which key will trigger a change, refer to this
 ```kotlin
 inputField() {
     val value: DatabindingProperty<String>
-    val type: AttributeHook<String>
 
     inputTextfield() { }
     inputLabel() { }
@@ -118,7 +116,6 @@ Default-Tag: `div`
 | Scope property | Typ                           | Description                                             |
 |----------------|-------------------------------|---------------------------------------------------------|
 | `value`        | `DatabindingProperty<String>` | Mandatory (two-way) data-binding for the input value.   |
-| `type`         | `AttributeHook<String>`       | Optional hook to (dynamically) set the type.            |
 
 ### inputTextfield
 

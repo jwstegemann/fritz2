@@ -8,6 +8,16 @@ To run the tests just type:
 npx playwright test    
 ```
 
+*BEWARE*: If there are local changes to test, remember to configure the ``baseURL`` appropriately in the 
+``playwright.config.ts``, like in the following example:
+```typescript
+    /* Base URL to use in actions like `await page.goto('/')`. */
+    //baseURL: 'https://next.fritz2.dev/headless-demo/',
+    /* Uncomment this to test local running demos as testing base */
+    baseURL: 'http://localhost:8080/',
+```
+
+
 ## General Design Principles
 
 - Write one test for all platforms! (Headless components are meant to work the same on all platforms after all!)
