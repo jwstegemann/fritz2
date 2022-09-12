@@ -107,7 +107,7 @@ fun <T, I> lensOf(element: T, idProvider: IdProvider<T, I>): Lens<List<T>, T> = 
 }
 
 /**
- * creates a [Lens] pointing to a certain position in a list
+ * creates a [Lens] pointing to a certain [index] in a list
  *
  * @param index position to focus on
  */
@@ -118,7 +118,7 @@ fun <T> lensOf(index: Int): Lens<List<T>, T> = object : Lens<List<T>, T> {
         parent.getOrNull(index) ?: throw LensException()
 
     override fun set(parent: List<T>, value: T): List<T> =
-        parent.subList(0, index) + value + parent.subList(index + 1, parent.size)
+        parent.mapIndexed { i, it -> if(i == index) value else it }
 }
 
 /**
