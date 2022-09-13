@@ -148,6 +148,14 @@ object Aria {
         const val scrollbar = "scrollbar"
         const val group = "group"
     }
+
+    object HasPopup {
+        const val menu = "menu"
+        const val listbox = "listbox"
+        const val tree = "tree"
+        const val grid = "grid"
+        const val dialog = "dialog"
+    }
 }
 
 /**

@@ -66,7 +66,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CB>>,
         content: Tag<CB>.() -> Unit
-    ) : Tag<CB> {
+    ): Tag<CB> {
         addComponentStructureInfo("menuButton", this@menuButton.scope, this)
         return tag(this, classes, "$componentId-button", scope) {
             if (!openState.isSet) openState(storeOf(false))
@@ -95,7 +95,16 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
         tagFactory: TagFactory<Tag<CI>>,
         classes: String?,
         scope: ScopeContext.() -> Unit
-    ) : PopUpPanel<CI>(renderContext, tagFactory, classes, "$componentId-items", scope, this@Menu.opened, reference = button) {
+    ) : PopUpPanel<CI>(
+        renderContext,
+        tagFactory,
+        classes,
+        "$componentId-items",
+        scope,
+        this@Menu.opened,
+        reference = button,
+        ariaHasPopup = Aria.HasPopup.menu
+    ) {
 
         private fun nextItem(currentIndex: Int, direction: Direction, items: List<MenuEntry>): Int =
             when (direction) {
