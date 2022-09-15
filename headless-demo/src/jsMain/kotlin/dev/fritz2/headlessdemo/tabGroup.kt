@@ -29,7 +29,7 @@ fun RenderContext.tabsDemo() {
                 tab(
                     """w-full py-2.5 leading-5
                     | text-sm font-medium rounded
-                    | focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600""".trimMargin()
+                    | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin()
                 ) {
                     className(selected.map { sel ->
                         if (sel == index) "bg-primary-800 text-white shadow-md"

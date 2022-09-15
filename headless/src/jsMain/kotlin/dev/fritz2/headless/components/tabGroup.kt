@@ -50,6 +50,8 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
         }
     }
 
+    private val isActive: Store<Int?> = storeOf(null)
+
     private val state by lazy { selected.combine(disabledTabs.data, ::Pair) }
 
     private infix fun <T> Flow<T>.handledBy(handler: (Int, T, List<Boolean>) -> Int): Unit? =
@@ -59,6 +61,11 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
                     if (disabledTabs.all { it }) -1 else handler(currentIndex, nextIndex, disabledTabs)
                 }
             })
+
+    private fun <T> withActiveUpdates(decorated: (Int, T, List<Boolean>) -> Int): (Int, T, List<Boolean>) -> Int =
+        { currentIndex, payload, disabledTabs ->
+            decorated(currentIndex, payload, disabledTabs).also { isActive.update(it) }
+        }
 
     private fun nextByClick(currentIndex: Int, nextIndex: Int, disabledTabs: List<Boolean>) =
         if (disabledTabs[nextIndex]) currentIndex
@@ -130,17 +137,17 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
                         event.preventDefault()
                     }
                 }
-            } handledBy ::nextByKeys
+            } handledBy withActiveUpdates(::nextByKeys)
 
             keydowns.filter { setOf(Keys.Home, Keys.PageUp).contains(shortcutOf(it)) }.map {
                 it.stopImmediatePropagation()
                 it.preventDefault()
-            } handledBy ::firstByKey
+            } handledBy withActiveUpdates(::firstByKey)
 
             keydowns.filter { setOf(Keys.End, Keys.PageDown).contains(shortcutOf(it)) }.map {
                 it.stopImmediatePropagation()
                 it.preventDefault()
-            } handledBy ::lastByKey
+            } handledBy withActiveUpdates(::lastByKey)
         }
 
         inner class Tab<CT : HTMLElement>(
@@ -151,17 +158,15 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
             // no value should appear when list is still empty
             val disabled = disabledTabs.data.mapNotNull { it.getOrNull(index) }
             val disable by lazy { disabledTabs.disabledHandler(index) }
+            val active: Flow<Boolean> = isActive.data.mapNotNull { it == index }.distinctUntilChanged()
 
             fun render() {
                 attr("tabindex", selected.map { if (it == index) "0" else "-1" })
                 attr(Aria.selected, selected.map { it == index }.asString())
                 attr(Aria.controls, selected.map { if (it == index) panelId(index) else null })
-                clicks.map { index } handledBy ::nextByClick
-                selected handledBy {
-                    if (it == index && domNode != document.activeElement) {
-                        domNode.focus()
-                    }
-                }
+                clicks.map { index } handledBy withActiveUpdates(::nextByClick)
+                active.filter { it } handledBy { domNode.focus() }
+                blurs.map { null } handledBy isActive.update
             }
         }
 
