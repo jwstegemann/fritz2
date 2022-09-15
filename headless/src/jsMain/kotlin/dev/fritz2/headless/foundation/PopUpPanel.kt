@@ -125,6 +125,7 @@ abstract class PopUpPanel<C : HTMLElement>(
             }""".trimIndent(),
                     """.$POPUP_VISIBLE {
                 visibility: visible;
+                z-index: 30;
             }""".trimIndent(),
                     """.$POPUP_HIDDEN {
                 visibility: hidden;
@@ -132,6 +133,7 @@ abstract class PopUpPanel<C : HTMLElement>(
                     """.$POPUP_VISIBLE_FULL {
                 width: 100%;
                 visibility: visible;
+                z-index: 30;
             }""".trimIndent(),
                     """.$POPUP_HIDDEN_FULL {
                 width: 100%;

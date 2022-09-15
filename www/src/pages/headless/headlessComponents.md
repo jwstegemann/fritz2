@@ -527,3 +527,12 @@ popOverPanel {
     arrow("h-3 w-3 bg-white")
 }
 ```
+
+::: info
+As such a floating panel will often need a higher ``z-index`` than the rest of the page(-section) it appears in, 
+we have set a default value of ``30`` for it. This offers enough flexibility to position elements below or above the 
+popup. 
+
+The value is chosen inspired by the [tailwindcss](https://tailwindcss.com/docs/z-index) scale for ``z-index``: 
+It is the median of the predefined ones.
+:::
