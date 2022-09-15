@@ -268,7 +268,6 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
                 tag(this, classes, panelId(currentIndex), scope) {
                     addComponentStructureInfo("parent is panel", this@add.scope, this)
                     content()
-                    attr("tabindex", "0")
                     attr("role", Aria.Role.tabpanel)
                     attr(Aria.labelledby, tabId(currentIndex))
                 }
