@@ -40,18 +40,18 @@ kotlin {
 /**
  * KSP support - start
  */
-ksp {
-
+dependencies {
+    add("kspCommonMainMetadata",  project(":lenses-annotation-processor"))
 }
-
-kotlin.sourceSets.commonMain { kotlin.srcDir("build/generated/ksp/commonMain/kotlin") }
-
+kotlin.sourceSets.commonMain { kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin") }
+tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().all {
+    if (name != "kspCommonMainKotlinMetadata") dependsOn("kspCommonMainKotlinMetadata")
+}
 // Fixes webpack-cli incompatibility by pinning the newest version.
 // https://youtrack.jetbrains.com/issue/KTIJ-22030
 rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
     versions.webpackCli.version = "4.10.0"
 }
-
 /**
  * KSP support - end
  */
