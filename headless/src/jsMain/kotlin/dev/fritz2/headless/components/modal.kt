@@ -157,9 +157,9 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
         initialize: ModalPanel<C>.() -> Unit
     ) {
         panel = {
-            tag(this, classes, id, internalScope) {
+            tag(this, classes, null, internalScope) {
                 addComponentStructureInfo("parent is modalPanel", this@modalPanel.scope, this)
-                ModalPanel(this).run {
+                ModalPanel(this, id).run {
                     initialize()
                     render()
                 }
