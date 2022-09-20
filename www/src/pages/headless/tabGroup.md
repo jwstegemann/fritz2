@@ -68,11 +68,10 @@ tabGroup {
 }
 ```
 
-## Styling the active Tab
+## Styling the selected Tab
 
 In order to distinguish the active tab from the rest in terms of style, within the scope of `tab` the boolean data
-stream
-`selected` is available.
+stream `selected` is available.
 
 This can be used in combination with `className` to apply different styles to a tab or even show and hide entire
 elements (e.g. an icon for the selected tab).
@@ -89,6 +88,42 @@ tabGroup {
                 })
                 
                 +category 
+            }
+        }
+    }
+    tabPanels {
+        // omitted
+    }
+}
+```
+
+## Styling the active Element
+
+A TabGroup also provides information about which tab is currently active, i.e. has the focus.
+
+For this purpose, the scope of `tab` offers the Boolean data stream `active`. This one can (and should)
+be used to provide a specific style for the `true` state.
+
+Since often both the status of the selection and the focus stylistically affect the same elements, it is a
+typical pattern to combine both data streams. Use the `combine` method on `Flow`s for this purpose:
+
+```kotlin
+tabGroup {
+    tabList {
+        categories.keys.forEach { category ->
+            tab {
+                // combine `selected` and `active`-Flow with `className` to react to state changes
+                className(selected.combine(active) { sel, act ->
+                    // use `classes` to attach both styling results
+                    classes(
+                        if (sel == index) "bg-primary-800 text-white shadow-md"
+                        else "text-primary-100 hover:bg-primary-900/[0.12]",
+                        if (act) "ring-2 ring-white border-transparent" 
+                        else "border-gray-300"
+                    )
+                })
+
+                +category
             }
         }
     }
@@ -227,6 +262,7 @@ tabGroup() {
                 val index: Int
                 val disabled: Flow<Int>
                 val disable: SimpleHandler<Int>
+                val active: Flow<Boolean>
             }
         // }
     }
@@ -269,11 +305,12 @@ Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-| Scope property | Typ                      | Description                                                    |
-|----------------|--------------------------|----------------------------------------------------------------|
-| `index`        | `Int`                    | The index of the tab in the group.                             |
-| `disabled`     | `Flow<Boolean>`          | Stream of data indicating whether a tab is active or inactive. |
-| `disable`      | `SimpleHandler<Boolean>` | Handler for setting the inactive state.                        |
+| Scope property | Typ                      | Description                                                        |
+|----------------|--------------------------|--------------------------------------------------------------------|
+| `index`        | `Int`                    | The index of the tab in the group.                                 |
+| `disabled`     | `Flow<Boolean>`          | Stream of data indicating whether a tab is active or inactive.     |
+| `disable`      | `SimpleHandler<Boolean>` | Handler for setting the inactive state.                            |
+| `active`       | `Flow<Boolean>`          | Boolean flow that is ``true`` if tab has the focus, else ``false`` |
 
 
 ### tabPanels

@@ -1,11 +1,16 @@
 package dev.fritz2.headless.foundation
 
 import dev.fritz2.core.*
+import dev.fritz2.headless.foundation.InitialFocus.*
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.awaitAnimationFrame
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.events.KeyboardEvent
 import kotlin.math.max
 
 /*
@@ -193,14 +198,71 @@ enum class InitialFocus(public val focus: Boolean) {
  *                        tagged by [setInitialFocus] function if the [InitialFocus] value has `focus=true`.
  */
 fun Tag<HTMLElement>.trapFocus(restoreFocus: Boolean = true, setInitialFocus: InitialFocus = InitialFocus.TryToSet) {
-    // restore focus
+    trapFocusOn(
+        keydowns.filter { setOf(Keys.Tab, Keys.Shift + Keys.Tab).contains(shortcutOf(it)) },
+        restoreFocus,
+        setInitialFocus
+    )
+}
+
+/**
+ * This variant of [trapFocus] allows to reactively trap a focus based on a conditional [Flow] of [Boolean].
+ *
+ * @see trapFocus
+ *
+ * @param condition some boolean [Flow] that will enable the trap only on ``true`` values.
+ * @param restoreFocus sets the focus back to the element that had the focus before the container with the trap was
+ *                      entered.
+ * @param setInitialFocus will automatically focus the first element of the container or that one, which has been
+ *                        tagged by [setInitialFocus] function if the [InitialFocus] value has `focus=true`.
+ */
+fun Tag<HTMLElement>.trapFocusWhenever(
+    condition: Flow<Boolean>,
+    restoreFocus: Boolean = true,
+    setInitialFocus: InitialFocus = InitialFocus.TryToSet
+) {
+    trapFocusOn(
+        keydowns.combine(condition, ::Pair)
+            .filter { it.second }
+            .map { it.first }
+            .filter { setOf(Keys.Tab, Keys.Shift + Keys.Tab).contains(shortcutOf(it)) },
+        restoreFocus,
+        setInitialFocus
+    )
+}
+
+private fun Tag<HTMLElement>.trapFocusOn(
+    tabEvents: Flow<KeyboardEvent>,
+    restoreFocus: Boolean = true,
+    setInitialFocus: InitialFocus = InitialFocus.TryToSet
+) {
+    restoreFocusOnDemand(restoreFocus)
+    setInitialFocusOnDemand(setInitialFocus)
+
+    // handle tab key
+    tabEvents handledBy { event ->
+        event.preventDefault()
+        focusIn(
+            domNode,
+            if (shortcutOf(event).shift) FocusOptions(previous = true, wrapAround = true)
+            else FocusOptions(next = true, wrapAround = true)
+        ).also {
+            if (it != FocusResult.Success && setInitialFocus == InitialFocus.InsistToSet) {
+                console.warn("Focus-trap was not successful!", it)
+            }
+        }
+    }
+}
+
+private fun Tag<HTMLElement>.restoreFocusOnDemand(restoreFocus: Boolean) {
     if (restoreFocus) {
         beforeUnmount(document.activeElement) { _, element ->
             (element as HTMLElement).focus()
         }
     }
+}
 
-    // handle initial focus
+private fun Tag<HTMLElement>.setInitialFocusOnDemand(setInitialFocus: InitialFocus) {
     if (setInitialFocus.focus) {
         afterMount { _, _ ->
             val active = document.activeElement as HTMLElement
@@ -217,20 +279,6 @@ fun Tag<HTMLElement>.trapFocus(restoreFocus: Boolean = true, setInitialFocus: In
                         }
                     }
                 }
-            }
-        }
-    }
-
-    // handle tab key
-    keydowns.filter { setOf(Keys.Tab, Keys.Shift + Keys.Tab).contains(shortcutOf(it)) } handledBy { event ->
-        event.preventDefault()
-        focusIn(
-            domNode,
-            if (shortcutOf(event).shift) FocusOptions(previous = true, wrapAround = true)
-            else FocusOptions(next = true, wrapAround = true)
-        ).also {
-            if (it != FocusResult.Success && setInitialFocus == InitialFocus.InsistToSet) {
-                console.warn("Focus-trap was not successful!", it)
             }
         }
     }
