@@ -20,6 +20,7 @@ abstract class PopUpPanel<C : HTMLElement>(
     private val opened: Flow<Boolean>,
     private val fullWidth: Boolean = true,
     private val reference: Tag<HTMLElement>?,
+    private val ariaHasPopup: String,
     private val popperDiv: HtmlTag<HTMLDivElement> = renderContext.div(POPUP_HIDDEN) {}, //never add other classes to popperDiv, they will be overridden
     tag: Tag<C> = tagFactory(popperDiv, classes, id, scope) {}
 ) : Tag<C> by tag {
@@ -181,7 +182,7 @@ abstract class PopUpPanel<C : HTMLElement>(
             reference.apply {
                 attr(Aria.labelledby, reference.id)
                 attr(Aria.controls, this@PopUpPanel.id.whenever(opened))
-                attr(Aria.haspopup, "true")
+                attrIfNotSet(Aria.haspopup, ariaHasPopup)
             }
             opened handledBy {
                 if (it) {

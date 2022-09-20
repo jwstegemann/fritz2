@@ -169,7 +169,8 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         "$componentId-items",
         scope,
         this@Listbox.opened,
-        reference = button
+        reference = button,
+        ariaHasPopup = Aria.HasPopup.listbox
     ) {
 
         private fun nextItem(currentIndex: Int, direction: Direction, entries: List<ListboxEntry<T>>): Int =

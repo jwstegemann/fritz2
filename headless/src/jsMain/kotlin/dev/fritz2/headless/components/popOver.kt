@@ -36,7 +36,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CB>>,
         content: Tag<CB>.() -> Unit
-    ) : Tag<CB> {
+    ): Tag<CB> {
         addComponentStructureInfo("popOverButton", this@popOverButton.scope, this)
         return tag(this, classes, "$componentId-button", scope) {
             if (!openState.isSet) openState(storeOf(false))
@@ -65,7 +65,16 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
         tagFactory: TagFactory<Tag<C>>,
         classes: String?,
         scope: ScopeContext.() -> Unit
-    ) : PopUpPanel<C>(renderContext, tagFactory, classes, "$componentId-items", scope, this@PopOver.opened, reference = button)
+    ) : PopUpPanel<C>(
+        renderContext,
+        tagFactory,
+        classes,
+        "$componentId-items",
+        scope,
+        this@PopOver.opened,
+        reference = button,
+        ariaHasPopup = Aria.HasPopup.dialog
+    )
 
     /**
      * Factory function to create a [popOverPanel].

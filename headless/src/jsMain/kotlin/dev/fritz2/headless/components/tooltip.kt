@@ -23,11 +23,17 @@ class Tooltip<C : HTMLElement>(
     id: String?,
     scope: ScopeContext.() -> Unit
 ) : PopUpPanel<C>(
-    renderContext.annex, tagFactory, classes, id, scope,
+    renderContext.annex,
+    tagFactory,
+    classes,
+    id,
+    scope,
     opened = renderContext.run {
         merge(mouseenters.map { true }, mouseleaves.map { false })
     },
-    fullWidth = false, renderContext
+    fullWidth = false,
+    renderContext,
+    ariaHasPopup = Aria.HasPopup.dialog
 )
 
 /**
