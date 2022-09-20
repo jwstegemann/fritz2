@@ -14,11 +14,21 @@ import org.w3c.dom.*
  *
  * For more information refer to the [official documentation](https://www.fritz2.dev/headless/switch/)
  */
-abstract class AbstractSwitch<C : HTMLElement>(tag: Tag<C>, private val explicitId: String?) :
+abstract class AbstractSwitch<C : HTMLElement>(
+    tag: Tag<C>,
+    private val explicitId: String?,
+    private val componentName: String
+) :
     Tag<C> by tag {
 
     val value = DatabindingProperty<Boolean>()
-    val enabled: Flow<Boolean> by lazy { value.data }
+    val enabled: Flow<Boolean> by lazy {
+        if (value.value == null) {
+            value(storeOf(false))
+            warnAboutMissingDatabinding("value", componentName, componentId, "a boolean store")
+        }
+        value.data
+    }
 
     val componentId: String by lazy { explicitId ?: value.id ?: Id.next() }
 
@@ -91,7 +101,11 @@ abstract class AbstractSwitch<C : HTMLElement>(tag: Tag<C>, private val explicit
  * For more information refer to the [official documentation](https://www.fritz2.dev/headless/switch/)
  */
 class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
-    AbstractSwitch<C>(tag, id) {
+    AbstractSwitch<C>(tag, id, COMPONENT_NAME) {
+
+    companion object {
+        const val COMPONENT_NAME = "switchWithLabel"
+    }
 
     private var toggle: Tag<HTMLElement>? = null
     private var label: Tag<HTMLElement>? = null
@@ -242,7 +256,7 @@ fun <C : HTMLElement> RenderContext.switchWithLabel(
     tag: TagFactory<Tag<C>>,
     initialize: SwitchWithLabel<C>.() -> Unit
 ): Tag<C> {
-    addComponentStructureInfo("switchWithLabel", this@switchWithLabel.scope, this)
+    addComponentStructureInfo(SwitchWithLabel.COMPONENT_NAME, this@switchWithLabel.scope, this)
     return tag(this, classes, id, scope) {
         SwitchWithLabel(this, id).run {
             initialize()
@@ -287,7 +301,11 @@ fun RenderContext.switchWithLabel(
  * For more information refer to the [official documentation](https://www.fritz2.dev/headless/switch/)
  */
 class Switch<C : HTMLElement>(tag: Tag<C>, explicitId: String?) :
-    AbstractSwitch<C>(tag, explicitId) {
+    AbstractSwitch<C>(tag, explicitId, COMPONENT_NAME) {
+
+    companion object {
+        const val COMPONENT_NAME = "switch"
+    }
 
     override fun render() {
         attr("id", componentId)
@@ -325,7 +343,7 @@ fun <C : HTMLElement> RenderContext.switch(
     tag: TagFactory<Tag<C>>,
     initialize: Switch<C>.() -> Unit
 ): Tag<C> {
-    addComponentStructureInfo("switch", this@switch.scope, this)
+    addComponentStructureInfo(Switch.COMPONENT_NAME, this@switch.scope, this)
     return tag(this, classes, id, scope) {
         Switch(this, id).run {
             initialize()

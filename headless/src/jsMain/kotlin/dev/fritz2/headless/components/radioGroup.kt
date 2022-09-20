@@ -3,10 +3,7 @@ package dev.fritz2.headless.components
 import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.*
 import kotlinx.browser.document
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.*
 import org.w3c.dom.*
 
 /**
@@ -20,14 +17,25 @@ import org.w3c.dom.*
 class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String?) :
     Tag<C> by tag {
 
+    companion object {
+        const val COMPONENT_NAME = "radioGroup"
+    }
+
     private var label: Tag<HTMLElement>? = null
     private var validationMessages: Tag<HTMLElement>? = null
     private val isActive: Store<T?> = storeOf(null)
     private var withKeyboardNavigation = true
     private var options: MutableList<T> = mutableListOf()
 
-    val componentId: String by lazy { explicitId ?: value.id ?: Id.next() }
     val value = DatabindingProperty<T>()
+    val componentId: String by lazy {
+        explicitId ?: value.id ?: Id.next().also {
+            if (value.value == null) {
+                value(data = emptyFlow())
+                warnAboutMissingDatabinding("value", COMPONENT_NAME, it, "an empty flow")
+            }
+        }
+    }
 
     fun render() {
         attr("id", componentId)
@@ -341,7 +349,7 @@ fun <C : HTMLElement, T> RenderContext.radioGroup(
     tag: TagFactory<Tag<C>>,
     initialize: RadioGroup<C, T>.() -> Unit
 ): Tag<C> {
-    addComponentStructureInfo("radioGroup", this@radioGroup.scope, this)
+    addComponentStructureInfo(RadioGroup.COMPONENT_NAME, this@radioGroup.scope, this)
     return tag(this, classes, id, scope) {
         RadioGroup<C, T>(this, id).run {
             initialize()

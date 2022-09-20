@@ -17,11 +17,18 @@ import org.w3c.dom.*
  *      [official documentation](https://www.fritz2.dev/headless/textarea/)
  *
  */
-abstract class Textfield<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
+abstract class Textfield<C : HTMLElement>(tag: Tag<C>, id: String?, private val componentName: String) : Tag<C> by tag {
 
     val value = DatabindingProperty<String>()
 
-    val componentId: String by lazy { id ?: value.id ?: Id.next() }
+    val componentId: String by lazy {
+        id ?: value.id ?: Id.next().also {
+            if (value.value == null) {
+                value(storeOf(""))
+                warnAboutMissingDatabinding("value", componentName, it, "a store of string")
+            }
+        }
+    }
     protected val fieldId by lazy { "$componentId-field" }
 
     protected var label: Tag<HTMLElement>? = null
@@ -120,7 +127,11 @@ abstract class Textfield<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by 
  * For more information refer to the [official documentation](https://www.fritz2.dev/headless/inputfield/)
  */
 class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
-    Textfield<C>(tag, id) {
+    Textfield<C>(tag, id, COMPONENT_NAME) {
+
+    companion object {
+        const val COMPONENT_NAME = "inputField"
+    }
 
     fun RenderContext.inputTextfield(
         classes: String? = null,
@@ -237,7 +248,7 @@ fun <C : HTMLElement> RenderContext.inputField(
     tag: TagFactory<Tag<C>>,
     initialize: InputField<C>.() -> Unit
 ): Tag<C> {
-    addComponentStructureInfo("inputField", this@inputField.scope, this)
+    addComponentStructureInfo(InputField.COMPONENT_NAME, this@inputField.scope, this)
     return tag(this, classes, id, scope) {
         InputField(this, id).run {
             initialize()
@@ -281,7 +292,11 @@ fun RenderContext.inputField(
  * For more information refer to the [official documentation](https://www.fritz2.dev/headless/textarea/)
  */
 class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
-    Textfield<C>(tag, id) {
+    Textfield<C>(tag, id, COMPONENT_NAME) {
+
+    companion object {
+        const val COMPONENT_NAME = "textArea"
+    }
 
     fun RenderContext.textareaTextfield(
         classes: String? = null,
@@ -398,7 +413,7 @@ fun <C : HTMLElement> RenderContext.textArea(
     tag: TagFactory<Tag<C>>,
     initialize: TextArea<C>.() -> Unit
 ): Tag<C> {
-    addComponentStructureInfo("textArea", this@textArea.scope, this)
+    addComponentStructureInfo(TextArea.COMPONENT_NAME, this@textArea.scope, this)
     return tag(this, classes, id, scope) {
         TextArea(this, id).run {
             initialize()

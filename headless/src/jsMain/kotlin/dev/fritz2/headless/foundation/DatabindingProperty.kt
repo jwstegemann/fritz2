@@ -65,3 +65,25 @@ class DatabindingProperty<T> : Property<DatabindingProperty.DataBinding<T>>() {
         this.invoke(store.id, store.data, store.messages()) { it handledBy store.update }
     }
 }
+
+/**
+ * Common function to log a warning message for missing data-bindings.
+ * This should be used for components, where the data-binding is crucial for their usage. A forgotten data-binding
+ * should be recognizable at runtime by this warning message
+ */
+internal fun warnAboutMissingDatabinding(
+    propertyName: String,
+    componentName: String,
+    componentId: String,
+    fallbackPhrase: String
+) {
+    console.warn(
+        buildString {
+            append("fritz2: Missing data-binding for `$propertyName` property of $componentName component ")
+            append("with id `$componentId`. Setting $fallbackPhrase as fallback.")
+            appendLine()
+            append("You should really consider to provide some data-binding, as for now you might neither see any ")
+            append("initial data, nor won't be able to access any resulting data.")
+        }
+    )
+}

@@ -22,8 +22,19 @@ import kotlin.math.max
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose() {
 
+    companion object {
+        const val COMPONENT_NAME = "listbox"
+    }
+
     val value = DatabindingProperty<T>()
-    val componentId: String by lazy { id ?: value.id ?: Id.next() }
+    val componentId: String by lazy {
+        id ?: value.id ?: Id.next().also {
+            if (value.value == null) {
+                value(data = emptyFlow())
+                warnAboutMissingDatabinding("value", COMPONENT_NAME, it, "an empty flow")
+            }
+        }
+    }
 
     private var button: Tag<HTMLElement>? = null
 
@@ -414,7 +425,7 @@ fun <T, C : HTMLElement> RenderContext.listbox(
     tag: TagFactory<Tag<C>>,
     initialize: Listbox<T, C>.() -> Unit
 ): Tag<C> {
-    addComponentStructureInfo("listbox", this@listbox.scope, this)
+    addComponentStructureInfo(Listbox.COMPONENT_NAME, this@listbox.scope, this)
     return tag(this, classes(classes, "relative"), id, scope) {
         Listbox<T, C>(this, id).run {
             initialize(this)

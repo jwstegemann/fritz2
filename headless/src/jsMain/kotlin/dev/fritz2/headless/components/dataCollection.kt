@@ -88,7 +88,12 @@ class ScrollIntoViewProperty : Property<ScrollIntoViewOptions>() {
 @Suppress("EXPERIMENTAL_IS_NOT_ENABLED")
 class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
 
+    companion object {
+        const val COMPONENT_NAME = "dataCollection"
+    }
+
     val data = CollectionDataProperty<T>()
+    val componentId by lazy { id ?: data.value?.id ?: Id.next() }
 
     private fun isSame(a: T?, b: T) = data.value?.idProvider?.let { id ->
         a != null && id(a) == id(b)
@@ -136,6 +141,10 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         fun render() {
             clicks.map { sorting } handledBy toggleSorting
         }
+    }
+
+    fun render() {
+        attr("id", componentId)
     }
 
     /**
@@ -238,7 +247,9 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
                     }
                 }
             }.shareIn(MainScope() + job, SharingStarted.Eagerly, 1)
-        } else flowOf(emptyList())
+        } else flowOf<List<T>>(emptyList()).also {
+            warnAboutMissingDatabinding("data", COMPONENT_NAME, componentId, "a flow of an empty list")
+        }
 
         private val activeItem = object : RootStore<Pair<T, Boolean>?>(null) {}
 
@@ -480,7 +491,7 @@ fun <T, C : HTMLElement> RenderContext.dataCollection(
     tag: TagFactory<Tag<C>>,
     initialize: DataCollection<T, C>.() -> Unit
 ): Tag<C> {
-    addComponentStructureInfo("dataCollection", this@dataCollection.scope, this)
+    addComponentStructureInfo(DataCollection.COMPONENT_NAME, this@dataCollection.scope, this)
     return tag(this, classes, id, scope) {
         DataCollection<T, C>(this).run {
             initialize(this)

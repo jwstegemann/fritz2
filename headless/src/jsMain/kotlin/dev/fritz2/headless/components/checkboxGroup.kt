@@ -19,12 +19,23 @@ import org.w3c.dom.*
 class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String?) :
     Tag<C> by tag {
 
+    companion object {
+        const val COMPONENT_NAME = "checkboxGroup"
+    }
+
     private var label: Tag<HTMLElement>? = null
     private var validationMessages: Tag<HTMLElement>? = null
 
     val value = DatabindingProperty<List<T>>()
 
-    val componentId: String by lazy { explicitId ?: value.id ?: Id.next() }
+    val componentId: String by lazy {
+        explicitId ?: value.id ?: Id.next().also {
+            if (value.value == null) {
+                value(storeOf(emptyList()))
+                warnAboutMissingDatabinding("value", COMPONENT_NAME, it, "a flow of empty list")
+            }
+        }
+    }
 
     fun render() {
         attr("id", componentId)
@@ -320,7 +331,7 @@ fun <C : HTMLElement, T> RenderContext.checkboxGroup(
     tag: TagFactory<Tag<C>>,
     initialize: CheckboxGroup<C, T>.() -> Unit
 ): Tag<C> {
-    addComponentStructureInfo("checkboxGroup", this@checkboxGroup.scope, this)
+    addComponentStructureInfo(CheckboxGroup.COMPONENT_NAME, this@checkboxGroup.scope, this)
     return tag(this, classes, id, scope) {
         CheckboxGroup<C, T>(this, id).run {
             initialize()
