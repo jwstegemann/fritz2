@@ -2,9 +2,9 @@ package dev.fritz2.headlessdemo
 
 import dev.fritz2.core.Id
 
-//import dev.fritz2.core.Lenses
+import dev.fritz2.core.Lenses
 
-//@Lenses
+@Lenses
 data class Person(
     val id: String = "",
     val fullName: String = "",
@@ -18,7 +18,7 @@ data class Person(
     companion object
 }
 
-//@Lenses
+@Lenses
 data class Address(
     val street: String = "",
     val houseNumber: String = "",

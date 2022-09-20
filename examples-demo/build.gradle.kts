@@ -1,6 +1,5 @@
 plugins {
     kotlin("multiplatform")
-    id("com.google.devtools.ksp")
 }
 
 kotlin {
@@ -33,21 +32,3 @@ kotlin {
     }
 }
 
-/**
- * KSP support - start
- */
-ksp {
-
-}
-
-kotlin.sourceSets.commonMain { kotlin.srcDir("build/generated/ksp/commonMain/kotlin") }
-
-// Fixes webpack-cli incompatibility by pinning the newest version.
-// https://youtrack.jetbrains.com/issue/KTIJ-22030
-rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
-    versions.webpackCli.version = "4.10.0"
-}
-
-/**
- * KSP support - end
- */
