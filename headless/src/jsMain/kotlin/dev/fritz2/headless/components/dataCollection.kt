@@ -20,9 +20,19 @@ import kotlin.math.min
  * @param idProvider an optional [IdProvider] to identify items.
  * @param id an optional id for the root [Tag] of the data collection
  */
-data class CollectionData<T>(val data: Flow<List<T>>, val idProvider: IdProvider<T, *>?, val id: String?)
+data class CollectionData<T>(val data: Flow<List<T>>, val idProvider: IdProvider<T, *>?, val id: String?) {
+
+    /**
+     * This property holds a function that can be called to check for equality for two elements of [T].
+     *
+     * If there is some [idProvider] defined, it will be used as base for equality checking, else the standard
+     * equals operator function is used.
+     */
+    val isSame: (T?, T) -> Boolean = idProvider?.let { { a, b -> a != null && it(a) == it(b) } } ?: { a, b -> a == b }
+}
 
 class CollectionDataProperty<T> : Property<CollectionData<T>>() {
+
     operator fun invoke(data: List<T>, idProvider: IdProvider<T, *>? = null, id: String? = null) {
         value = CollectionData(flowOf(data), idProvider, id)
     }
@@ -34,6 +44,7 @@ class CollectionDataProperty<T> : Property<CollectionData<T>>() {
     operator fun invoke(store: Store<List<T>>, idProvider: IdProvider<T, *>? = null) {
         value = CollectionData(store.data, idProvider, store.id)
     }
+
 }
 
 /**
@@ -54,6 +65,80 @@ class SelectionMode<T> {
     fun use(other: SelectionMode<T>) {
         other.single.value?.let { single.use(it) }
         other.multi.value?.let { multi.use(it) }
+    }
+
+    /**
+     * This function connects some [Flow] of [T] with a defined selection, either for [single] or [multi] mode.
+     *
+     * Whenever a new value appears on the flow, this value will be used to update the selection for the following two
+     * cases:
+     * - if the value is already part of the selection, it will be removed
+     * - if not it will be used ([single]) as or added ([multi]) to the selection.
+     *
+     * @param itemToSelect a [Flow] of a single [T] which should update the selection
+     * @param data the [CollectionData] that holds the [CollectionData.isSame] and [CollectionData.idProvider] values
+     */
+    fun selectItem(itemToSelect: Flow<T>, data: CollectionData<T>) {
+        if (single.isSet) {
+            single.handler?.let {
+                it(single.data.flatMapLatest { current ->
+                    itemToSelect.map { item ->
+                        if (data.isSame(current, item)) null else item
+                    }
+                })
+            }
+        } else {
+            multi.handler?.let {
+                it(multi.data.flatMapLatest { current ->
+                    itemToSelect.map { item ->
+                        data.idProvider?.let { id ->
+                            if (current.any { id(it) == id(item) }) current.filter { id(it) != id(item) }
+                            else current + item
+                        } ?: if (current.contains(item)) current - item else current + item
+                    }
+                })
+            }
+        }
+    }
+
+    /**
+     * Calling this function will connect the provided [Flow] of [List] of [T] with the current selection flow
+     * (one single item [T] for mode [single] and some [List] of [T] for mode [multi]).
+     * On every change of the external items flow, the current selection will be sanitized in the following way:
+     * If the selection contains some item, that is not part of the items flow, it will be removed from the selection.
+     *
+     * As the [DataCollection] is primarily used for handling (large) portions of data, it is totally reasonable to
+     * provide only those data within the selection, that is currently part of the shown data of the collection.
+     *
+     * @param availableItems some [Flow] of [List] of [T] with the available items.
+     * @param data the [CollectionData] that holds the [CollectionData.isSame] and [CollectionData.idProvider] values
+     */
+    fun sanitizeSelection(availableItems: Flow<List<T>>, data: CollectionData<T>) {
+        if (single.isSet) {
+            single.handler?.invoke(
+                availableItems.flatMapLatest { items ->
+                    single.data.map { current ->
+                        if (items.any { data.isSame(current, it) }) current else null
+                    }
+                }
+            )
+        } else {
+            multi.handler?.invoke(
+                availableItems.flatMapLatest { items ->
+                    if (data.idProvider != null) {
+                        val itemIds = items.map(data.idProvider).toHashSet()
+                        multi.data.map { currents ->
+                            currents.filter { current -> itemIds.contains(data.idProvider.invoke(current)) }
+                        }
+                    } else {
+                        val hashedItems = items.toHashSet()
+                        multi.data.map { currents ->
+                            currents.filter { hashedItems.contains(it) }
+                        }
+                    }
+                }
+            )
+        }
     }
 }
 
@@ -231,6 +316,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
     inner class DataCollectionItems<CI : HTMLElement>(tag: Tag<CI>, val collectionId: String?) : Tag<CI> by tag {
         val scrollIntoView = ScrollIntoViewProperty()
 
+        // TODO: filteredItems als Zwischenschritt auslagern, um damit das sanitizeSelection aufzurufen!
         val items = if (data.isSet) {
             data.value!!.data.flatMapLatest { rawItems ->
                 filtering.data.flatMapLatest { filterFunction ->
@@ -243,7 +329,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
                                     SortDirection.DESC -> filteredItems.sortedWith(it.sorting.comparatorDescending)
                                 }
                             } ?: filteredItems
-                        }
+                        }// hier könnte ein ``.also { sanitizeSelection }`` rein... s.u.
                     }
                 }
             }.shareIn(MainScope() + job, SharingStarted.Eagerly, 1)
@@ -252,30 +338,6 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         }
 
         private val activeItem = object : RootStore<Pair<T, Boolean>?>(null) {}
-
-        private fun selectItem(itemsToSelect: Flow<T>) {
-            if (selection.isSet) {
-                if (selection.single.isSet) {
-                    selection.single.handler?.let {
-                        it(selection.single.data.flatMapLatest { current ->
-                            itemsToSelect.map { item ->
-                                if (isSame(current, item)) null else item
-                            }
-                        })
-                    }
-                } else {
-                    selection.multi.handler?.let {
-                        it(selection.multi.data.flatMapLatest { current ->
-                            itemsToSelect.map { item ->
-                                data.value?.idProvider?.let { id ->
-                                    if (current.any { id(it) == id(item) }) current.filter { id(it) != id(item) } else current + item
-                                } ?: if (current.contains(item)) current - item else current + item
-                            }
-                        })
-                    }
-                }
-            }
-        }
 
         fun render() {
             attr("tabindex", "0")
@@ -307,18 +369,21 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
             } handledBy activeItem.update
 
             if (selection.isSet) {
-                selectItem(items.flatMapLatest {
-                    activeItem.data.flatMapLatest { current ->
-                        keydowns.filter {
-                            setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it))
-                        }.mapNotNull { event ->
-                            current?.first?.also {
-                                event.preventDefault()
-                                event.stopImmediatePropagation()
+                data.value?.let {
+                    selection.selectItem(items.flatMapLatest {
+                        activeItem.data.flatMapLatest { current ->
+                            keydowns.filter {
+                                setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it))
+                            }.mapNotNull { event ->
+                                current?.first?.also {
+                                    event.preventDefault()
+                                    event.stopImmediatePropagation()
+                                }
                             }
                         }
-                    }
-                }.distinctUntilChanged())
+                    }.distinctUntilChanged(), it)
+                    selection.sanitizeSelection(items, it)
+                }
             }
         }
 
@@ -338,9 +403,8 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
             fun render() {
                 attrIfNotSet("role", Aria.Role.listitem)
 
-                // selection events
                 if (selection.isSet) {
-                    selectItem(clicks.map { item })
+                    data.value?.let { selection.selectItem(clicks.map { item }, it) }
                 }
 
                 active.flatMapLatest { isActive ->
