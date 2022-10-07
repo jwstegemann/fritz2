@@ -316,7 +316,31 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
     inner class DataCollectionItems<CI : HTMLElement>(tag: Tag<CI>, val collectionId: String?) : Tag<CI> by tag {
         val scrollIntoView = ScrollIntoViewProperty()
 
-        // TODO: filteredItems als Zwischenschritt auslagern, um damit das sanitizeSelection aufzurufen!
+        /**
+         * This specific [Flow] connects all data that might change due to external or internal changes.
+
+         * This might happen by adding or removing data from the external main [data][DataCollection.data] or
+         * by reducing items by some [filter] expression.
+         *
+         * The important aspect is the loss of data compared to a prior state: The [selection] must absolutely cope
+         * with such a loss and sanitize its selected items. As such a sanitize operation costs, it should only be
+         * triggered as spare as possible, thus not by the [items] [Flow], which also gets triggered by sorting.
+         *
+         * So the main use case is to apply this [Flow] as parameter for the [SelectionMode.sanitizeSelection]
+         * method
+         *
+         * @see [SelectionMode.sanitizeSelection]
+         */
+        private val filteredItems = if(data.isSet) {
+            data.value!!.data.flatMapLatest { rawItems ->
+                filtering.data.map { filterFunction ->
+                    filterFunction?.invoke(rawItems) ?: rawItems
+                }
+            }
+        } else flowOf<List<T>>(emptyList()).also {
+            warnAboutMissingDatabinding("data", COMPONENT_NAME, componentId, "a flow of an empty list")
+        }
+
         val items = if (data.isSet) {
             data.value!!.data.flatMapLatest { rawItems ->
                 filtering.data.flatMapLatest { filterFunction ->
@@ -329,7 +353,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
                                     SortDirection.DESC -> filteredItems.sortedWith(it.sorting.comparatorDescending)
                                 }
                             } ?: filteredItems
-                        }// hier könnte ein ``.also { sanitizeSelection }`` rein... s.u.
+                        }
                     }
                 }
             }.shareIn(MainScope() + job, SharingStarted.Eagerly, 1)
@@ -382,7 +406,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
                             }
                         }
                     }.distinctUntilChanged(), it)
-                    selection.sanitizeSelection(items, it)
+                    selection.sanitizeSelection(filteredItems, it)
                 }
             }
         }
