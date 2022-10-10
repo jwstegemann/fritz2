@@ -331,35 +331,27 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
          *
          * @see [SelectionMode.sanitizeSelection]
          */
-        private val filteredItems = if(data.isSet) {
+        private val filteredItems = if (data.isSet) {
             data.value!!.data.flatMapLatest { rawItems ->
                 filtering.data.map { filterFunction ->
                     filterFunction?.invoke(rawItems) ?: rawItems
-                }
-            }
-        } else flowOf<List<T>>(emptyList()).also {
-            warnAboutMissingDatabinding("data", COMPONENT_NAME, componentId, "a flow of an empty list")
-        }
-
-        val items = if (data.isSet) {
-            data.value!!.data.flatMapLatest { rawItems ->
-                filtering.data.flatMapLatest { filterFunction ->
-                    sorting.data.map { sortOrder ->
-                        (filterFunction?.invoke(rawItems) ?: rawItems).let { filteredItems ->
-                            sortOrder?.let {
-                                when (it.direction) {
-                                    SortDirection.NONE -> filteredItems
-                                    SortDirection.ASC -> filteredItems.sortedWith(it.sorting.comparatorAscending)
-                                    SortDirection.DESC -> filteredItems.sortedWith(it.sorting.comparatorDescending)
-                                }
-                            } ?: filteredItems
-                        }
-                    }
                 }
             }.shareIn(MainScope() + job, SharingStarted.Eagerly, 1)
         } else flowOf<List<T>>(emptyList()).also {
             warnAboutMissingDatabinding("data", COMPONENT_NAME, componentId, "a flow of an empty list")
         }
+
+        val items = filteredItems.flatMapLatest { filtered ->
+            sorting.data.map { sortOrder ->
+                sortOrder?.let {
+                    when (it.direction) {
+                        SortDirection.NONE -> filtered
+                        SortDirection.ASC -> filtered.sortedWith(it.sorting.comparatorAscending)
+                        SortDirection.DESC -> filtered.sortedWith(it.sorting.comparatorDescending)
+                    }
+                } ?: filtered
+            }
+        }.shareIn(MainScope() + job, SharingStarted.Eagerly, 1)
 
         private val activeItem = object : RootStore<Pair<T, Boolean>?>(null) {}
 
