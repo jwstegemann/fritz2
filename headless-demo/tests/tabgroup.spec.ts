@@ -118,6 +118,8 @@ test.describe('Navigating', () => {
             await expect(panel).toBeVisible();
         }
 
+        await tabGroup.press("Tab")
+
         /* right */
         await tabGroup.press("ArrowRight");
         await tabActive("1");
