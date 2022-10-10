@@ -62,7 +62,6 @@ abstract class OpenClose {
                 clicks,
                 keydowns.filter { setOf(Keys.Space, Keys.Enter).contains(shortcutOf(it)) }
             ).map {
-                it.stopImmediatePropagation()
                 it.preventDefault()
                 !state
             }
