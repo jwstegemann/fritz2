@@ -210,8 +210,8 @@ test.describe('Navigating', () => {
 test.describe('To', () => {
 
     for (const data of [
-        {expression: "Kranz", filtered: 5, selected: 2},
-        {expression: "Timm", filtered: 1, selected: 2}
+        {expression: "Kranz", filtered: 5, selected: 1},
+        {expression: "Timm", filtered: 1, selected: 0}
     ]) {
         test(`filter some elements of Datatable type "${data.expression}" into filter inputfield`, async ({page}) => {
 
