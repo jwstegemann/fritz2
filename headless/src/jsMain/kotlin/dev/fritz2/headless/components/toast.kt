@@ -5,121 +5,125 @@ import dev.fritz2.headless.foundation.TagFactory
 import dev.fritz2.headless.foundation.addComponentStructureInfo
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.map
-import org.w3c.dom.HTMLButtonElement
-import org.w3c.dom.HTMLElement
-import org.w3c.dom.HTMLLIElement
-import org.w3c.dom.HTMLUListElement
+import org.w3c.dom.*
 
-
-enum class ToastPosition {
-    TopLeft, TopCenter, TopRight, BottomLeft, BottomCenter, BottomRight;
-
-    companion object {
-        val bottomPositions = listOf(BottomLeft, BottomCenter, BottomRight)
-    }
-}
-
-
-data class ToastFragment(
+data class ToastFragment<L>(
     val id: String,
-    val position: ToastPosition,
+    val location: L,
     val content: RenderContext.() -> Tag<HTMLElement>
 )
 
-private object ToastStore : RootStore<List<ToastFragment>>(emptyList()) {
-
-    val add = handle<ToastFragment> { toasts, toast -> toasts + toast }
+private class ToastStore<L> : RootStore<List<ToastFragment<L>>>(emptyList()) {
+    val add = handle<ToastFragment<L>> { toasts, toast -> toasts + toast }
     val remove = handle<String> { toasts, id -> toasts.filterNot { it.id == id } }
 
-    fun onlyWithPosition(position: ToastPosition) = data
-        .map { toasts -> toasts.filter { it.position == position } }
-        .map {
-            // New toasts should always be stacked on existing ones, which naturally depends on the
-            // placement. Due to this, the list has to be reversed if the toast is rendered at the
-            // bottom:
-            if (position in ToastPosition.bottomPositions) it.asReversed() else it
-        }
+    fun withLocation(location: L) = data.map { toasts -> toasts.filter { it.location == location } }
 }
 
 
-fun <C : HTMLElement> RenderContext.toasts(
-    classes: String? = null,
-    id: String? = null,
-    position: ToastPosition,
-    scope: (ScopeContext.() -> Unit) = {},
-    tag: TagFactory<Tag<C>>
-): Tag<C> {
-    addComponentStructureInfo("toasts (${position.name})", this.scope, this)
-    return tag(this, classes, id, scope) {
-        ToastStore.onlyWithPosition(position).renderEach(into = this) { fragment ->
-            fragment.content(this)
+class ToastsContext<C: HTMLElement, L> internal constructor(tag: Tag<C>) : Tag<C> by tag {
+
+    private val toastStore = ToastStore<L>()
+
+
+    inner class Toast<T : HTMLElement> internal constructor(tag: Tag<T>, private val toastId: String) : Tag<T> by tag {
+
+        fun <TC : HTMLElement> toastCloseButton(
+            classes: String? = null,
+            id: String? = null,
+            scope: (ScopeContext.() -> Unit) = {},
+            tag: TagFactory<Tag<TC>>,
+            content: Tag<TC>.(Handler<Unit>) -> Unit
+        ): Tag<TC> {
+            addComponentStructureInfo("toast close-button", this.scope, this)
+            return tag(this, classes, id, scope) {
+                val closeHandler = storeOf(Unit).handle { toastStore.remove(toastId) }
+                content(closeHandler)
+            }
         }
+
+        fun toastCloseButton(
+            classes: String? = null,
+            id: String? = null,
+            scope: (ScopeContext.() -> Unit) = {},
+            content: Tag<HTMLButtonElement>.(Handler<Unit>) -> Unit
+        ): Tag<HTMLButtonElement> = toastCloseButton(classes, id, scope, RenderContext::button, content)
     }
-}
 
-fun RenderContext.toasts(
-    classes: String? = null,
-    id: String? = null,
-    scope: (ScopeContext.() -> Unit) = {},
-    position: ToastPosition
-): Tag<HTMLUListElement> = toasts(classes, id, position, scope, RenderContext::ul)
-
-
-class Toast<C : HTMLElement> internal constructor(tag: Tag<C>, private val toastId: String) : Tag<C> by tag {
-
-    fun <CC : HTMLElement> toastCloseButton(
+    fun <C : HTMLElement> RenderContext.toast(
         classes: String? = null,
         id: String? = null,
+        toastId: String = Id.next(),
+        location: L,
+        duration: Long = 5000L,
         scope: (ScopeContext.() -> Unit) = {},
-        tag: TagFactory<Tag<CC>>,
-        content: Tag<CC>.(Handler<Unit>) -> Unit
-    ): Tag<CC> {
-        addComponentStructureInfo("toast close-button", this.scope, this)
+        tag: TagFactory<Tag<C>>,
+        initialize: Toast<C>.() -> Unit
+    ) {
+        val toast = ToastFragment(toastId, location) {
+            tag(this, classes, id, scope) {
+                addComponentStructureInfo("parent is toast", this.scope, this)
+                Toast(this, toastId).run(initialize)
+            }
+        }
+
+        toastStore.add(toast)
+
+        (MainScope() + Job()).launch {
+            delay(duration)
+            toastStore.remove(toast.id)
+        }
+    }
+
+    fun RenderContext.toast(
+        classes: String? = null,
+        id: String? = null,
+        toastId: String = Id.next(),
+        location: L,
+        duration: Long = 5000L,
+        scope: (ScopeContext.() -> Unit) = {},
+        content: Toast<HTMLLIElement>.() -> Unit
+    ) = toast(classes, id, toastId, location, duration, scope, RenderContext::li, content)
+
+
+    fun <T : HTMLElement> RenderContext.toastLocation(
+        classes: String? = null,
+        id: String? = null,
+        location: L,
+        scope: (ScopeContext.() -> Unit) = {},
+        tag: TagFactory<Tag<T>>
+    ): Tag<T> {
+        addComponentStructureInfo("toasts ($location)", this.scope, this)
         return tag(this, classes, id, scope) {
-            val closeHandler = storeOf(Unit).handle { ToastStore.remove(toastId) }
-            content(closeHandler)
+            toastStore.withLocation(location).renderEach(into = this) { fragment ->
+                fragment.content(this)
+            }
         }
     }
 
-    fun toastCloseButton(
+    fun RenderContext.toastLocation(
         classes: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Tag<HTMLButtonElement>.(Handler<Unit>) -> Unit
-    ): Tag<HTMLButtonElement> = toastCloseButton(classes, id, scope, RenderContext::button, content)
+        location: L
+    ): Tag<HTMLUListElement> = toastLocation(classes, id, location, scope, RenderContext::ul)
 }
 
-fun <C : HTMLElement> RenderContext.toast(
+fun <C : HTMLElement, L> RenderContext.toasts(
     classes: String? = null,
     id: String? = null,
-    toastId: String = Id.next(),
-    position: ToastPosition = ToastPosition.TopRight,
-    duration: Long = 5000L,
-    scope: (ScopeContext.() -> Unit) = {},
+    scope: ScopeContext.() -> Unit = {},
     tag: TagFactory<Tag<C>>,
-    initialize: Toast<C>.() -> Unit
-) {
-    val toast = ToastFragment(toastId, position) {
-        tag(this, classes, id, scope) {
-            addComponentStructureInfo("parent is toast", this.scope, this)
-            Toast(this, toastId).run(initialize)
-        }
+    initialize: ToastsContext<C, L>.() -> Unit
+): Tag<C> =
+    tag(this, classes, id, scope) {
+        ToastsContext<C, L>(this).run(initialize)
     }
 
-    ToastStore.add(toast)
-
-    (MainScope() + Job()).launch {
-        delay(duration)
-        ToastStore.remove(toast.id)
-    }
-}
-
-fun RenderContext.toast(
+fun <L> RenderContext.toasts(
     classes: String? = null,
     id: String? = null,
-    toastId: String = Id.next(),
-    position: ToastPosition = ToastPosition.TopRight,
-    duration: Long = 5000L,
-    scope: (ScopeContext.() -> Unit) = {},
-    content: Toast<HTMLLIElement>.() -> Unit
-) = toast(classes, id, toastId, position, duration, scope, RenderContext::li, content)
+    scope: ScopeContext.() -> Unit = {},
+    initialize: ToastsContext<HTMLDivElement, L>.() -> Unit
+): Tag<HTMLDivElement> =
+    toasts(classes, id, scope, RenderContext::div, initialize)
