@@ -47,7 +47,8 @@ class ToastsContext<C: HTMLElement, L> internal constructor(tag: Tag<C>) : Tag<C
             id: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             content: Tag<HTMLButtonElement>.(Handler<Unit>) -> Unit
-        ): Tag<HTMLButtonElement> = toastCloseButton(classes, id, scope, RenderContext::button, content)
+        ): Tag<HTMLButtonElement> =
+            toastCloseButton(classes, id, scope, RenderContext::button, content)
     }
 
     fun <C : HTMLElement> RenderContext.toast(
@@ -69,7 +70,8 @@ class ToastsContext<C: HTMLElement, L> internal constructor(tag: Tag<C>) : Tag<C
 
         toastStore.add(toast)
 
-        (MainScope() + Job()).launch {
+        // TODO: Kann man das so machen?
+        (MainScope() + job).launch {
             delay(duration)
             toastStore.remove(toast.id)
         }
@@ -83,7 +85,8 @@ class ToastsContext<C: HTMLElement, L> internal constructor(tag: Tag<C>) : Tag<C
         duration: Long = 5000L,
         scope: (ScopeContext.() -> Unit) = {},
         content: Toast<HTMLLIElement>.() -> Unit
-    ) = toast(classes, id, toastId, location, duration, scope, RenderContext::li, content)
+    ): Unit =
+        toast(classes, id, toastId, location, duration, scope, RenderContext::li, content)
 
 
     fun <T : HTMLElement> RenderContext.toastLocation(
@@ -106,7 +109,8 @@ class ToastsContext<C: HTMLElement, L> internal constructor(tag: Tag<C>) : Tag<C
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         location: L
-    ): Tag<HTMLUListElement> = toastLocation(classes, id, location, scope, RenderContext::ul)
+    ): Tag<HTMLUListElement> =
+        toastLocation(classes, id, location, scope, RenderContext::ul)
 }
 
 fun <C : HTMLElement, L> RenderContext.toasts(

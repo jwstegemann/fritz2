@@ -1,6 +1,7 @@
 package dev.fritz2.headlessdemo
 
 import dev.fritz2.core.RenderContext
+import dev.fritz2.core.transition
 import dev.fritz2.headless.components.toasts
 
 private enum class ToastLocation {
@@ -24,27 +25,41 @@ fun RenderContext.toastDemo() {
                 ToastLocation.values().forEach { location ->
                     button(
                         """flex justify-center items-center px-4 py-2.5
-                        | rounded shadow-sm
-                        | border border-transparent
-                        | text-sm font-sans text-white
-                        | bg-primary-400 hover:bg-primary-900
-                        | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin()
+                            | rounded shadow-sm
+                            | border border-transparent
+                            | text-sm font-sans text-white
+                            | bg-primary-400 hover:bg-primary-900
+                            | focus:outline-none focus:ring-4 focus:ring-primary-600
+                        """.trimMargin()
                     ) {
                         +location.name
 
                         clicks handledBy {
                             toast(
                                 """flex flex-row flex-shrink-0 gap-2 justify-center
-                                | w-max px-4 py-2.5
-                                | rounded shadow-sm
-                                | border border-transparent
-                                | text-sm font-sans
-                                | bg-primary-200
-                            """.trimIndent(),
+                                    | w-max px-4 py-2.5
+                                    | rounded shadow-sm
+                                    | border border-transparent
+                                    | text-sm font-sans
+                                    | bg-primary-200
+                                """.trimIndent(),
                                 location = location,
                                 duration = 5000L,
                             ) {
                                 +"Toast #${toastCount++}"
+
+                                // FIXME: Werden Toast schnell hintereinander geöffnet, werden einige von ihnen bim
+                                //  Schließen zwar aus dem ToastStore entfernt, bleiben jedoch als DOM-Leiche übrig.
+                                //  Dies könnte an der Kombination aus renderEach und transition liegen; evtl. kann
+                                //  ein Element nicht aus dem DOM entfernt werden, solange es animiert wird?
+                                /*transition(
+                                    enter = "transition-all duration-200 ease-in-out",
+                                    enterStart = "opacity-0",
+                                    enterEnd = "opacity-100",
+                                    leave = "transition-all duration-200 ease-in-out",
+                                    leaveStart = "opacity-100",
+                                    leaveEnd = "opacity-0"
+                                )*/
 
                                 toastCloseButton { close ->
                                     icon(
