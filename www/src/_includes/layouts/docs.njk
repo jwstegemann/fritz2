@@ -5,7 +5,7 @@ layout: layouts/pageWithNav.njk
 <div class="bg-bg md:min-w-0 md:flex-1 h-full">
   <div class="h-full py-6 px-5 sm:px-6 lg:px-8 h-full overscroll-none overflow-y-auto bg-bg lg:pr-72">
     <!-- Start main area-->
-    <div class="relative content prose prose-invert max-w-prose pb-12">
+    <div class="relative content prose prose-invert max-w-prose pb-10">
 
       <h1>{{title}}</h1>
 
@@ -20,6 +20,14 @@ layout: layouts/pageWithNav.njk
       {{ content | safe }}
 
     </div>
+    <a class="group flex items-center px-1 py-1 pb-6 text-sm text-cyan-300 hover:underline" href="{{ edit.baseUrl }}{{ page.inputPath.slice(1) }}" target="_blank">
+      <span class="mr-1 flex-shrink-0 h-4 w-4">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+        </svg>
+      </span>
+      Edit this page on Github
+    </a>
     <!-- End main area -->
   </div>
 </div>
