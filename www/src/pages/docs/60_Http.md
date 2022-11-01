@@ -10,13 +10,11 @@ eleventyNavigation:
     order: 60
 ---
 
-Using the browser's default fetch-api can get quite tiresome, which is why fritz2 offers a small fluent api wrapper for it:
+Using the browser's default fetch-api can get quite tiresome, which is why fritz2 offers a small fluent api wrapper for it.
 
 First, you create a `Request` which points to your endpoint url:
 ```kotlin
-val usersApi = http("https://reqresss.in/api/users")
-            .acceptJson()
-            .contentType("application/json")
+val swapiApi = http("https://swapi.dev/api").acceptJson().contentType("application/json")
 ```
 The remote service offers some [convenience-methods](https://www.fritz2.dev/api/core/dev.fritz2.remote/-request/index.html)
 to configure your API-calls, like the `acceptJson()` above, 
@@ -24,7 +22,7 @@ which simply adds the correct header to each request sent using the template.
 
 Sending a request is pretty straightforward:
 ```kotlin
-val result: String = usersApi.get(s).body()
+swapiApi.get("planets/$num").body()
 ```
 `body()` returns the body of the response as a `String`. Alternatively you can use the following methods to get different results:
 * `blob(): Blob`
@@ -38,20 +36,22 @@ If your request was not successful (`Response.ok` property returns `false` accor
 The same works for posts and other methods - just use different parameters for the body to send.
 
 The remote service is primarily designed for use in your `Store`'s `Handler`s when 
-exchanging data with the backend:
+exchanging data with the backend. 
+Here is a short example which uses [https://github.com/Kotlin/kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization)
+for parsing the returning JSON:
 ```kotlin
-val userStore = object : RootStore<String>("") {
-    
-    val usersApi = http("https://reqresss.in/api").acceptJson().contentType("application/json")
+val swapiStore = object : RootStore<String>("") {
 
-    val addUser = handle<String> { _, s : String ->
-        usersApi.body("""
-            {
-                "name": "$s",
-                "job": "programmer"
-            }
-        """.trimIndent())
-        .post("users").body()
+    private val api = http("https://swapi.dev/api")
+        .acceptJson()
+        .contentType("application/json")
+
+    val planetName = handle<Int> { _, num ->
+        val resp = api.get("planets/$num")
+        if (resp.ok)
+            Json.parseToJsonElement(resp.body())
+                .jsonObject["name"]?.jsonPrimitive?.content ?: "parsing error"
+        else "not found"
     }
 }
 ``` 
@@ -59,21 +59,19 @@ val userStore = object : RootStore<String>("") {
 You can use this `Handler` like any other to handle `Flow`s of actions:
 
 ```kotlin
-//... 
 render {
-    div {
-        //...
-        button {
-            +"add programmer"
-            clicks.map {
-                "just a name" // wherever you get this from...
-            } handledBy userStore.addUser
+    label {
+        +"Planet Name: "
+        swapiStore.data.render {
+            span {
+                +it
+            }
         }
     }
+    flowOf(1) handledBy swapiStore.planetName
+    // or just
+    swapiStore.planetName(1)
 }
-
-// or
-userStore.addUser("just a name")
 ```
 
 To see a complete example of this, visit our 
