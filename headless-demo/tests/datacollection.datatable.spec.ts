@@ -20,7 +20,7 @@ test.describe('To select', () => {
         const selectedText1 = await selected1.locator('xpath=//td[1]').textContent();
         const selected2 = page.locator('id=Sigrun Kensy B.Eng.');
         const selectedText2 = await selected2.locator('xpath=//td[1]').textContent();
-        const result = page.locator('#result');
+        const result = page.locator('#result li');
 
         await expect(selected1).toHaveAttribute("data-datatable-selected", "true")
         await expect(selected1).toHaveAttribute("data-datatable-active", "false")
@@ -93,7 +93,7 @@ test.describe('Navigating', () => {
         const selectedText1 = await selected1.locator('xpath=//td[1]').textContent();
         const selected2 = page.locator('id=Sigrun Kensy B.Eng.');
         const selectedText2 = await selected2.locator('xpath=//td[1]').textContent();
-        const result = page.locator('#result');
+        const result = page.locator('#result li');
 
         await expect(selected1).toHaveAttribute("data-datatable-selected", "true")
         await expect(selected1).toHaveAttribute("data-datatable-active", "false")

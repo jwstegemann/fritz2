@@ -51,8 +51,8 @@ test.describe('To check the', () => {
             
             await field.press('Tab');
             const fieldfill = page.locator('#result');
-            expect(fieldfill).toContainText([text, tNext]);
-        
+            expect(fieldfill).toContainText(text);
+            expect(fieldfill).toContainText(tNext);
         });
         
         test(`fill of input when textareaLabel is clicked and mouse is clicked away from textarea`, async ({page}) => {
