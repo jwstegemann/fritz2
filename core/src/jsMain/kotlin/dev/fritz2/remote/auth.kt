@@ -45,9 +45,9 @@ abstract class Authentication<P> : Middleware {
 
     /**
      * List of HTTP-Status-Codes forcing an authentication.
-     * Defaults are 401 (unauthorized) and 403 (forbidden).
+     * Default is 401 (unauthorized).
      */
-    open val statusCodesEnforcingAuthentication: Set<Int> = setOf(401, 403)
+    open val statusCodesEnforcingAuthentication: Set<Int> = setOf(401)
 
     /**
      * Adds the authentication information to all requests by using the given [principal].
