@@ -86,7 +86,12 @@ typealias IdProvider<T, I> = (T) -> I
 /**
  * Occurs when [Lens] points to non-existing element.
  */
-class LensException: Exception() // is needed to cancel the coroutine correctly
+class CollectionLensGetException : Exception() // is needed to cancel the coroutine correctly
+
+/**
+ * Occurs when [Lens] tries to update a non-existing element.
+ */
+class CollectionLensSetException(message: String) : Exception(message)
 
 /**
  * creates a [Lens] pointing to a certain element in a [List]
@@ -99,10 +104,18 @@ fun <T, I> lensOf(element: T, idProvider: IdProvider<T, I>): Lens<List<T>, T> = 
 
     override fun get(parent: List<T>): T = parent.find {
         idProvider(it) == idProvider(element)
-    } ?: throw LensException()
+    } ?: throw CollectionLensGetException()
 
-    override fun set(parent: List<T>, value: T): List<T> = parent.map {
-        if (idProvider(it) == idProvider(value)) value else it
+    override fun set(parent: List<T>, value: T): List<T> = ArrayList<T>(parent.size).apply {
+        var count = 0
+        parent.forEach { item ->
+            if (idProvider(item) == idProvider(element)) {
+                count++
+                add(value)
+            } else add(item)
+        }
+        if (count == 0) throw CollectionLensSetException("no item found with id='${idProvider(element)}'")
+        else if (count > 1) throw CollectionLensSetException("$count ambiguous items found with id='${idProvider(element)}'")
     }
 }
 
@@ -115,10 +128,12 @@ fun <T> lensOf(index: Int): Lens<List<T>, T> = object : Lens<List<T>, T> {
     override val id: String = index.toString()
 
     override fun get(parent: List<T>): T =
-        parent.getOrNull(index) ?: throw LensException()
+        parent.getOrNull(index) ?: throw CollectionLensGetException()
 
     override fun set(parent: List<T>, value: T): List<T> =
-        parent.mapIndexed { i, it -> if(i == index) value else it }
+        if (index < 0 || index >= parent.size) throw CollectionLensSetException("no item found with index='$index'")
+        else parent.mapIndexed { i, it -> if (i == index) value else it }
+
 }
 
 /**
@@ -130,9 +145,10 @@ fun <K, V> lensOf(key: K): Lens<Map<K, V>, V> = object : Lens<Map<K, V>, V> {
     override val id: String = key.toString()
 
     override fun get(parent: Map<K, V>): V =
-        parent[key] ?: throw LensException()
+        parent[key] ?: throw CollectionLensGetException()
 
-    override fun set(parent: Map<K, V>, value: V): Map<K, V> = parent.mapValues {
-        if(it.key == key) value else it.value
-    }
+    override fun set(parent: Map<K, V>, value: V): Map<K, V> =
+        if (parent.containsKey(key)) parent + (key to value)
+        else throw CollectionLensSetException("no item found with key='$key'")
+
 }
