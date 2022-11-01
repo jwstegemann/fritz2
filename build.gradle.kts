@@ -27,7 +27,7 @@ extra.apply {
     set("scroll-into-view-if-needed", "2.2.29")
 
     // tailwind
-    set("tailwindcss", "3.1.8")
+    set("tailwindcss", "3.2.1")
     set("tailwindcss/forms", "0.5.3")
 
     // webpack

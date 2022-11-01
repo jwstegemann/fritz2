@@ -2,6 +2,9 @@
 
 We use [Playwright](https://playwright.dev/) as UI testing tool.
 
+In order to use it, you need [node](https://nodejs.org/en/) and playwright itself.
+Please follow their installation instructions.
+
 To run the tests just type:
 
 ```text
