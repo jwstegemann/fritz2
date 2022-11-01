@@ -17,7 +17,7 @@ test.describe('To select', () => {
         const selectedText1 = await selected1.locator('xpath=//h3[1]').textContent();
         const selected2 = page.locator('id=Sigrun Kensy B.Eng.');
         const selectedText2 = await selected2.locator('xpath=//h3[1]').textContent();
-        const result = page.locator('#result');
+        const result = page.locator('#result li');
 
         await expect(selected1).toHaveAttribute("data-datatable-selected", "true")
         await expect(selected1).toHaveAttribute("data-datatable-active", "false")
@@ -91,7 +91,7 @@ test.describe('Navigating', () => {
         const selectedText1 = await selected1.locator('xpath=//h3[1]').textContent();
         const selected2 = page.locator('id=Sigrun Kensy B.Eng.');
         const selectedText2 = await selected2.locator('xpath=//h3[1]').textContent();
-        const result = page.locator('#result');
+        const result = page.locator('#result li');
 
         /* Delays for GridList are more important because the page needs too much time to load */
         await page.mouse.click(0, 0, {delay: 2000})
