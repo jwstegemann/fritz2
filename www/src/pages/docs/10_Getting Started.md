@@ -24,17 +24,16 @@ To use fritz2, you have to set up a Kotlin multiplatform-project. To do so you c
 
 ```kotlin
 plugins {
-    kotlin("multiplatform") version "1.6.10"
+    kotlin("multiplatform") version "1.7.20"
     // KSP support
-    id("com.google.devtools.ksp") version "1.6.10-1.0.2"
+    id("com.google.devtools.ksp") version "1.7.20-1.0.6"
 }
 
 repositories {
-    mavenLocal()
     mavenCentral()
 }
 
-val fritz2Version = "1.0-RC1"
+val fritz2Version = "1.0-RC2"
 
 //group = "my.fritz2.app"
 //version = "0.0.1-SNAPSHOT"
@@ -67,15 +66,11 @@ kotlin {
  * KSP support - start
  */
 dependencies {
-    add("kspMetadata", "dev.fritz2:lenses-annotation-processor:$fritz2Version")
+    add("kspCommonMainMetadata", "dev.fritz2:lenses-annotation-processor:$fritz2Version")
 }
-kotlin.sourceSets.commonMain { kotlin.srcDir("build/generated/ksp/commonMain/kotlin") }
+kotlin.sourceSets.commonMain { kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin") }
 tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().all {
-    if (name != "kspKotlinMetadata") dependsOn("kspKotlinMetadata")
-}
-// needed to work on Apple Silicon. Should be fixed by 1.6.20 (https://youtrack.jetbrains.com/issue/KT-49109#focus=Comments-27-5259190.0-0)
-rootProject.plugins.withType<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootPlugin> {
-    rootProject.the<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension>().nodeVersion = "16.0.0"
+    if (name != "kspCommonMainKotlinMetadata") dependsOn("kspCommonMainKotlinMetadata")
 }
 /**
  * KSP support - end
