@@ -168,7 +168,7 @@ inline fun <T> mountSimple(parentJob: Job, upstream: Flow<T>, crossinline collec
     (MainScope() + parentJob).launch(start = CoroutineStart.UNDISPATCHED) {
         upstream.onEach { collect(it) }.catch {
             when (it) {
-                is LensException -> {}
+                is CollectionLensGetException -> {}
                 else -> console.error(it)
             }
             // do not do anything here but canceling the coroutine, because this is an expected
