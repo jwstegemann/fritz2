@@ -10,11 +10,11 @@ import kotlinx.coroutines.flow.map
 /**
  * factory-method to create a [History]
  *
- * @param maxSize history keeps at most this many last values
+ * @param capacity max number of entries in history
  * @param initialValue initial content of the history
  */
-fun <T> history(maxSize: Int = 0, initialValue: List<T> = emptyList()) =
-    History(maxSize, initialValue)
+fun <T> history(capacity: Int = 0, initialValue: List<T> = emptyList()) =
+    History(capacity, initialValue)
 
 /**
  * factory-method to create a [History] synced with the given [Store],
@@ -22,11 +22,11 @@ fun <T> history(maxSize: Int = 0, initialValue: List<T> = emptyList()) =
  *
  * @receiver [Store] to sync with
  * @param synced should sync with store updates
- * @param maxSize max number of entries in history
+ * @param capacity max number of entries in history
  * @param initialEntries initial entries in history
  */
-fun <D> Store<D>.history(maxSize: Int = 0, initialEntries: List<D> = emptyList(), synced: Boolean = true) =
-    History(maxSize, initialEntries).apply {
+fun <D> Store<D>.history(capacity: Int = 0, initialEntries: List<D> = emptyList(), synced: Boolean = true) =
+    History(capacity, initialEntries).apply {
         if(synced) this@history.data.handledBy { push(it) }
     }
 
