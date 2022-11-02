@@ -37,51 +37,11 @@ class LensesTests {
     }
 
     @Test
-    fun testLensHelper() {
-        val p = Tree("Mammut Tree", 3000, Size(84.3), listOf("giant", "heavy", "world record"))
-
-        val formattedAgeLens = ageLens.asString()
-        assertEquals(p.age.toString(), formattedAgeLens.get(p), "get on formattedAgeLens did not work")
-        assertEquals(Tree::age.name, formattedAgeLens.id, "id on formattedAgeLens did not work")
-        assertEquals(formattedAgeLens.set(p, "2000").age, 2000, "set on formattedAgeLens did not work")
-
-        val formattedSizeLens = sizeLens + heightLens.asString()
-        assertEquals(
-            p.size.height.toString(),
-            formattedSizeLens.get(p),
-            "get on formattedSizeLens did not work"
-        )
-        assertEquals(
-            "${Tree::size.name}.${Size::height.name}",
-            formattedSizeLens.id,
-            "id on formattedSizeLens did not work"
-        )
-        assertEquals(
-            formattedSizeLens.set(p, "55.12").size.height,
-            55.12,
-            "set on formattedSizeLens did not work"
-        )
-
-        val formattedTags = tagLens.asString(", ", "[", "]")
-        assertEquals(p.tags.toString(), formattedTags.get(p), "get on formattedTags did not work")
-        assertEquals(
-            Tree::tags.name,
-            formattedTags.id,
-            "id on formattedTags did not work"
-        )
-        assertEquals(
-            formattedTags.set(p, "[giant, heavy, world record]").tags,
-            p.tags,
-            "set on formattedTags did not work"
-        )
-    }
-
-    @Test
     fun testCollectionLensSetExceptions() {
         val list = listOf("a", "b", "c", "a")
         val map = mapOf(1 to "a", 2 to "b", 3 to "c")
-        assertEquals(listOf("a", "d", "c"), lensOf("b") { it }.set(list, "d"))
-        assertEquals(listOf("a", "d", "c"), lensOf<String>(1).set(list, "d"))
+        assertEquals(listOf("a", "d", "c", "a"), lensOf("b") { it }.set(list, "d"))
+        assertEquals(listOf("a", "d", "c", "a"), lensOf<String>(1).set(list, "d"))
         assertEquals(mapOf(1 to "a", 2 to "d", 3 to "c"), lensOf<Int, String>(2).set(map, "d"))
 
         assertFailsWith<CollectionLensSetException> {
