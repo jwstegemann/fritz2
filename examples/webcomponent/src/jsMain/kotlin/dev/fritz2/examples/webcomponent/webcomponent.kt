@@ -1,17 +1,30 @@
 package dev.fritz2.examples.webcomponent
 
-import dev.fritz2.core.HtmlTag
-import dev.fritz2.core.RenderContext
+import dev.fritz2.core.*
 import dev.fritz2.webcomponents.WebComponent
 import dev.fritz2.webcomponents.registerWebComponent
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.ShadowRoot
 
+@JsModule("@mat3e-ux/stars")
+@JsNonModule
+external object Stars
+
+class M3Stars(job: Job, scope: Scope) : HtmlTag<HTMLElement>("m3-stars", job = job, scope = scope) {
+    fun max(value: Flow<Int>) = attr("max", value.asString())
+    fun max(value: Int) = attr("max", value)
+    fun current(value: Flow<Float>) = attr("current", value.asString())
+    fun current(value: Float) = attr("current", value)
+}
+
+fun RenderContext.m3Stars(content: M3Stars.() -> Unit): M3Stars = register(M3Stars(job, scope), content)
 
 object WeatherCard : WebComponent<HTMLDivElement>() {
 
-    private val city = attributeChanges("city")
+    private val city: Flow<String> = attributeChanges("city")
 
     override fun RenderContext.init(element: HTMLElement, shadowRoot: ShadowRoot): HtmlTag<HTMLDivElement> {
         linkStylesheet(shadowRoot, "./weathercard.css")
@@ -21,9 +34,9 @@ object WeatherCard : WebComponent<HTMLDivElement>() {
 
         return div("weather-card") {
             h2 { city.renderText() }
-            custom("m3-stars") {
-                attr("max", "5")
-                attr("current", "3.5")
+            m3Stars {
+                max(5)
+                current(2f)
             }
             h3 {
                 +"Cloudy"
@@ -69,11 +82,6 @@ object WeatherCard : WebComponent<HTMLDivElement>() {
     }
 }
 
-@JsModule("@mat3e-ux/stars")
-@JsNonModule
-external object Stars
-
 fun main() {
     registerWebComponent("weather-card", WeatherCard, "city")
-    Stars // have to use the component somewhere to get the import executed
 }
