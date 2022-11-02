@@ -21,14 +21,8 @@ abstract class Textfield<C : HTMLElement>(tag: Tag<C>, id: String?, private val 
 
     val value = DatabindingProperty<String>()
 
-    val componentId: String by lazy {
-        id ?: value.id ?: Id.next().also {
-            if (value.value == null) {
-                value(storeOf(""))
-                warnAboutMissingDatabinding("value", componentName, it, "a store of string")
-            }
-        }
-    }
+    val componentId: String by lazy { id ?: value.id ?: Id.next() }
+
     protected val fieldId by lazy { "$componentId-field" }
 
     protected var label: Tag<HTMLElement>? = null
@@ -47,6 +41,9 @@ abstract class Textfield<C : HTMLElement>(tag: Tag<C>, id: String?, private val 
                     else descriptions.map { it.id }.joinToString(" ")
                 }
             )
+        }
+        if (!value.isSet) {
+            warnAboutMissingDatabinding("value", componentName, componentId, domNode)
         }
     }
 

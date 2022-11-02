@@ -338,7 +338,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
                 }
             }.shareIn(MainScope() + job, SharingStarted.Eagerly, 1)
         } else flowOf<List<T>>(emptyList()).also {
-            warnAboutMissingDatabinding("data", COMPONENT_NAME, componentId, "a flow of an empty list")
+            warnAboutMissingDatabinding("data", COMPONENT_NAME, componentId, this@DataCollection.domNode)
         }
 
         val items = filteredItems.flatMapLatest { filtered ->
