@@ -66,7 +66,7 @@ fun RenderContext.m3Stars(content: M3Stars.() -> Unit): M3Stars = register(M3Sta
 
 ## Build a WebComponent
 
-To build a WebComponent with fritz2, two steps are necessary. First, implement your WebComponent-class:
+To build a WebComponent with fritz2, two steps are necessary. First, implement your WebComponent class:
 ```kotlin
 object WeatherCard : WebComponent<HTMLDivElement>() {
 
