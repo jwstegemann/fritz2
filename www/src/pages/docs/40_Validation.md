@@ -72,7 +72,7 @@ By default, a `ValidatingStore` automatically validates its data after it gets c
 You can access this validation-messages with `store.messages`. 
 This gives you a `Flow<List<M>>` where `M` is your `ValidationMessage`-type.
 You can handle the `Flow` of your messages like any other `Flow` of a `List`, 
-for example by rendering your messages to html:
+for example by rendering your messages to HTML:
 
 ```kotlin
 // create some messages

@@ -13,8 +13,8 @@
 fritz2 is an ***extremely lightweight***, well-performing, independent library to build 
 reactive web apps in ***Kotlin*** heavily depending on coroutines and flows.
 
-fritz2 includes an intuitive way to build and render html-elements using a type-safe dsl. 
-You can easily create lightweight **reactive** html-components that are bound to an underlying model 
+fritz2 includes an intuitive way to build and render HTML elements using a type-safe dsl. 
+You can easily create lightweight **reactive** HTML components that are bound to an underlying model 
 and **automatically** change whenever the model data changes:
 
 ```kotlin
@@ -72,7 +72,7 @@ This is also true for your model-validation-code, which can quickly become far m
 
 - staying lightweight
 - keeping dependencies as low as possible
-- providing tags, attributes, events for html from specification (w3c, mozilla, ...)
+- providing tags, attributes, events for HTML from specification (w3c, mozilla, ...)
 - make it as easy as possible to write reactive web-apps in pure kotlin
 
 ## Inspiration

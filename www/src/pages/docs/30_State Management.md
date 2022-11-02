@@ -39,7 +39,7 @@ A mount-point in fritz2 is an anchor of a `Flow` somewhere in a structure like t
 appearing on the mounted `Flow` will be put into the structure at exactly that position replacing the former value.
 
 Most of the time you will use mount-points in the browser's DOM, allowing you to mount `Tag`s to some point in the
-html-structure you are building using for example the `someFlow.render {}` function.
+HTML structure you are building using for example the `someFlow.render {}` function.
 
 Inside the `RenderContext` opened by `someFlow.render {}`, a new mount-point is created as a `<div>`-tag and
 added to the current parent-element. Whenever a new value appears on the `Flow`, the new content is rendered
@@ -133,7 +133,7 @@ Creating a `Store` to manage that state is quite easy:
 val s = storeOf("initial value")
 ```
 
-Every `Store` offers a `Flow` named `data` which can be bound as part of your html:
+Every `Store` offers a `Flow` named `data` which can be bound as part of your HTML:
 
 ```kotlin
 render {
