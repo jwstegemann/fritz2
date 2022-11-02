@@ -54,7 +54,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
                 })
         }
         if (!value.isSet) {
-            warnAboutMissingDatabinding("value", Switch.COMPONENT_NAME, componentId, domNode)
+            warnAboutMissingDatabinding("value", COMPONENT_NAME, componentId, domNode)
         }
     }
 
