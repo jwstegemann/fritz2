@@ -417,6 +417,12 @@ Filter the `Flow` using the meta-data you chose when calling `track(meta-data)` 
 
 Of course, you can also use the meta-data to show to the user what is currently running (in a status-bar for example).
 
+Beware that you are responsible for handling exceptions, if you use an unsafe operation within the tracking scope.
+The tracker is safe in the way, that it will catch any escaped exception, then stops the tracking, and finally it will 
+rethrow the former.
+
+If you want your tracking to continue instead, just handle exceptions within the tracking scope.
+
 ## Complex Data-Models
 
 Most of the time, your model for a view will not be of just a simple data-type but a complex entity, like a
