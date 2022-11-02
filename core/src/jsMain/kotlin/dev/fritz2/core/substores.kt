@@ -55,6 +55,10 @@ class SubStore<P, D>(
         lens.get(it)
     }.distinctUntilChanged()
 
+    override fun errorHandler(cause: Throwable) {
+        parent.errorHandler(cause)
+    }
+
 }
 
 
@@ -70,12 +74,23 @@ fun <D, I> Store<List<D>>.sub(element: D, id: IdProvider<D, I>): SubStore<List<D
 }
 
 /**
- * creates a [SubStore] using a [RootStore] as parent using the index in the list
+ * creates a [SubStore] using a [RootStore] as parent using the [index] in the list
  * (do not use this, if you want to manipulate the list itself (add or move elements, filter, etc.).
  *
  * @param index position in the list to point to
  */
 fun <D> Store<List<D>>.sub(index: Int): SubStore<List<D>, D> {
     val lens = lensOf<D>(index)
+    return SubStore(this, lens)
+}
+
+/**
+ * creates a [SubStore] using a [RootStore] as parent using the [key] in the map
+ * (do not use this, if you want to manipulate the map itself (add or move elements, filter, etc.).
+ *
+ * @param key in the map to point to
+ */
+fun <K, V> Store<Map<K, V>>.sub(key: K): SubStore<Map<K, V>, V> {
+    val lens = lensOf<K, V>(key)
     return SubStore(this, lens)
 }

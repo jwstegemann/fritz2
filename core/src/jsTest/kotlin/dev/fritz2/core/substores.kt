@@ -3,9 +3,11 @@ package dev.fritz2.core
 import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLDivElement
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class SubStoreTests {
 
@@ -115,5 +117,135 @@ class SubStoreTests {
         delay(200)
 
         assertEquals(personFormatLens.get(newPerson), completeDiv.innerText, "parsing is not working")
+    }
+
+    @Test
+    fun testSubStoreWithRenderEach() = runTest {
+
+        val id = Id.next()
+        val store = storeOf(listOf("a", "b", "c"))
+
+        lateinit var bStore: Store<String>
+
+        render {
+            div(id = id) {
+                store.renderEach({ it }, this) {
+                    if(it.current == "b") bStore = it
+                    p {
+                        it.data.renderText()
+                    }
+                }
+            }
+        }
+
+        delay(200)
+
+        val container = document.getElementById(id) as HTMLDivElement
+
+        assertEquals(3, container.childElementCount)
+        assertEquals("abc", container.textContent)
+
+        bStore.update("d")
+        delay(200)
+        assertEquals(3, container.childElementCount)
+        assertEquals("adc", container.textContent)
+    }
+
+    @Test
+    fun testSubStoreWithRenderEachSameId() = runTest {
+
+        val id = Id.next()
+        val store = object : RootStore<List<String>>(listOf("a", "b", "c", "b")) {
+            var throwable: Throwable? = null
+            override fun errorHandler(cause: Throwable) {
+                throwable = cause
+            }
+        }
+
+        var bStore: Store<String>? = null
+
+        render {
+            div(id = id) {
+                store.renderEach({ it }, this) {
+                    if(bStore == null && it.current == "b") bStore = it
+                    p {
+                        it.data.renderText()
+                    }
+                }
+            }
+        }
+
+        delay(200)
+
+        val container = document.getElementById(id) as HTMLDivElement
+
+        assertEquals(4, container.childElementCount)
+        assertEquals("abcb", container.textContent)
+        assertEquals(null, store.throwable)
+
+        bStore?.update("d")
+
+        delay(200)
+        assertTrue(store.throwable is CollectionLensSetException)
+    }
+
+    @Test
+    fun testSubStoreWithIndex() = runTest {
+
+        val id = Id.next()
+        val store = storeOf(listOf("a", "b", "c"))
+
+        render {
+            div(id = id) {
+                store.data.renderEach(into = this) {
+                    p {
+                        +it
+                    }
+                }
+            }
+        }
+
+        delay(200)
+
+        val container = document.getElementById(id) as HTMLDivElement
+
+        assertEquals(3, container.childElementCount)
+        assertEquals("abc", container.textContent)
+
+        store.sub(1).update("d")
+
+        delay(200)
+        assertEquals(3, container.childElementCount)
+        assertEquals("adc", container.textContent)
+    }
+
+    @Test
+    fun testSubStoreWithMap() = runTest {
+
+        val id = Id.next()
+        val store = storeOf(mapOf(1 to "a", 2 to "b", 3 to "c"))
+
+        render {
+            div(id = id) {
+                store.data.map { it.values.toList() }.renderEach(into = this) {
+                    p {
+                        +it
+                    }
+                }
+            }
+        }
+
+        delay(200)
+
+        val container = document.getElementById(id) as HTMLDivElement
+
+        assertEquals(3, container.childElementCount)
+        assertEquals("abc", container.textContent)
+
+        store.sub(2).update("d")
+
+        delay(200)
+        assertEquals(3, container.childElementCount)
+        assertEquals("adc", container.textContent)
     }
 }
