@@ -16,7 +16,8 @@ fritz2 heavily depends on flows, introduced by [kotlinx.coroutines](https://gith
 A `Flow` is a time discrete stream of values.
 
 Like a collection, you can use `Flow`s to represent multiple values, but unlike other collections like `List`s, for example,
-the values are retrieved one by one. fritz2 relies on `Flow`s to represent values that change over time and lets you react to them (your data-model for example) .
+the values are retrieved one by one. fritz2 relies on `Flow`s to represent values that change over time and lets you react 
+to them (your data-model for example) .
 
 A `Flow` is built from a source which creates the values. This source could be your model or the events raised by an element,
 for example. On the other end of the `Flow`, a simple function called for each element collects the values one by one.
@@ -275,9 +276,11 @@ By using the ad-hoc `handledBy` function here your store gets not updated after 
 
 ### Handling nullable values in `Store`s
 
-If you have a `Store` with a nullable content, you can use `orDefault` to derive a non-nullable `Store` from it, that transparently translates a `null`-value from its parent `Store` to the given default-value and vice versa.
+If you have a `Store` with a nullable content, you can use `orDefault` to derive a non-nullable `Store` from it,
+that transparently translates a `null`-value from its parent `Store` to the given default-value and vice versa.
 
-In the following case, when you enter some text in the input and remove it again, you will have a value of `null` in your `nameStore`:
+In the following case, when you enter some text in the input and remove it again,
+you will have a value of `null` in your `nameStore`:
 
 ```kotlin
 val nameStore = storeOf<String?>(null)
@@ -292,7 +295,8 @@ render {
 }
 ```
 
-In real world, you will often come across nullable attributes of complex entities. Then you can often call `orDefault` directly on the `SubStore` you create to use with your form elements:
+In real world, you will often come across nullable attributes of complex entities. Then you can often call `orDefault`
+directly on the `SubStore` you create to use with your form elements:
 
 ```kotlin
 @Lenses
@@ -305,7 +309,6 @@ val applicationStore = storeOf(Person(null))
 //...
 
 val nameStore = applicationStore.sub(Person.name()).orDefault("")
-
 ```
 
 ## Connecting stores to each other

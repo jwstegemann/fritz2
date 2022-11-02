@@ -175,15 +175,3 @@ open class RootStore<D>(
  * @param id id of this store. Ids of [SubStore]s will be concatenated.
  */
 fun <D> storeOf(initialData: D, id: String = Id.next()) = RootStore(initialData, id)
-
-/**
- * on a [Store] of nullable data this creates a [SubStore] with a nullable parent and non-nullable value.
- * It can be called using a [Lens] on a non-nullable parent (that can be created by using the @Lenses-annotation),
- * but you have to provide a default value. When updating the value of the resulting [SubStore] to this default value,
- * null is used instead updating the parent. When this [SubStore]'s value would be null according to it's parent's
- * value, the default value will be used insteal.
- *
- * @param lens [Lens] to use to create the [SubStore]
- * @param default value to translate null to and from
- */
-fun <T> Store<T?>.orDefault(default: T): SubStore<T?, T> = sub(defaultLens(this.id, default))
