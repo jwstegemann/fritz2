@@ -1,4 +1,6 @@
 const eleventyNavigationPlugin = require("@11ty/eleventy-navigation");
+const path = require('path');
+const { readdirSync: readDir } = require('fs');
 
 const markdownIt = require('markdown-it');
 const markdownItKbd = require('markdown-it-kbd');
@@ -32,6 +34,13 @@ module.exports = function(eleventyConfig) {
         route: '/examples-demo',
         dir: '../examples-demo/build/distributions'
       },
+      ...readDir(path.join(path.resolve(__dirname, '..'), 'examples'), { withFileTypes: true })
+        .filter(entry => entry.isDirectory())
+          .map(dir => dir.name)
+          .map(dirName => ({
+          route: `/examples/${dirName}`,
+          dir: path.join('../examples/', dirName, '/build/distributions')
+      })),
       {
         route: '/api',
         dir: '../api'
