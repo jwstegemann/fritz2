@@ -22,7 +22,7 @@ ext {
     set("stylisVersion", "4.0.2")
     set("murmurhashVersion", "2.0.0")
     set("logbackVersion", "1.2.11")
-    set("ktorVersion", "1.6.6")
+    set("ktorVersion", "1.6.8")
     set("serializationVersion", "1.4.0")
     set("kspVersion", "1.7.20-1.0.6")
     set("autoServiceVersion", "1.0.1")
