@@ -10,14 +10,14 @@ eleventyNavigation:
     order: 90
 ---
 
-With fritz2, you can easily use [WebComponents](https://webcomponents.org) in any html-context. 
+With fritz2, you can easily use [WebComponents](https://webcomponents.org) in any HTML-context. 
 Some of the following code-snippets are not runnable on their own. Please find the complete example 
 [here](https://examples.fritz2.dev/webcomponent/build/distributions/index.html).
 
 ### Import as script
 
-Before you can use a custom html-element, you have to add the component to your site's scripts.
-One way is adding a `<script>` tag which points to the component in your html-file:
+Before you can use a custom HTML element, you have to add the component to your site's scripts.
+One way is adding a `<script>` tag which points to the component in your HTML file:
 ```html
 <script type="module" src="https://unpkg.com/@mat3e-ux/stars"></script>
 ```

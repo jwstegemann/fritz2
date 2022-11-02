@@ -106,11 +106,11 @@ container-element from your content-lambda. Use `RenderContext` if this is not n
 
 ## Set Your Attributes
 
-To create rich html-interfaces you will want to use a variety of attributes. In fritz2 there are several easy ways to
+To create rich HTML interfaces you will want to use a variety of attributes. In fritz2 there are several easy ways to
 achieve this depending on your use case.
 
-You can set all html-attributes inside the `Tag`'s content by calling a function of the according name. Every standard
-html attribute has two functions. One sets a static value every time the element is re-rendered, the second collects
+You can set all HTML attributes inside the `Tag`'s content by calling a function of the according name. Every standard
+HTML attribute has two functions. One sets a static value every time the element is re-rendered, the second collects
 dynamic data coming from a `Flow`. When coming from a `Flow`, the attribute's value will be updated in the
 DOM whenever a new value appears on the `Flow`
 without having to re-render the whole element:
