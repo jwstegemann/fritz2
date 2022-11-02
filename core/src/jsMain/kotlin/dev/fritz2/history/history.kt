@@ -1,120 +1,93 @@
 package dev.fritz2.history
 
 import dev.fritz2.core.Store
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.flow.*
-import kotlin.math.min
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 
 
 /**
- * factory-method to create a [History] (i.e. for a [Store])
+ * factory-method to create a [History]
  *
  * @param maxSize history keeps at most this many last values
  * @param initialValue initial content of the history
  */
-fun <T> history(maxSize: Int = 10, initialValue: List<T> = emptyList()) = History(maxSize, initialValue)
+fun <T> history(maxSize: Int = 0, initialValue: List<T> = emptyList()) =
+    History(maxSize, initialValue)
+
+/**
+ * factory-method to create a [History] synced with the given [Store],
+ * so that each update is automatically stored in history.
+ *
+ * @receiver [Store] to sync with
+ * @param synced should sync with store updates
+ * @param maxSize max number of entries in history
+ * @param initialEntries initial entries in history
+ */
+fun <D> Store<D>.history(maxSize: Int = 0, initialEntries: List<D> = emptyList(), synced: Boolean = true) =
+    History(maxSize, initialEntries).apply {
+        if(synced) this@history.data.handledBy { push(it) }
+    }
 
 
 /**
  * Keeps track of historical values (i.e. of a [Store]) and allows you to navigate back in history
  *
- * @param maxSize history keeps at most this many last values
- * @param initialValue initial content of the history
+ * @param capacity max number of entries in history
+ * @param initialEntries initial entries in history
  */
 class History<T>(
-    private val maxSize: Int,
-    initialValue: List<T>
+    private val capacity: Int,
+    initialEntries: List<T>,
 ) {
+    init {
+        require(initialEntries.size <= capacity) {
+            "history: initialEntries size of ${initialEntries.size} is greater then capacity of $capacity"
+        }
+    }
 
-    private val state: MutableStateFlow<Pair<T?, List<T>>> = MutableStateFlow(null to initialValue)
+    private val state: MutableStateFlow<List<T>> = MutableStateFlow(initialEntries)
 
     /**
      * Gives a [Flow] with the entries of the history.
      */
-    val data: Flow<List<T>> = state.map { it.second }
+    val data: Flow<List<T>> = state
 
     /**
      * Represents the current entries in history.
      */
-    val current: List<T>
-        get() = state.value.second
+    val current: List<T> get() = state.value
 
     /**
-     * This method is only used when the history is synced to a store.
-     * It keeps track of the current value of the store in the first part of the pair and the history in the second.
-     * When a new update occurs it is store in first and the old first is pushed to the history.
+     * Push a new [entry] to the history
      */
-    private fun enqueue(entry: T) {
-        state.value.let { old ->
-            state.value = if (old.first != null) {
-                old.copy(entry, push(old.first!!, old.second))
-            } else {
-                old.copy(first = entry)
-            }
-        }
-    }
-
-    private fun push(entry: T, oldList: List<T>): List<T> =
-        if (oldList.isEmpty() || entry != oldList.first()) {
-            buildList {
-                add(entry)
-                if (oldList.isNotEmpty()) {
-                    addAll(oldList.subList(0, min(maxSize - 1, oldList.size)))
-                }
-            }
-        } else oldList
-
-    /**
-     * adds a new value to the history
-     *
-     * @param entry value to add
-     */
-    fun add(entry: T) {
-        state.value.also { old ->
-            state.value = old.copy(second = push(entry, old.second))
-        }
+    fun push(entry: T) {
+        if(state.value.isEmpty()) state.value = state.value + entry
+        else if(state.value.last() != entry) state.value = state.value.let {
+            if(it.size == capacity) it.drop(1) else it
+        } + entry
     }
 
     /**
-     * gets the last value that has been added to the history.
-     * Leaves history unmodified.
-     *
-     * @throws [IndexOutOfBoundsException] if called on an empty history.
-     */
-    fun last(): T = state.value.second.first()
-
-
-    /**
-     * gets the last value that has been added
+     * Gets the last entry that has been added
      * and removes it from the history.
      *
      * @throws [IndexOutOfBoundsException] if called on an empty history.
      */
-    fun back(): T = state.value.let { old ->
-        state.value = (null to old.second.drop(1))
-        old.second.first()
-    }
+    fun back(): T =
+        if(state.value.size < 2) throw IndexOutOfBoundsException()
+        else state.value.dropLast(1).also { state.value = it }.last()
 
     /**
      * clears the history.
      */
-    fun reset() {
-        state.value = null to emptyList()
+    fun clear() {
+        if(state.value.isNotEmpty()) state.value = listOf(state.value.last())
     }
 
     /**
      * [Flow] describing, if a value is available in the history
      */
-    val available by lazy { data.map { it.isNotEmpty() }.distinctUntilChanged() }
-
-    /**
-     * syncs this history to a given store, so that each update is automatically stored in history.
-     *
-     * @param upstream [Store] to sync with
-     */
-    fun sync(upstream: Store<T>): History<T> = this.apply {
-        upstream.data.onEach { enqueue(it) }.catch { t ->
-            console.error("ERROR[history@${upstream.id}]: ${t.message}", t)
-        }.launchIn(MainScope())
-    }
+    val available by lazy { data.map { it.size > 1 }.distinctUntilChanged() }
 }

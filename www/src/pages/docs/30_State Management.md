@@ -339,44 +339,44 @@ fritz2 offers a history service to do so.
 
 ```kotlin
 val store = object : RootStore<String>("") {
-    val history = history<String>().sync(this)
+    val history = history()
 }
 ```
 
-This way you synchronise the history with the updates of your `Store`, so each new value will be added to the history automatically.
+This way you synchronise the history with the updates of your `Store`, 
+so each new value will be added to the history automatically.
 
-Without `sync()`, you have to add new entries to the history manually by calling `history.add(entry)`.
+By calling `history(synced = false)`, you have to add new entries to the history 
+manually by calling `push(entry)` function.
 
-You can access the complete history via its `Flow` as a `List` of entries. For your convenience `history` also offers
+You can access the complete history via its `data` attribute as `Flow<List<T>>` 
+or by using `current` attribute which returns a `List<T>`. For your convenience `history` also offers
 * a `Flow<Boolean>` called `available` representing if entries are available (e.g., to show or hide an undo button)
-* a `last()` method to access the latest entry
 * a `back()` method to get the latest entry and remove it from the history
-* a `reset()` method to clear the history
+* a `clear()` method to clear the history
 
 So for a `Store` with a minimal undo function you just have to write:
-
 ```kotlin
 val store = object : RootStore<String>("") {
-    val history = history<String>().sync(this)
+    val history = history()
 
-    // your handlers go here (add history.reset() here where suitable)
+    // your handlers go here (add history.clear() here where suitable)
 
-    val undo = handle {
-        history.back()
-    }
+    val undo = handle { history.back() }
 }
-
-...
 
 render {
     div("form") {
-        // insert your form here
-
-        button("btn") {
-            className(store.history.available.map { if (it) "" else "hidden" })
-            +"Undo"
-
-            clicks handledBy store.undo
+        input {
+            value(store.data)
+            changes.values() handledBy store.update
+        }
+        store.history.available.render {
+            if(it) {
+                button("btn") {
+                    +"Undo"
+                }.clicks handledBy store.undo
+            }
         }
     }
 }
