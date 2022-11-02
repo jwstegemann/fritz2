@@ -10,14 +10,14 @@ eleventyNavigation:
     order: 60
 ---
 
-Using the browser's default fetch-api can get quite tiresome, which is why fritz2 offers a small fluent api wrapper for it.
+Using the browser's default fetch API can get quite tiresome, which is why fritz2 offers a small fluent api wrapper for it.
 
 First, you create a `Request` which points to your endpoint url:
 ```kotlin
 val swapiApi = http("https://swapi.dev/api").acceptJson().contentType("application/json")
 ```
-The remote service offers some [convenience-methods](https://www.fritz2.dev/api/core/dev.fritz2.remote/-request/index.html)
-to configure your API-calls, like the `acceptJson()` above, 
+The remote service offers some [convenience methods](https://www.fritz2.dev/api/core/dev.fritz2.remote/-request/index.html)
+to configure your API calls, like the `acceptJson()` above, 
 which simply adds the correct header to each request sent using the template.
 
 Sending a request is pretty straightforward:
@@ -31,9 +31,9 @@ swapiApi.get("planets/$num").body()
 * `json(): Any?`
 
 If your request was not successful (`Response.ok` property returns `false` according to the
-[fetch](https://developer.mozilla.org/en-US/docs/Web/API/Response/ok) -API), a `FetchException` will be thrown.
+[fetch](https://developer.mozilla.org/en-US/docs/Web/API/Response/ok) API), a `FetchException` will be thrown.
 
-The same works for posts and other methods - just use different parameters for the body to send.
+The same works for `POST` and all other HTTP methods - just use different parameters for the body to send.
 
 The remote service is primarily designed for use in your `Store`'s `Handler`s when 
 exchanging data with the backend. 
@@ -50,8 +50,8 @@ val swapiStore = object : RootStore<String>("") {
         val resp = api.get("planets/$num")
         if (resp.ok)
             Json.parseToJsonElement(resp.body())
-                .jsonObject["name"]?.jsonPrimitive?.content ?: "parsing error"
-        else "not found"
+                .jsonObject["name"]?.jsonPrimitive?.content ?: throw NoSuchElementException()
+        else throw IllegalArgumentException()
     }
 }
 ``` 
@@ -83,23 +83,23 @@ Get inspired by our [repositories example](https://examples.fritz2.dev/repositor
 and use our [repositories API](/docs/repositories).
 
 
-You can easily set up your local webpack-server to proxy services (avoid CORS, etc.) when developing locally in 
+You can easily set up your local webpack server to proxy services (avoid CORS, etc.) when developing locally in 
 your `build.gradle.kts`:
 ```kotlin
 kotlin {
     js(IR) {
         browser {
             runTask {
-                devServer = devServer?.copy(
-                    port = 9000,
-                    proxy = mapOf(
-                        "/members" to "http://localhost:8080",
-                        "/chat" to mapOf(
+                devServer?.apply {
+                    port = 9000
+                    proxy?.apply {
+                        put("/members", "http://localhost:8080")
+                        put("/chat", mapOf(
                             "target" to "ws://localhost:8080",
                             "ws" to true
-                        )
-                    )
-                )
+                        ))
+                    }
+                }
             }
         }
     }.binaries.executable()
@@ -123,7 +123,7 @@ interface Middleware {
 }
 ```
 
-Make a `Request` by passing a `Middleware` to its `use`-method:
+Make a `Request` by passing a `Middleware` to its `use` method:
 
 ```kotlin
 val myEndpoint = http("/myAPI").use(someMiddleware)
@@ -158,7 +158,7 @@ You can stop the processing of a Response by Middlewares further down the chain 
 
 ## Authentication
 
-In fritz2, you want to implement the authentication process of your SPA as a `Middleware` for its remote-API. To do
+In fritz2, you want to implement the authentication process of your SPA as a `Middleware` for its remote API. To do
 this conveniently, start by inheriting from
 
 ```kotlin
@@ -190,8 +190,8 @@ When you add this `Middleware` to your endpoint(s), it will intercept each respo
 override val statusCodesEnforcingAuthentication: List<Int> = listOf(401, 403, /* some more */)
 ```
 
-Whenever the authentication middleware receives such a response, it starts the client-side authentication-process
-you defined by implementing the abstract `authenticate`-method. You are free to do here whatever your authentication
+Whenever the authentication middleware receives such a response, it starts the client-side authentication process
+you defined by implementing the abstract `authenticate` method. You are free to do here whatever your authentication
 process requires. For example, you could open a modal window to ask the user for their credentials and send them
 to another remote service to get a [JSON Web Token](https://jwt.io/) for subsequent requests, as well as name and
 roles of the user. To successfully complete the authentication process with an identified principal,
@@ -218,7 +218,7 @@ object MyAuthentication : Authentication<Principal>() {
             closeTheLoginModal() // example
             Credentials() // clear the input form
         } catch (e: Exception) {
-            // show some error-message
+            // show some error message
             it
         }
     }
@@ -301,7 +301,7 @@ MyAuthentication.authenticated.render {
 }
 ```
 
-If you have to get the current principal at a given point in time, you can do so using the `current`-property of your Authentication.
+If you have to get the current principal at a given point in time, you can do so using the `current` property of your Authentication.
 
 If the first request requires authentication, subsequent requests that use the same authentication middleware
 will wait for the started authentication process to finish. So make sure you always complete or cancel it and use
