@@ -4,7 +4,7 @@ package dev.fritz2.headlessdemo
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.placeholder
 import dev.fritz2.core.type
-import tooltip
+import dev.fritz2.headless.components.tooltip
 
 
 fun RenderContext.tooltipButton(idPrefix: String) {

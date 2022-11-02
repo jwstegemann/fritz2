@@ -27,14 +27,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
     }
 
     val value = DatabindingProperty<T>()
-    val componentId: String by lazy {
-        id ?: value.id ?: Id.next().also {
-            if (value.value == null) {
-                value(data = emptyFlow())
-                warnAboutMissingDatabinding("value", COMPONENT_NAME, it, "an empty flow")
-            }
-        }
-    }
+    val componentId: String by lazy { id ?: value.id ?: Id.next() }
 
     private var button: Tag<HTMLElement>? = null
 
@@ -60,9 +53,11 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
 
     fun render() {
         attr("id", componentId)
-
         opened.drop(1).filter { !it } handledBy {
             button?.setFocus()
+        }
+        if (!value.isSet) {
+            warnAboutMissingDatabinding("value", COMPONENT_NAME, componentId, domNode)
         }
     }
 
