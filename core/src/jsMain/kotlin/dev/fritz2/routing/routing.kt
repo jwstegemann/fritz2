@@ -1,7 +1,6 @@
 package dev.fritz2.routing
 
 import dev.fritz2.core.Store
-import dev.fritz2.core.SubStore
 import dev.fritz2.core.Update
 import dev.fritz2.core.lensOf
 import kotlinx.browser.window
@@ -122,12 +121,12 @@ open class MapRouter(defaultRoute: Map<String, String> = emptyMap()) :
     open fun select(key: String, orElse: String): Flow<String> = this.data.map { m -> m[key] ?: orElse }
 
     /**
-     * Selects with the given [key] a [SubStore] of the value.
+     * Creates a new [Store] containing the corresponding value for the given [key].
      *
      * @param key for getting the value from the parameter [Map]
-     * @return [SubStore] of the resulting value
+     * @return [Store] containing the corresponding value
      */
-    open fun sub(key: String): SubStore<Map<String, String>, String> = this.sub(lensOf(key))
+    open fun sub(key: String): Store<String> = this.sub(lensOf(key))
 }
 
 /**

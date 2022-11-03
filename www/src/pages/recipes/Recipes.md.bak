@@ -11,7 +11,7 @@ eleventyNavigation:
     classes: "font-bold capitalize"
 ---
 
-## Automatische Syncronisierung
+## Automatische Synchronisierung
 Um bei einem neuen Wert in einen Store automatisch einen bestimmten Handler zu übergeben (Syncronisation), 
 reicht es auf dem `data`-flow ein `drop(1)` aufzurufen, um den `initalData` Wert zu ignorieren.
 ````kotlin
