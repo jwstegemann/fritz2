@@ -21,7 +21,7 @@ fun <T> history(capacity: Int = 0, initialValue: List<T> = emptyList()) =
  * so that each update is automatically stored in history.
  *
  * @receiver [Store] to sync with
- * @param synced should sync with store updates
+ * @param synced if true, the the history will sync with store updates
  * @param capacity max number of entries in history
  * @param initialEntries initial entries in history
  */
@@ -60,7 +60,7 @@ class History<T>(
     val current: List<T> get() = state.value
 
     /**
-     * Push a new [entry] to the history
+     * Pushes a new [entry] to the history
      */
     fun push(entry: T) {
         if(state.value.isEmpty()) state.value = state.value + entry
@@ -70,7 +70,7 @@ class History<T>(
     }
 
     /**
-     * Gets the last entry that has been added
+     * Gets the lastest history-entry that has been added
      * and removes it from the history.
      *
      * @throws [IndexOutOfBoundsException] if called on an empty history.

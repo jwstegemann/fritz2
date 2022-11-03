@@ -116,29 +116,6 @@ class HistoryTests {
         assertEquals(values.takeLast(histLength + 1).drop(1).joinToString(), getHistory())
     }
 
-    fun test() {
-        val store = object : RootStore<String>("") {
-            val history = history()
-
-            // your handlers go here (add history.clear() here where suitable)
-
-            val undo = handle {
-                history.back()
-            }
-        }
-
-        render {
-            div("form") {
-                // insert your form here
-
-                button("btn") {
-                    className(store.history.available.map { if (it) "" else "hidden" })
-                    +"Undo"
-                }.clicks handledBy store.undo
-            }
-        }
-    }
-
 
     @Test
     fun testMaxCapacityError() = runTest {
@@ -146,6 +123,4 @@ class HistoryTests {
             history(4, listOf("a", "b", "c", "d", "e"))
         }
     }
-
-
 }

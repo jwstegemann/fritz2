@@ -343,11 +343,10 @@ val store = object : RootStore<String>("") {
 }
 ```
 
-This way you synchronise the history with the updates of your `Store`, 
+By default you synchronise the history with the updates of your `Store`, 
 so each new value will be added to the history automatically.
 
-By calling `history(synced = false)`, you have to add new entries to the history 
-manually by calling `push(entry)` function.
+Calling `history(synced = false)`, you can control the content of the history by manually adding new entries. Call `push(entry)` to do so.
 
 You can access the complete history via its `data` attribute as `Flow<List<T>>` 
 or by using `current` attribute which returns a `List<T>`. For your convenience `history` also offers
@@ -355,7 +354,7 @@ or by using `current` attribute which returns a `List<T>`. For your convenience 
 * a `back()` method to get the latest entry and remove it from the history
 * a `clear()` method to clear the history
 
-So for a `Store` with a minimal undo function you just have to write:
+For a `Store` with a minimal undo function you just have to write:
 ```kotlin
 val store = object : RootStore<String>("") {
     val history = history()
