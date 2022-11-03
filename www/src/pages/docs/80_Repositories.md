@@ -152,7 +152,7 @@ section [HTTP-Calls](/docs/http).
 
 You can see repositories of all types in action at
 
-* the [repositories example](https://examples.fritz2.dev/repositories/build/distributions/index.html)
+* the [repositories example](/examples/repositories)
 * our [Ktor full stack example](https://github.com/jamowei/fritz2-ktor-todomvc)
 * the [Spring full stack example](https://github.com/jamowei/fritz2-spring-todomvc) 
 

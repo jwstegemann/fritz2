@@ -12,7 +12,7 @@ eleventyNavigation:
 
 With fritz2, you can easily use [WebComponents](https://webcomponents.org) in any HTML-context. 
 Some of the following code-snippets are not runnable on their own. Please find the complete example 
-[here](https://examples.fritz2.dev/webcomponent/build/distributions/index.html).
+[here](/examples/webcomponent).
 
 ### Import as script
 
@@ -92,5 +92,5 @@ To react to the lifecycle of your component, you can override the according meth
 
 Packaging (i.e. as a npm-package) and publishing is out of scope of this documentation.
 
-Again, to see it in action, please have a look at our [webcomponents example](https://examples.fritz2.dev/webcomponent/build/distributions/index.html).
+Again, to see it in action, please have a look at our [webcomponents example](/examples/webcomponent).
 
