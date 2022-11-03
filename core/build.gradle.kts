@@ -1,5 +1,3 @@
-import kotlin.time.seconds
-
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
@@ -22,16 +20,16 @@ kotlin {
         // just to have a place to copy it from...
         /*
         runTask {
-            devServer = devServer?.copy(
-                port = 9000,
-                proxy = mapOf(
-                    "/members" to "http://localhost:8080",
-                    "/chat" to mapOf(
+            devServer?.apply {
+                port = 9000
+                proxy?.apply {
+                    put("/members", "http://localhost:8080")
+                    put("/chat", mapOf(
                         "target" to "ws://localhost:8080",
                         "ws" to true
-                    )
-                )
-            )
+                    ))
+                }
+            }
         }
         */
     }

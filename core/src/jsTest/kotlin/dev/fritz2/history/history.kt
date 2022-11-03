@@ -9,6 +9,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class HistoryTests {
 
@@ -18,61 +19,62 @@ class HistoryTests {
         val valueId = "value-${Id.next()}"
         val historyId = "history-${Id.next()}"
         val availableId = "available-${Id.next()}"
-        val values = listOf("A", "B", "C", "D")
 
         fun getValue() = document.getElementById(valueId)?.textContent
         fun getHistory() = document.getElementById(historyId)?.textContent
         fun getAvailable() = document.getElementById(availableId)?.textContent?.toBoolean()
 
-        val store = object : RootStore<String>(values[0]) {
-            val hist = history<String>().sync(this)
-
+        val store = object : RootStore<String>("A") {
+            val hist = history()
         }
 
         render {
             div {
                 span(id = valueId) { store.data.renderText() }
-                span(id = historyId) { store.hist.data.map { hist -> hist.joinToString() }.renderText() }
+                span(id = historyId) { store.hist.data.map { it.joinToString() }.renderText() }
                 span(id = availableId) { store.hist.available.asString().renderText() }
             }
         }
 
         delay(100)
-        assertEquals(values[0], getValue())
-        assertEquals("", getHistory())
+        assertEquals("A", getValue())
+        assertEquals("A", getHistory())
         assertEquals(false, getAvailable())
 
-        store.update(values[1])
+        store.update("B")
         delay(100)
-        assertEquals(values[1], getValue())
-        assertEquals(values[0], getHistory())
+        assertEquals("B", getValue())
+        assertEquals("A, B", getHistory())
         assertEquals(true, getAvailable())
 
-        store.update(values[2])
+        store.update("C")
         delay(100)
-        assertEquals(values[2], getValue())
-        assertEquals(values.slice(0..1).reversed().joinToString(), getHistory())
+        assertEquals("C", getValue())
+        assertEquals("A, B, C", getHistory())
+        assertEquals(true, getAvailable())
 
-        store.update(values[3])
+        store.update("D")
         delay(100)
-        assertEquals(values[3], getValue())
-        assertEquals(values.slice(0..2).reversed().joinToString(), getHistory())
-
-        store.update(store.hist.back())
-        delay(100)
-        assertEquals(values[2], getValue())
-        assertEquals(values.slice(0..1).reversed().joinToString(), getHistory())
-
-        assertEquals(store.hist.last(), values[1])
+        assertEquals("D", getValue())
+        assertEquals("A, B, C, D", getHistory())
+        assertEquals(true, getAvailable())
 
         store.update(store.hist.back())
         delay(100)
-        assertEquals(values[1], getValue())
-        assertEquals(values[0], getHistory())
+        assertEquals("C", getValue())
+        assertEquals("A, B, C", getHistory())
+        assertEquals(true, getAvailable())
 
-        store.hist.reset()
+        store.update(store.hist.back())
         delay(100)
-        assertEquals("", getHistory())
+        assertEquals("B", getValue())
+        assertEquals("A, B", getHistory())
+        assertEquals(true, getAvailable())
+
+        store.hist.clear()
+        delay(100)
+        assertEquals("B", getValue())
+        assertEquals("B", getHistory())
         assertEquals(false, getAvailable())
     }
 
@@ -89,14 +91,14 @@ class HistoryTests {
         val histLength = 4
 
         val store = object : RootStore<String>("") {
-            val hist = history<String>(histLength).sync(this)
+            val hist = history(histLength)
 
         }
 
         render {
             div {
                 span(id = valueId) { store.data.renderText() }
-                span(id = historyId) { store.hist.data.map { hist -> hist.joinToString() }.renderText() }
+                span(id = historyId) { store.hist.data.map { it.joinToString() }.renderText() }
             }
         }
 
@@ -111,61 +113,14 @@ class HistoryTests {
         delay(200)
 
         assertEquals(values.last(), getValue())
-        assertEquals(values.takeLast(histLength + 1).reversed().drop(1).joinToString(), getHistory())
+        assertEquals(values.takeLast(histLength + 1).drop(1).joinToString(), getHistory())
     }
 
 
     @Test
-    fun testManualHistory() = runTest {
-        
-        val valueId = "value-${Id.next()}"
-        val historyId = "history-${Id.next()}"
-        val values = listOf("A", "B", "C")
-
-        fun getValue() = document.getElementById(valueId)?.textContent
-        fun getHistory() = document.getElementById(historyId)?.textContent
-
-        val histLength = 4
-
-        val store = object : RootStore<String>("") {
-            val hist = history<String>(histLength).sync(this)
-
+    fun testMaxCapacityError() = runTest {
+        assertFailsWith<IllegalArgumentException> {
+            history(4, listOf("a", "b", "c", "d", "e"))
         }
-
-        render {
-            div {
-                span(id = valueId) { store.data.renderText() }
-                span(id = historyId) { store.hist.data.map { hist -> hist.joinToString() }.renderText() }
-            }
-        }
-
-        delay(100)
-        assertEquals("", getValue())
-        assertEquals("", getHistory())
-
-        values.forEach { value ->
-            store.hist.add(value)
-            delay(1)
-        }
-        delay(200)
-
-        assertEquals(values.reversed().joinToString(), getHistory())
-
-        store.update(store.hist.back())
-        delay(100)
-        assertEquals(values[2], getValue())
-        assertEquals(values.slice(0..1).reversed().joinToString(), getHistory())
-
-        store.update(store.hist.back())
-        delay(100)
-        assertEquals(values[1], getValue())
-        assertEquals(values[0], getHistory())
-
-        store.update(store.hist.back())
-        delay(100)
-        assertEquals(values[0], getValue())
-        assertEquals("", getHistory())
     }
-
-
 }
