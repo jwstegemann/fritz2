@@ -75,11 +75,11 @@ render {
 ```
 
 To see a complete example of this, visit our 
-[remote example](https://examples.fritz2.dev/remote/build/distributions/index.html).
+[remote example](/examples/remote).
 
 In the real world, instead of creating the JSON manually, better use 
 [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization).
-Get inspired by our [repositories example](https://examples.fritz2.dev/repositories/build/distributions/index.html)
+Get inspired by our [repositories example](/examples/repositories)
 and use our [repositories API](/docs/repositories).
 
 

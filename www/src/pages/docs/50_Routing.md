@@ -173,5 +173,5 @@ fun main() {
 }
 ```
 
-Have a look at our [routing example](https://examples.fritz2.dev/routing/build/distributions/index.html)
+Have a look at our [routing example](/examples/routing)
 to see how it works and to play around with it.

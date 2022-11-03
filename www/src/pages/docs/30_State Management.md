@@ -366,7 +366,7 @@ After connecting these two stores via their handlers, a saved `Person` will also
 in `personListStore`. All depending components will be updated accordingly.
 
 To see a complete example visit our
-[validation example](https://examples.fritz2.dev/validation/build/distributions/index.html) which uses connected
+[validation example](/examples/validation) which uses connected
 stores and validate a `Person` before adding it to a list of `Person`s.
 
 ## History in Stores
@@ -518,12 +518,12 @@ They are named exactly like the entities and properties, so it's easy to use:
 val nameLens = Person.name()
 ```
 
-You can see it in action at our [nestedmodel-example](https://examples.fritz2.dev/nestedmodel/build/distributions/index.html).
+You can see it in action at our [nestedmodel-example](/examples/nestedmodel).
 
 Keep in mind that your annotated classes have to be in your `commonMain` source-set
 otherwise the automatic generation of the lenses will not work!
 
-Have a look at the [validation-example](https://examples.fritz2.dev/validation/build/distributions/index.html)
+Have a look at the [validation-example](/examples/validation)
 to see how to set it up.
 
 This will also help you define a multiplatform project for sharing your model and validation code between
@@ -623,7 +623,7 @@ fritz2 also provides a special function `format()` for creating a `Lens<P, Strin
 fun <P> format(parse: (String) -> P, format: (P) -> String): Lens<P, String>
 ```
 
-The following [validation example](https://examples.fritz2.dev/validation/build/distributions/index.html) demonstrates its usage:
+The following [validation example](/examples/validation) demonstrates its usage:
 ```kotlin
 import dev.fritz2.lens.format
 
@@ -640,7 +640,7 @@ When you have created a special `Lens` for your own data type like `Formats.date
 concatenate your Lenses before using them in the `sub()` method e.g. `sub(Person.birthday() + Fromat.dateLens)` or
 call the method `sub()` on the `Store` of your custom type `P` with your formatting `Lens` e.g `sub(Format.dateLens)`.
 
-Here is the code from the [validation example](https://examples.fritz2.dev/validation/build/distributions/index.html)
+Here is the code from the [validation example](/examples/validation)
 which uses the special `Lens` in the `Formats` object specified above for the `com.soywiz.klock.Date` type:
 ```kotlin
 import com.soywiz.klock.Date
