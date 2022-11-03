@@ -4,10 +4,7 @@ package dev.fritz2.core
 
 import kotlinx.browser.window
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.*
 import org.w3c.dom.*
 import org.w3c.dom.Window
 import org.w3c.dom.clipboard.ClipboardEvent
@@ -22,14 +19,14 @@ import org.w3c.xhr.ProgressEvent
  * because the type that is offered to the listener is not always consistent
  * (on different browsers, different actions, etc.)
  */
-interface WithEvents<out T: EventTarget> {
+interface WithEvents<out T : EventTarget> {
 
     /**
      * Creates an [Listener] for the given event [name].
      *
      * @param name of the [Event] to listen for
      */
-    fun <X : Event> subscribe(name: String): Listener<X, T>
+    fun <X : Event> subscribe(name: String, capture: Boolean = false, init: Event.() -> Unit = {}): Listener<X, T>
 
     /**
      * occurs when the loading of a media is aborted
@@ -427,6 +424,405 @@ interface WithEvents<out T: EventTarget> {
      * occurs when the mouse wheel rolls up or down over an element
      */
     val wheels get() = subscribe<WheelEvent>("wheel")
+
+
+
+    /**
+     * occurs when the loading of a media is aborted
+     */
+    val abortsCaptured get() = subscribe<Event>("abort", true)
+
+    /**
+     * occurs when a page has started printing, or if the print dialogue box has been closed
+     */
+    val afterprintsCaptured get() = subscribe<Event>("afterprint", true)
+
+    /**
+     * occurs when a page is about to be printed
+     */
+    val beforeprintsCaptured get() = subscribe<Event>("beforeprint", true)
+
+    /**
+     * occurs before the document is about to be unloaded
+     */
+    val beforeunloadsCaptured get() = subscribe<Event>("beforeunload", true)
+
+    /**
+     * occurs when an element loses focus
+     */
+    val blursCaptured get() = subscribe<FocusEvent>("blur", true)
+
+    /**
+     * occurs when the browser can start playing the media (when it has buffered enough to begin)
+     */
+    val canplaysCaptured get() = subscribe<Event>("canplay", true)
+
+    /**
+     * occurs when the browser can play through the media without stopping for buffering
+     */
+    val canplaythroughsCaptured get() = subscribe<Event>("canplaythrough", true)
+
+    /**
+     * occurs when the content of a form element, the selection, or the checked state have changed
+     * (for `<input>`, `<select>`, and `<textarea>`)
+     */
+    val changesCaptured get() = subscribe<Event>("change", true)
+
+    /**
+     * occurs when the user clicks on an element
+     */
+    val clicksCaptured get() = subscribe<MouseEvent>("click", true)
+
+    /**
+     * occurs when the user right-clicks on an element to open a context menu
+     */
+    val contextmenusCaptured get() = subscribe<MouseEvent>("contextmenu", true)
+
+    /**
+     * occurs when the user copies the content of an element
+     */
+    val copysCaptured get() = subscribe<ClipboardEvent>("copy", true)
+
+    /**
+     * occurs when the user cuts the content of an element
+     */
+    val cutsCaptured get() = subscribe<ClipboardEvent>("cut", true)
+
+    /**
+     * occurs when the user double-clicks on an element
+     */
+    val dblclicksCaptured get() = subscribe<MouseEvent>("dblclick", true)
+
+    /**
+     * occurs when an element is being dragged
+     */
+    val dragsCaptured get() = subscribe<DragEvent>("drag", true)
+
+    /**
+     * occurs when the user has finished dragging an element
+     */
+    val dragendsCaptured get() = subscribe<DragEvent>("dragend", true)
+
+    /**
+     * occurs when the dragged element enters the drop target
+     */
+    val dragentersCaptured get() = subscribe<DragEvent>("dragenter", true)
+
+    /**
+     * occurs when the dragged element leaves the drop target
+     */
+    val dragleavesCaptured get() = subscribe<DragEvent>("dragleave", true)
+
+    /**
+     * occurs when the dragged element is over the drop target
+     */
+    val dragoversCaptured get() = subscribe<DragEvent>("dragover", true)
+
+    /**
+     * occurs when the user starts to drag an element
+     */
+    val dragstartsCaptured get() = subscribe<DragEvent>("dragstart", true)
+
+    /**
+     * occurs when the dragged element is dropped on the drop target
+     */
+    val dropsCaptured get() = subscribe<DragEvent>("drop", true)
+
+    /**
+     * occurs when the duration of the media is changed
+     */
+    val durationchangesCaptured get() = subscribe<Event>("durationchange", true)
+
+    /**
+     * occurs when the media has reach the end (useful for messages like "thanks for listening")
+     */
+    val endedsCaptured get() = subscribe<Event>("ended", true)
+
+    /**
+     * occurs when an element gets focus
+     */
+    val focussCaptured get() = subscribe<FocusEvent>("focus", true)
+
+    /**
+     * occurs when an element is about to get focus
+     */
+    val focusinsCaptured get() = subscribe<FocusEvent>("focusin", true)
+
+    /**
+     * occurs when an element is about to lose focus
+     */
+    val focusoutsCaptured get() = subscribe<FocusEvent>("focusout", true)
+
+    /**
+     * occurs when an element is displayed in fullscreen mode
+     */
+    val fullscreenchangesCaptured get() = subscribe<Event>("fullscreenchange", true)
+
+    /**
+     * occurs when an element can not be displayed in fullscreen mode
+     */
+    val fullscreenerrorsCaptured get() = subscribe<Event>("fullscreenerror", true)
+
+    /**
+     * occurs when there has been changes to the anchor part of a URL
+     */
+    val hashchangesCaptured get() = subscribe<HashChangeEvent>("hashchange", true)
+
+    /**
+     * occurs when an element gets user input has to use Event as type because Chrome and Safari offer Events instead
+     * of InputEvents when selecting from a datalist
+     */
+    val inputsCaptured get() = subscribe<Event>("input", true)
+
+    /**
+     * occurs when an element is invalid
+     */
+    val invalidsCaptured get() = subscribe<Event>("invalid", true)
+
+    /**
+     * occurs when the user is pressing a key
+     */
+    val keydownsCaptured get() = subscribe<KeyboardEvent>("keydown", true)
+
+    /**
+     * occurs when the user presses a key
+     */
+    val keypresssCaptured get() = subscribe<KeyboardEvent>("keypress", true)
+
+    /**
+     * occurs when the user releases a key
+     */
+    val keyupsCaptured get() = subscribe<KeyboardEvent>("keyup", true)
+
+    /**
+     * occurs when an object has loaded
+     */
+    val loadsCaptured get() = subscribe<Event>("load", true)
+
+    /**
+     * occurs when media data is loaded
+     */
+    val loadeddatasCaptured get() = subscribe<Event>("loadeddata", true)
+
+    /**
+     * occurs when metadata (like dimensions and duration) are loaded
+     */
+    val loadedmetadatasCaptured get() = subscribe<Event>("loadedmetadata", true)
+
+    /**
+     * occurs when the pointer is moved onto an element
+     */
+    val mouseentersCaptured get() = subscribe<MouseEvent>("mouseenter", true)
+
+    /**
+     * occurs when the pointer is moved out of an element
+     */
+    val mouseleavesCaptured get() = subscribe<MouseEvent>("mouseleave", true)
+
+    /**
+     * occurs when the pointer is moving while it is over an element
+     */
+    val mousemovesCaptured get() = subscribe<MouseEvent>("mousemove", true)
+
+    /**
+     * occurs when the pointer is moved onto an element, or onto one of its children
+     */
+    val mouseoversCaptured get() = subscribe<MouseEvent>("mouseover", true)
+
+    /**
+     * occurs when a user moves the mouse pointer out of an element, or out of one of its children
+     */
+    val mouseoutsCaptured get() = subscribe<MouseEvent>("mouseout", true)
+
+    /**
+     * occurs when a user releases a mouse button over an element
+     */
+    val mouseupsCaptured get() = subscribe<MouseEvent>("mouseup", true)
+
+    /**
+     * occurs when the browser starts to work offline
+     */
+    val offlinesCaptured get() = subscribe<Event>("offline", true)
+
+    /**
+     * occurs when the browser starts to work online
+     */
+    val onlinesCaptured get() = subscribe<Event>("online", true)
+
+    /**
+     * occurs when a connection with the event source is opened
+     */
+    val opensCaptured get() = subscribe<Event>("open", true)
+
+    /**
+     * occurs when the user navigates away from a webpage
+     */
+    val pagehidesCaptured get() = subscribe<PageTransitionEvent>("pagehide", true)
+
+    /**
+     * occurs when the user navigates to a webpage
+     */
+    val pageshowsCaptured get() = subscribe<PageTransitionEvent>("pageshow", true)
+
+    /**
+     * occurs when the user pastes some content in an element
+     */
+    val pastesCaptured get() = subscribe<ClipboardEvent>("paste", true)
+
+    /**
+     * occurs when the browser starts looking for the specified media
+     */
+    val loadstartsCaptured get() = subscribe<ProgressEvent>("loadstart", true)
+
+    /**
+     * occurs when a message is received through the event source
+     */
+    val messagesCaptured get() = subscribe<Event>("message", true)
+
+    /**
+     * occurs when the user presses a mouse button over an element
+     */
+    val mousedownsCaptured get() = subscribe<MouseEvent>("mousedown", true)
+
+    /**
+     * occurs when the media is paused either by the user or programmatically
+     */
+    val pausesCaptured get() = subscribe<Event>("pause", true)
+
+    /**
+     * occurs when the media has been started or is no longer paused
+     */
+    val playsCaptured get() = subscribe<Event>("play", true)
+
+    /**
+     * occurs when the media is playing after having been paused or stopped for buffering
+     */
+    val playingsCaptured get() = subscribe<Event>("playing", true)
+
+    /**
+     * occurs when the window's history changes
+     */
+    val popstatesCaptured get() = subscribe<PopStateEvent>("popstate", true)
+
+    /**
+     * occurs when the browser is in the process of getting the media data (downloading the media)
+     */
+    val progresssCaptured get() = subscribe<Event>("progress", true)
+
+    /**
+     * occurs when the playing speed of the media is changed
+     */
+    val ratechangesCaptured get() = subscribe<Event>("ratechange", true)
+
+    /**
+     * occurs when the document view is resized
+     */
+    val resizesCaptured get() = subscribe<Event>("resize", true)
+
+    /**
+     * occurs when a form is reset
+     */
+    val resetsCaptured get() = subscribe<Event>("reset", true)
+
+    /**
+     * occurs when an element's scrollbar is being scrolled
+     */
+    val scrollsCaptured get() = subscribe<Event>("scroll", true)
+
+    /**
+     * occurs when the user writes something in a search field (for <input="search">)
+     */
+    val searchsCaptured get() = subscribe<Event>("search", true)
+
+    /**
+     * occurs when the user is finished moving/skipping to a new position in the media
+     */
+    val seekedsCaptured get() = subscribe<Event>("seeked", true)
+
+    /**
+     * occurs when the user starts moving/skipping to a new position in the media
+     */
+    val seekingsCaptured get() = subscribe<Event>("seeking", true)
+
+    /**
+     * occurs after the user selects some text (for <input> and <textarea>)
+     */
+    val selectsCaptured get() = subscribe<Event>("select", true)
+
+    /**
+     * occurs when a <menu> element is shown as a context menu
+     */
+    val showsCaptured get() = subscribe<Event>("show", true)
+
+    /**
+     * occurs when the browser is trying to get media data, but data is not available
+     */
+    val stalledsCaptured get() = subscribe<Event>("stalled", true)
+
+    /**
+     * occurs when a Web Storage area is updated
+     */
+    val storagesCaptured get() = subscribe<StorageEvent>("storage", true)
+
+    /**
+     * occurs when a form is submitted
+     */
+    val submitsCaptured get() = subscribe<Event>("submit", true)
+
+    /**
+     * occurs when the browser is intentionally not getting media data
+     */
+    val suspendsCaptured get() = subscribe<Event>("suspend", true)
+
+    /**
+     * occurs when the playing position has changed (like when the user fast forwards to a different point in the media)
+     */
+    val timeupdatesCaptured get() = subscribe<Event>("timeupdate", true)
+
+    /**
+     * occurs when the user opens or closes the <details> element
+     */
+    val togglesCaptured get() = subscribe<Event>("toggle", true)
+
+    /**
+     * occurs when the touch is interrupted
+     */
+    val touchcancelsCaptured get() = subscribe<TouchEvent>("touchcancel", true)
+
+    /**
+     * occurs when a finger is removed from a touch screen
+     */
+    val touchendsCaptured get() = subscribe<TouchEvent>("touchend", true)
+
+    /**
+     * occurs when a finger is dragged across the screen
+     */
+    val touchmovesCaptured get() = subscribe<TouchEvent>("touchmove", true)
+
+    /**
+     * occurs when a finger is placed on a touch screen
+     */
+    val touchstartsCaptured get() = subscribe<TouchEvent>("touchstart", true)
+
+    /**
+     * occurs once a page has unloaded (for <body>)
+     */
+    val unloadsCaptured get() = subscribe<Event>("unload", true)
+
+    /**
+     * occurs when the volume of the media has changed (includes setting the volume to "mute")
+     */
+    val volumechangesCaptured get() = subscribe<Event>("volumechange", true)
+
+    /**
+     * occurs when the media has paused but is expected to resume (like when the media pauses to buffer more data)
+     */
+    val waitingsCaptured get() = subscribe<Event>("waiting", true)
+
+    /**
+     * occurs when the mouse wheel rolls up or down over an element
+     */
+    val wheelsCaptured get() = subscribe<WheelEvent>("wheel", true)
 }
 
 /**
@@ -436,18 +832,8 @@ object Window : WithEvents<Window> {
 
     private val scope = MainScope()
 
-    override fun <X : Event> subscribe(name: String): Listener<X, Window> = Listener(callbackFlow {
-        val listener: (Event) -> Unit = {
-            try {
-                trySend(it.unsafeCast<X>())
-            } catch (e: Exception) {
-                console.error("Unexpected type while listening for `$name` events in Window object", e)
-            }
-        }
-        window.addEventListener(name, listener)
-
-        awaitClose { window.removeEventListener(name, listener) }
-    }.shareIn(scope, SharingStarted.Lazily))
+    override fun <X : Event> subscribe(name: String, capture: Boolean, init: Event.() -> Unit): Listener<X, Window> =
+        Listener(window.subscribe<X, Window>(name, capture, init).shareIn(scope, SharingStarted.Lazily))
 
     override val aborts by lazy { super.aborts }
     override val afterprints by lazy { super.afterprints }
@@ -528,4 +914,84 @@ object Window : WithEvents<Window> {
     override val volumechanges by lazy { super.volumechanges }
     override val waitings by lazy { super.waitings }
     override val wheels by lazy { super.wheels }
+
+    override val abortsCaptured by lazy { super.abortsCaptured }
+    override val afterprintsCaptured by lazy { super.afterprintsCaptured }
+    override val beforeprintsCaptured by lazy { super.beforeprintsCaptured }
+    override val beforeunloadsCaptured by lazy { super.beforeunloadsCaptured }
+    override val blursCaptured by lazy { super.blursCaptured }
+    override val canplaysCaptured by lazy { super.canplaysCaptured }
+    override val canplaythroughsCaptured by lazy { super.canplaythroughsCaptured }
+    override val changesCaptured by lazy { super.changesCaptured }
+    override val clicksCaptured by lazy { super.clicksCaptured }
+    override val contextmenusCaptured by lazy { super.contextmenusCaptured }
+    override val copysCaptured by lazy { super.copysCaptured }
+    override val cutsCaptured by lazy { super.cutsCaptured }
+    override val dblclicksCaptured by lazy { super.dblclicksCaptured }
+    override val dragsCaptured by lazy { super.dragsCaptured }
+    override val dragendsCaptured by lazy { super.dragendsCaptured }
+    override val dragentersCaptured by lazy { super.dragentersCaptured }
+    override val dragleavesCaptured by lazy { super.dragleavesCaptured }
+    override val dragoversCaptured by lazy { super.dragoversCaptured }
+    override val dragstartsCaptured by lazy { super.dragstartsCaptured }
+    override val dropsCaptured by lazy { super.dropsCaptured }
+    override val durationchangesCaptured by lazy { super.durationchangesCaptured }
+    override val endedsCaptured by lazy { super.endedsCaptured }
+    override val focussCaptured by lazy { super.focussCaptured }
+    override val focusinsCaptured by lazy { super.focusinsCaptured }
+    override val focusoutsCaptured by lazy { super.focusoutsCaptured }
+    override val fullscreenchangesCaptured by lazy { super.fullscreenchangesCaptured }
+    override val fullscreenerrorsCaptured by lazy { super.fullscreenerrorsCaptured }
+    override val hashchangesCaptured by lazy { super.hashchangesCaptured }
+    override val inputsCaptured by lazy { super.inputsCaptured }
+    override val invalidsCaptured by lazy { super.invalidsCaptured }
+    override val keydownsCaptured by lazy { super.keydownsCaptured }
+    override val keypresssCaptured by lazy { super.keypresssCaptured }
+    override val keyupsCaptured by lazy { super.keyupsCaptured }
+    override val loadsCaptured by lazy { super.loadsCaptured }
+    override val loadeddatasCaptured by lazy { super.loadeddatasCaptured }
+    override val loadedmetadatasCaptured by lazy { super.loadedmetadatasCaptured }
+    override val loadstartsCaptured by lazy { super.loadstartsCaptured }
+    override val messagesCaptured by lazy { super.messagesCaptured }
+    override val mousedownsCaptured by lazy { super.mousedownsCaptured }
+    override val mouseentersCaptured by lazy { super.mouseentersCaptured }
+    override val mouseleavesCaptured by lazy { super.mouseleavesCaptured }
+    override val mousemovesCaptured by lazy { super.mousemovesCaptured }
+    override val mouseoversCaptured by lazy { super.mouseoversCaptured }
+    override val mouseoutsCaptured by lazy { super.mouseoutsCaptured }
+    override val mouseupsCaptured by lazy { super.mouseupsCaptured }
+    override val offlinesCaptured by lazy { super.offlinesCaptured }
+    override val onlinesCaptured by lazy { super.onlinesCaptured }
+    override val opensCaptured by lazy { super.opensCaptured }
+    override val pagehidesCaptured by lazy { super.pagehidesCaptured }
+    override val pageshowsCaptured by lazy { super.pageshowsCaptured }
+    override val pastesCaptured by lazy { super.pastesCaptured }
+    override val pausesCaptured by lazy { super.pausesCaptured }
+    override val playsCaptured by lazy { super.playsCaptured }
+    override val playingsCaptured by lazy { super.playingsCaptured }
+    override val popstatesCaptured by lazy { super.popstatesCaptured }
+    override val progresssCaptured by lazy { super.progresssCaptured }
+    override val ratechangesCaptured by lazy { super.ratechangesCaptured }
+    override val resizesCaptured by lazy { super.resizesCaptured }
+    override val resetsCaptured by lazy { super.resetsCaptured }
+    override val scrollsCaptured by lazy { super.scrollsCaptured }
+    override val searchsCaptured by lazy { super.searchsCaptured }
+    override val seekedsCaptured by lazy { super.seekedsCaptured }
+    override val seekingsCaptured by lazy { super.seekingsCaptured }
+    override val selectsCaptured by lazy { super.selectsCaptured }
+    override val showsCaptured by lazy { super.showsCaptured }
+    override val stalledsCaptured by lazy { super.stalledsCaptured }
+    override val storagesCaptured by lazy { super.storagesCaptured }
+    override val submitsCaptured by lazy { super.submitsCaptured }
+    override val suspendsCaptured by lazy { super.suspendsCaptured }
+    override val timeupdatesCaptured by lazy { super.timeupdatesCaptured }
+    override val togglesCaptured by lazy { super.togglesCaptured }
+    override val touchcancelsCaptured by lazy { super.touchcancelsCaptured }
+    override val touchendsCaptured by lazy { super.touchendsCaptured }
+    override val touchmovesCaptured by lazy { super.touchmovesCaptured }
+    override val touchstartsCaptured by lazy { super.touchstartsCaptured }
+    override val unloadsCaptured by lazy { super.unloadsCaptured }
+    override val volumechangesCaptured by lazy { super.volumechangesCaptured }
+    override val waitingsCaptured by lazy { super.waitingsCaptured }
+    override val wheelsCaptured by lazy { super.wheelsCaptured }
 }
