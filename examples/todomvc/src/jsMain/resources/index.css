@@ -61,7 +61,7 @@ body {
 	color: rgba(0, 0, 0, 0.4);
 }
 
-.todoapp input::input-placeholder {
+.todoapp input::placeholder {
 	font-style: italic;
 	font-weight: 300;
 	color: rgba(0, 0, 0, 0.4);
