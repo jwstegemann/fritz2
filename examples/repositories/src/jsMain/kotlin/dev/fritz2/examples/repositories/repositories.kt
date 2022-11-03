@@ -19,12 +19,12 @@ const val personPrefix = "dev.fritz2.examples.person"
 object EntityStore : RootStore<Person>(Person()) {
 
     val running = tracker()
-    val history = history<Person>(10).sync(this)
+    val history = history<Person>(10, synced = true)
 
     private val localStorage = localStorageEntityOf(PersonResource, personPrefix)
 
     val load = handle<String> { _, id ->
-        history.reset()
+        history.clear()
         localStorage.load(id)
     }
 
@@ -37,13 +37,13 @@ object EntityStore : RootStore<Person>(Person()) {
     }
 
     val delete = handleAndEmit<Unit> { person ->
-        history.reset()
+        history.clear()
         localStorage.delete(person).also { emit(Unit) }
         Person()
     }
 
     val reset = handle {
-        history.reset()
+        history.clear()
         Person()
     }
 
