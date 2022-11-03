@@ -250,6 +250,18 @@ render {
 }
 ```
 
+To set an initial CSS class (or any other attribute) immediately (for example to avoid flicker effects caused by the delay
+of the first value becoming available on the flow), the respective attribute-method must be called twice.
+First with the static value that should be set immediately, then with the `Flow` that provides the dynamic values:
+
+
+```kotlin
+val visibility: Flow<String> = ...
+
+className("invisible")
+className(visibility)
+```
+
 ## Scope
 
 fritz2 offers the possibility to use a `Scope` to add some information to a tag which can then be received by any
