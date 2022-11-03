@@ -80,6 +80,11 @@ val pages = mapOf(
         "Headless Tooltip",
         """Some information that is displayed, whenever you hover a target element using your pointer device.""".trimMargin(),
         RenderContext::tooltipDemo
+    ),
+    "toast" to DemoPage(
+        "Headless Toast",
+        """Display notification-like content in arbitrary positions on the screen.""".trimMargin(),
+        RenderContext::toastDemo
     )
 )
 
@@ -87,7 +92,7 @@ fun RenderContext.overview() {
     div("flex flex-col justify-start items-center h-screen") {
         h1("mb-8 tracking-tight font-bold text-gray-900 text-4xl") {
             span("block sm:inline") { +"fritz2" }
-            span("block text-primary-800 sm:inline") { +" Headless Demos" }
+            span("block text-primary-800 sm:inline") { +"Headless Demos" }
         }
         div("w-3/4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12") {
             pages.forEach {
