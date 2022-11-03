@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.*
 
 
 /**
- * A [ValidatingStore] is a [RootStore] which also contains a [Validation] for its model and by default applies it
+ * A [ValidatingStore] is a [Store] which also contains a [Validation] for its model and by default applies it
  * to every update.
  *
  * This store is intentionally configured to validate the data on each update, that is why the [validateAfterUpdate]
@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.*
  * @param initialData first current value of this [Store]
  * @param validation [Validation] function to use at the data on this [Store].
  * @param validateAfterUpdate flag to decide if a new value gets automatically validated after setting it to the [Store].
- * @param id id of this [Store]. Ids of [SubStore]s will be concatenated.
+ * @param id id of this [Store]. Ids of parent [Store]s will be concatenated.
  */
 open class ValidatingStore<D, T, M>(
     initialData: D,
@@ -95,7 +95,7 @@ fun <D, T, M> storeOf(
     initialData: D,
     validation: Validation<D, T, M>,
     id: String = Id.next()
-) = ValidatingStore(initialData, validation, true, id)
+): ValidatingStore<D, T, M> = ValidatingStore(initialData, validation, true, id)
 
 /**
  * Finds all corresponding [ValidationMessage]s to this [Store].

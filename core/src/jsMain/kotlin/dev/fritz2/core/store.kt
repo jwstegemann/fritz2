@@ -13,7 +13,7 @@ import kotlinx.coroutines.sync.withLock
 typealias Update<D> = suspend (D) -> D
 
 /**
- * The [Store] is the main type for all data binding activities. It the base class of all concrete Stores like [RootStore], [SubStore], etc.
+ * [Store] interface is the main type for all two-way data binding activities.
  */
 interface Store<D> : WithJob {
 
@@ -33,7 +33,7 @@ interface Store<D> : WithJob {
     /**
      * Factory method to create a [SimpleHandler] that does not take an Action
      *
-     * @param execute lambda that is execute for each event on the connected [Flow]
+     * @param execute lambda that is executed for each event on the connected [Flow]
      */
     fun handle(
         execute: suspend (D) -> D
@@ -106,22 +106,18 @@ interface Store<D> : WithJob {
     val update: Handler<D>
 
     /**
-     * create a [SubStore] that represents a certain part of your data model.
+     * Creates a new [Store] that contains data derived by a given [Lens].
      *
-     * @param lens: a [Lens] describing, which part of your data model you will create [SubStore] for.
-     * Use @[Lenses] annotation to let your compiler
-     * create the lenses for you or use the lens-factory-method.
+     * @param lens: a [Lens] describing the two-way data binding of the derived [Store].
      */
-    fun <X> sub(lens: Lens<D, X>): SubStore<D, X> =
-        SubStore(this, lens)
+    fun <X> sub(lens: Lens<D, X>): Store<X> = SubStore(this, lens)
 }
 
 /**
  * A [Store] can be initialized with a given value.
- * Use a [RootStore] to "store" your model and create [SubStore]s from here.
  *
  * @param initialData first current value of this [Store]
- * @param id id of this [Store]. Ids of [SubStore]s will be concatenated.
+ * @param id id of this [Store]. Ids of derived [Store]s will be concatenated.
  */
 open class RootStore<D>(
     initialData: D,
@@ -139,7 +135,7 @@ open class RootStore<D>(
     override val job: Job = Job()
 
     /**
-     * Emits a [Flow] with the current data of this [RootStore].
+     * Emits a [Flow] with the current data of this [Store].
      * The [Flow] internal data is only changed, when the value differs from the last one to avoid calculations
      * and updates that are not necessary.
      *
@@ -148,7 +144,7 @@ open class RootStore<D>(
     final override val data: Flow<D> = state.asStateFlow()
 
     /**
-     * Represents the current data of this [RootStore].
+     * Represents the current data of this [Store].
      */
     override val current: D
         get() = state.value
@@ -169,9 +165,9 @@ open class RootStore<D>(
 }
 
 /**
- * Convenience function to create a simple [RootStore] without any handlers, etc.
+ * Convenience function to create a simple [Store] without any handlers, etc.
  *
  * @param initialData first current value of this [Store]
- * @param id id of this store. Ids of [SubStore]s will be concatenated.
+ * @param id id of this store. Ids of derived [Store]s will be concatenated.
  */
-fun <D> storeOf(initialData: D, id: String = Id.next()) = RootStore(initialData, id)
+fun <D> storeOf(initialData: D, id: String = Id.next()): Store<D> = RootStore(initialData, id)

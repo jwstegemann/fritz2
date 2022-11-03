@@ -171,7 +171,7 @@ render {
     }
 }
 ```
-Of course, you can also use a `RootStore<T>` with a complex model which contains all data that you need in one place.
+Of course, you can also use a `Store<T>` with a complex model which contains all data that you need in one place.
 
 You can also bind a `Flow` to an attribute:
 ```kotlin
@@ -225,7 +225,7 @@ You can use this handler to conveniently implement _two-way-databinding_ by usin
 of an `input`-`Tag`, for example:
 
 ```kotlin
-val store = storeOf("") // store: RootStore<String>
+val store: Store<String> = storeOf("")
 
 render {
     input {
@@ -295,8 +295,8 @@ render {
 }
 ```
 
-In real world, you will often come across nullable attributes of complex entities. Then you can often call `orDefault`
-directly on the `SubStore` you create to use with your form elements:
+In real world, you will often come across nullable attributes of complex entities. Then you can call `orDefault`
+directly on the `Store` you create to use with your form elements:
 
 ```kotlin
 @Lenses
@@ -497,7 +497,8 @@ fritz2 also offers the method `lens()` for a short-and-sweet-experience:
 val nameLens = lens("name", { it.name }, { person, value -> person.copy(name = value) })
 ```
 
-No magic there. The first parameter sets an id for the `Lens`. When using `Lens`es with `SubStore`s, the `id` will be used to generate a valid html-id representing the path through your model.
+No magic there. The first parameter sets an id for the `Lens`. When using `Lens`es with `Store`s, 
+the `id` will be used to generate a valid HTML `id` representing the path through your model.
 This can be used to identify your elements semantically (for automated ui-tests for example).
 
 If you have deep nested structures or a lot of them, you may want to automate this behavior.
@@ -528,10 +529,10 @@ to see how to set it up.
 This will also help you define a multiplatform project for sharing your model and validation code between
 the browser and backend.
 
-### Destructuring complex Models with `SubStore`s and `Lense`s
+### Destructuring complex Models with child `Store`s and `Lense`s
 
-Having a `Lens` available which points to some specific property makes it very easy to get a `SubStore` for that
-property from a `Store` of the parent entity:
+Having a `Lens` available which points to some specific property makes it very easy to get a `Store` for that
+property from an original `Store` of the parent entity:
 
 ```kotlin
 // given the following nested data classes...
@@ -551,16 +552,16 @@ val personStore = storeOf(Person(Name("first name", "last name"), "more text"))
 val nameStore = personStore.sub(Person.name())
 ```
 
-Now you can use your `nameStore` exactly like any other `Store` to set up _two-way-databinding_, call `sub(...)`
-again to access the properties of `Name`. If a `SubStore` contains a `List`,
-you can of course iterate over it by using `renderEach {}`.
+Now you can use your `nameStore` exactly like any other `Store` to set up _two-way data binding_, call `sub(...)`
+again to access the properties of `Name`. If a `Store` contains a `List`,
+you can of course iterate over it by using `renderEach()`.
 It's fully recursive from here on down to the deepest nested parts of your model.
 
-You can also add `Handler`s to your `SubStore`s by simply calling the `handle`-method:
+You can also add `Handler`s to your `Store`s by simply calling the `handle` method:
 
 ```kotlin
-val booleanSubStore = parentStore.sub(someLens)
-val switch = booleanSubStore.handle { model: Boolean -> 
+val booleanChildStore = parentStore.sub(someLens)
+val switch = booleanChildStore.handle { model: Boolean -> 
     !model
 }
 
@@ -572,7 +573,7 @@ render {
 }
 ````
 
-To keep your code well-structured, it is recommended to implement complex logic at your `RootStore` or inherit it by using interfaces.
+To keep your code well-structured, it is recommended to implement complex logic at your `Store` or inherit it by using interfaces.
 However, the code above is a decent solution for small (convenience-)handlers.
 
 ### Calling `sub` on a `Store` with nullable content
@@ -590,7 +591,7 @@ val applicationStore = storeOf<Person>(null)
 //...
 
 applicationStore.data.render { person ->
-    if (person != null) { // if person is null you would get NullPointerExceptions reading or updating its SubStores
+    if (person != null) { // if person is null you would get NullPointerExceptions reading or updating its Stores
         val nameStore = customerStore.sub(Person.name())
         input {
             value(nameStore.data)
@@ -635,9 +636,9 @@ object Formats {
 }
 ```
 
-When you have created a special `Lens` for your own data type like `Formats.date`, you can then use it to create a new `SubStore`:
+When you have created a special `Lens` for your own data type like `Formats.date`, you can then use it to create a new `Store`:
 concatenate your Lenses before using them in the `sub()` method e.g. `sub(Person.birthday() + Fromat.dateLens)` or
-call the method `sub()` on the `SubStore` of your custom type `P` with your formatting `Lens` e.g `sub(Format.dateLens)`.
+call the method `sub()` on the `Store` of your custom type `P` with your formatting `Lens` e.g `sub(Format.dateLens)`.
 
 Here is the code from the [validation example](https://examples.fritz2.dev/validation/build/distributions/index.html)
 which uses the special `Lens` in the `Formats` object specified above for the `com.soywiz.klock.Date` type:
@@ -658,9 +659,9 @@ input("form-control", id = birthday.id) {
     changes.values() handledBy birthday.update
 }
 ```
-The resulting `SubStore` is a `Store<String>`.
+The resulting store is a `Store<String>`.
 
-You can of course reuse your custom formatting `Lens` for every `SubStore` of the same type (in this case `com.soywiz.klock.Date`).
+You can of course reuse your custom formatting `Lens` for every `Store` of the same type (in this case `com.soywiz.klock.Date`).
 
 ## Improve Rendering
 
@@ -747,21 +748,21 @@ passing an `IdProvider`.
 An `IdProvider` is a function mapping an entity to a unique id of arbitrary type. In this example, we just use the
 `id`-attribute of the `ToDo`.
 
-Then create a `SubStore` for a given entity conveniently by calling `sub(someEntity, properIdProvider)` on
-a `Store<List<*>>`. Of course you can do this yourself by mapping the flows if you work on a `Flow<List<*>>` and
-have no `Store` available or don't want to utilize fritz2's `Lens`es:
+Then create a `Store` for a given entity conveniently by calling `sub(someEntity, properIdProvider)` on
+a `Store<List<T>>`. Of course, you can do this yourself by mapping the flows if you work on a `Flow<List<T>>` and
+have no `Store` available or don't want to utilize `Lens`es:
 
 ```kotlin
 val completed = toDoListStore.data.map { it.find { t -> t.id == toDo.id } ?: false }
 ```
 
-Regardless if you use a `SubStore` or your mapped `Flow`: be aware that in the example above nothing will happen to
+Regardless if you use a `Store` or your mapped `Flow`: be aware that in the example above nothing will happen to
 your DOM, when the text of a `ToDo` changes, but it is still at the same position in the list. fritz2 determines
 that still the same entity (identified by the `IdProvider`) is at the same place in the list and therefore the `li`
 as a whole won't be re-rendered, but just the `class`-attribute (which is mounted to its own mountpoint depending
 on you `completed`-flow). This might be exactly what you want, but it depends on your use-case.
 
-You can easily do two-way-databinding inside `renderEach` using a `SubStore` created for a particular entity as seen
+You can easily do two-way data binding inside `renderEach()` using a `Store` created for a particular entity as seen
 above. This of course only makes sense in combination with an `IdProvider`:
 
 ```kotlin
@@ -784,8 +785,8 @@ fun main() {
 }
 ```
 
-If you need two-way-databinding directly on a `Store`'s `data` without any intermediate operations
-(filters, maps, etc.), call `renderEach(IdProvider)` directly on the `Store`. This will provide the `SubStore` as
+If you need two-way data binding directly on a `Store`'s `data` without any intermediate operations
+(filters, maps, etc.), call `renderEach(IdProvider)` directly on the `Store`. This will provide the `Store` as
 the render-lambda's parameter for each element.
 
 Now you know how to handle all kinds of data and structures in your `Store`s.

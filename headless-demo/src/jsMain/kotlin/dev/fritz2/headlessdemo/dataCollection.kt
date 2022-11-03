@@ -13,7 +13,7 @@ import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLTableRowElement
 
-fun RenderContext.filterInput(id: String, filterStore: RootStore<String>) {
+fun RenderContext.filterInput(id: String, filterStore: Store<String>) {
     inputField("relative my-4 grow", id) {
         value(filterStore)
         div("absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none") {
@@ -193,7 +193,7 @@ fun RenderContext.dataTableDemo(amount: Int) {
 fun RenderContext.gridListDemo(amount: Int) {
     val persons = FakePersons(amount)
     val storedPersons = storeOf(persons)
-    val selectionStore = object : RootStore<List<Person>>(persons.take(2)) {}
+    val selectionStore = storeOf(persons.take(2))
     val filterStore = storeOf("", id = "gridList-filter")
     val storedFilteredSize = storeOf(0)
 
