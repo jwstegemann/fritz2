@@ -10,12 +10,12 @@ import kotlinx.coroutines.plus
 import org.w3c.dom.events.Event
 
 /**
- * Prints [Exception] to error-[console] by ignoring [LensException].
+ * Prints [Exception] to error-[console] by ignoring [CollectionLensGetException].
  */
 internal fun printErrorIgnoreLensException(cause: Throwable) {
     when(cause) {
-        is LensException -> {}
-        else -> console.error("ERROR: ${cause.message}", cause)
+        is CollectionLensGetException -> {}
+        else -> console.error(cause)
     }
 }
 

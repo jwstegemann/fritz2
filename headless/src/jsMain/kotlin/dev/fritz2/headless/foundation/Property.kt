@@ -35,7 +35,7 @@ package dev.fritz2.headless.foundation
  *  [use] method.
  */
 abstract class Property<T> {
-    var value: T? = null
+    open var value: T? = null
         protected set
 
     val isSet: Boolean

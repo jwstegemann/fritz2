@@ -28,20 +28,16 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
 
     val value = DatabindingProperty<List<T>>()
 
-    val componentId: String by lazy {
-        explicitId ?: value.id ?: Id.next().also {
-            if (value.value == null) {
-                value(storeOf(emptyList()))
-                warnAboutMissingDatabinding("value", COMPONENT_NAME, it, "a flow of empty list")
-            }
-        }
-    }
+    val componentId: String by lazy { explicitId ?: value.id ?: Id.next() }
 
     fun render() {
         attr("id", componentId)
         attr("role", Aria.Role.group)
         attr(Aria.invalid, "true".whenever(value.hasError))
         label?.let { attr(Aria.labelledby, it.id) }
+        if (!value.isSet) {
+            warnAboutMissingDatabinding("value", COMPONENT_NAME, componentId, domNode)
+        }
     }
 
     /**

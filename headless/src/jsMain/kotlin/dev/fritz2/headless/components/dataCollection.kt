@@ -190,7 +190,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
             list.indexOfFirst { id(it) == id(item) }
         } ?: list.indexOf(item)
 
-    private val sorting = object : RootStore<SortingOrder<T>?>(null) {}
+    private val sorting = storeOf<SortingOrder<T>?>(null)
     val sortBy = sorting.update
     val toggleSorting = sorting.handle<Sorting<T>> { old, newSorting ->
         if (old?.sorting == newSorting) {
@@ -205,7 +205,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         }
     }
 
-    private val filtering = object : RootStore<((List<T>) -> List<T>)?>(null) {}
+    private val filtering = storeOf<((List<T>) -> List<T>)?>(null)
     val filterBy = filtering.update
     fun filterByText(toString: (T) -> String = { it.toString() }) = filtering.handle<String> { _, text ->
         { it.filter { toString(it).lowercase().contains(text.lowercase()) } }
@@ -338,7 +338,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
                 }
             }.shareIn(MainScope() + job, SharingStarted.Eagerly, 1)
         } else flowOf<List<T>>(emptyList()).also {
-            warnAboutMissingDatabinding("data", COMPONENT_NAME, componentId, "a flow of an empty list")
+            warnAboutMissingDatabinding("data", COMPONENT_NAME, componentId, this@DataCollection.domNode)
         }
 
         val items = filteredItems.flatMapLatest { filtered ->
@@ -353,7 +353,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
             }
         }.shareIn(MainScope() + job, SharingStarted.Eagerly, 1)
 
-        private val activeItem = object : RootStore<Pair<T, Boolean>?>(null) {}
+        private val activeItem = storeOf<Pair<T, Boolean>?>(null)
 
         fun render() {
             attr("tabindex", "0")

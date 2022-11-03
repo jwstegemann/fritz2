@@ -6,8 +6,10 @@ import dev.fritz2.headless.validation.ComponentValidationMessage
 import dev.fritz2.validation.messages
 import dev.fritz2.validation.valid
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import org.w3c.dom.HTMLElement
 
 /**
  * This property keeps track of the external data-binding of some component.
@@ -43,7 +45,7 @@ class DatabindingProperty<T> : Property<DatabindingProperty.DataBinding<T>>() {
     val id: String?
         get() = value?.id
 
-    val data: Flow<T> by lazy { value!!.data }
+    val data: Flow<T> by lazy { value?.data ?: emptyFlow() }
 
     val handler: ((Flow<T>) -> Unit)? by lazy { value?.handler }
 
@@ -75,15 +77,15 @@ internal fun warnAboutMissingDatabinding(
     propertyName: String,
     componentName: String,
     componentId: String,
-    fallbackPhrase: String
+    domNode: HTMLElement,
 ) {
     console.warn(
         buildString {
-            append("fritz2: Missing data-binding for `$propertyName` property of $componentName component ")
-            append("with id `$componentId`. Setting $fallbackPhrase as fallback.")
-            appendLine()
-            append("You should really consider to provide some data-binding, as for now you might neither see any ")
-            append("initial data, nor won't be able to access any resulting data.")
-        }
+            appendLine("[fritz2] missing data binding")
+            append("Property '$propertyName' of component '$componentName#$componentId' is required but was not set. ")
+            append("Initializing the property with emptyFlow() instead. ")
+            append("Consider setting the data binding as the component might not work as expected otherwise.")
+        },
+        domNode
     )
 }

@@ -6,8 +6,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
 /**
- * A [Store] that is derived from your [RootStore] or another [SubStore] that represents a part of the data-model of its parent.
- * Use the .sub-factory-method on the parent [Store] to create it.
+ * A [Store] that is derived from a parent [Store] mapping its data in both ways by a given [Lens].
  */
 class SubStore<P, D>(
     val parent: Store<P>,
@@ -37,7 +36,8 @@ class SubStore<P, D>(
         get() = lens.get(parent.current)
 
     /**
-     * Since a [SubStore] is just a view on a [RootStore] holding the real value, it forwards the [Update] to it, using it's [Lens] to transform it.
+     * Since a [SubStore] is just a view on a [parent] [Store] holding the real value,
+     * it forwards the [Update] to it, using it's [Lens] to transform it.
      */
     override suspend fun enqueue(update: Update<D>) {
         parent.enqueue { lens.apply(it, update) }
@@ -49,33 +49,62 @@ class SubStore<P, D>(
     override val update = handle<D> { _, newValue -> newValue }
 
     /**
-     * the current value of the [SubStore] is derived from the data of it's parent using the given [Lens].
+     * the current value of the [Store] is derived from the data of it's parent using the given [Lens].
      */
     override val data: Flow<D> = parent.data.map {
         lens.get(it)
     }.distinctUntilChanged()
 
+    override fun errorHandler(cause: Throwable) {
+        parent.errorHandler(cause)
+    }
+
 }
 
-
 /**
- * creates a [SubStore] using a [RootStore] as parent using a given [IdProvider].
+ * Creates a new [Store] containing the element for the given [element] and [idProvider] from the original [Store]'s [List].
  *
  * @param element current instance of the entity to focus on
- * @param id to identify the same entity (i.e. when it's content changed)
+ * @param idProvider to identify the same entity (i.e. when it's content changed)
  */
-fun <D, I> Store<List<D>>.sub(element: D, id: IdProvider<D, I>): SubStore<List<D>, D> {
-    val lens = lensOf(element, id)
-    return SubStore(this, lens)
-}
+fun <D, I> Store<List<D>>.sub(element: D, idProvider: IdProvider<D, I>): Store<D> =
+    SubStore(this, lensOf(element, idProvider))
 
 /**
- * creates a [SubStore] using a [RootStore] as parent using the index in the list
- * (do not use this, if you want to manipulate the list itself (add or move elements, filter, etc.).
+ * Creates a new [Store] containing the element for the given [index] from the original [Store]'s [List]
  *
  * @param index position in the list to point to
  */
-fun <D> Store<List<D>>.sub(index: Int): SubStore<List<D>, D> {
-    val lens = lensOf<D>(index)
-    return SubStore(this, lens)
-}
+fun <D> Store<List<D>>.sub(index: Int): Store<D> =
+    SubStore(this, lensOf(index))
+
+/**
+ * Creates a new [Store] containing the corresponding value for the given [key] from the original [Store]'s [Map].
+ *
+ * @param key in the map to point to
+ */
+fun <K, V> Store<Map<K, V>>.sub(key: K): Store<V> =
+    SubStore(this, lensOf(key))
+
+/**
+ * on a [Store] of nullable data this creates a [Store] with a nullable parent and non-nullable value.
+ * It can be called using a [Lens] on a non-nullable parent (that can be created by using the @[Lenses]-annotation),
+ * but you have to ensure, that the resulting [Store] is never used, when it's parent's value is null.
+ * Otherwise, a [NullPointerException] is thrown.
+ *
+ * @param lens [Lens] to use to create the [Store]
+ */
+fun <P, T> Store<P?>.sub(lens: Lens<P & Any, T>): Store<T> =
+    sub(lens.toNullableLens())
+
+/**
+ * on a [Store] of nullable data this creates a [Store] with a nullable parent and non-nullable value.
+ * It can be called using a [Lens] on a non-nullable parent (that can be created by using the @[Lenses]-annotation),
+ * but you have to provide a [default] value. When updating the value of the resulting [Store] to this [default] value,
+ * null is used instead updating the parent. When this [Store]'s value would be null according to it's parent's
+ * value, the [default] value will be used instead.
+ *
+ * @param default value to translate null to and from
+ */
+fun <T> Store<T?>.orDefault(default: T): Store<T> =
+    sub(defaultLens(this.id, default))

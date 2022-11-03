@@ -28,21 +28,14 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
     private var options: MutableList<T> = mutableListOf()
 
     val value = DatabindingProperty<T>()
-    val componentId: String by lazy {
-        explicitId ?: value.id ?: Id.next().also {
-            if (value.value == null) {
-                value(data = emptyFlow())
-                warnAboutMissingDatabinding("value", COMPONENT_NAME, it, "an empty flow")
-            }
-        }
-    }
+    val componentId: String by lazy { explicitId ?: value.id ?: Id.next() }
 
     fun render() {
         attr("id", componentId)
         attr("role", Aria.Role.radiogroup)
         attr(Aria.invalid, "true".whenever(value.hasError))
         label?.let { attr(Aria.labelledby, it.id) }
-        if (withKeyboardNavigation == true) {
+        if (withKeyboardNavigation) {
             value.handler?.invoke(
                 value.data.flatMapLatest { option ->
                     keydowns.mapNotNull { event ->
@@ -59,6 +52,9 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
                         }
                     }
                 })
+        }
+        if (!value.isSet) {
+            warnAboutMissingDatabinding("value", COMPONENT_NAME, componentId, domNode)
         }
     }
 

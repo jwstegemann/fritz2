@@ -22,13 +22,7 @@ abstract class AbstractSwitch<C : HTMLElement>(
     Tag<C> by tag {
 
     val value = DatabindingProperty<Boolean>()
-    val enabled: Flow<Boolean> by lazy {
-        if (value.value == null) {
-            value(storeOf(false))
-            warnAboutMissingDatabinding("value", componentName, componentId, "a boolean store")
-        }
-        value.data
-    }
+    val enabled: Flow<Boolean> by lazy { value.data }
 
     val componentId: String by lazy { explicitId ?: value.id ?: Id.next() }
 
@@ -124,6 +118,9 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
                     else descriptions.map { it.id }.joinToString(" ")
                 }
             )
+        }
+        if (!value.isSet) {
+            warnAboutMissingDatabinding("value", COMPONENT_NAME, componentId, domNode)
         }
     }
 
@@ -316,6 +313,9 @@ class Switch<C : HTMLElement>(tag: Tag<C>, explicitId: String?) :
                 if (messages.isNotEmpty()) validationMessages?.id else null
             }
         )
+        if (!value.isSet) {
+            warnAboutMissingDatabinding("value", COMPONENT_NAME, componentId, domNode)
+        }
     }
 }
 
