@@ -233,12 +233,12 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, WithEvents<E> {
     }
 
     /**
-     * Creates an [Listener] for the given event [name].
+     * Creates an [Listener] for the given event [eventName].
      *
-     * @param name of the [Event] to listen for
+     * @param eventName of the [Event] to listen for
      */
-    override fun <X : Event> subscribe(name: String, capture: Boolean, init: Event.() -> Unit): Listener<X, E> =
-        Listener(domNode.subscribe(name, capture, init))
+    override fun <X : Event> subscribe(eventName: String, capture: Boolean, init: Event.() -> Unit): Listener<X, E> =
+        Listener(domNode.subscribe(eventName, capture, init))
 
     /**
      * Adds text-content of a [Flow] at this position

@@ -22,11 +22,11 @@ import org.w3c.xhr.ProgressEvent
 interface WithEvents<out T : EventTarget> {
 
     /**
-     * Creates an [Listener] for the given event [name].
+     * Creates an [Listener] for the given event [eventName].
      *
-     * @param name of the [Event] to listen for
+     * @param eventName of the [Event] to listen for
      */
-    fun <X : Event> subscribe(name: String, capture: Boolean = false, init: Event.() -> Unit = {}): Listener<X, T>
+    fun <X : Event> subscribe(eventName: String, capture: Boolean = false, init: Event.() -> Unit = {}): Listener<X, T>
 
     /**
      * occurs when the loading of a media is aborted
@@ -832,8 +832,8 @@ object Window : WithEvents<Window> {
 
     private val scope = MainScope()
 
-    override fun <X : Event> subscribe(name: String, capture: Boolean, init: Event.() -> Unit): Listener<X, Window> =
-        Listener(window.subscribe<X, Window>(name, capture, init).shareIn(scope, SharingStarted.Lazily))
+    override fun <X : Event> subscribe(eventName: String, capture: Boolean, init: Event.() -> Unit): Listener<X, Window> =
+        Listener(window.subscribe<X, Window>(eventName, capture, init).shareIn(scope, SharingStarted.Lazily))
 
     override val aborts by lazy { super.aborts }
     override val afterprints by lazy { super.afterprints }
