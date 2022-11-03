@@ -110,10 +110,10 @@ fun RenderContext.dataTableDemo(amount: Int) {
             | sm:rounded overflow-auto focus:outline-none""".trimMargin(),
         id = "dataTable"
     ) {
-//        data(storedPersons.data, Person::id)
+        data(storedPersons.data, Person::id)
 
 //        selection.single(selectionStore)
-//        selection.multi(selectionStore)
+        selection.multi(selectionStore)
 
         filterStore.data handledBy filterByText()
 
