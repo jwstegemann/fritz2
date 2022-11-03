@@ -16,7 +16,8 @@ fritz2 heavily depends on flows, introduced by [kotlinx.coroutines](https://gith
 A `Flow` is a time discrete stream of values.
 
 Like a collection, you can use `Flow`s to represent multiple values, but unlike other collections like `List`s, for example,
-the values are retrieved one by one. fritz2 relies on `Flow`s to represent values that change over time and lets you react to them (your data-model for example) .
+the values are retrieved one by one. fritz2 relies on `Flow`s to represent values that change over time and lets you react 
+to them (your data-model for example) .
 
 A `Flow` is built from a source which creates the values. This source could be your model or the events raised by an element,
 for example. On the other end of the `Flow`, a simple function called for each element collects the values one by one.
@@ -272,6 +273,44 @@ val store = object : RootStore<String>("initial") {
 ```
 By using the ad-hoc `handledBy` function here your store gets not updated after new data arrives.
 
+
+### Handling nullable values in `Store`s
+
+If you have a `Store` with a nullable content, you can use `orDefault` to derive a non-nullable `Store` from it,
+that transparently translates a `null`-value from its parent `Store` to the given default-value and vice versa.
+
+In the following case, when you enter some text in the input and remove it again,
+you will have a value of `null` in your `nameStore`:
+
+```kotlin
+val nameStore = storeOf<String?>(null)
+
+render {
+    input {
+        nameStore.orDefault("").also { formStore ->
+            value(formStore.data)
+            changes.values() handledBy formStore.update
+        }
+    }
+}
+```
+
+In real world, you will often come across nullable attributes of complex entities. Then you can often call `orDefault`
+directly on the `SubStore` you create to use with your form elements:
+
+```kotlin
+@Lenses
+data class Person(val name: String?)
+
+//...
+
+val applicationStore = storeOf(Person(null))
+
+//...
+
+val nameStore = applicationStore.sub(Person.name()).orDefault("")
+```
+
 ## Connecting stores to each other
 
 Most real-world applications contain multiple stores which need to be linked to properly react to model changes.
@@ -490,6 +529,8 @@ to see how to set it up.
 This will also help you define a multiplatform project for sharing your model and validation code between
 the browser and backend.
 
+### Destructuring complex Models with `SubStore`s and `Lense`s
+
 Having a `Lens` available which points to some specific property makes it very easy to get a `SubStore` for that
 property from a `Store` of the parent entity:
 
@@ -534,6 +575,34 @@ render {
 
 To keep your code well-structured, it is recommended to implement complex logic at your `RootStore` or inherit it by using interfaces.
 However, the code above is a decent solution for small (convenience-)handlers.
+
+### Calling `sub` on a `Store` with nullable content
+
+To call `sub` on a nullable `Store` only makes sense, when you have checked, that its value is not null:
+
+```kotlin
+@Lenses
+data class Person(val name: String)
+
+//...
+
+val applicationStore = storeOf<Person>(null)
+
+//...
+
+applicationStore.data.render { person ->
+    if (person != null) { // if person is null you would get NullPointerExceptions reading or updating its SubStores
+        val nameStore = customerStore.sub(Person.name())
+        input {
+            value(nameStore.data)
+            changes.values() handledBy nameStore.update
+        }
+    }
+    else {
+        p { + "no customer selected" }
+    }
+}
+```
 
 ## Formatting Values
 

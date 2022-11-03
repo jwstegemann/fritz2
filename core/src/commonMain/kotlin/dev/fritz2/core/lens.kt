@@ -150,5 +150,35 @@ fun <K, V> lensOf(key: K): Lens<Map<K, V>, V> = object : Lens<Map<K, V>, V> {
     override fun set(parent: Map<K, V>, value: V): Map<K, V> =
         if (parent.containsKey(key)) parent + (key to value)
         else throw CollectionLensSetException("no item found with key='$key'")
+}
 
+/**
+ * For a lens on a non-nullable parent this method creates a lens that can be used on a nullable-parent
+ * Use this method only if you made sure, that it is never called on a null parent.
+ * Otherwise, a [NullPointerException] is thrown.
+ */
+fun <P, T> Lens<P, T>.toNullableLens(): Lens<P?, T> = object : Lens<P?, T> {
+    private val lens = this@toNullableLens
+    override val id: String = lens.id
+
+    override fun get(parent: P?): T =
+        if (parent != null) lens.get(parent)
+        else throw NullPointerException("get called with null parent on not-nullable lens@$id")
+
+    override fun set(parent: P?, value: T): P? =
+        if (parent != null) lens.set(parent, value)
+        else throw NullPointerException("set called with null parent on not-nullable lens@$id")
+}
+
+/**
+ * Creates a lens from a nullable parent to a non-nullable value using a given default-value.
+ * Use this method to apply a default value that will be used in the case that the real value is null.
+ * When setting that value to the default value it will accordingly translate to null.
+ *
+ * @param default value to be used instead of null
+ */
+fun <T> defaultLens(id: String, default: T): Lens<T?, T> = object : Lens<T?, T> {
+    override val id: String = id
+    override fun get(parent: T?): T = parent  ?: default
+    override fun set(parent: T?, value: T): T?  = value.takeUnless { it == default }
 }

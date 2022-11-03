@@ -61,17 +61,14 @@ class SubStore<P, D>(
 
 }
 
-
 /**
  * creates a [SubStore] using a [RootStore] as parent using a given [IdProvider].
  *
  * @param element current instance of the entity to focus on
  * @param id to identify the same entity (i.e. when it's content changed)
  */
-fun <D, I> Store<List<D>>.sub(element: D, id: IdProvider<D, I>): SubStore<List<D>, D> {
-    val lens = lensOf(element, id)
-    return SubStore(this, lens)
-}
+fun <D, I> Store<List<D>>.sub(element: D, id: IdProvider<D, I>): SubStore<List<D>, D> =
+    SubStore(this, lensOf(element, id))
 
 /**
  * creates a [SubStore] using a [RootStore] as parent using the [index] in the list
@@ -79,10 +76,8 @@ fun <D, I> Store<List<D>>.sub(element: D, id: IdProvider<D, I>): SubStore<List<D
  *
  * @param index position in the list to point to
  */
-fun <D> Store<List<D>>.sub(index: Int): SubStore<List<D>, D> {
-    val lens = lensOf<D>(index)
-    return SubStore(this, lens)
-}
+fun <D> Store<List<D>>.sub(index: Int): SubStore<List<D>, D> =
+    SubStore(this, lensOf(index))
 
 /**
  * creates a [SubStore] using a [RootStore] as parent using the [key] in the map
@@ -90,7 +85,26 @@ fun <D> Store<List<D>>.sub(index: Int): SubStore<List<D>, D> {
  *
  * @param key in the map to point to
  */
-fun <K, V> Store<Map<K, V>>.sub(key: K): SubStore<Map<K, V>, V> {
-    val lens = lensOf<K, V>(key)
-    return SubStore(this, lens)
-}
+fun <K, V> Store<Map<K, V>>.sub(key: K): SubStore<Map<K, V>, V> =
+    SubStore(this, lensOf(key))
+
+/**
+ * on a [Store] of nullable data this creates a [SubStore] with a nullable parent and non-nullable value.
+ * It can be called using a [Lens] on a non-nullable parent (that can be created by using the @[Lenses]-annotation),
+ * but you have to ensure, that the resulting [SubStore] is never used, when it's parent's value is null.
+ * Otherwise, a [NullPointerException] is thrown.
+ *
+ * @param lens [Lens] to use to create the [SubStore]
+ */
+fun <P, T> Store<P?>.sub(lens: Lens<P & Any, T>): SubStore<P?, T> = sub(lens.toNullableLens())
+
+/**
+ * on a [Store] of nullable data this creates a [SubStore] with a nullable parent and non-nullable value.
+ * It can be called using a [Lens] on a non-nullable parent (that can be created by using the @[Lenses]-annotation),
+ * but you have to provide a [default] value. When updating the value of the resulting [SubStore] to this [default] value,
+ * null is used instead updating the parent. When this [SubStore]'s value would be null according to it's parent's
+ * value, the [default] value will be used instead.
+ *
+ * @param default value to translate null to and from
+ */
+fun <T> Store<T?>.orDefault(default: T): SubStore<T?, T> = sub(defaultLens(this.id, default))

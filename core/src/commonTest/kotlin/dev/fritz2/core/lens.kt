@@ -61,4 +61,38 @@ class LensesTests {
         }
     }
 
+    @Test
+    fun testDefaultLens() {
+        val defaultValue = "fritz2"
+        val nonNullValue = "some value"
+        val defaultLens = defaultLens("", defaultValue)
+
+        assertEquals(defaultValue, defaultLens.get(null), "default value not applied on null")
+        assertEquals(nonNullValue, defaultLens.get(nonNullValue), "wrong value on not-null")
+
+        assertEquals(nonNullValue, defaultLens.set(null, nonNullValue), "value not set on null")
+        assertEquals(nonNullValue, defaultLens.set("old Value", nonNullValue), "value not set on null")
+        assertEquals(null, defaultLens.set(nonNullValue, defaultValue), "not set to null on default")
+    }
+
+    @Test
+    fun testNotNullLens() {
+        data class PostalAddress(val street: String, val co: String?)
+
+        val streetLens = lens("street", PostalAddress::street) { p, v -> p.copy(street = v) }
+        val someStreet = "some street"
+        val newValue = "new value"
+        val someCo = "some co"
+
+        val addressWithCo = PostalAddress(someStreet, someCo)
+
+        val notNullLens: Lens<PostalAddress?, String> = streetLens.toNullableLens()
+
+        assertEquals(someStreet, notNullLens.get(addressWithCo), "not null lens does get value on non null parent")
+        assertFailsWith(NullPointerException::class, "not null lens does not throw exception when get on null parent") { notNullLens.get(null) }
+
+        assertEquals(newValue, notNullLens.set(addressWithCo, newValue)?.street, "not null lens does set value on non null parent")
+        assertFailsWith(NullPointerException::class, "not null lens does not throw exception when set on null parent") { notNullLens.set(null, newValue)?.street }
+    }
+
 }
