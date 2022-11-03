@@ -6,7 +6,7 @@ permalink: /headless/
 eleventyNavigation:
     key: headless 
     title: Headless Components
-    order: 30
+    order: 20
     icon: puzzle
     classes: "font-bold capitalize"
 ---
