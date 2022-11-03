@@ -86,7 +86,9 @@ typealias IdProvider<T, I> = (T) -> I
 /**
  * Occurs when [Lens] points to non-existing element.
  */
-class CollectionLensGetException : Exception() // is needed to cancel the coroutine correctly/**
+class CollectionLensGetException : Exception() // is needed to cancel the coroutine correctly
+
+/**
  * Occurs when [Lens] tries to update a non-existing element.
  */
 class CollectionLensSetException(message: String) : Exception(message)
