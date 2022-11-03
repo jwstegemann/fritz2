@@ -64,7 +64,7 @@ val router = routerOf(mapOf("page" to "welcome", "foo" to "bar"))
 
 render {
     section {
-        // use a SubStore for two-way data-binding
+        // use a child Store for two-way data-binding
         val foo = router.sub("foo")
         foo.update("bars")
 
@@ -90,7 +90,7 @@ and the rest of the route
 * `fun select(key: String, orElse: String): Flow<String>` extracts the value for a given `key` when available otherwise 
 it returns `orElse`
 
-Or as you can see, you can also use the well-known `sub()` function by providing a `key` to get a `SubStore` 
+Or as you can see, you can also use the well-known `sub()` function by providing a `key` to get a new `Store` 
 to render its data and to handle updates.
 
 If you want to use your own special `Route` instead, try this:

@@ -15,8 +15,8 @@ eleventyNavigation:
 Um bei einem neuen Wert in einen Store automatisch einen bestimmten Handler zu übergeben (Syncronisation), 
 reicht es auf dem `data`-flow ein `drop(1)` aufzurufen, um den `initalData` Wert zu ignorieren.
 ````kotlin
-val storeToSyncFrom: RootStore<A>
-val storeToSyncTo: RootStore<B>
+val storeToSyncFrom: Store<A>
+val storeToSyncTo: Store<B>
         
 storeToSyncFrom.data.drop(1) handledBy storeToSyncTo.handle { b, a ->
     //...
