@@ -43,3 +43,16 @@ messages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
     }
 }
 ```
+
+## Set an initial value for a `Flow`-bound attribute immediately
+Um z.B. eine CSS-Klasse initial sofort zu setzen (und z.B. Flicker-Effekte zu vermeiden, die durch die Verzögerung
+entstehen, bis der erste Wert auf dem Flow zur Verfügung steht), muss die jeweilige Methode zweimal aufgerufen werden.
+Zuerst mit dem statischen Wert, der sofort gesetzt werden soll, danach mit dem `Flow`, der die dynamichen Werte
+bereitstellt.
+
+```kotlin
+    val visibility: Flow<String> = ...
+
+    className("invisible")
+    className(visibility)
+```
