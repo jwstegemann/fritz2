@@ -41,8 +41,8 @@ module.exports = (config) => {
                 dir: '../headless-demo/build/distributions'
             },
             {
-                route: '/examples-demo',
-                dir: '../examples-demo/build/distributions'
+                route: '/snippets',
+                dir: '../snippets/build/distributions'
             },
             {
                 route: '/api',

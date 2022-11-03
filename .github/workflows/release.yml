@@ -35,7 +35,7 @@ jobs:
         run: ./gradlew dokkaHtmlMultiModule
 
       - name: Build Demos
-        run: ./gradlew headless-demo:build examples-demo:build metadataToWww
+        run: ./gradlew build metadataToWww
 
       - name: Build Webpage
         working-directory: ./www
@@ -47,8 +47,16 @@ jobs:
       - name: Copy headless-demo files to webpage
         run: mkdir -p ./www/_site/headless-demo && cp ./headless-demo/build/distributions/* ./www/_site/headless-demo
 
-      - name: Copy examples-demo files to webpage
-        run: mkdir -p ./www/_site/examples-demo && cp ./examples-demo/build/distributions/* ./www/_site/examples-demo
+      - name: Copy snippets files to webpage
+        run: mkdir -p ./www/_site/snippets && cp ./snippets/build/distributions/* ./www/_site/snippets
+
+      - name: Copy example distributions to webpage
+        run: >
+          for directory in `ls ./examples/* -d`; do
+            name=`basename $directory`;
+            mkdir -p ./www/_site/examples/$name;
+            cp ./examples/$name/build/distributions/* ./www/_site/examples/$name;
+          done
 
       - name: Releasing www page
         if: success()

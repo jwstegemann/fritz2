@@ -12,7 +12,7 @@ include(
     "test-server",
     "headless",
     "headless-demo",
-    "examples-demo",
+    "snippets",
     // examples:
     ":examples:gettingstarted",
     ":examples:nestedmodel",
