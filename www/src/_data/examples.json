@@ -31,9 +31,9 @@
       "icon": "cloud-upload"
     },
     {
-      "title": "Repositories",
-      "description": "Use repositories to effortlessly connect your stores to a backend. Includes undo and spinner.",
-      "route": "/repositories",
+      "title": "Master Detail",
+      "description": "Use master detail pattern to separate the details section from the collection view. Includes undo and spinner.",
+      "route": "/masterdetail",
       "icon": "archive"
     },
     {
