@@ -2,71 +2,71 @@
   "internal": [
     {
       "title": "Getting Started",
-      "description": "one- and two-way-databinding in fritz2",
+      "description": "Create HTML, handle events and bind data the fritz2 way.",
       "route":"/gettingstarted",
-      "icon": "bookmark"
+      "icon": "trending-up"
     },
     {
       "title": "Nested Model",
-      "description": "how to handle complex models in fritz2",
+      "description": "Data binding of elements in deep nested models and lists is easy like a breeze in fritz2. See how to do so using lenses.",
       "route": "/nestedmodel",
-      "icon": "bookmark"
-    },
-    {
-      "title": "Remote",
-      "description": "the use of remote service in fritz2",
-      "route": "/remote",
-      "icon": "bookmark"
-    },
-    {
-      "title": "Repositories",
-      "description": "the use of repositories service in fritz2",
-      "route": "/repositories",
-      "icon": "bookmark"
-    },
-    {
-      "title": "Routing",
-      "description": "shows routing service in fritz2",
-      "route": "/routing",
-      "icon": "bookmark"
-    },
-    {
-      "title": "Tic-Tac-Toe",
-      "description": "demonstrates the combination of UI, logic and state with fritz2",
-      "route": "/tictactoe",
-      "icon": "bookmark"
-    },
-    {
-      "title": "Todo MVC",
-      "description": "implementing the TodoMVC specification using fritz2",
-      "route": "/todomvc",
-      "icon": "bookmark"
+      "icon": "collection"
     },
     {
       "title": "Validation",
-      "description": "validation service in fritz2",
+      "description": "Include reusable validation in your stores and show the results - at your form elements for example.",
       "route": "/validation",
-      "icon": "bookmark"
+      "icon": "light-bulb"
+    },
+    {
+      "title": "Routing",
+      "description": "Create a routing through your single-page-app and handle parameters (deep links).",
+      "route": "/routing",
+      "icon": "map"
+    },
+    {
+      "title": "Remote",
+      "description": "Wraps the browser's api to asynchronously communicate with your backend in a more Kotlin-like way.",
+      "route": "/remote",
+      "icon": "cloud-upload"
+    },
+    {
+      "title": "Repositories",
+      "description": "Use repositories to effortlessly connect your stores to a backend. Includes undo and spinner.",
+      "route": "/repositories",
+      "icon": "archive"
     },
     {
       "title": "WebComponent",
-      "description": "implementing a WebComponent using fritz2",
+      "description": "Build WebComponents with fritz2 or use WebComponents provided by others in your projects.",
       "route": "/webcomponent",
-      "icon": "bookmark"
+      "icon": "puzzle"
+    },
+    {
+      "title": "Todo MVC",
+      "description": "Our implementation of the TodoMVC specification. Compare fritz2 with react, vue.js, etc.",
+      "route": "/todomvc",
+      "icon": "clipboard-list"
+    },
+    {
+      "title": "Tic-Tac-Toe",
+      "description": "Demonstrates the combination of UI, logic and state with fritz2",
+      "route": "/tictactoe",
+      "icon": "view-grid"
     }
   ],
   "external": [
     {
-      "title": "Spring Todo MVC",
-      "description": "todomvc web-application build with Spring backend",
+      "title": "Spring TodoMVC",
+      "description": "TodoMVC fullstack web-application build with Spring backend",
       "route":"https://github.com/jamowei/fritz2-spring-todomvc",
-      "icon": "bookmark"
+      "icon": "globe"
     },
     {
-      "title": "Ktor Todo MVC",
-      "description": "todomvc web-application build with Ktor backend",
+      "title": "Ktor TodoMVC",
+      "description": "TodoMVC fullstack web-application build with Ktor backend",
       "route":"https://github.com/jamowei/fritz2-ktor-todomvc",
-      "icon": "bookmark"
+      "icon": "globe"
     }
   ]
 }
