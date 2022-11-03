@@ -24,6 +24,15 @@ module.exports = (config) => {
     config.addPassthroughCopy('src/img')
     config.addPassthroughCopy({'src/icon': '.'})
 
+    const examples = fs.readdirSync(path.join(__dirname, '../examples'), { withFileTypes: true })
+        .filter(entry => entry.isDirectory())
+        .map(dir => (
+            {
+                route: '/examples/' + dir.name,
+                dir: path.join('../examples/', dir.name, '/build/distributions')
+            }
+        ))
+
     config.setBrowserSyncConfig({
         port: 9090,
         serveStatic: [
@@ -39,15 +48,7 @@ module.exports = (config) => {
                 route: '/api',
                 dir: '../api'
             },
-            // example pages
-            ...fs.readdirSync(path.join(__dirname, '../examples'), { withFileTypes: true })
-                .filter(entry => entry.isDirectory())
-                .map(dir => (
-                    {
-                        route: '/examples/' + dir.name,
-                        dir: path.join('../examples/', dir.name, '/build/distributions')
-                    }
-                ))
+            ...examples
         ]
     });
 

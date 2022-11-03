@@ -1,0 +1,62 @@
+[
+  {
+    "title": "Getting Started",
+    "description": "An example project showing off the what you can do with fritz2.",
+    "route":"/gettingstarted",
+    "icon": "bookmark"
+  },
+  {
+    "title": "Nested Model",
+    "description": "An example project showing off the what you can do with fritz2.",
+    "route": "/nestedmodel",
+    "icon": "bookmark"
+  },
+  {
+    "title": "Performance",
+    "description": "An example project showing off the what you can do with fritz2.",
+    "route": "/performance",
+    "icon": "bookmark"
+  },
+  {
+    "title": "Remote",
+    "description": "An example project showing off the what you can do with fritz2.",
+    "route": "/remote",
+    "icon": "bookmark"
+  },
+  {
+    "title": "Repositories",
+    "description": "An example project showing off the what you can do with fritz2.",
+    "route": "/repositories",
+    "icon": "bookmark"
+  },
+  {
+    "title": "Routing",
+    "description": "An example project showing off the what you can do with fritz2.",
+    "route": "/routing",
+    "icon": "bookmark"
+  },
+  {
+    "title": "Tic-Tac-Toe",
+    "description": "An example project showing off the what you can do with fritz2.",
+    "route": "/tictactoe",
+    "icon": "bookmark"
+  },
+  {
+    "title": "Todo MVC",
+    "description": "An example project showing off the what you can do with fritz2.",
+    "route": "/todomvc",
+    "icon": "bookmark"
+  },
+  {
+    "title": "Validation",
+    "description": "An example project showing off the what you can do with fritz2.",
+    "route": "/validation",
+    "icon": "bookmark"
+  },
+  {
+    "title": "WebComponent",
+    "description": "An example project showing off the what you can do with fritz2.",
+    "route": "/webcomponent",
+    "icon": "bookmark"
+  }
+]
