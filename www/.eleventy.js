@@ -40,7 +40,7 @@ module.exports = (config) => {
                 dir: '../api'
             },
             // example pages
-            ...fs.readdirSync(path.join(path.resolve(__dirname, '..'), 'examples'), { withFileTypes: true })
+            ...fs.readdirSync(path.join(__dirname, '../examples'), { withFileTypes: true })
                 .filter(entry => entry.isDirectory())
                 .map(dir => (
                     {

@@ -1,0 +1,149 @@
+---
+title: Examples
+description: example apps built with fritz2
+keywords: fritz2, examples
+layout: layouts/pageWithNav.njk
+permalink: /examples/
+eleventyNavigation:
+    key: examples
+    title: Examples
+    order: 20
+    icon: color-swatch
+    classes: "font-bold capitalize"
+---
+<!-- Feature section with grid -->
+<div class="text-center px-4 sm:px-6 lg:px-8 mx-auto max-w-md sm:max-w-3xl lg:max-w-7xl">
+    <h2 class="text-base font-semibold tracking-wider text-cyan-600 uppercase">EXAMPLES</h2>
+    <p class="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">
+        What is possible with fritz2
+    </p>
+    <div class="mt-12 sm:mt-24">
+        <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="pt-6">
+                <div class="flow-root bg-gray-50 rounded-lg px-6 pb-8">
+                    <div class="-mt-6">
+                        <div>
+                              <span class="inline-flex items-center justify-center p-3 bg-gradient-to-r from-bg-start to-bg-end rounded-md shadow-lg">
+                                <span class="h-6 w-6 text-white">
+                                    {% heroicon "outline", "code" %}
+                                </span>
+                              </span>
+                        </div>
+                        <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Pure Kotlin</h3>
+                        <p class="mt-5 text-base text-gray-500">
+                            fritz2 makes heavy use of Kotlin standard features (especially flows) and has no external
+                            dependencies.
+                            Based upon Kotlin's outstanding capabilities to build DSLs, fritz2 offers a nice declarative
+                            and typesafe syntax to structure your UI code in a comfortable and easy to read way.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-6">
+                <div class="flow-root bg-gray-50 rounded-lg px-6 pb-8">
+                    <div class="-mt-6">
+                        <div>
+                              <span class="inline-flex items-center justify-center p-3 bg-gradient-to-r from-bg-start to-bg-end rounded-md shadow-lg">
+                                <span class="h-6 w-6 text-white">
+                                    {% heroicon "outline", "switch-horizontal" %}
+                                </span>
+                              </span>
+                        </div>
+                        <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Precise Data-Binding</h3>
+                        <p class="mt-5 text-base text-gray-500">
+                            fritz2 offers precise data-binding for your ui-elements. This means that when parts of your
+                            data model
+                            change, exactly those and only those DOM-nodes depending on the changed parts
+                            will automatically change as well - no virtual dom needed.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-6">
+                <div class="flow-root bg-gray-50 rounded-lg px-6 pb-8">
+                    <div class="-mt-6">
+                        <div>
+                              <span class="inline-flex items-center justify-center p-3 bg-gradient-to-r from-bg-start to-bg-end rounded-md shadow-lg">
+                                <span class="h-6 w-6 text-white">
+                                    {% heroicon "outline", "academic-cap" %}
+                                </span>
+                              </span>
+                        </div>
+                        <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Easy to Learn</h3>
+                        <p class="mt-5 text-base text-gray-500">
+                            fritz2 is built around just a few basic concepts (Stores, Handlers, Tags, etc.).
+                            You can easily learn how to use them from our documentation or the examples we provide.
+                            Enjoy!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-6">
+                <div class="flow-root bg-gray-50 rounded-lg px-6 pb-8">
+                    <div class="-mt-6">
+                        <div>
+                              <span class="inline-flex items-center justify-center p-3 bg-gradient-to-r from-bg-start to-bg-end rounded-md shadow-lg">
+                                <span class="h-6 w-6 text-white">
+                                    {% heroicon "outline", "trending-up" %}
+                                </span>
+                              </span>
+                        </div>
+                        <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">App-Scaling</h3>
+                        <p class="mt-5 text-base text-gray-500">
+                            fritz2 allows you to quickly build small apps with a few lines of code, as well as
+                            enterprise
+                            scale applications with a focus on reusable components, clean code, and structure.
+                            The functional reactive concept makes the resulting code easy to read and to maintain.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-6">
+                <div class="flow-root bg-gray-50 rounded-lg px-6 pb-8">
+                    <div class="-mt-6">
+                        <div>
+                              <span class="inline-flex items-center justify-center p-3 bg-gradient-to-r from-bg-start to-bg-end rounded-md shadow-lg">
+                                <span class="h-6 w-6 text-white">
+                                    {% heroicon "outline", "library" %}
+                                </span>
+                              </span>
+                        </div>
+                        <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Everything you need</h3>
+                        <p class="mt-5 text-base text-gray-500">
+                            fritz2 includes everything you need to start your project:
+                            state management even for complex nested models, validation, routing, REST, WebSockets, and
+                            WebComponents
+                            as well as a set of headless components.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-6">
+                <div class="flow-root bg-gray-50 rounded-lg px-6 pb-8">
+                    <div class="-mt-6">
+                        <div>
+                              <span class="inline-flex items-center justify-center p-3 bg-gradient-to-r from-bg-start to-bg-end rounded-md shadow-lg">
+                                <span class="h-6 w-6 text-white">
+                                    {% heroicon "outline", "puzzle" %}
+                                </span>
+                              </span>
+                        </div>
+                        <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">Reusability</h3>
+                        <p class="mt-5 text-base text-gray-500">
+                            fritz2 uses Kotlin's multiplatform-abilities, so you'll write your data classes and
+                            validation code
+                            just once and use it for both client and server.
+                            Use your favorite tool-chain (Gradle, IDEA, etc.) to jump right in and build your apps.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
