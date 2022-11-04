@@ -2,6 +2,7 @@ package dev.fritz2.examples.routing
 
 import dev.fritz2.core.*
 import dev.fritz2.routing.routerOf
+import kotlinx.browser.window
 import kotlinx.coroutines.flow.map
 
 object Pages {
@@ -25,7 +26,7 @@ fun main() {
             nav("navbar navbar-expand-lg navbar-light bg-light") {
                 a("navbar-brand") {
                     +"Routing"
-                    href("/")
+                    href(with (window.location) { origin + pathname })
                 }
                 button("navbar-toggler") {
                     attr("data-toggle", "collapse")
