@@ -18,7 +18,7 @@ include(
     ":examples:nestedmodel",
     ":examples:performance",
     ":examples:remote",
-    ":examples:repositories",
+    ":examples:masterdetail",
     ":examples:routing",
     ":examples:tictactoe",
     ":examples:todomvc",

@@ -1,10 +1,11 @@
 package dev.fritz2.remote
 
 import dev.fritz2.core.*
-import dev.fritz2.repository.Resource
 import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -146,11 +147,20 @@ class WebSocketTests {
     private val ageLens = lens("age", SocketPerson::age) { p, v -> p.copy(age = v) }
     private val idLens = lens("id", SocketPerson::_id) { p, v -> p.copy(_id = v) }
 
-    object PersonResource : Resource<SocketPerson, String> {
-        override val idProvider: IdProvider<SocketPerson, String> = SocketPerson::_id
-        override fun serialize(item: SocketPerson): String = Json.encodeToString(SocketPerson.serializer(), item)
-        override fun deserialize(source: String): SocketPerson =
-            Json.decodeFromString(SocketPerson.serializer(), source)
+    fun Store<SocketPerson>.syncWith(socket: Socket) {
+        val session = socket.connect()
+        var last: SocketPerson? = null
+        apply {
+            session.messages.body.map {
+                val received = Json.decodeFromString(SocketPerson.serializer(), it)
+                last = received
+                received
+            } handledBy this@syncWith.update
+
+            this@syncWith.data.drop(1) handledBy {
+                if (last != it) session.send(Json.encodeToString(SocketPerson.serializer(), it))
+            }
+        }
     }
 
     @Test
@@ -170,7 +180,7 @@ class WebSocketTests {
             }
 
             init {
-                syncWith(socket, PersonResource)
+                syncWith(socket)
             }
         }
 

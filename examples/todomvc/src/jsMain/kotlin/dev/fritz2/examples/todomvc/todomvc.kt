@@ -1,10 +1,11 @@
 package dev.fritz2.examples.todomvc
 
 import dev.fritz2.core.*
-import dev.fritz2.repository.localstorage.localStorageQueryOf
 import dev.fritz2.routing.routerOf
+import kotlinx.browser.localStorage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import org.w3c.dom.get
 
 data class Filter(val text: String, val function: (List<ToDo>) -> List<ToDo>)
 
@@ -16,41 +17,69 @@ val filters = mapOf(
 
 const val persistencePrefix = "todos"
 
-//val toDoResource = Resource(ToDo::id, ToDoSerializer, ToDo(text = ""))
 val router = routerOf("all")
 
 @ExperimentalStdlibApi
 object ToDoListStore : RootStore<List<ToDo>>(emptyList(), id = persistencePrefix) {
 
-    private val localStorage = localStorageQueryOf<ToDo, String, Unit>(ToDoResource, persistencePrefix)
-
-    private val query = handle { localStorage.query(Unit) }
+    private val query = handle {
+        buildList {
+            for (index in 0 until localStorage.length) {
+                val key = localStorage.key(index)
+                if (key != null && key.startsWith(persistencePrefix)) {
+                    add(ToDo.deserialize(localStorage[key]!!))
+                }
+            }
+        }
+    }
 
     val save = handle<ToDo> { toDos, new ->
-        if (new.text.isNotBlank()) localStorage.addOrUpdate(toDos, new)
-        else localStorage.delete(toDos, new.id)
+        if (new.text.isNotBlank()) {
+            localStorage.setItem("${persistencePrefix}.${new.id}", ToDo.serialize(new))
+            var inList = false
+            val updatedList = toDos.map {
+                if (it.id == new.id) {
+                    inList = true
+                    new
+                } else it
+            }
+            if (inList) updatedList else toDos + new
+        } else delete(toDos, new.id)
     }
 
     val remove = handle<String> { toDos, id ->
-        localStorage.delete(toDos, id)
+        delete(toDos, id)
+    }
+
+    private fun delete(entities: List<ToDo>, id: String): List<ToDo> {
+        localStorage.removeItem("${persistencePrefix}.$id")
+        return entities.filterNot { it.id == id }
     }
 
     val toggleAll = handle { toDos, toggle: Boolean ->
         val toUpdate = toDos.mapNotNull {
-            if(it.completed != toggle) it.copy(completed = toggle) else null
+            if (it.completed != toggle) it.copy(completed = toggle) else null
         }
-        console.log(toUpdate.joinToString { it.toString() })
 
-        val result = localStorage.updateMany(toDos, toUpdate)
-        console.log(result.joinToString { it.toString() })
+        val updated = (toDos + toUpdate).groupBy{ it.id }
+            .filterValues { it.size > 1 }.mapValues { (id, entities) ->
+                val entity = entities.last()
+                localStorage.setItem(
+                    "${persistencePrefix}.$id",
+                    ToDo.serialize(entity)
+                )
+                entity
+            }
 
-        result
+        toDos.map { updated[it.id] ?: it }
     }
 
     val clearCompleted = handle { toDos ->
-        toDos.filter(ToDo::completed).let { completed ->
-            console.info("delete: ${completed.joinToString()}")
-            localStorage.delete(toDos, completed.map(ToDo::id))
+        toDos.partition(ToDo::completed).let { (completed, active) ->
+            completed.map(ToDo::id).forEach {
+                localStorage.removeItem("${persistencePrefix}.$it")
+            }
+            active
         }
     }
 
@@ -104,7 +133,7 @@ fun main() {
             ul("todo-list") {
                 ToDoListStore.data.combine(router.data) { all, route ->
                     filters[route]?.function?.invoke(all) ?: all
-                }.renderEach(ToDo::id){ toDo ->
+                }.renderEach(ToDo::id) { toDo ->
                     val toDoStore = ToDoListStore.sub(toDo, ToDo::id)
                     toDoStore.data.drop(1) handledBy ToDoListStore.save
                     val textStore = toDoStore.sub(ToDo.text())

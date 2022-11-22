@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Repositories</title>
+    <title>Master Detail</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
@@ -17,9 +17,10 @@
 <body>
 <div class="container">
     <div class="jumbotron">
-        <h1 class="display-4">Repositories</h1>
-        <p class="lead">This example demonstrates the use of localstorage repositories,
-            history and tracking for handlers. The localstorage service can easily be replaced by rest repositories.
+        <h1 class="display-4">Master Detail</h1>
+        <p class="lead">This example demonstrates the use of master detail ui pattern by composing two stores and make
+            use of localstorage, history and tracking for handlers. The localstorage service could easily be replaced
+            by some remote API like a REST service or alike.
             To keep it simple this example doesn't contain any validation.</p>
         <hr class="my-4"/>
         <div class="card">
@@ -37,7 +38,7 @@
             created with &#10084; by <a href="https://github.com/jwstegemann/fritz2">jwstegemann & jamowei</a></small>
     </footer>
 </div>
-<script src="repositories.js"></script>
+<script src="masterdetail.js"></script>
 <script>
     githubEmbed('#code', {
         "owner": "jwstegemann",
@@ -45,17 +46,17 @@
         "ref": "master",
         "embed": [
             {
-                "path": "/examples/repositories/src/jsMain/kotlin/dev/fritz2/examples/repositories/repositories.kt",
+                "path": "/examples/masterdetail/src/jsMain/kotlin/dev/fritz2/examples/masterdetail/masterdetail.kt",
                 "type": "kotlin",
-                "label": "repositories.kt"
+                "label": "masterdetail.kt"
             },
             {
-                "path": "/examples/repositories/src/commonMain/kotlin/dev/fritz2/examples/repositories/model.kt",
+                "path": "/examples/masterdetail/src/commonMain/kotlin/dev/fritz2/examples/masterdetail/model.kt",
                 "type": "kotlin",
                 "label": "model.kt"
             },
             {
-                "path": "/examples/repositories/src/jsMain/resources/index.html",
+                "path": "/examples/masterdetail/src/jsMain/resources/index.html",
                 "type": "html",
                 "label": "index.html"
             }

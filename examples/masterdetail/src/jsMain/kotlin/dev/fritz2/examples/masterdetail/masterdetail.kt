@@ -1,44 +1,69 @@
-package dev.fritz2.examples.repositories
+package dev.fritz2.examples.masterdetail
 
 import dev.fritz2.core.*
 import dev.fritz2.history.history
-import dev.fritz2.repository.localstorage.localStorageEntityOf
-import dev.fritz2.repository.localstorage.localStorageQueryOf
 import dev.fritz2.tracking.tracker
+import kotlinx.browser.window
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
 import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.get
 
 val numberFormat = format({ it.toInt() }, { it.toString() })
 
-const val personPrefix = "dev.fritz2.examples.person"
+const val personPrefix = "dev.fritz2.examples.masterdetail.person"
 
-object EntityStore : RootStore<Person>(Person()) {
+object MasterStore : RootStore<List<Person>>(emptyList()) {
+
+    val query = handle {
+        buildList {
+            for (index in 0 until window.localStorage.length) {
+                val key = window.localStorage.key(index)
+                if (key != null && key.startsWith(personPrefix)) {
+                    add(Person.deserialize(window.localStorage[key]!!))
+                }
+            }
+        }
+    }
+
+    val delete = handle<String> { persons, id ->
+        window.localStorage.removeItem("${personPrefix}.$id")
+        persons.filterNot { it.id == id }
+    }
+
+    init {
+        query()
+    }
+}
+
+object DetailStore : RootStore<Person>(Person()) {
 
     val running = tracker()
     val history = history<Person>(10, synced = true)
 
-    private val localStorage = localStorageEntityOf(PersonResource, personPrefix)
-
     val load = handle<String> { _, id ->
         history.clear()
-        localStorage.load(id)
+        Person.deserialize(
+            window.localStorage["${personPrefix}.$id"]
+                ?: throw NoSuchElementException("person with id ($id) does not exist")
+        )
     }
 
-    val addOrUpdate = handleAndEmit<Unit> { person ->
-        running.track("myTransaction") {
+    val addOrUpdate = handle { person ->
+        running.track("addOrUpdatePerson") {
             delay(1500)
-            localStorage.addOrUpdate(person.copy(saved = true))
-                .also { emit(Unit) }
+            person.copy(saved = true).also { dirtyPerson ->
+                window.localStorage.setItem("${personPrefix}.${dirtyPerson.id}", Person.serialize(dirtyPerson))
+            }.also { MasterStore.query() }
         }
     }
 
-    val delete = handleAndEmit<Unit> { person ->
+    val delete = handle { person ->
         history.clear()
-        localStorage.delete(person).also { emit(Unit) }
+        window.localStorage.removeItem("${personPrefix}.${person.id}")
+            .also { MasterStore.query() }
         Person()
     }
 
@@ -47,29 +72,12 @@ object EntityStore : RootStore<Person>(Person()) {
         Person()
     }
 
-    val trigger = merge(addOrUpdate, delete)
-
     val undo = handle {
         history.back()
     }
 
     val isSaved = data.map { it.saved }
 }
-
-object QueryStore : RootStore<List<Person>>(emptyList()) {
-    private val localStorage = localStorageQueryOf<Person, String, Unit>(PersonResource, personPrefix)
-
-    private val query = handle { localStorage.query(Unit) }
-    val delete = handle<String> { list, id ->
-        localStorage.delete(list, id)
-    }
-
-    init {
-        EntityStore.trigger handledBy query
-        query()
-    }
-}
-
 
 /*
  * List-View
@@ -90,21 +98,21 @@ fun RenderContext.table() {
                         }
                     }
                     tbody {
-                        QueryStore.data.renderEach { p ->
+                        MasterStore.data.renderEach { p ->
                             tr {
-                                td { +"...${p._id.takeLast(5)}" }
+                                td { +"...${p.id.takeLast(5)}" }
                                 td { +p.name }
                                 td { +p.age.toString() }
                                 td { +p.salary.toString() }
                                 td {
                                     button("btn btn-primary") {
                                         +"Edit"
-                                        clicks.map { p._id } handledBy EntityStore.load
+                                        clicks.map { p.id } handledBy DetailStore.load
                                     }
                                     button("btn btn-danger ml-2") {
-                                        className(EntityStore.data.map { if (it._id == p._id) "d-none" else "" })
+                                        className(DetailStore.data.map { if (it.id == p.id) "d-none" else "" })
                                         +"Delete"
-                                        clicks.map { p._id } handledBy QueryStore.delete
+                                        clicks.map { p.id } handledBy MasterStore.delete
                                     }
                                 }
                             }
@@ -121,48 +129,49 @@ fun RenderContext.table() {
  * Details-View
  */
 fun RenderContext.details() {
-    val visibleWhenSaved = EntityStore.isSaved.map { if (it) "" else "d-none" }
+    val visibleWhenSaved = DetailStore.isSaved.map { if (it) "" else "d-none" }
 
     div("col-12") {
         div("card") {
-            h5("card-header") { EntityStore.data.map {
-                "Persons Details (...${it._id.takeLast(5)})"
-            }.renderText()
+            h5("card-header") {
+                DetailStore.data.map {
+                    "Persons Details (...${it.id.takeLast(5)})"
+                }.renderText()
             }
             div("card-body") {
                 div {
-                    formGroup("name", EntityStore.sub(Person.name()))
-                    formGroup("age", EntityStore.sub(Person.age() + numberFormat), inputType = "number")
-                    formGroup("salary", EntityStore.sub(Person.salary() + numberFormat), inputType = "number")
+                    formGroup("name", DetailStore.sub(Person.name()))
+                    formGroup("age", DetailStore.sub(Person.age() + numberFormat), inputType = "number")
+                    formGroup("salary", DetailStore.sub(Person.salary() + numberFormat), inputType = "number")
                 }
             }
             div("card-footer") {
                 button("btn btn-success") {
                     span {
-                        className(EntityStore.running.data.map {
-                            if(it) "spinner-border spinner-border-sm mr-2" else ""
+                        className(DetailStore.running.data.map {
+                            if (it) "spinner-border spinner-border-sm mr-2" else ""
                         })
                     }
-                    EntityStore.isSaved.map { if (it) "Save" else "Add" }.renderText()
+                    DetailStore.isSaved.map { if (it) "Save" else "Add" }.renderText()
 
-                    clicks handledBy EntityStore.addOrUpdate
+                    clicks handledBy DetailStore.addOrUpdate
                 }
                 button("btn btn-danger ml-2") {
                     className(visibleWhenSaved)
                     +"Delete"
-                    clicks handledBy EntityStore.delete
+                    clicks handledBy DetailStore.delete
                 }
                 button("btn btn-warning ml-2") {
-                    className(EntityStore.history.data.combine(EntityStore.data) { history, value ->
+                    className(DetailStore.history.data.combine(DetailStore.data) { history, value ->
                         history.isNotEmpty() && history.first() != value
                     }.map { if (it) "" else "d-none" })
                     +"Undo"
-                    clicks handledBy EntityStore.undo
+                    clicks handledBy DetailStore.undo
                 }
                 button("btn btn-info ml-2") {
                     className(visibleWhenSaved)
                     +"Close"
-                    clicks handledBy EntityStore.reset
+                    clicks handledBy DetailStore.reset
                 }
                 button("btn btn-secondary mx-2") {
                     +"Show data"
@@ -173,7 +182,7 @@ fun RenderContext.details() {
                     div("card card-body") {
                         pre {
                             code {
-                                EntityStore.data.map { JSON.stringify(it, space = 2) }.renderText()
+                                DetailStore.data.map { JSON.stringify(it, space = 2) }.renderText()
                             }
                         }
                     }

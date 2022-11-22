@@ -56,19 +56,28 @@ After the `Session` was closed by either client or server, no further messages c
 throws a `SendException`.
 
 
-You can synchronize the content of a `Store` with a server via websockets. Use the function 
-`syncWith(socket: Socket, resource: Resource<T, I>)` like in the following example:
+You can synchronize the content of a `Store` with a server via websockets. You can use a function like 
+`syncWith(socket: Socket, resource: Resource<T, I>)` in the following example:
 
 ```kotlin
 @Lenses
 @Serializable
 data class Person(val name: String = "", val age: Int = -1, val _id: String = Id.next())
 
-object PersonResource : Resource<Person, String> {
-    override val idProvider: IdProvider<Person, String> = Person::_id
-    override fun serialize(item: Person): String = Json.encodeToString(Person.serializer(), item)
-    override fun deserialize(source: String): Person =
-        Json.decodeFromString(Person.serializer(), source)
+fun Store<Person>.syncWith(socket: Socket) {
+    val session = socket.connect()
+    var last: Person? = null
+    apply {
+        session.messages.body.map {
+            val received = Json.decodeFromString(Person.serializer(), it)
+            last = received
+            received
+        } handledBy this@syncWith.update
+
+        this@syncWith.data.drop(1) handledBy {
+            if (last != it) session.send(Json.encodeToString(Person.serializer(), it))
+        }
+    }
 }
 
 val socket = websocket("ws://...")
