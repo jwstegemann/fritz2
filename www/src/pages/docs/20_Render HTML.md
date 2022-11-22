@@ -221,7 +221,7 @@ render {
 }
 ```
 
-The same works for `List<String>`s with the `classList`-attribute.
+fritz2 also lets you manage multiple classes in a `List<String>` or `Flow<List<String>>` with the `classList`-attribute.
 
 Additionally, you can build a `Map<String, Boolean>` from your model data that enables and disables single classes
 dynamically:
@@ -279,7 +279,7 @@ className(visibility)
 
 ## Scope
 
-fritz2 offers the possibility to use a `Scope` to add some information to a tag which can then be received by any
+fritz2 offers the option to use a `Scope` to add some information to a tag which can then be received by any
 child-tag of the corresponding DOM-subtree and which will not be rendered out by default. The values in the `Scope` are
 only available for tags inside the context of the tag which sets them.
 
