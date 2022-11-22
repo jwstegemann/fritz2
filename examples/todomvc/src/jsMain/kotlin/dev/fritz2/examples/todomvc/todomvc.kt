@@ -60,7 +60,6 @@ object ToDoListStore : RootStore<List<ToDo>>(emptyList(), id = persistencePrefix
         val toUpdate = toDos.mapNotNull {
             if (it.completed != toggle) it.copy(completed = toggle) else null
         }
-        console.log(toUpdate.joinToString { it.toString() })
 
         val updated = (toDos + toUpdate).groupBy{ it.id }
             .filterValues { it.size > 1 }.mapValues { (id, entities) ->
@@ -71,15 +70,12 @@ object ToDoListStore : RootStore<List<ToDo>>(emptyList(), id = persistencePrefix
                 )
                 entity
             }
-        val result = toDos.map { updated[it.id] ?: it }
-        console.log(result.joinToString { it.toString() })
 
-        result
+        toDos.map { updated[it.id] ?: it }
     }
 
     val clearCompleted = handle { toDos ->
         toDos.partition(ToDo::completed).let { (completed, active) ->
-            console.info("delete: ${completed.joinToString()}")
             completed.map(ToDo::id).forEach {
                 localStorage.removeItem("${persistencePrefix}.$it")
             }
