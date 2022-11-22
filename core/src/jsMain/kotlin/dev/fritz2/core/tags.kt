@@ -3,7 +3,6 @@ package dev.fritz2.core
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import kotlinx.dom.clear
 import org.w3c.dom.Element
@@ -234,22 +233,12 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, WithEvents<E> {
     }
 
     /**
-     * Creates an [Listener] for the given event [name].
+     * Creates an [Listener] for the given event [eventName].
      *
-     * @param name of the [Event] to listen for
+     * @param eventName of the [Event] to listen for
      */
-    override fun <X : Event> subscribe(name: String): Listener<X, E> = Listener(callbackFlow {
-        val listener: (Event) -> Unit = {
-            try {
-                trySend(it.unsafeCast<X>())
-            } catch (e: Exception) {
-                console.error("Unexpected type while listening for `$name` events in Window object", e)
-            }
-        }
-        domNode.addEventListener(name, listener)
-
-        awaitClose { domNode.removeEventListener(name, listener) }
-    })
+    override fun <X : Event> subscribe(eventName: String, capture: Boolean, init: Event.() -> Unit): Listener<X, E> =
+        Listener(domNode.subscribe(eventName, capture, init))
 
     /**
      * Adds text-content of a [Flow] at this position

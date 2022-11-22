@@ -18,7 +18,7 @@ class EventsTest {
 
     @Test
     fun testChangeAndInputEvent() = runTest {
-        
+
         val inputId = Id.next()
 
         val store = object : RootStore<String>("start") {}
@@ -52,7 +52,7 @@ class EventsTest {
 
     @Test
     fun testClickEvent() = runTest {
-        
+
         val resultId = Id.next()
         val buttonId = Id.next()
 
@@ -97,7 +97,7 @@ class EventsTest {
 
     @Test
     fun testMultipleClickEvent() = runTest {
-        
+
         val resultId = Id.next()
         val buttonId = Id.next()
 
@@ -155,7 +155,7 @@ class EventsTest {
 
     @Test
     fun testKeyboardEvent() = runTest {
-        
+
         val resultId = Id.next()
         val inputId = Id.next()
 
@@ -231,10 +231,10 @@ class EventsTest {
             assertEquals(expected, result.textContent, "wrong dom content of result-node")
         }
     }
-    
+
     @Test
     fun testEnterForInput() = runTest {
-        
+
         val inputId = Id.next()
         val resultId = Id.next()
 
@@ -272,7 +272,7 @@ class EventsTest {
 
     @Test
     fun testWindowListenerForClickEvent() = runTest {
-        
+
         val labelId = "labelId"
         val divId = "divId"
 
@@ -306,63 +306,66 @@ class EventsTest {
         assertEquals(labelId, div.textContent, "wrong content into div")
     }
 
-    @Ignore
+    @Ignore // composedPath() is not working in Karma tests
     @Test
     fun testWindowListenerForClickEventAndComposedPath() = runTest {
-        
-        val labelId = "labelId"
-        val divId = "divId"
 
-        val store = object : RootStore<String>("") {
-            var countHandlerCalls = 0
-            val updateData = handle {
-                countHandlerCalls++
-                it
-            }
+        val wrapperId = Id.next()
+        val outerId = Id.next()
+        val innerId = Id.next()
+
+        val pathSize = storeOf(0)
+        val setSize = pathSize.handle<Int> { _, size ->
+            console.log("Store: $size\n");
+            size
         }
 
         render {
-            Window.clicks.composedPath().map { } handledBy store.updateData
-
-
-            section {
-                div(id = divId) {
-                    store.data.renderText()
-                    label(id = labelId) { }
+            div(id = wrapperId) {
+                inlineStyle("background: lightblue; padding: 3rem")
+                attr("path-size", pathSize.data)
+                clicks.map {
+                    delay(200)
+                    val paths = it.composedPath()
+                    console.log("Map: $paths\n")
+                    paths.size
+                } handledBy setSize
+                div(id = outerId) {
+                    inlineStyle("background: red; padding: 3rem")
+                    div(id = innerId) {
+                        inlineStyle("background: blue; padding: 3rem")
+                    }
                 }
-
             }
         }
 
-        delay(100)
+        delay(200)
+        val wrapperDiv = document.getElementById(wrapperId).unsafeCast<HTMLDivElement>()
+        val outerDiv = document.getElementById(outerId).unsafeCast<HTMLDivElement>()
+        val innerDiv = document.getElementById(innerId).unsafeCast<HTMLDivElement>()
 
-        val div = document.getElementById(divId).unsafeCast<HTMLDivElement>()
-        val label = document.getElementById(labelId).unsafeCast<HTMLLabelElement>()
+        assertEquals(0, wrapperDiv.getAttribute("path-size")?.toInt())
 
-        assertEquals(0, store.countHandlerCalls, "wrong number of handler calls")
+        innerDiv.click()
+        delay(500)
+        assertEquals(2, wrapperDiv.getAttribute("path-size")?.toInt())
 
-        label.click()
-        delay(100)
-        assertEquals(1, store.countHandlerCalls, "wrong number of handler calls")
-        assertEquals(labelId, div.textContent, "wrong id into store")
-
-        div.click()
-        delay(100)
-        assertEquals(2, store.countHandlerCalls, "wrong number of handler calls")
-        assertEquals(divId, div.textContent, "wrong id into store")
+        outerDiv.click()
+        delay(500)
+        assertEquals(1, wrapperDiv.getAttribute("path-size")?.toInt())
     }
 
     @Ignore
     @Test
     fun testWindowListenerForStopImmediatePropagation() = runTest {
-        
+
         val divId = "divId"
         val buttonId = "buttonId"
 
         val windowEventText = "windowEventText"
         val windowSecondEventText = "windowSecondEventText"
 
-        val windowStore = object : RootStore<String>("") {  }
+        val windowStore = object : RootStore<String>("") {}
 
         render {
             Window.clicks.stopImmediatePropagation().map {
@@ -390,6 +393,125 @@ class EventsTest {
         button.click()
         delay(100)
         assertEquals(windowEventText, div.textContent, "Button clicked: wrong content into div")
+    }
 
+    @Test
+    fun testEventCaptured() = runTest {
+
+        val outerId = Id.next()
+        val innerId = Id.next()
+
+        val store = storeOf("")
+        val concat = store.handle<String> { self, input -> self + input }
+
+        render {
+            div(id = outerId) {
+                attr("data-value", store.data)
+                clicksCaptured.map { "o" } handledBy concat
+
+                div(id = innerId) {
+                    clicks.map { "i" } handledBy concat
+                }
+            }
+        }
+
+        delay(100)
+        val outerDiv = document.getElementById(outerId).unsafeCast<HTMLDivElement>()
+        assertEquals("", outerDiv.getAttribute("data-value"))
+
+        val innerDiv = document.getElementById(innerId).unsafeCast<HTMLDivElement>()
+        innerDiv.click()
+        delay(100)
+        assertEquals("oi", outerDiv.getAttribute("data-value"))
+    }
+
+    @Test
+    fun testEventCapturedStopPropagation() = runTest {
+
+        val outerId = Id.next()
+        val innerId = Id.next()
+
+        val store = storeOf("")
+        val concat = store.handle<String> { self, input -> self + input }
+
+        render {
+            div(id = outerId) {
+                attr("data-value", store.data)
+                clicksCaptured.stopPropagation().map { "o" } handledBy concat
+
+                div(id = innerId) {
+                    clicks.stopPropagation().map { "i" } handledBy concat
+                }
+            }
+        }
+
+        delay(100)
+        val outerDiv = document.getElementById(outerId).unsafeCast<HTMLDivElement>()
+        assertEquals("", outerDiv.getAttribute("data-value"))
+
+        val innerDiv = document.getElementById(innerId).unsafeCast<HTMLDivElement>()
+        innerDiv.click()
+        delay(100)
+        assertEquals("o", outerDiv.getAttribute("data-value"))
+    }
+
+    @Test
+    fun testEventBubbled() = runTest {
+
+        val outerId = Id.next()
+        val innerId = Id.next()
+
+        val store = storeOf("")
+        val concat = store.handle<String> { self, input -> self + input }
+
+        render {
+            div(id = outerId) {
+                attr("data-value", store.data)
+                clicks.map { "o" } handledBy concat
+
+                div(id = innerId) {
+                    clicks.map { "i" } handledBy concat
+                }
+            }
+        }
+
+        delay(100)
+        val outerDiv = document.getElementById(outerId).unsafeCast<HTMLDivElement>()
+        assertEquals("", outerDiv.getAttribute("data-value"))
+
+        val innerDiv = document.getElementById(innerId).unsafeCast<HTMLDivElement>()
+        innerDiv.click()
+        delay(100)
+        assertEquals("io", outerDiv.getAttribute("data-value"))
+    }
+
+    @Test
+    fun testEventBubbledStopPropagation() = runTest {
+
+        val outerId = Id.next()
+        val innerId = Id.next()
+
+        val store = storeOf("")
+        val concat = store.handle<String> { self, input -> self + input }
+
+        render {
+            div(id = outerId) {
+                attr("data-value", store.data)
+                clicks.stopPropagation().map { "o" } handledBy concat
+
+                div(id = innerId) {
+                    clicks.stopPropagation().map { "i" } handledBy concat
+                }
+            }
+        }
+
+        delay(100)
+        val outerDiv = document.getElementById(outerId).unsafeCast<HTMLDivElement>()
+        assertEquals("", outerDiv.getAttribute("data-value"))
+
+        val innerDiv = document.getElementById(innerId).unsafeCast<HTMLDivElement>()
+        innerDiv.click()
+        delay(100)
+        assertEquals("i", outerDiv.getAttribute("data-value"))
     }
 }
