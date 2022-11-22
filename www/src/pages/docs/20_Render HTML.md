@@ -211,10 +211,10 @@ the `className`-attribute (like with any other attribute).
 render {
     val enabled = storeOf(true)
 
-    div {
+    div("common-css-class") {
         className(enabled.data.map {
-            if (it) "background-color: lightgreen;"
-            else "opacity: 0.5; background-color: lightgrey;"
+            if (it) "enabled-css-class"
+            else "disabled-css-class"
         })
         +"Some important content"
     }
@@ -246,6 +246,21 @@ render {
     p {
         inlineStyle("color: red")
         +"this is red text"
+    }
+}
+```
+
+Of course, it is also possible to dynamically style an element by passing a `Flow` of CSS styles into `inlineStyle`:
+```kotlin
+render {
+    val enabled = storeOf(true)
+
+    div {
+        inlineStyle(enabled.data.map {
+            if (it) "background-color: lightgreen;"
+            else "opacity: 0.5; background-color: lightgrey;"
+        })
+        +"Some important content"
     }
 }
 ```
