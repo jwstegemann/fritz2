@@ -23,9 +23,8 @@ fun main() {
     render("#target") {
         div {
             nav("navbar navbar-expand-lg navbar-light bg-light") {
-                a("navbar-brand") {
+                span("navbar-brand") {
                     +"Routing"
-                    href("/")
                 }
                 button("navbar-toggler") {
                     attr("data-toggle", "collapse")
