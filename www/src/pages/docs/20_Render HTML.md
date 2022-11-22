@@ -188,7 +188,7 @@ render {
 }
 ```
 
-## Working with CSS-Classes or CSS
+## Working with CSS-Classes
 
 The `class` attribute of a `Tag` for working with CSS style-classes is somewhat special. You can set the static values
 of each `Tag` for `class` and `id` by using the optional parameters of its factory function:
@@ -204,26 +204,15 @@ render {
 Use this one-liner to add styling and meaning to your elements by using semantic CSS class-names. Also, it keeps your
 code clean when using CSS frameworks like Bootstrap, Tailwind etc.
 
-The `inlineStyle` function on the other hand can be used to add css to your elements if you don't want to work with classnames:
-
-```kotlin
-render {
-    p {
-        inlineStyle("color: red")
-        +"this is red text"
-    }
-}
-```
-
-To dynamically change the styling of a rendered element, add dynamic css by assigning a `Flow<String>` to
-the `inlineStyle`-attribute (like with any other attribute). 
+To dynamically change the styling of a rendered element, you can add dynamic classes by assigning a `Flow` of strings to
+the `className`-attribute (like with any other attribute).
 
 ```kotlin
 render {
     val enabled = storeOf(true)
 
     div {
-        inlineStyle(enabled.data.map { // you could also use classnames here, just use the className() attribute instead of inlineStyle
+        className(enabled.data.map {
             if (it) "background-color: lightgreen;"
             else "opacity: 0.5; background-color: lightgrey;"
         })
@@ -232,7 +221,7 @@ render {
 }
 ```
 
-fritz2 also lets you manage multiple static classes in a `List<String>` with the `classList`-attribute.
+The same works for `List<String>`s with the `classList`-attribute.
 
 Additionally, you can build a `Map<String, Boolean>` from your model data that enables and disables single classes
 dynamically:
@@ -250,7 +239,16 @@ render {
 }
 ```
 
+fritz2 also offers a function for setting the inline `style` attribute to your elements:
 
+```kotlin
+render {
+    p {
+        inlineStyle("color: red")
+        +"this is red text"
+    }
+}
+```
 
 To set an initial CSS class (or any other attribute) immediately (for example to avoid flicker effects caused by the delay
 of the first value becoming available on the flow), the respective attribute-method must be called twice.
@@ -266,7 +264,7 @@ className(visibility)
 
 ## Scope
 
-fritz2 offers the option to use a `Scope` to add some information to a tag which can then be received by any
+fritz2 offers the possibility to use a `Scope` to add some information to a tag which can then be received by any
 child-tag of the corresponding DOM-subtree and which will not be rendered out by default. The values in the `Scope` are
 only available for tags inside the context of the tag which sets them.
 
