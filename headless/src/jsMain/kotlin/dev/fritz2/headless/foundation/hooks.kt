@@ -6,7 +6,8 @@ import kotlinx.coroutines.flow.Flow
 
 /**
  * This alias should express the main concept of a [Hook]: The encapsulated effect; that is applying some function
- * with a payload `P` onto a receiver `C` (often some [Tag]) and return some result `R` (often also a [Tag]).
+ * with a payload `P` onto a receiver `C` (often some [Tag]). Optionally you can pass in an also-expression that
+ * is called on the Result `R`.
  */
 typealias Effect<C, R, P> = C.(P, (R.() -> Unit)?) -> Unit
 
@@ -35,10 +36,9 @@ typealias TagPayload<P> = Triple<String?, String?, P>
  * The applicator can pass additional data into the effect as payload [P] (think of some ``close`` handler passed
  * into the apply-expression to enable the client to create some custom close-button for example).
  *
- * The hook can return some type which is expressed by the [R] type parameter of the [Effect] expression.
- *
  * The applicator can easily execute the [Hook] by calling one of the [hook] methods, which basically simply pass
- * the payload into the [Effect] and executes it. Finally an optional [alsoExpr] is applied to the return value [R].
+ * the payload into the [Effect] and executes it. Finally an optional [alsoExpr] has to be applied to the return
+ * value [R] in the different variations of the [Effect].
  *
  * If an implementation needs some complex payload, use some dataclass or other containers to comply to its signature.
  *
@@ -100,7 +100,6 @@ abstract class Hook<C, R, P> : Property<Effect<C, R, P>>() {
 
 /**
  * This hook method applies a [Hook]'s encapsulated behaviour to the calling context and passes a given payload.
- * It also applies a given also-expression.
  *
  * @see Hook
  *
@@ -112,7 +111,6 @@ fun <C, R, P> C.hook(h: Hook<C, R, P>, payload: P) =
 
 /**
  * This hook method applies a [Hook]'s encapsulated behaviour to the calling context.
- * It also applies a given also-expression.
  *
  * @see Hook
  *
@@ -123,7 +121,7 @@ fun <C, R> C.hook(h: Hook<C, R, Unit>) =
 
 /**
  * This hook method applies multiple [Hook]'s encapsulated behaviour to the calling context with the payload of type
- * `Unit`. It also applies a given also-expression of each hook.
+ * `Unit`.
  *
  * This is a shortcut for situation where lots of hooks needs to be applied at the same location:
  * ```
