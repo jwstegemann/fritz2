@@ -18,11 +18,11 @@ class AttributeHook<C : Tag<*>, T>(
 ) : Hook<C, Unit, Unit>() {
 
     operator fun invoke(value: T?) {
-        this.value = value?.let { v -> { valueSetter(v) } }
+        this.value = value?.let { v -> { _, _ -> valueSetter(v) } }
     }
 
     operator fun invoke(value: Flow<T>) {
-        this.value = { flowOfValueSetter(value) }
+        this.value = { _, _ -> flowOfValueSetter(value) }
     }
 }
 
@@ -42,12 +42,12 @@ class BooleanAttributeHook<C : Tag<*>>(
 
     operator fun invoke(value: Boolean?) {
         this.value = value?.let { v ->
-            { valueSetter(v, trueValue) }
+            { _, _ -> valueSetter(v, trueValue) }
         }
     }
 
     operator fun invoke(value: Flow<Boolean>) {
-        this.value = { flowOfValueSetter(value, trueValue) }
+        this.value = { _, _ -> flowOfValueSetter(value, trueValue) }
     }
 }
 

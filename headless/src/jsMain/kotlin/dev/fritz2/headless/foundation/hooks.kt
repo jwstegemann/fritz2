@@ -6,9 +6,10 @@ import kotlinx.coroutines.flow.Flow
 
 /**
  * This alias should express the main concept of a [Hook]: The encapsulated effect; that is applying some function
- * with a payload `P` onto a receiver `C` (often some [Tag]) and return some result `R` (often also a [Tag]).
+ * with a payload `P` onto a receiver `C` (often some [Tag]). Optionally you can pass in an also-expression that
+ * is called on the Result `R`.
  */
-typealias Effect<C, R, P> = C.(P) -> R
+typealias Effect<C, R, P> = C.(P, (R.() -> Unit)?) -> Unit
 
 /**
  * This specialized payload alias should express the common needed parameters when the [Effect] render some [Tag],
@@ -35,10 +36,9 @@ typealias TagPayload<P> = Triple<String?, String?, P>
  * The applicator can pass additional data into the effect as payload [P] (think of some ``close`` handler passed
  * into the apply-expression to enable the client to create some custom close-button for example).
  *
- * The hook can return some type which is expressed by the [R] type parameter of the [Effect] expression.
- *
  * The applicator can easily execute the [Hook] by calling one of the [hook] methods, which basically simply pass
- * the payload into the [Effect] and executes it. Finally an optional [alsoExpr] is applied to the return value [R].
+ * the payload into the [Effect] and executes it. Finally an optional [alsoExpr] has to be applied to the return
+ * value [R] in the different variations of the [Effect].
  *
  * If an implementation needs some complex payload, use some dataclass or other containers to comply to its signature.
  *
@@ -100,7 +100,6 @@ abstract class Hook<C, R, P> : Property<Effect<C, R, P>>() {
 
 /**
  * This hook method applies a [Hook]'s encapsulated behaviour to the calling context and passes a given payload.
- * It also applies a given also-expression.
  *
  * @see Hook
  *
@@ -108,22 +107,21 @@ abstract class Hook<C, R, P> : Property<Effect<C, R, P>>() {
  * @param payload some additional data
  */
 fun <C, R, P> C.hook(h: Hook<C, R, P>, payload: P) =
-    h.value?.invoke(this, payload)?.also { h.alsoExpr?.invoke(it) }
+    h.value?.invoke(this, payload, h.alsoExpr)
 
 /**
  * This hook method applies a [Hook]'s encapsulated behaviour to the calling context.
- * It also applies a given also-expression.
  *
  * @see Hook
  *
  * @param h The hook implementation
  */
 fun <C, R> C.hook(h: Hook<C, R, Unit>) =
-    h.value?.invoke(this, Unit)?.also { h.alsoExpr?.invoke(it) }
+    h.value?.invoke(this, Unit, h.alsoExpr)
 
 /**
  * This hook method applies multiple [Hook]'s encapsulated behaviour to the calling context with the payload of type
- * `Unit`. It also applies a given also-expression of each hook.
+ * `Unit`.
  *
  * This is a shortcut for situation where lots of hooks needs to be applied at the same location:
  * ```
@@ -141,7 +139,7 @@ fun <C, R> C.hook(h: Hook<C, R, Unit>) =
  * @param h some hook implementations
  */
 fun <C, R> C.hook(vararg h: Hook<C, R, Unit>) = h.forEach { hook ->
-    hook.value?.invoke(this, Unit)?.also { hook.alsoExpr?.invoke(it) }
+    hook.value?.invoke(this, Unit, hook.alsoExpr)
 }
 
 /**
@@ -159,7 +157,7 @@ fun <C, R> C.hook(vararg h: Hook<C, R, Unit>) = h.forEach { hook ->
  * @param payload some additional data
  */
 fun <C, R, P> C.hook(h: Hook<C, R, TagPayload<P>>, classes: String?, id: String?, payload: P) =
-    h.value?.invoke(this, Triple(classes, id, payload))?.also { h.alsoExpr?.invoke(it) }
+    h.value?.invoke(this, Triple(classes, id, payload), h.alsoExpr)
 
 /**
  * This hook abstraction simplifies a [Tag] creating [Hook] by offering static [invoke] methods, which already
@@ -206,17 +204,15 @@ abstract class TagHook<R : Tag<*>, P, I> : Hook<RenderContext, R, TagPayload<P>>
     protected abstract fun RenderContext.renderTag(classes: String?, id: String?, data: I, payload: P): R
 
     operator fun invoke(value: I) = this.apply {
-        this.value = { (classes, id, payload) ->
-            renderTag(classes, id, value, payload)
+        this.value = { (classes, id, payload), alsoExpr ->
+            renderTag(classes, id, value, payload).apply { alsoExpr?.let { it() } }
         }
     }
 
     operator fun invoke(value: Flow<I>) = this.apply {
-        this.value = { (classes, id, payload) ->
-            export {
-                value.render {
-                    export(renderTag(classes, id, it, payload))
-                }
+        this.value = { (classes, id, payload), alsoExpr ->
+            value.render {
+                renderTag(classes, id, it, payload).apply { alsoExpr?.let { it() } }
             }
         }
     }
