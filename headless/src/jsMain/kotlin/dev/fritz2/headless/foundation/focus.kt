@@ -162,7 +162,7 @@ fun Tag<HTMLElement>.setInitialFocus() {
  * @param focus This boolean value splits the enum values into two disjoint sets: values which should set a focus
  *              after all (`true`) and those who does not at all (`false`)
  */
-enum class InitialFocus(public val focus: Boolean) {
+enum class InitialFocus(val focus: Boolean) {
 
     /**
      * Do not set any focus at all
@@ -197,11 +197,11 @@ enum class InitialFocus(public val focus: Boolean) {
  * @param setInitialFocus will automatically focus the first element of the container or that one, which has been
  *                        tagged by [setInitialFocus] function if the [InitialFocus] value has `focus=true`.
  */
-fun Tag<HTMLElement>.trapFocus(restoreFocus: Boolean = true, setInitialFocus: InitialFocus = InitialFocus.TryToSet) {
+fun Tag<HTMLElement>.trapFocus(restoreFocus: Boolean = true, setInitialFocus: InitialFocus = TryToSet) {
+    setInitialFocusOnDemand(setInitialFocus)
     trapFocusOn(
         keydowns.filter { setOf(Keys.Tab, Keys.Shift + Keys.Tab).contains(shortcutOf(it)) },
-        restoreFocus,
-        setInitialFocus
+        restoreFocus
     )
 }
 
@@ -219,25 +219,25 @@ fun Tag<HTMLElement>.trapFocus(restoreFocus: Boolean = true, setInitialFocus: In
 fun Tag<HTMLElement>.trapFocusWhenever(
     condition: Flow<Boolean>,
     restoreFocus: Boolean = true,
-    setInitialFocus: InitialFocus = InitialFocus.TryToSet
+    setInitialFocus: InitialFocus = TryToSet
 ) {
+    condition handledBy {
+        if (it) setInitialFocusOnDemand(setInitialFocus)
+    }
     trapFocusOn(
         keydowns.combine(condition, ::Pair)
             .filter { it.second }
             .map { it.first }
             .filter { setOf(Keys.Tab, Keys.Shift + Keys.Tab).contains(shortcutOf(it)) },
-        restoreFocus,
-        setInitialFocus
+        restoreFocus
     )
 }
 
 private fun Tag<HTMLElement>.trapFocusOn(
     tabEvents: Flow<KeyboardEvent>,
-    restoreFocus: Boolean = true,
-    setInitialFocus: InitialFocus = InitialFocus.TryToSet
+    restoreFocus: Boolean = true
 ) {
     restoreFocusOnDemand(restoreFocus)
-    setInitialFocusOnDemand(setInitialFocus)
 
     // handle tab key
     tabEvents handledBy { event ->
@@ -246,11 +246,7 @@ private fun Tag<HTMLElement>.trapFocusOn(
             domNode,
             if (shortcutOf(event).shift) FocusOptions(previous = true, wrapAround = true)
             else FocusOptions(next = true, wrapAround = true)
-        ).also {
-            if (it != FocusResult.Success && setInitialFocus == InitialFocus.InsistToSet) {
-                console.warn("Focus-trap was not successful!", it)
-            }
-        }
+        )
     }
 }
 
@@ -274,7 +270,7 @@ private fun Tag<HTMLElement>.setInitialFocusOnDemand(setInitialFocus: InitialFoc
                     }
                 } else {
                     if (focusIn(domNode, FocusOptions(first = true)) == FocusResult.Error) {
-                        if (setInitialFocus == InitialFocus.InsistToSet) {
+                        if (setInitialFocus == InsistToSet) {
                             console.warn("There are no focusable elements inside the focus-trap!")
                         }
                     }
