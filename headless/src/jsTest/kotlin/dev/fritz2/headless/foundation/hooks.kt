@@ -3,6 +3,7 @@ package dev.fritz2.headless.foundation
 import dev.fritz2.core.*
 import dev.fritz2.headless.getElementById
 import dev.fritz2.headless.runTest
+import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLSpanElement
@@ -13,62 +14,66 @@ class HookTests {
 
     class CombineValueAndPayloadAsAttribute : Hook<Tag<HTMLDivElement>, Tag<HTMLSpanElement>, String>() {
         operator fun invoke(value: String) = apply {
-            this.value = { payload ->
+            this.value = { payload, alsoExpr ->
                 span {
                     attr("data-value-payload", "$value-$payload")
-                }
+                }.apply { alsoExpr?.let { it() } }
             }
         }
     }
 
     @Test
     fun callHookFunctionWithPayloadWillExecuteEffectAndAlsoExpression() = runTest {
+        val divId = Id.next()
+
         val sut = CombineValueAndPayloadAsAttribute()
         sut("hook").also {
             attr("data-also", "ok")
         }
 
-        var result: Tag<HTMLSpanElement>? = null
         render {
-            div {
-                result = hook(sut, "payload")
+            div(id = divId) {
+                hook(sut, "payload")
             }
         }
         delay(100)
 
+        val result: HTMLSpanElement? = document.getElementById(divId)?.let { (it as HTMLDivElement).firstChild as HTMLSpanElement }
         assertNotNull(result)
-        assertEquals("hook-payload", result!!.domNode.getAttribute("data-value-payload"))
-        assertEquals("ok", result!!.domNode.getAttribute("data-also"))
+        assertEquals("hook-payload", result.getAttribute("data-value-payload"))
+        assertEquals("ok", result.getAttribute("data-also"))
     }
 
     class ValueAsAttribute : Hook<Tag<HTMLDivElement>, Tag<HTMLSpanElement>, Unit>() {
         operator fun invoke(value: String) = apply {
-            this.value = {
+            this.value = {_, alsoExpr ->
                 span {
-                    attr("data-value", "$value")
-                }
+                    attr("data-value", value)
+                }.apply { alsoExpr?.let { it() } }
             }
         }
     }
 
     @Test
     fun callHookFunctionWithoutPayloadWillExecuteEffectAndAlsoExpression() = runTest {
+        val divId = Id.next()
+
         val sut = ValueAsAttribute()
         sut("hook").also {
             attr("data-also", "ok")
         }
 
-        var result: Tag<HTMLSpanElement>? = null
         render {
-            div {
-                result = hook(sut)
+            div(id = divId) {
+                hook(sut)
             }
         }
         delay(100)
 
+        val result: HTMLSpanElement? = document.getElementById(divId)?.let { (it as HTMLDivElement).firstChild as HTMLSpanElement }
         assertNotNull(result)
-        assertEquals("hook", result!!.domNode.getAttribute("data-value"))
-        assertEquals("ok", result!!.domNode.getAttribute("data-also"))
+        assertEquals("hook", result.getAttribute("data-value"))
+        assertEquals("ok", result.getAttribute("data-also"))
     }
 
     @Test
@@ -116,11 +121,12 @@ class HookTests {
         var payload: String? = null
 
         operator fun invoke(data: String) = apply {
-            value = { (classes, id, payload) ->
+            value = { (classes, id, payload), alsoExpr ->
                 this@TagPaloadSpyingHook.data = data
                 this@TagPaloadSpyingHook.id = id
                 this@TagPaloadSpyingHook.classes = classes
                 this@TagPaloadSpyingHook.payload = payload
+                alsoExpr?.let { it(Unit) }
             }
         }
     }
@@ -172,7 +178,7 @@ class HookTests {
         }
         delay(100)
 
-        var result = getElementById<HTMLDivElement>(id)
+        val result = getElementById<HTMLDivElement>(id)
         assertNotNull(result)
         assertEquals(classes, result.className)
         assertEquals(id, result.id)

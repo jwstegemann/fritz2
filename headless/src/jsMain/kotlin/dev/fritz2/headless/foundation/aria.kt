@@ -15,6 +15,7 @@ import dev.fritz2.core.Tag
  * }
  * ```
  */
+@Suppress("unused")
 object Aria {
     const val grabbed = "aria-grabbed"
     const val autocomplete = "aria-autocomplete"
@@ -214,13 +215,13 @@ object Aria {
  */
 class AriaReferenceHook<C : Tag<*>>(private val name: String) : Hook<C, Unit, Unit>() {
     operator fun invoke(id: String): String {
-        value = id.let { v -> { attr(name, v) } }
+        value = id.let { v -> { _,_ -> attr(name, v) } }
         return id
     }
 
     operator fun invoke(): String {
         val id = Id.next()
-        value = id.let { v -> { attr(name, v) } }
+        value = id.let { v -> { _,_ -> attr(name, v) } }
         return id
     }
 }

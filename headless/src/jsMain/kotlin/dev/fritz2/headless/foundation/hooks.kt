@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
  * This alias should express the main concept of a [Hook]: The encapsulated effect; that is applying some function
  * with a payload `P` onto a receiver `C` (often some [Tag]) and return some result `R` (often also a [Tag]).
  */
-typealias Effect<C, R, P> = C.(P) -> R
+typealias Effect<C, R, P> = C.(P, (R.() -> Unit)?) -> Unit
 
 /**
  * This specialized payload alias should express the common needed parameters when the [Effect] render some [Tag],
@@ -108,7 +108,7 @@ abstract class Hook<C, R, P> : Property<Effect<C, R, P>>() {
  * @param payload some additional data
  */
 fun <C, R, P> C.hook(h: Hook<C, R, P>, payload: P) =
-    h.value?.invoke(this, payload)?.also { h.alsoExpr?.invoke(it) }
+    h.value?.invoke(this, payload, h.alsoExpr)
 
 /**
  * This hook method applies a [Hook]'s encapsulated behaviour to the calling context.
@@ -119,7 +119,7 @@ fun <C, R, P> C.hook(h: Hook<C, R, P>, payload: P) =
  * @param h The hook implementation
  */
 fun <C, R> C.hook(h: Hook<C, R, Unit>) =
-    h.value?.invoke(this, Unit)?.also { h.alsoExpr?.invoke(it) }
+    h.value?.invoke(this, Unit, h.alsoExpr)
 
 /**
  * This hook method applies multiple [Hook]'s encapsulated behaviour to the calling context with the payload of type
@@ -141,7 +141,7 @@ fun <C, R> C.hook(h: Hook<C, R, Unit>) =
  * @param h some hook implementations
  */
 fun <C, R> C.hook(vararg h: Hook<C, R, Unit>) = h.forEach { hook ->
-    hook.value?.invoke(this, Unit)?.also { hook.alsoExpr?.invoke(it) }
+    hook.value?.invoke(this, Unit, hook.alsoExpr)
 }
 
 /**
@@ -159,7 +159,7 @@ fun <C, R> C.hook(vararg h: Hook<C, R, Unit>) = h.forEach { hook ->
  * @param payload some additional data
  */
 fun <C, R, P> C.hook(h: Hook<C, R, TagPayload<P>>, classes: String?, id: String?, payload: P) =
-    h.value?.invoke(this, Triple(classes, id, payload))?.also { h.alsoExpr?.invoke(it) }
+    h.value?.invoke(this, Triple(classes, id, payload), h.alsoExpr)
 
 /**
  * This hook abstraction simplifies a [Tag] creating [Hook] by offering static [invoke] methods, which already
@@ -206,17 +206,15 @@ abstract class TagHook<R : Tag<*>, P, I> : Hook<RenderContext, R, TagPayload<P>>
     protected abstract fun RenderContext.renderTag(classes: String?, id: String?, data: I, payload: P): R
 
     operator fun invoke(value: I) = this.apply {
-        this.value = { (classes, id, payload) ->
-            renderTag(classes, id, value, payload)
+        this.value = { (classes, id, payload), alsoExpr ->
+            renderTag(classes, id, value, payload).apply { alsoExpr?.let { it() } }
         }
     }
 
     operator fun invoke(value: Flow<I>) = this.apply {
-        this.value = { (classes, id, payload) ->
-            export {
-                value.render {
-                    export(renderTag(classes, id, it, payload))
-                }
+        this.value = { (classes, id, payload), alsoExpr ->
+            value.render {
+                renderTag(classes, id, it, payload).apply { alsoExpr?.let { it() } }
             }
         }
     }
