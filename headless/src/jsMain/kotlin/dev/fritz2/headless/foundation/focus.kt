@@ -5,10 +5,7 @@ import dev.fritz2.headless.foundation.InitialFocus.*
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.awaitAnimationFrame
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.KeyboardEvent
 import kotlin.math.max
@@ -221,13 +218,12 @@ fun Tag<HTMLElement>.trapFocusWhenever(
     restoreFocus: Boolean = true,
     setInitialFocus: InitialFocus = TryToSet
 ) {
-    condition handledBy {
-        if (it) setInitialFocusOnDemand(setInitialFocus)
-    }
     trapFocusOn(
-        keydowns.combine(condition, ::Pair)
-            .filter { it.second }
-            .map { it.first }
+        condition.onEach {
+            if (it) setInitialFocusOnDemand(setInitialFocus)
+        }.combine(keydowns, ::Pair)
+            .filter { it.first }
+            .map { it.second }
             .filter { setOf(Keys.Tab, Keys.Shift + Keys.Tab).contains(shortcutOf(it)) },
         restoreFocus
     )
