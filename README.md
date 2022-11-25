@@ -57,7 +57,6 @@ This is also true for your model-validation-code, which can quickly become far m
 - hash-based routing
 - history / undo
 - processing state ("spinning wheel")
-- backend-repositories (Rest APIs, WebSockets, LocalStorage, etc.)
 - webcomponents
 - easy to learn
 - [documentation](https://fritz2.dev/docs)
@@ -65,7 +64,7 @@ This is also true for your model-validation-code, which can quickly become far m
 
 ## How to try it?
 
-* Take a look at our hosted [examples](/examples)
+* Take a look at our hosted [examples](https://www.fritz2.dev/examples/)
 * Or set up a new project on your own, following our [documentation](https://www.fritz2.dev/docs/start/)
 
 ## Overall Goals
