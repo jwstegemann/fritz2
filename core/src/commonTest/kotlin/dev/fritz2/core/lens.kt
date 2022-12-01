@@ -86,7 +86,7 @@ class LensesTests {
 
         val addressWithCo = PostalAddress(someStreet, someCo)
 
-        val notNullLens: Lens<PostalAddress?, String> = streetLens.toNullableLens()
+        val notNullLens: Lens<PostalAddress?, String> = streetLens.withNullParent()
 
         assertEquals(someStreet, notNullLens.get(addressWithCo), "not null lens does get value on non null parent")
         assertFailsWith(NullPointerException::class, "not null lens does not throw exception when get on null parent") { notNullLens.get(null) }

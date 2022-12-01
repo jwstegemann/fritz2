@@ -95,7 +95,7 @@ fun <K, V> Store<Map<K, V>>.sub(key: K): Store<V> =
  * @param lens [Lens] to use to create the [Store]
  */
 fun <P, T> Store<P?>.sub(lens: Lens<P & Any, T>): Store<T> =
-    sub(lens.toNullableLens())
+    sub(lens.withNullParent())
 
 /**
  * on a [Store] of nullable data this creates a [Store] with a nullable parent and non-nullable value.

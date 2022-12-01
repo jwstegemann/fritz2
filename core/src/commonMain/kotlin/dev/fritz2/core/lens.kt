@@ -43,11 +43,25 @@ interface Lens<P, T> {
      *
      * @param other [Lens] to append to this one
      */
-    operator fun <X> plus(other: Lens<T, X>): Lens<P, X> = object :
-        Lens<P, X> {
+    operator fun <X> plus(other: Lens<T, X>): Lens<P, X> = object : Lens<P, X> {
         override val id = "${this@Lens.id}.${other.id}".trimEnd('.')
         override fun get(parent: P): X = other.get(this@Lens.get(parent))
         override fun set(parent: P, value: X): P = this@Lens.set(parent, other.set(this@Lens.get(parent), value))
+    }
+
+    /**
+     * For a lens on a non-nullable parent this method creates a lens that can be used on a nullable-parent
+     * Use this method only if you made sure, that it is never called on a null parent.
+     * Otherwise, a [NullPointerException] is thrown.
+     */
+    fun withNullParent(): Lens<P?, T> = object : Lens<P?, T> {
+        override val id: String = this@Lens.id
+        override fun get(parent: P?): T =
+            if (parent != null) this@Lens.get(parent)
+            else throw NullPointerException("get called with null parent on not-nullable lens@$id")
+        override fun set(parent: P?, value: T): P? =
+            if (parent != null) this@Lens.set(parent, value)
+            else throw NullPointerException("set called with null parent on not-nullable lens@$id")
     }
 }
 
@@ -150,24 +164,6 @@ fun <K, V> lensOf(key: K): Lens<Map<K, V>, V> = object : Lens<Map<K, V>, V> {
     override fun set(parent: Map<K, V>, value: V): Map<K, V> =
         if (parent.containsKey(key)) parent + (key to value)
         else throw CollectionLensSetException("no item found with key='$key'")
-}
-
-/**
- * For a lens on a non-nullable parent this method creates a lens that can be used on a nullable-parent
- * Use this method only if you made sure, that it is never called on a null parent.
- * Otherwise, a [NullPointerException] is thrown.
- */
-fun <P, T> Lens<P, T>.toNullableLens(): Lens<P?, T> = object : Lens<P?, T> {
-    private val lens = this@toNullableLens
-    override val id: String = lens.id
-
-    override fun get(parent: P?): T =
-        if (parent != null) lens.get(parent)
-        else throw NullPointerException("get called with null parent on not-nullable lens@$id")
-
-    override fun set(parent: P?, value: T): P? =
-        if (parent != null) lens.set(parent, value)
-        else throw NullPointerException("set called with null parent on not-nullable lens@$id")
 }
 
 /**
