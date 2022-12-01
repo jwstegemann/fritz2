@@ -143,9 +143,9 @@ class WebSocketTests {
     @Serializable
     data class SocketPerson(val name: String, val age: Int, val _id: String = Id.next())
 
-    private val nameLens = lens("name", SocketPerson::name) { p, v -> p.copy(name = v) }
-    private val ageLens = lens("age", SocketPerson::age) { p, v -> p.copy(age = v) }
-    private val idLens = lens("id", SocketPerson::_id) { p, v -> p.copy(_id = v) }
+    private val nameLens = lensOf("name", SocketPerson::name) { p, v -> p.copy(name = v) }
+    private val ageLens = lensOf("age", SocketPerson::age) { p, v -> p.copy(age = v) }
+    private val idLens = lensOf("id", SocketPerson::_id) { p, v -> p.copy(_id = v) }
 
     fun Store<SocketPerson>.syncWith(socket: Socket) {
         val session = socket.connect()

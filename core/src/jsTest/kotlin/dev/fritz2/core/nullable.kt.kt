@@ -11,7 +11,7 @@ import kotlin.test.assertNotNull
 class NullableTests {
     data class Customer(val mail: String?, val name: String)
 
-    private val mailLens: Lens<Customer, String?> = lens("mail", Customer::mail) { p, v -> p.copy(mail = v) }
+    private val mailLens: Lens<Customer, String?> = lensOf("mail", Customer::mail) { p, v -> p.copy(mail = v) }
 
     private val someName = "some name"
     private val someMail = "some mail"

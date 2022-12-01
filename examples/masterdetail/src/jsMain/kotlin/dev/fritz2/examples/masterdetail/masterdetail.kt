@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.get
 
-val numberFormat = format({ it.toInt() }, { it.toString() })
+val numberFormat = formatOf(String::toInt, Int::toString)
 
 const val personPrefix = "dev.fritz2.examples.masterdetail.person"
 

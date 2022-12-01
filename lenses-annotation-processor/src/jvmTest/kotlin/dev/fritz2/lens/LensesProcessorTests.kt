@@ -76,31 +76,31 @@ class LensesProcessorTests {
                 |package dev.fritz2.lenstest
                 |
                 |import dev.fritz2.core.Lens
-                |import dev.fritz2.core.lens
+                |import dev.fritz2.core.lensOf
                 |import kotlin.Int
                 |import kotlin.String
                 |
-                |public fun Foo.Companion.bar(): Lens<Foo, Int> = lens(
-                |    "bar", 
-                |    { it.bar }, 
+                |public fun Foo.Companion.bar(): Lens<Foo, Int> = lensOf(
+                |    "bar",
+                |    { it.bar },
                 |    { p, v -> p.copy(bar = v)}
                 |  )
                 |
-                |public fun Foo.Companion.foo(): Lens<Foo, String> = lens(
-                |    "foo", 
-                |    { it.foo }, 
+                |public fun Foo.Companion.foo(): Lens<Foo, String> = lensOf(
+                |    "foo",
+                |    { it.foo },
                 |    { p, v -> p.copy(foo = v)}
                 |  )
                 |
-                |public fun Foo.Companion.fooBar(): Lens<Foo, MyType> = lens(
-                |    "fooBar", 
-                |    { it.fooBar }, 
+                |public fun Foo.Companion.fooBar(): Lens<Foo, MyType> = lensOf(
+                |    "fooBar",
+                |    { it.fooBar },
                 |    { p, v -> p.copy(fooBar = v)}
                 |  )
                 |
-                |public fun Foo.Companion.baz(): Lens<Foo, MyGenericType<Int>> = lens(
-                |    "baz", 
-                |    { it.baz }, 
+                |public fun Foo.Companion.baz(): Lens<Foo, MyGenericType<Int>> = lensOf(
+                |    "baz",
+                |    { it.baz },
                 |    { p, v -> p.copy(baz = v)}
                 |  )
                 """.trimMargin()
@@ -143,12 +143,12 @@ class LensesProcessorTests {
                 |package dev.fritz2.lenstest
                 |
                 |import dev.fritz2.core.Lens
-                |import dev.fritz2.core.lens
+                |import dev.fritz2.core.lensOf
                 |import kotlin.Int
                 |
-                |public fun Foo.Companion.bar(): Lens<Foo, Int> = lens(
-                |    "bar", 
-                |    { it.bar }, 
+                |public fun Foo.Companion.bar(): Lens<Foo, Int> = lensOf(
+                |    "bar",
+                |    { it.bar },
                 |    { p, v -> p.copy(bar = v)}
                 |  )
                 """.trimMargin()
@@ -161,12 +161,12 @@ class LensesProcessorTests {
                 |package dev.fritz2.lenstest
                 |
                 |import dev.fritz2.core.Lens
-                |import dev.fritz2.core.lens
+                |import dev.fritz2.core.lensOf
                 |import kotlin.Int
                 |
-                |public fun Bar.Companion.bar(): Lens<Bar, Int> = lens(
-                |    "bar", 
-                |    { it.bar }, 
+                |public fun Bar.Companion.bar(): Lens<Bar, Int> = lensOf(
+                |    "bar",
+                |    { it.bar },
                 |    { p, v -> p.copy(bar = v)}
                 |  )
                 """.trimMargin()
@@ -202,12 +202,12 @@ class LensesProcessorTests {
                 |package dev.fritz2.lenstest
                 |
                 |import dev.fritz2.core.Lens
-                |import dev.fritz2.core.lens
+                |import dev.fritz2.core.lensOf
                 |import kotlin.Int
                 |
-                |public fun Foo.MySpecialCompanion.bar(): Lens<Foo, Int> = lens(
-                |    "bar", 
-                |    { it.bar }, 
+                |public fun Foo.MySpecialCompanion.bar(): Lens<Foo, Int> = lensOf(
+                |    "bar",
+                |    { it.bar },
                 |    { p, v -> p.copy(bar = v)}
                 |  )
                 """.trimMargin()
@@ -323,12 +323,12 @@ class LensesProcessorTests {
                 |package dev.fritz2.lenstest
                 |
                 |import dev.fritz2.core.Lens
-                |import dev.fritz2.core.lens
+                |import dev.fritz2.core.lensOf
                 |import kotlin.Int
                 |
-                |public fun Foo.Companion.bar(): Lens<Foo, Int> = lens(
-                |    "bar", 
-                |    { it.bar }, 
+                |public fun Foo.Companion.bar(): Lens<Foo, Int> = lensOf(
+                |    "bar",
+                |    { it.bar },
                 |    { p, v -> p.copy(bar = v)}
                 |  )
                 """.trimMargin()
@@ -369,11 +369,11 @@ class LensesProcessorTests {
                 |package dev.fritz2.lenstest
                 |
                 |import dev.fritz2.core.Lens
-                |import dev.fritz2.core.lens
+                |import dev.fritz2.core.lensOf
                 |
-                |public fun <T> Foo.Companion.bar(): Lens<Foo<T>, T> = lens(
-                |    "bar", 
-                |    { it.bar }, 
+                |public fun <T> Foo.Companion.bar(): Lens<Foo<T>, T> = lensOf(
+                |    "bar",
+                |    { it.bar },
                 |    { p, v -> p.copy(bar = v)}
                 |  )
                 """.trimMargin()
@@ -386,17 +386,17 @@ class LensesProcessorTests {
                 |package dev.fritz2.lenstest
                 |
                 |import dev.fritz2.core.Lens
-                |import dev.fritz2.core.lens
+                |import dev.fritz2.core.lensOf
                 |
-                |public fun <T, E> Bar.Companion.foo(): Lens<Bar<T, E>, T> = lens(
-                |    "foo", 
-                |    { it.foo }, 
+                |public fun <T, E> Bar.Companion.foo(): Lens<Bar<T, E>, T> = lensOf(
+                |    "foo",
+                |    { it.foo },
                 |    { p, v -> p.copy(foo = v)}
                 |  )
                 |
-                |public fun <T, E> Bar.Companion.fooBar(): Lens<Bar<T, E>, E> = lens(
-                |    "fooBar", 
-                |    { it.fooBar }, 
+                |public fun <T, E> Bar.Companion.fooBar(): Lens<Bar<T, E>, E> = lensOf(
+                |    "fooBar",
+                |    { it.fooBar },
                 |    { p, v -> p.copy(fooBar = v)}
                 |  )
                 """.trimMargin()
@@ -435,11 +435,11 @@ class LensesProcessorTests {
                 |package dev.fritz2.lenstest
                 |
                 |import dev.fritz2.core.Lens
-                |import dev.fritz2.core.lens
+                |import dev.fritz2.core.lensOf
                 |
-                |public fun <T> Data.Companion.item(): Lens<Data<T>, T?> = lens(
-                |    "item", 
-                |    { it.item }, 
+                |public fun <T> Data.Companion.item(): Lens<Data<T>, T?> = lensOf(
+                |    "item",
+                |    { it.item },
                 |    { p, v -> p.copy(item = v)}
                 |  )
                 """.trimMargin()

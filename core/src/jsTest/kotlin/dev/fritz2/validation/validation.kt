@@ -1,7 +1,7 @@
 package dev.fritz2.validation
 
 import dev.fritz2.core.Id
-import dev.fritz2.core.lens
+import dev.fritz2.core.lensOf
 import dev.fritz2.core.render
 import dev.fritz2.runTest
 import dev.fritz2.validation.test.*
@@ -84,7 +84,7 @@ class ValidationJSTests {
         
         val store: ValidatingStore<Car, Unit, Message> =
             storeOf(Car("car", Color(120, 120, 120)), Car.validator)
-        val colorLens = lens("color", Car::color) { car, color -> car.copy(color = color) }
+        val colorLens = lensOf("color", Car::color) { car, color -> car.copy(color = color) }
         val colorStore = store.sub(colorLens)
 
         val idData = "data-${Id.next()}"

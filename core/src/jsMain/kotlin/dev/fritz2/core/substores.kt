@@ -68,7 +68,7 @@ class SubStore<P, D>(
  * @param idProvider to identify the same entity (i.e. when it's content changed)
  */
 fun <D, I> Store<List<D>>.sub(element: D, idProvider: IdProvider<D, I>): Store<D> =
-    SubStore(this, lensOf(element, idProvider))
+    SubStore(this, lensForElement(element, idProvider))
 
 /**
  * Creates a new [Store] containing the element for the given [index] from the original [Store]'s [List]
@@ -76,7 +76,7 @@ fun <D, I> Store<List<D>>.sub(element: D, idProvider: IdProvider<D, I>): Store<D
  * @param index position in the list to point to
  */
 fun <D> Store<List<D>>.sub(index: Int): Store<D> =
-    SubStore(this, lensOf(index))
+    SubStore(this, lensForElement(index))
 
 /**
  * Creates a new [Store] containing the corresponding value for the given [key] from the original [Store]'s [Map].
@@ -84,7 +84,7 @@ fun <D> Store<List<D>>.sub(index: Int): Store<D> =
  * @param key in the map to point to
  */
 fun <K, V> Store<Map<K, V>>.sub(key: K): Store<V> =
-    SubStore(this, lensOf(key))
+    SubStore(this, lensForElement(key))
 
 /**
  * on a [Store] of nullable data this creates a [Store] with a nullable parent and non-nullable value.

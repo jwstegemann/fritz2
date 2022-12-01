@@ -77,7 +77,7 @@ inline fun <reified T, I> RootInspector<List<T>>.sub(
     element: T,
     noinline idProvider: IdProvider<T, I>
 ): SubInspector<List<T>, List<T>, T> {
-    val lens = lensOf(element, idProvider)
+    val lens = lensForElement(element, idProvider)
     return SubInspector(this, lens, this, lens)
 }
 
@@ -98,7 +98,7 @@ inline fun <reified T, I> RootInspector<List<T>>.inspectEach(
  * @param index you need the [Inspector] for
  */
 inline fun <reified X> RootInspector<List<X>>.sub(index: Int): SubInspector<List<X>, List<X>, X> {
-    val lens = lensOf<X>(index)
+    val lens = lensForElement<X>(index)
     return SubInspector(this, lens, this, lens)
 }
 
@@ -121,7 +121,7 @@ inline fun <R, P, reified T, I> SubInspector<R, P, List<T>>.sub(
     element: T,
     noinline idProvider: IdProvider<T, I>
 ): SubInspector<R, List<T>, T> {
-    val lens = lensOf(element, idProvider)
+    val lens = lensForElement(element, idProvider)
     return SubInspector(this, lens, this.rootModelId, this.rootLens + lens)
 }
 
@@ -142,7 +142,7 @@ inline fun <R, P, reified T, I> SubInspector<R, P, List<T>>.inspectEach(
  * @param index of the element in your list you need the [Inspector] for
  */
 inline fun <R, P, reified X> SubInspector<R, P, List<X>>.sub(index: Int): SubInspector<R, List<X>, X> {
-    val lens = lensOf<X>(index)
+    val lens = lensForElement<X>(index)
     return SubInspector(this, lens, this.rootModelId, this.rootLens + lens)
 }
 

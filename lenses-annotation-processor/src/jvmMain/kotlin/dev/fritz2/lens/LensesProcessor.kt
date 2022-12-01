@@ -27,9 +27,9 @@ import dev.fritz2.core.Lenses
  * of his own. The processor will detect a missing definition and throw an error. The naming schema  of the generated
  * file is based upon the name of the data class with the appended suffix `Lenses`.
  *
- * We decided to model those generated lenses as functions, as the call to `lens` has only a small impact to the
+ * We decided to model those generated lenses as functions, as the call to `lensOf` has only a small impact to the
  * overall rendering performance compared to other aspects but enables the support for *generic* data classes.
- * So if a client suffers from a bad performance *because of this approach*, feel free to manually implement a lense
+ * So if a client suffers from a bad performance *because of this approach*, feel free to manually implement a lens
  * with better performance.
  */
 class LensesProcessor(
@@ -146,12 +146,12 @@ class LensesProcessor(
                         .addCode(
                             """ 
                             |return %M(
-                            |    "%L", 
-                            |    { it.%M }, 
+                            |    "%L",
+                            |    { it.%M },
                             |    { p, v -> p.copy(%M = v)}
                             |  )
                             """.trimMargin(),
-                            MemberName("dev.fritz2.core", "lens"),
+                            MemberName("dev.fritz2.core", "lensOf"),
                             attributeName,
                             attributeName,
                             attributeName

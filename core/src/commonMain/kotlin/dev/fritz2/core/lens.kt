@@ -72,7 +72,7 @@ interface Lens<P, T> {
  * @param getter of the [Lens]
  * @param setter of the [Lens]
  */
-inline fun <P, T> lens(id: String, crossinline getter: (P) -> T, crossinline setter: (P, T) -> P): Lens<P, T> =
+inline fun <P, T> lensOf(id: String, crossinline getter: (P) -> T, crossinline setter: (P, T) -> P): Lens<P, T> =
     object : Lens<P, T> {
         override val id: String = id
         override fun get(parent: P): T = getter(parent)
@@ -85,7 +85,7 @@ inline fun <P, T> lens(id: String, crossinline getter: (P) -> T, crossinline set
  * @param parse function for parsing a [String] to [P]
  * @param format function for formatting a [P] to [String]
  */
-inline fun <P> format(crossinline parse: (String) -> P, crossinline format: (P) -> String): Lens<P, String> =
+inline fun <P> formatOf(crossinline parse: (String) -> P, crossinline format: (P) -> String): Lens<P, String> =
     object : Lens<P, String> {
         override val id: String = ""
         override fun get(parent: P): String = format(parent)
@@ -113,7 +113,7 @@ class CollectionLensSetException(message: String) : Exception(message)
  * @param element current instance of the element to focus on
  * @param idProvider to identify the element in the list (i.e. when it's content changes over time)
  */
-fun <T, I> lensOf(element: T, idProvider: IdProvider<T, I>): Lens<List<T>, T> = object : Lens<List<T>, T> {
+fun <T, I> lensForElement(element: T, idProvider: IdProvider<T, I>): Lens<List<T>, T> = object : Lens<List<T>, T> {
     override val id: String = idProvider(element).toString()
 
     override fun get(parent: List<T>): T = parent.find {
@@ -138,7 +138,7 @@ fun <T, I> lensOf(element: T, idProvider: IdProvider<T, I>): Lens<List<T>, T> = 
  *
  * @param index position to focus on
  */
-fun <T> lensOf(index: Int): Lens<List<T>, T> = object : Lens<List<T>, T> {
+fun <T> lensForElement(index: Int): Lens<List<T>, T> = object : Lens<List<T>, T> {
     override val id: String = index.toString()
 
     override fun get(parent: List<T>): T =
@@ -155,7 +155,7 @@ fun <T> lensOf(index: Int): Lens<List<T>, T> = object : Lens<List<T>, T> {
  *
  * @param key of the entry to focus on
  */
-fun <K, V> lensOf(key: K): Lens<Map<K, V>, V> = object : Lens<Map<K, V>, V> {
+fun <K, V> lensForElement(key: K): Lens<Map<K, V>, V> = object : Lens<Map<K, V>, V> {
     override val id: String = key.toString()
 
     override fun get(parent: Map<K, V>): V =
@@ -173,7 +173,7 @@ fun <K, V> lensOf(key: K): Lens<Map<K, V>, V> = object : Lens<Map<K, V>, V> {
  *
  * @param default value to be used instead of null
  */
-fun <T> defaultLens(id: String, default: T): Lens<T?, T> = object : Lens<T?, T> {
+internal fun <T> defaultLens(id: String, default: T): Lens<T?, T> = object : Lens<T?, T> {
     override val id: String = id
     override fun get(parent: T?): T = parent  ?: default
     override fun set(parent: T?, value: T): T?  = value.takeUnless { it == default }

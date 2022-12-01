@@ -2,7 +2,7 @@ package dev.fritz2.routing
 
 import dev.fritz2.core.Store
 import dev.fritz2.core.Update
-import dev.fritz2.core.lensOf
+import dev.fritz2.core.lensForElement
 import kotlinx.browser.window
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -126,7 +126,7 @@ open class MapRouter(defaultRoute: Map<String, String> = emptyMap()) :
      * @param key for getting the value from the parameter [Map]
      * @return [Store] containing the corresponding value
      */
-    open fun sub(key: String): Store<String> = this.sub(lensOf(key))
+    open fun sub(key: String): Store<String> = this.sub(lensForElement(key))
 }
 
 /**

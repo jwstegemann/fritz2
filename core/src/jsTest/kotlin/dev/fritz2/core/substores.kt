@@ -15,11 +15,11 @@ class SubStoreTests {
     data class Address(val street: String = "", val postalCode: PostalCode)
     data class PostalCode(val code: Int)
 
-    private val nameLens = lens("name", Person::name) { p, v -> p.copy(name = v) }
-    private val addressLens = lens("address", Person::address) { p, v -> p.copy(address = v) }
-    private val streetLens = lens("street", Address::street) { p, v -> p.copy(street = v) }
-    private val postalCodeLens = lens("postalCode", Address::postalCode) { p, v -> p.copy(postalCode = v) }
-    private val codeLens = lens("code", PostalCode::code) { p, v -> p.copy(code = v) }
+    private val nameLens = lensOf("name", Person::name) { p, v -> p.copy(name = v) }
+    private val addressLens = lensOf("address", Person::address) { p, v -> p.copy(address = v) }
+    private val streetLens = lensOf("street", Address::street) { p, v -> p.copy(street = v) }
+    private val postalCodeLens = lensOf("postalCode", Address::postalCode) { p, v -> p.copy(postalCode = v) }
+    private val codeLens = lensOf("code", PostalCode::code) { p, v -> p.copy(code = v) }
 
     @Test
     fun testSubStore() = runTest {
@@ -82,7 +82,7 @@ class SubStoreTests {
         val person = Person("Foo", Address("Bar Street 3", PostalCode(9999)))
         val store = object : RootStore<Person>(person, id = "person") {}
 
-        val personFormatLens = format(
+        val personFormatLens = formatOf(
             { value: String ->
                 val fields = value.split(",")
                 val name = fields[0]

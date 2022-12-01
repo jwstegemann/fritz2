@@ -5,16 +5,14 @@ import kotlin.test.assertEquals
 
 class InspectorTests {
 
-    @Lenses
     data class Address(val street: String, val id: String = Id.next())
 
-    val streetLens = lens(Address::street.name, Address::street) { p, v -> p.copy(street = v) }
+    val streetLens = lensOf(Address::street.name, Address::street) { p, v -> p.copy(street = v) }
 
-    @Lenses
     data class Person(val name: String, val address: Address, val id: String = Id.next())
 
-    val nameLens = lens(Person::name.name, Person::name) { p, v -> p.copy(name = v) }
-    val addressLens = lens(Person::address.name, Person::address) { p, v -> p.copy(address = v) }
+    val nameLens = lensOf(Person::name.name, Person::name) { p, v -> p.copy(name = v) }
+    val addressLens = lensOf(Person::address.name, Person::address) { p, v -> p.copy(address = v) }
 
     @Test
     fun testInspectorPaths() {
