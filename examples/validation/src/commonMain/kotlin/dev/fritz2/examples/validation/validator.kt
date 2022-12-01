@@ -19,13 +19,13 @@ data class Message(override val path: String, val status: Status, val text: Stri
 
 val personValidator = validation<Person, Message> { inspector ->
     // validate name
-    val name = inspector.sub(Person.name())
+    val name = inspector.map(Person.name())
     if (name.data.trim().isBlank())
         add(Message(Person.id + name.path, Status.Invalid, "Please provide a name"))
     else
         add(Message(Person.id + name.path, Status.Valid, "Good name"))
 
-    val salary = inspector.sub(Person.salary())
+    val salary = inspector.map(Person.salary())
     if(salary.data < 1) {
         add(Message(Person.id + salary.path, Status.Invalid, "Please provide a salary"))
     } else {
@@ -33,7 +33,7 @@ val personValidator = validation<Person, Message> { inspector ->
     }
 
     // validate the birthday
-    val birthday = inspector.sub(Person.birthday())
+    val birthday = inspector.map(Person.birthday())
     val today = Clock.System.todayAt(TimeZone.currentSystemDefault())
     when {
         birthday.data == LocalDate(1900, 1, 1) -> {
@@ -55,9 +55,9 @@ val personValidator = validation<Person, Message> { inspector ->
     }
 
     // check address fields
-    val address = inspector.sub(Person.address())
+    val address = inspector.map(Person.address())
     fun checkAddressField(name: String, lens: Lens<Address, String>) {
-        val field = address.sub(lens)
+        val field = address.map(lens)
         if (field.data.trim().isBlank())
             add(Message(Person.id + field.path, Status.Invalid, "Please provide a $name"))
         else
@@ -69,7 +69,7 @@ val personValidator = validation<Person, Message> { inspector ->
     checkAddressField("city", Address.city())
 
     // check activities
-    val activities = inspector.sub(Person.activities())
+    val activities = inspector.map(Person.activities())
     if (activities.data.none { it.like })
         add(
             Message(

@@ -87,7 +87,7 @@ interface RenderContext : WithJob, WithScope {
     ) {
         val store = this
         data.renderEach(idProvider, into) { value ->
-            content(store.sub(value, idProvider))
+            content(store.mapByElement(value, idProvider))
         }
     }
 

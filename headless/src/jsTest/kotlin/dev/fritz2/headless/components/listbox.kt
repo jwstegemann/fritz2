@@ -28,7 +28,7 @@ class ListBoxTest {
     fun testListBox() = runTest {
         val name = "listBox"
         val componentId = "$name-${Id.next()}"
-        val componentState = storeOf(TestModel(), TestModel.validation).sub(TestModel.listBox)
+        val componentState = storeOf(TestModel(), TestModel.validation).map(TestModel.listBox)
 
         render {
             listbox<String, HTMLDivElement>("classes", componentId, { set(scopeTestKey, scopeTestValue) }, RenderContext::div) {

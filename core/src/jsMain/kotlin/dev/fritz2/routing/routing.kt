@@ -126,7 +126,7 @@ open class MapRouter(defaultRoute: Map<String, String> = emptyMap()) :
      * @param key for getting the value from the parameter [Map]
      * @return [Store] containing the corresponding value
      */
-    open fun sub(key: String): Store<String> = this.sub(lensForElement(key))
+    open fun mapByKey(key: String): Store<String> = this.map(lensForElement(key))
 }
 
 /**

@@ -145,7 +145,7 @@ class PatchTests {
             div {
                 ul(id = listId) {
                     store.renderEach(Entity::id) {
-                        val valueStore = it.sub(valueLens)
+                        val valueStore = it.map(valueLens)
                         li { valueStore.data.renderText() }
                     }
                 }

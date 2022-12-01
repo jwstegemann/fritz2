@@ -27,11 +27,11 @@ class SubStoreTests {
         val person = Person("Foo", Address("Bar Street 3", PostalCode(9999)))
         val store = object : RootStore<Person>(person) {}
 
-        val nameSub = store.sub(nameLens)
-        val addressSub = store.sub(addressLens)
-        val streetSub = addressSub.sub(streetLens)
-        val postalCodeSub = addressSub.sub(postalCodeLens)
-        val codeSub = postalCodeSub.sub(codeLens)
+        val nameSub = store.map(nameLens)
+        val addressSub = store.map(addressLens)
+        val streetSub = addressSub.map(streetLens)
+        val postalCodeSub = addressSub.map(postalCodeLens)
+        val codeSub = postalCodeSub.map(codeLens)
 
         val nameId = "name-${Id.next()}"
         val streetId = "street-${Id.next()}"
@@ -93,7 +93,7 @@ class SubStoreTests {
                 "${value.name},${value.address.street},${value.address.postalCode.code}"
             })
 
-        val completeSub = store.sub(personFormatLens)
+        val completeSub = store.map(personFormatLens)
 
         render {
             div {
@@ -212,7 +212,7 @@ class SubStoreTests {
         assertEquals(3, container.childElementCount)
         assertEquals("abc", container.textContent)
 
-        store.sub(1).update("d")
+        store.mapByIndex(1).update("d")
 
         delay(200)
         assertEquals(3, container.childElementCount)
@@ -242,7 +242,7 @@ class SubStoreTests {
         assertEquals(3, container.childElementCount)
         assertEquals("abc", container.textContent)
 
-        store.sub(2).update("d")
+        store.mapByKey(2).update("d")
 
         delay(200)
         assertEquals(3, container.childElementCount)

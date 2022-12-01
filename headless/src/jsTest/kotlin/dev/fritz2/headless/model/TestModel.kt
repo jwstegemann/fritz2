@@ -17,9 +17,9 @@ data class TestModel(
         val listBox: Lens<TestModel, String> = lensOf("listBox", TestModel::listBox) { m, n -> m.copy(listBox = n) }
 
         val validation = validation<TestModel, ComponentValidationMessage> { insp ->
-            val switch = insp.sub(TestModel.switch)
+            val switch = insp.map(TestModel.switch)
             if(switch.data) add(switch.errorMessage("error"))
-            val listBox = insp.sub(TestModel.listBox)
+            val listBox = insp.map(TestModel.listBox)
             if(listBox.data == listBoxEntries.last()) add(listBox.errorMessage("error"))
         }
     }

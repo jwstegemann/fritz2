@@ -140,9 +140,9 @@ fun RenderContext.details() {
             }
             div("card-body") {
                 div {
-                    formGroup("name", DetailStore.sub(Person.name()))
-                    formGroup("age", DetailStore.sub(Person.age() + numberFormat), inputType = "number")
-                    formGroup("salary", DetailStore.sub(Person.salary() + numberFormat), inputType = "number")
+                    formGroup("name", DetailStore.map(Person.name()))
+                    formGroup("age", DetailStore.map(Person.age() + numberFormat), inputType = "number")
+                    formGroup("salary", DetailStore.map(Person.salary() + numberFormat), inputType = "number")
                 }
             }
             div("card-footer") {

@@ -185,11 +185,11 @@ class WebSocketTests {
         }
 
         val nameId = "name-${Id.next()}"
-        val nameSubStore = entityStore.sub(nameLens)
+        val nameSubStore = entityStore.map(nameLens)
         val ageId = "age-${Id.next()}"
-        val ageSubStore = entityStore.sub(ageLens)
+        val ageSubStore = entityStore.map(ageLens)
         val idId = "id-${Id.next()}"
-        val idSubStore = entityStore.sub(idLens)
+        val idSubStore = entityStore.map(idLens)
 
 
         render {

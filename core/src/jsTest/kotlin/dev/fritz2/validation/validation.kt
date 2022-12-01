@@ -85,7 +85,7 @@ class ValidationJSTests {
         val store: ValidatingStore<Car, Unit, Message> =
             storeOf(Car("car", Color(120, 120, 120)), Car.validator)
         val colorLens = lensOf("color", Car::color) { car, color -> car.copy(color = color) }
-        val colorStore = store.sub(colorLens)
+        val colorStore = store.map(colorLens)
 
         val idData = "data-${Id.next()}"
         val idMessages = "messages-${Id.next()}"
