@@ -93,3 +93,20 @@ fun <D> Inspector<List<D>>.mapByIndex(index: Int): Inspector<D> =
 fun <D> Inspector<List<D>>.inspectEach(action: (Inspector<D>) -> Unit) {
     this.data.onEachIndexed { index, _ -> action(mapByIndex(index)) }
 }
+
+/**
+ * Creates a new [Inspector] containing the value for the given [key] from the original [Inspector]'s [Map]
+ *
+ * @param key to the corresponding value in the map
+ */
+fun <K, V> Inspector<Map<K, V>>.mapByKey(key: K): Inspector<V> =
+    SubInspector(this, lensForElement(key))
+
+/**
+ * Performs the given [action] on each [Inspector].
+ *
+ * @param action function which gets applied to all [Inspector]s
+ */
+fun <K, V> Inspector<Map<K, V>>.inspectEach(action: (Inspector<V>) -> Unit) {
+    this.data.onEach { (k , _) -> action(mapByKey(k)) }
+}
