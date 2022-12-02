@@ -107,6 +107,6 @@ fun <K, V> Inspector<Map<K, V>>.mapByKey(key: K): Inspector<V> =
  *
  * @param action function which gets applied to all [Inspector]s
  */
-fun <K, V> Inspector<Map<K, V>>.inspectEach(action: (Inspector<V>) -> Unit) {
-    this.data.onEach { (k , _) -> action(mapByKey(k)) }
+fun <K, V> Inspector<Map<K, V>>.inspectEach(action: (K, Inspector<V>) -> Unit) {
+    this.data.onEach { (k , _) -> action(k, mapByKey(k)) }
 }

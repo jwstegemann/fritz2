@@ -18,7 +18,8 @@ class InspectorTests {
     fun testInspectorPaths() {
 
         val rootData = Person("Foo", Address("Street 5"))
-        val rootInspector = RootInspector(rootData)
+        val rootInspector = inspectorOf(rootData)
+
         assertEquals("", rootInspector.path, "model id root not correct")
         assertEquals(rootData, rootInspector.data, "model data root not correct")
 
@@ -44,7 +45,7 @@ class InspectorTests {
             Person("p3", Address("p3s1"))
         )
 
-        val rootInspector = RootInspector(personList)
+        val rootInspector = inspectorOf(personList)
 
         val p1Inspector = rootInspector.mapByElement(personList[0], Person::id)
         assertEquals(".${personList[0].id}", p1Inspector.path, "sub model id for element not correct")
@@ -67,7 +68,7 @@ class InspectorTests {
             Person("p3", Address("p3s1"))
         )
 
-        val rootInspector = RootInspector(personList)
+        val rootInspector = inspectorOf(personList)
 
         var i = 0
         rootInspector.inspectEach(Person::id) {
@@ -94,7 +95,7 @@ class InspectorTests {
             Person("p3", Address("p3s1"))
         )
 
-        val rootInspector = RootInspector(personList)
+        val rootInspector = inspectorOf(personList)
 
         val p1Inspector = rootInspector.mapByIndex(0)
         assertEquals(".0", p1Inspector.path, "sub model id for element not correct")
@@ -117,7 +118,7 @@ class InspectorTests {
             Person("p3", Address("p3s1"))
         )
 
-        val rootInspector = RootInspector(personList)
+        val rootInspector = inspectorOf(personList)
 
         var i = 0
         rootInspector.inspectEach {
@@ -131,6 +132,57 @@ class InspectorTests {
             val p1StreetInspector = it.map(addressLens).map(streetLens)
             assertEquals(".$i.address.street", p1StreetInspector.path, "[$i] sub sub sub model id for element not correct")
             assertEquals(personList[i].address.street, p1StreetInspector.data, "[$i] sub sub sub model data for element not correct")
+
+            i++
+        }
+    }
+
+    @Test
+    fun testPathsByKeyLens() {
+        val personList = mapOf(
+            1 to Person("p1", Address("p1s1")),
+            2 to Person("p2", Address("p2s1")),
+            3 to Person("p3", Address("p3s1"))
+        )
+
+        val rootInspector = inspectorOf(personList)
+
+        val p1Inspector = rootInspector.mapByKey(2)
+        assertEquals(".2", p1Inspector.path, "sub model id for element not correct")
+        assertEquals(personList[2], p1Inspector.data, "sub model data for element not correct")
+
+        val p1NameInspector = p1Inspector.map(nameLens)
+        assertEquals(".2.name", p1NameInspector.path, "sub sub model id for element not correct")
+        assertEquals(personList[2]?.name, p1NameInspector.data, "sub sub model data for element not correct")
+
+        val p1StreetInspector = p1Inspector.map(addressLens).map(streetLens)
+        assertEquals(".2.address.street", p1StreetInspector.path, "sub sub sub model id for element not correct")
+        assertEquals(personList[2]?.address?.street, p1StreetInspector.data, "sub sub sub model data for element not correct")
+    }
+
+    @Test
+    fun testOnEachByKeyLens() {
+        val personList = mapOf(
+            1 to Person("p1", Address("p1s1")),
+            2 to Person("p2", Address("p2s1")),
+            3 to Person("p3", Address("p3s1"))
+        )
+
+        val rootInspector = RootInspector(personList)
+
+        var i = 1
+        rootInspector.inspectEach { key, inspector ->
+            assertEquals(i, key, "[$i] key for element not correct")
+            assertEquals(".$i", inspector.path, "[$i] sub model id for element not correct")
+            assertEquals(personList[i], inspector.data, "[$i] sub model data for element not correct")
+
+            val p1NameInspector = inspector.map(nameLens)
+            assertEquals(".$i.name", p1NameInspector.path, "[$i] sub sub model id for element not correct")
+            assertEquals(personList[i]?.name, p1NameInspector.data, "[$i] sub sub model data for element not correct")
+
+            val p1StreetInspector = inspector.map(addressLens).map(streetLens)
+            assertEquals(".$i.address.street", p1StreetInspector.path, "[$i] sub sub sub model id for element not correct")
+            assertEquals(personList[i]?.address?.street, p1StreetInspector.data, "[$i] sub sub sub model data for element not correct")
 
             i++
         }
