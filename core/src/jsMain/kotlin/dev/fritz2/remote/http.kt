@@ -11,43 +11,50 @@ import org.w3c.fetch.Response as FetchResponse
 external fun btoa(decoded: String): String
 
 /**
- * [Exception] type for handling http exceptions
- *
- * @property statusCode the http response status code
- * @property body the body of the error-response
- */
-class FetchException(val statusCode: Int, val body: String, val response: Response) : Exception(
-    "code=$statusCode, url=${response.url}, body=$body"
-)
-
-/**
  * Represents the common fields and attributes of an HTTP response.
  * It contains also the original [Request] which was made to get this [Response].
+ *
+ * More info at [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Response)
  */
 open class Response(
     private val response: FetchResponse,
     val request: Request,
     val propagate: Boolean = true
 ) {
-    val ok: Boolean get() = response.ok
+    /**
+     * A boolean indicating whether the response was successful (status in the range 200 – 299) or not.
+     */
+    val ok: Boolean = response.ok
 
-    val status: Int get() = response.status.toInt()
+    /**
+     * The status code of the response. (This will be 200 for a success).
+     */
+    val status: Int = response.status.toInt()
 
-    val url: String get() = response.url
+    /**
+     * The status message corresponding to the status code. (e.g., OK for 200).
+     */
+    val statusText: String = response.statusText
 
-    val statusText: String get() = response.statusText
+    /**
+     * The URL of the response.
+     */
+    val url: String = response.url
 
-    fun copy(
-        response: FetchResponse = this.response,
-        request: Request = this.request,
-        propagate: Boolean = this.propagate
-    ) =
-        Response(response, request, propagate)
+    /**
+     * The type of the response (e.g., basic, cors).
+     */
+    val type: ResponseType = response.type
+
+    /**
+     * Indicates whether or not the response is the result of a redirect (that is, its URL list has more than one entry).
+     */
+    val redirected: Boolean = response.redirected
 
     /**
      * returns the [Headers] from the given [Response]
      */
-    val headers get() = response.headers
+    val headers = response.headers
 
     /**
      * extracts the body as string from the given [Response]
@@ -74,6 +81,14 @@ open class Response(
      */
     suspend fun json() = response.json().await()
 
+    /**
+     * creates a copy of the [Response].
+     */
+    fun copy(
+        response: FetchResponse = this.response,
+        request: Request = this.request,
+        propagate: Boolean = this.propagate
+    ) = Response(response, request, propagate)
 }
 
 /**
@@ -126,9 +141,6 @@ open class Request(
 
     /**
      * executes the HTTP call and sends it to the server, awaits the response (async) and returns a [Response].
-     * When request failed a [FetchException] will be thrown.
-     *
-     * @throws FetchException when request failed
      */
     suspend fun execute(): Response {
 
@@ -143,8 +155,7 @@ open class Request(
             response = interceptor.handleResponse(response)
         }
 
-        if (response.ok) return response
-        else throw FetchException(response.status, response.body(), response)
+        return response
     }
 
 

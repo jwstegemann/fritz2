@@ -7,21 +7,24 @@ import dev.fritz2.testHttpServer
 import org.khronos.webgl.Uint8Array
 import org.khronos.webgl.get
 import kotlin.random.Random
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
-val codes = listOf<Short>(400, 401, 403, 404, 429, 500, 501, 503)
+val codes = listOf(400, 401, 403, 404, 429, 500, 501, 503)
 
 class RemoteTests {
 
     @Test
     fun testHTTPMethods() = runTest {
         val remote = testHttpServer(testEndpoint)
-        remote.get("get")
-        remote.delete("delete")
-        remote.head("head")
-        remote.body("").patch("patch")
-        remote.body("").post("post")
-        remote.body("").put("put")
+        assertTrue(remote.get("get").ok)
+        assertTrue(remote.delete("delete").ok)
+        assertTrue(remote.head("head").ok)
+        assertTrue(remote.body("").patch("patch").ok)
+        assertTrue(remote.body("").post("post").ok)
+        assertTrue(remote.body("").put("put").ok)
     }
 
 
@@ -30,11 +33,10 @@ class RemoteTests {
         val remote = testHttpServer(testEndpoint)
         val user = "test"
         val password = "password"
-        remote.basicAuth(user, password).get("basicAuth")
-
-        assertFailsWith(FetchException::class) {
-            remote.basicAuth(user, password+"w").get("basicAuth")
-        }
+        assertTrue(remote.basicAuth(user, password).get("basicAuth").ok)
+        val resp = remote.basicAuth(user, password+"w").get("basicAuth")
+        assertFalse(resp.ok)
+        assertEquals(401, resp.status)
     }
 
 
@@ -42,9 +44,7 @@ class RemoteTests {
     fun testErrorStatusCodes() = runTest {
         val remote = testHttpServer(testEndpoint)
         for(code in codes) {
-            assertFailsWith(FetchException::class) {
-                remote.get("status/$code")
-            }
+            assertEquals(code, remote.get("status/$code").status)
         }
     }
 

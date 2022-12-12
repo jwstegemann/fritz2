@@ -10,7 +10,7 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 data class Principal(
@@ -48,9 +48,9 @@ class AuthenticatedRemoteTests {
         simple.clear()
         assertEquals("GET", testHttpServer(testEndpoint).use(simple).get("get").body())
 
-        assertFailsWith(FetchException::class) {
-            testHttpServer(authenticatedEndpoint).get("get")
-        }
+        val resp = testHttpServer(authenticatedEndpoint).get("get")
+        assertFalse(resp.ok)
+        assertEquals(401, resp.status)
     }
 
     @Test
