@@ -12,7 +12,16 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-val codes = listOf(400, 401, 403, 404, 429, 500, 501, 503)
+enum class HttpStatusCode(val code: Int, val description: String) {
+    BadRequest(400, "Bad Request"),
+    Unauthorized(401, "Unauthorized"),
+    Forbidden(403, "Forbidden"),
+    NotFound(404, "Not Found"),
+    TooManyRequests(429, "Too Many Requests"),
+    InternalServerError(500, "Internal Server Error"),
+    NotImplemented(501, "Not Implemented"),
+    ServiceUnavailable(503, "Service Unavailable");
+}
 
 class RemoteTests {
 
@@ -43,8 +52,8 @@ class RemoteTests {
     @Test
     fun testErrorStatusCodes() = runTest {
         val remote = testHttpServer(testEndpoint)
-        for(code in codes) {
-            assertEquals(code, remote.get("status/$code").status)
+        for(statusCode in HttpStatusCode.values()) {
+            assertEquals(statusCode.code, remote.get("status/${statusCode.code}").status)
         }
     }
 
@@ -98,6 +107,16 @@ class RemoteTests {
         while (i < result.length) {
             assertEquals(data[i], result[i], "binary data is not matched")
             i++
+        }
+    }
+
+    @Test
+    fun testFailureWithBody() = runTest {
+        val remote = testHttpServer("failure")
+        for(statusCode in HttpStatusCode.values()) {
+            val response = remote.get("${statusCode.code}")
+            assertEquals(statusCode.code, response.status)
+            assertEquals(statusCode.description, response.body())
         }
     }
 
