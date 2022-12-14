@@ -287,7 +287,7 @@ val nameStore = storeOf<String?>(null)
 
 render {
     input {
-        nameStore.orDefault("").also { formStore ->
+        nameStore.mapNull("").also { formStore ->
             value(formStore.data)
             changes.values() handledBy formStore.update
         }
@@ -308,7 +308,7 @@ val applicationStore = storeOf(Person(null))
 
 //...
 
-val nameStore = applicationStore.sub(Person.name()).orDefault("")
+val nameStore = applicationStore.map(Person.name()).mapNull("")
 ```
 
 ## Connecting stores to each other
@@ -491,10 +491,10 @@ interface Lens<P,T> {
 ```
 
 You can easily use this interface by just implementing `get()` and `set()`.
-fritz2 also offers the method `lens()` for a short-and-sweet-experience:
+fritz2 also offers the method `lensOf()` for a short-and-sweet-experience:
 
 ```kotlin
-val nameLens = lens("name", { it.name }, { person, value -> person.copy(name = value) })
+val nameLens = lensOf("name", { it.name }, { person, value -> person.copy(name = value) })
 ```
 
 No magic there. The first parameter sets an id for the `Lens`. When using `Lens`es with `Store`s, 
@@ -549,7 +549,7 @@ data class Person(val name: Name, description: String) {
 // ... you can create a root-store...
 val personStore = storeOf(Person(Name("first name", "last name"), "more text"))
 // ... and a sub-store using the automatic generated lens-factory `Person.name()`
-val nameStore = personStore.sub(Person.name())
+val nameStore = personStore.map(Person.name())
 ```
 
 Now you can use your `nameStore` exactly like any other `Store` to set up _two-way data binding_, call `sub(...)`
@@ -560,7 +560,7 @@ It's fully recursive from here on down to the deepest nested parts of your model
 You can also add `Handler`s to your `Store`s by simply calling the `handle` method:
 
 ```kotlin
-val booleanChildStore = parentStore.sub(someLens)
+val booleanChildStore = parentStore.map(someLens)
 val switch = booleanChildStore.handle { model: Boolean -> 
     !model
 }
@@ -592,7 +592,7 @@ val applicationStore = storeOf<Person>(null)
 
 applicationStore.data.render { person ->
     if (person != null) { // if person is null you would get NullPointerExceptions reading or updating its Stores
-        val nameStore = customerStore.sub(Person.name())
+        val nameStore = customerStore.map(Person.name())
         input {
             value(nameStore.data)
             changes.values() handledBy nameStore.update
@@ -617,10 +617,10 @@ val ageLens: Lens<Person, Int> = Person.age() // cannot used in Tag attributes
 val ageLensAsString: Lens<Person, String> = Person.age().asString() // now it is useable
 ```
 
-fritz2 also provides a special function `format()` for creating a `Lens<P, String>` for special types that are not basic:
+fritz2 also provides a special `lensOf()` function for creating a `Lens<P, String>` for special types that are not basic:
 
 ```kotlin
-fun <P> format(parse: (String) -> P, format: (P) -> String): Lens<P, String>
+fun <P> lensOf(parse: (String) -> P, format: (P) -> String): Lens<P, String>
 ```
 
 The following [validation example](/examples/validation) demonstrates its usage:
@@ -629,9 +629,9 @@ import dev.fritz2.lens.format
 
 object Formats {
     private val dateFormat: DateFormat = DateFormat("yyyy-MM-dd")
-    val date: Lens<Date, String> = format(
-        parse = { dateFormat.parseDate(it) },
-        format = { dateFormat.format(it) }
+    val date: Lens<Date, String> = lensOf(
+        format = { dateFormat.format(it) },
+        parse = { dateFormat.parseDate(it) }
     )
 }
 ```
@@ -648,9 +648,9 @@ import com.soywiz.klock.Date
 
 val personStore = object : RootStore<Person>(Person(createUUID()))
 ...
-val birthday = personStore.sub(Person.birthday() + Format.date)
+val birthday = personStore.map(Person.birthday() + Format.date)
 // or
-val birthday = personStore.sub(Person.birthday()).sub(Format.date)
+val birthday = personStore.map(Person.birthday()).map(Format.date)
 ...
 input("form-control", id = birthday.id) {
     value = birthday.data
@@ -727,9 +727,9 @@ fun main() {
     render {
         section {
             toDoListStore.data.renderEach(ToDo::id) { toDo ->
-                val toDoStore = toDoListStore.sub(toDo, ToDo::id)
+                val toDoStore = toDoListStore.map(toDo, ToDo::id)
                 li {
-                    val completed = toDoStore.sub(ToDo.completed()).data
+                    val completed = toDoStore.map(ToDo.completed()).data
                     // css is based on https://tailwindcss.com
                     className(completed.map { if (it) "line-through" else ""})
                     +toDo.text
@@ -772,11 +772,11 @@ fun main() {
     render {
         section {
             toDoListStore.data.renderEach(ToDo::id) { toDo ->
-                val toDoStore = toDoListStore.sub(toDo, ToDo::id)
+                val toDoStore = toDoListStore.map(toDo, ToDo::id)
                 li {
                     input {
                         value(toDoStore.data.map { it.text })
-                        changes.values() handledBy toDoStore.sub(ToDo.text).update
+                        changes.values() handledBy toDoStore.map(ToDo.text).update
                     }
                 }
             }

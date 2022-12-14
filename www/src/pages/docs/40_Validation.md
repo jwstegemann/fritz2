@@ -39,12 +39,12 @@ data class Person(
 ) {
     companion object {
         val validation: Validation<Person, Unit, Message> = validation<Person, Message> { inspector ->
-            val name = inspector.sub(Person.name())
+            val name = inspector.map(Person.name())
             if(name.data.trim().isBlank()) {
                 add(Message(name.path, Severity.Error, "Please provide a name"))
             }
 
-            val age = inspector.sub(Person.age())
+            val age = inspector.map(Person.age())
             if(age.data < 1) {
                 add(Message(age.path, Severity.Error, "Please correct the age"))
             } else if(age.data > 100) {

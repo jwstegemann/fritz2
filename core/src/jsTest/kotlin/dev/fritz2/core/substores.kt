@@ -77,7 +77,7 @@ class SubStoreTests {
     }
 
     @Test
-    fun testSubStoreWithFormat() = runTest {
+    fun testSubStoreWithLensOf() = runTest {
 
         val person = Person("Foo", Address("Bar Street 3", PostalCode(9999)))
         val store = object : RootStore<Person>(person, id = "person") {}
