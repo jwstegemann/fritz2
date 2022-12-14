@@ -82,15 +82,16 @@ class SubStoreTests {
         val person = Person("Foo", Address("Bar Street 3", PostalCode(9999)))
         val store = object : RootStore<Person>(person, id = "person") {}
 
-        val personFormatLens = formatOf(
+        val personFormatLens = lensOf(
+            { value: Person ->
+                "${value.name},${value.address.street},${value.address.postalCode.code}"
+            },
             { value: String ->
                 val fields = value.split(",")
                 val name = fields[0]
                 val street = fields[1]
                 val code = fields[2].toInt()
                 Person(name, Address(street, PostalCode(code)))
-            }, { value: Person ->
-                "${value.name},${value.address.street},${value.address.postalCode.code}"
             })
 
         val completeSub = store.map(personFormatLens)

@@ -18,8 +18,8 @@ class LensesTests {
     fun testFormatLens() {
         val p = Tree("Mammut Tree", 3000, Size(84.3), emptyList())
 
-        val intFormatLens = formatOf(String::toInt, Int::toString)
-        val doubleFormatLens = formatOf(String::toDouble, Double::toString)
+        val intFormatLens = lensOf(Int::toString, String::toInt)
+        val doubleFormatLens = lensOf(Double::toString, String::toDouble)
 
         val formattedAgeLens = ageLens + intFormatLens
         assertEquals(p.age.toString(), formattedAgeLens.get(p), "get on formattedAgeLens did not work")

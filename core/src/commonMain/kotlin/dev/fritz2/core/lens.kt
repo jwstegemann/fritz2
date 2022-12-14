@@ -82,10 +82,10 @@ inline fun <P, T> lensOf(id: String, crossinline getter: (P) -> T, crossinline s
 /**
  * creates a [Lens] converting [P] to and from a [String]
  *
- * @param parse function for parsing a [String] to [P]
  * @param format function for formatting a [P] to [String]
+ * @param parse function for parsing a [String] to [P]
  */
-inline fun <P> formatOf(crossinline parse: (String) -> P, crossinline format: (P) -> String): Lens<P, String> =
+inline fun <P> lensOf(crossinline format: (P) -> String, crossinline parse: (String) -> P): Lens<P, String> =
     object : Lens<P, String> {
         override val id: String = ""
         override fun get(parent: P): String = format(parent)
