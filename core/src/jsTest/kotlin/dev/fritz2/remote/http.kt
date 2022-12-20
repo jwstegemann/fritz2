@@ -7,21 +7,33 @@ import dev.fritz2.testHttpServer
 import org.khronos.webgl.Uint8Array
 import org.khronos.webgl.get
 import kotlin.random.Random
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
-val codes = listOf<Short>(400, 401, 403, 404, 429, 500, 501, 503)
+enum class HttpStatusCode(val code: Int, val description: String) {
+    BadRequest(400, "Bad Request"),
+    Unauthorized(401, "Unauthorized"),
+    Forbidden(403, "Forbidden"),
+    NotFound(404, "Not Found"),
+    TooManyRequests(429, "Too Many Requests"),
+    InternalServerError(500, "Internal Server Error"),
+    NotImplemented(501, "Not Implemented"),
+    ServiceUnavailable(503, "Service Unavailable");
+}
 
 class RemoteTests {
 
     @Test
     fun testHTTPMethods() = runTest {
         val remote = testHttpServer(testEndpoint)
-        remote.get("get")
-        remote.delete("delete")
-        remote.head("head")
-        remote.body("").patch("patch")
-        remote.body("").post("post")
-        remote.body("").put("put")
+        assertTrue(remote.get("get").ok)
+        assertTrue(remote.delete("delete").ok)
+        assertTrue(remote.head("head").ok)
+        assertTrue(remote.body("").patch("patch").ok)
+        assertTrue(remote.body("").post("post").ok)
+        assertTrue(remote.body("").put("put").ok)
     }
 
 
@@ -30,21 +42,18 @@ class RemoteTests {
         val remote = testHttpServer(testEndpoint)
         val user = "test"
         val password = "password"
-        remote.basicAuth(user, password).get("basicAuth")
-
-        assertFailsWith(FetchException::class) {
-            remote.basicAuth(user, password+"w").get("basicAuth")
-        }
+        assertTrue(remote.basicAuth(user, password).get("basicAuth").ok)
+        val resp = remote.basicAuth(user, password+"w").get("basicAuth")
+        assertFalse(resp.ok)
+        assertEquals(401, resp.status)
     }
 
 
     @Test
     fun testErrorStatusCodes() = runTest {
         val remote = testHttpServer(testEndpoint)
-        for(code in codes) {
-            assertFailsWith(FetchException::class) {
-                remote.get("status/$code")
-            }
+        for(statusCode in HttpStatusCode.values()) {
+            assertEquals(statusCode.code, remote.get("status/${statusCode.code}").status)
         }
     }
 
@@ -98,6 +107,16 @@ class RemoteTests {
         while (i < result.length) {
             assertEquals(data[i], result[i], "binary data is not matched")
             i++
+        }
+    }
+
+    @Test
+    fun testFailureWithBody() = runTest {
+        val remote = testHttpServer("failure")
+        for(statusCode in HttpStatusCode.values()) {
+            val response = remote.get("${statusCode.code}")
+            assertEquals(statusCode.code, response.status)
+            assertEquals(statusCode.description, response.body())
         }
     }
 

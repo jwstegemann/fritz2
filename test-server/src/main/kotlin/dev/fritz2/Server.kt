@@ -205,6 +205,14 @@ fun Application.main() {
             }
         }
 
+        route("/failure") {
+            get("/{code}") {
+                val code = call.parameters["code"] ?: throw MissingRequestParameterException("code")
+                val status = HttpStatusCode.fromValue(code.toInt())
+                call.respond(status, status.description)
+            }
+        }
+
         webSocket("/text") {
             for (frame in incoming) {
                 try {
