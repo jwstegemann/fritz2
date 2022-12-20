@@ -9,17 +9,17 @@ class LensesTests {
     data class Tree(val name: String, val age: Int, val size: Size, val tags: List<String>)
     data class Size(val height: Double)
 
-    private val heightLens = lens(Size::height.name, Size::height) { p, v -> p.copy(height = v) }
-    private val ageLens = lens(Tree::age.name, Tree::age) { p, v -> p.copy(age = v) }
-    private val sizeLens = lens(Tree::size.name, Tree::size) { p, v -> p.copy(size = v) }
-    private val tagLens = lens(Tree::tags.name, Tree::tags) { p, v -> p.copy(tags = v) }
+    private val heightLens = lensOf(Size::height.name, Size::height) { p, v -> p.copy(height = v) }
+    private val ageLens = lensOf(Tree::age.name, Tree::age) { p, v -> p.copy(age = v) }
+    private val sizeLens = lensOf(Tree::size.name, Tree::size) { p, v -> p.copy(size = v) }
+    private val tagLens = lensOf(Tree::tags.name, Tree::tags) { p, v -> p.copy(tags = v) }
 
     @Test
     fun testFormatLens() {
         val p = Tree("Mammut Tree", 3000, Size(84.3), emptyList())
 
-        val intFormatLens = format(String::toInt, Int::toString)
-        val doubleFormatLens = format(String::toDouble, Double::toString)
+        val intFormatLens = lensOf(Int::toString, String::toInt)
+        val doubleFormatLens = lensOf(Double::toString, String::toDouble)
 
         val formattedAgeLens = ageLens + intFormatLens
         assertEquals(p.age.toString(), formattedAgeLens.get(p), "get on formattedAgeLens did not work")
@@ -40,24 +40,24 @@ class LensesTests {
     fun testCollectionLensSetExceptions() {
         val list = listOf("a", "b", "c", "a")
         val map = mapOf(1 to "a", 2 to "b", 3 to "c")
-        assertEquals(listOf("a", "d", "c", "a"), lensOf("b") { it }.set(list, "d"))
-        assertEquals(listOf("a", "d", "c", "a"), lensOf<String>(1).set(list, "d"))
-        assertEquals(mapOf(1 to "a", 2 to "d", 3 to "c"), lensOf<Int, String>(2).set(map, "d"))
+        assertEquals(listOf("a", "d", "c", "a"), lensForElement("b") { it }.set(list, "d"))
+        assertEquals(listOf("a", "d", "c", "a"), lensForElement<String>(1).set(list, "d"))
+        assertEquals(mapOf(1 to "a", 2 to "d", 3 to "c"), lensForElement<Int, String>(2).set(map, "d"))
 
         assertFailsWith<CollectionLensSetException> {
-            lensOf("d") { it }.set(list, "e")
+            lensForElement("d") { it }.set(list, "e")
         }
         assertFailsWith<CollectionLensSetException> {
-            lensOf("a") { it }.set(list, "d")
+            lensForElement("a") { it }.set(list, "d")
         }
         assertFailsWith<CollectionLensSetException> {
-            lensOf<String>(-1).set(list, "d")
+            lensForElement<String>(-1).set(list, "d")
         }
         assertFailsWith<CollectionLensSetException> {
-            lensOf<String>(list.size).set(list, "d")
+            lensForElement<String>(list.size).set(list, "d")
         }
         assertFailsWith<CollectionLensSetException> {
-            lensOf<Int, String>(0).set(map, "d")
+            lensForElement<Int, String>(0).set(map, "d")
         }
     }
 
@@ -79,14 +79,14 @@ class LensesTests {
     fun testNotNullLens() {
         data class PostalAddress(val street: String, val co: String?)
 
-        val streetLens = lens("street", PostalAddress::street) { p, v -> p.copy(street = v) }
+        val streetLens = lensOf("street", PostalAddress::street) { p, v -> p.copy(street = v) }
         val someStreet = "some street"
         val newValue = "new value"
         val someCo = "some co"
 
         val addressWithCo = PostalAddress(someStreet, someCo)
 
-        val notNullLens: Lens<PostalAddress?, String> = streetLens.toNullableLens()
+        val notNullLens: Lens<PostalAddress?, String> = streetLens.withNullParent()
 
         assertEquals(someStreet, notNullLens.get(addressWithCo), "not null lens does get value on non null parent")
         assertFailsWith(NullPointerException::class, "not null lens does not throw exception when get on null parent") { notNullLens.get(null) }

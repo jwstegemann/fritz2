@@ -110,7 +110,7 @@ interface Store<D> : WithJob {
      *
      * @param lens: a [Lens] describing the two-way data binding of the derived [Store].
      */
-    fun <X> sub(lens: Lens<D, X>): Store<X> = SubStore(this, lens)
+    fun <X> map(lens: Lens<D, X>): Store<X> = SubStore(this, lens)
 }
 
 /**

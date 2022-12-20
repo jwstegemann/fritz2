@@ -70,7 +70,7 @@ The latter example will result in the following DOM structure:
 The CSS-class `mount-point` consists only of a `display: contents;` directive so that the element will not appear
 in the visual rendering of the page.
 
-Whenever the mount-point is definitely the only sub-element of its parent element, you can omit the dedicated
+Whenever the mount-point is definitely the only child-element of its parent element, you can omit the dedicated
 `<div>`-mount-point-tag by setting the `into` parameter to the parent element. In this case the rendering engine
 uses the existing parent node as reference for the mount-point:
 ```kotlin
@@ -287,7 +287,7 @@ val nameStore = storeOf<String?>(null)
 
 render {
     input {
-        nameStore.orDefault("").also { formStore ->
+        nameStore.mapNull("").also { formStore ->
             value(formStore.data)
             changes.values() handledBy formStore.update
         }
@@ -295,7 +295,7 @@ render {
 }
 ```
 
-In real world, you will often come across nullable attributes of complex entities. Then you can call `orDefault`
+In real world, you will often come across nullable attributes of complex entities. Then you can call `mapNull`
 directly on the `Store` you create to use with your form elements:
 
 ```kotlin
@@ -308,7 +308,7 @@ val applicationStore = storeOf(Person(null))
 
 //...
 
-val nameStore = applicationStore.sub(Person.name()).orDefault("")
+val nameStore = applicationStore.map(Person.name()).mapNull("")
 ```
 
 ## Connecting stores to each other
@@ -467,9 +467,9 @@ Most of the time, your model for a view will not be of just a simple data-type b
 person having a name, multiple addresses, an email, a date of birth, etc.
 
 In those cases, you will most likely need `Store`s for the single properties of your main entity, and - later on - for
-the properties of the sub-entity like the street in an address in our example from above.
+the properties of the child-entity like the street in an address in our example from above.
 
-fritz2 uses a mechanism called `Lens` to describe the relationship between an entity and its sub-entities and properties.
+fritz2 uses a mechanism called `Lens` to describe the relationship between an entity and its child-entities and properties.
 
 ## Lenses
 
@@ -491,10 +491,10 @@ interface Lens<P,T> {
 ```
 
 You can easily use this interface by just implementing `get()` and `set()`.
-fritz2 also offers the method `lens()` for a short-and-sweet-experience:
+fritz2 also offers the method `lensOf()` for a short-and-sweet-experience:
 
 ```kotlin
-val nameLens = lens("name", { it.name }, { person, value -> person.copy(name = value) })
+val nameLens = lensOf("name", { it.name }, { person, value -> person.copy(name = value) })
 ```
 
 No magic there. The first parameter sets an id for the `Lens`. When using `Lens`es with `Store`s, 
@@ -548,11 +548,11 @@ data class Person(val name: Name, description: String) {
 
 // ... you can create a root-store...
 val personStore = storeOf(Person(Name("first name", "last name"), "more text"))
-// ... and a sub-store using the automatic generated lens-factory `Person.name()`
-val nameStore = personStore.sub(Person.name())
+// ... and a derived store using the automatic generated lens-factory `Person.name()`
+val nameStore = personStore.map(Person.name())
 ```
 
-Now you can use your `nameStore` exactly like any other `Store` to set up _two-way data binding_, call `sub(...)`
+Now you can use your `nameStore` exactly like any other `Store` to set up _two-way data binding_, call `map(...)`
 again to access the properties of `Name`. If a `Store` contains a `List`,
 you can of course iterate over it by using `renderEach()`.
 It's fully recursive from here on down to the deepest nested parts of your model.
@@ -560,7 +560,7 @@ It's fully recursive from here on down to the deepest nested parts of your model
 You can also add `Handler`s to your `Store`s by simply calling the `handle` method:
 
 ```kotlin
-val booleanChildStore = parentStore.sub(someLens)
+val booleanChildStore = parentStore.map(someLens)
 val switch = booleanChildStore.handle { model: Boolean -> 
     !model
 }
@@ -576,9 +576,9 @@ render {
 To keep your code well-structured, it is recommended to implement complex logic at your `Store` or inherit it by using interfaces.
 However, the code above is a decent solution for small (convenience-)handlers.
 
-### Calling `sub` on a `Store` with nullable content
+### Calling `map` on a `Store` with nullable content
 
-To call `sub` on a nullable `Store` only makes sense, when you have checked, that its value is not null:
+To call `map` on a nullable `Store` only makes sense, when you have checked, that its value is not null:
 
 ```kotlin
 @Lenses
@@ -592,7 +592,7 @@ val applicationStore = storeOf<Person>(null)
 
 applicationStore.data.render { person ->
     if (person != null) { // if person is null you would get NullPointerExceptions reading or updating its Stores
-        val nameStore = customerStore.sub(Person.name())
+        val nameStore = customerStore.map(Person.name())
         input {
             value(nameStore.data)
             changes.values() handledBy nameStore.update
@@ -617,10 +617,10 @@ val ageLens: Lens<Person, Int> = Person.age() // cannot used in Tag attributes
 val ageLensAsString: Lens<Person, String> = Person.age().asString() // now it is useable
 ```
 
-fritz2 also provides a special function `format()` for creating a `Lens<P, String>` for special types that are not basic:
+fritz2 also provides a special `lensOf()` function for creating a `Lens<P, String>` for special types that are not basic:
 
 ```kotlin
-fun <P> format(parse: (String) -> P, format: (P) -> String): Lens<P, String>
+fun <P> lensOf(format: (P) -> String, parse: (String) -> P): Lens<P, String>
 ```
 
 The following [validation example](/examples/validation) demonstrates its usage:
@@ -629,16 +629,16 @@ import dev.fritz2.lens.format
 
 object Formats {
     private val dateFormat: DateFormat = DateFormat("yyyy-MM-dd")
-    val date: Lens<Date, String> = format(
-        parse = { dateFormat.parseDate(it) },
-        format = { dateFormat.format(it) }
+    val date: Lens<Date, String> = lensOf(
+        format = { dateFormat.format(it) },
+        parse = { dateFormat.parseDate(it) }
     )
 }
 ```
 
 When you have created a special `Lens` for your own data type like `Formats.date`, you can then use it to create a new `Store`:
-concatenate your Lenses before using them in the `sub()` method e.g. `sub(Person.birthday() + Fromat.dateLens)` or
-call the method `sub()` on the `Store` of your custom type `P` with your formatting `Lens` e.g `sub(Format.dateLens)`.
+concatenate your Lenses before using them in the `map()` method e.g. `map(Person.birthday() + Fromat.dateLens)` or
+call the method `map()` on the `Store` of your custom type `P` with your formatting `Lens` e.g `map(Format.dateLens)`.
 
 Here is the code from the [validation example](/examples/validation)
 which uses the special `Lens` in the `Formats` object specified above for the `com.soywiz.klock.Date` type:
@@ -648,9 +648,9 @@ import com.soywiz.klock.Date
 
 val personStore = object : RootStore<Person>(Person(createUUID()))
 ...
-val birthday = personStore.sub(Person.birthday() + Format.date)
+val birthday = personStore.map(Person.birthday() + Format.date)
 // or
-val birthday = personStore.sub(Person.birthday()).sub(Format.date)
+val birthday = personStore.map(Person.birthday()).map(Format.date)
 ...
 input("form-control", id = birthday.id) {
     value = birthday.data
@@ -727,9 +727,9 @@ fun main() {
     render {
         section {
             toDoListStore.data.renderEach(ToDo::id) { toDo ->
-                val toDoStore = toDoListStore.sub(toDo, ToDo::id)
+                val toDoStore = toDoListStore.map(toDo, ToDo::id)
                 li {
-                    val completed = toDoStore.sub(ToDo.completed()).data
+                    val completed = toDoStore.map(ToDo.completed()).data
                     // css is based on https://tailwindcss.com
                     className(completed.map { if (it) "line-through" else ""})
                     +toDo.text
@@ -742,13 +742,13 @@ fun main() {
 
 you might just want the `class`-attribute to be re-rendered when the `ToDo` at a given index is still the same,
 but just the value of its `completed` state changes. `renderEach` must be told how to determine, whether an element
-at an index is still the same entity although one or more of its attributes (or sub-entities) have changed by
+at an index is still the same entity although one or more of its attributes (or child-entities) have changed by
 passing an `IdProvider`.
 
 An `IdProvider` is a function mapping an entity to a unique id of arbitrary type. In this example, we just use the
 `id`-attribute of the `ToDo`.
 
-Then create a `Store` for a given entity conveniently by calling `sub(someEntity, properIdProvider)` on
+Then create a `Store` for a given entity conveniently by calling `map(someEntity, properIdProvider)` on
 a `Store<List<T>>`. Of course, you can do this yourself by mapping the flows if you work on a `Flow<List<T>>` and
 have no `Store` available or don't want to utilize `Lens`es:
 
@@ -772,11 +772,11 @@ fun main() {
     render {
         section {
             toDoListStore.data.renderEach(ToDo::id) { toDo ->
-                val toDoStore = toDoListStore.sub(toDo, ToDo::id)
+                val toDoStore = toDoListStore.map(toDo, ToDo::id)
                 li {
                     input {
                         value(toDoStore.data.map { it.text })
-                        changes.values() handledBy toDoStore.sub(ToDo.text).update
+                        changes.values() handledBy toDoStore.map(ToDo.text).update
                     }
                 }
             }

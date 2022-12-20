@@ -2,7 +2,7 @@ package dev.fritz2.examples.validation
 
 import dev.fritz2.core.Lens
 import dev.fritz2.core.Lenses
-import dev.fritz2.core.format
+import dev.fritz2.core.lensOf
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.toLocalDate
 
@@ -46,12 +46,6 @@ data class Activity(
 
 
 object Formats {
-    val date: Lens<LocalDate, String> = format(
-        { it.toLocalDate() },
-        { it.toString() }
-    )
-    val currency: Lens<Double, String> = format(
-        { it.toDouble() },
-        { it.toString() }
-    )
+    val date: Lens<LocalDate, String> = lensOf(LocalDate::toString, String::toLocalDate)
+    val currency: Lens<Double, String> = lensOf(Double::toString, String::toDouble)
 }

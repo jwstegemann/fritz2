@@ -68,7 +68,7 @@ class PatchTests {
 
     data class Entity(val id: String, val value: String)
 
-    private val valueLens = lens("value", Entity::value) { p, v -> p.copy(value = v) }
+    private val valueLens = lensOf("value", Entity::value) { p, v -> p.copy(value = v) }
 
     class TestEntityListStore : RootStore<List<Entity>>(
         listOf(
@@ -145,7 +145,7 @@ class PatchTests {
             div {
                 ul(id = listId) {
                     store.renderEach(Entity::id) {
-                        val valueStore = it.sub(valueLens)
+                        val valueStore = it.map(valueLens)
                         li { valueStore.data.renderText() }
                     }
                 }

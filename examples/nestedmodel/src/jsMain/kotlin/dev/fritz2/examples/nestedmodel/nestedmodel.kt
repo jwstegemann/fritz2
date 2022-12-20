@@ -26,14 +26,14 @@ object PersonListStore : RootStore<List<Person>>(emptyList(), id = "list") {
 }
 
 fun RenderContext.details() {
-    val name = PersonStore.sub(Person.name())
-    val birthday = PersonStore.sub(Person.birthday())
-    val address = PersonStore.sub(Person.address())
-    val street = address.sub(Address.street())
-    val number = address.sub(Address.number())
-    val postalCode = address.sub(Address.postalCode())
-    val city = address.sub(Address.city())
-    val activities = PersonStore.sub(Person.activities())
+    val name = PersonStore.map(Person.name())
+    val birthday = PersonStore.map(Person.birthday())
+    val address = PersonStore.map(Person.address())
+    val street = address.map(Address.street())
+    val number = address.map(Address.number())
+    val postalCode = address.map(Address.postalCode())
+    val city = address.map(Address.city())
+    val activities = PersonStore.map(Person.activities())
 
     div("col-12") {
         div("card") {
@@ -141,8 +141,8 @@ fun RenderContext.formGroup(
 
 // helper method for creating checkboxes for activities
 fun RenderContext.activityCheckbox(activity: Store<Activity>): HtmlTag<HTMLDivElement> {
-    val activityName = activity.sub(Activity.name())
-    val activityLike = activity.sub(Activity.like())
+    val activityName = activity.map(Activity.name())
+    val activityLike = activity.map(Activity.like())
 
 
     return div("form-check form-check-inline") {

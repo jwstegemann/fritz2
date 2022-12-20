@@ -30,15 +30,15 @@ object PersonStore : ValidatingStore<Person, Unit, Message>(
 }
 
 fun RenderContext.details() {
-    val name = PersonStore.sub(Person.name())
-    val salary = PersonStore.sub(Person.salary() + Formats.currency)
-    val birthday = PersonStore.sub(Person.birthday() + Formats.date)
-    val address = PersonStore.sub(Person.address())
-    val street = address.sub(Address.street())
-    val number = address.sub(Address.number())
-    val postalCode = address.sub(Address.postalCode())
-    val city = address.sub(Address.city())
-    val activities = PersonStore.sub(Person.activities())
+    val name = PersonStore.map(Person.name())
+    val salary = PersonStore.map(Person.salary() + Formats.currency)
+    val birthday = PersonStore.map(Person.birthday() + Formats.date)
+    val address = PersonStore.map(Person.address())
+    val street = address.map(Address.street())
+    val number = address.map(Address.number())
+    val postalCode = address.map(Address.postalCode())
+    val city = address.map(Address.city())
+    val activities = PersonStore.map(Person.activities())
 
     div("col-12") {
         div("card") {
@@ -207,8 +207,8 @@ fun RenderContext.formInput(
 
 // helper method for creating checkboxes for activities
 fun RenderContext.activityCheckbox(activity: Store<Activity>): HtmlTag<HTMLDivElement> {
-    val name = activity.sub(Activity.name())
-    val like = activity.sub(Activity.like())
+    val name = activity.map(Activity.name())
+    val like = activity.map(Activity.like())
 
     return div("form-check form-check-inline") {
         input("form-check-input", id = activity.id) {

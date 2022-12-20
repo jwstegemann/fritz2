@@ -67,24 +67,24 @@ class SubStore<P, D>(
  * @param element current instance of the entity to focus on
  * @param idProvider to identify the same entity (i.e. when it's content changed)
  */
-fun <D, I> Store<List<D>>.sub(element: D, idProvider: IdProvider<D, I>): Store<D> =
-    SubStore(this, lensOf(element, idProvider))
+fun <D, I> Store<List<D>>.mapByElement(element: D, idProvider: IdProvider<D, I>): Store<D> =
+    SubStore(this, lensForElement(element, idProvider))
 
 /**
  * Creates a new [Store] containing the element for the given [index] from the original [Store]'s [List]
  *
  * @param index position in the list to point to
  */
-fun <D> Store<List<D>>.sub(index: Int): Store<D> =
-    SubStore(this, lensOf(index))
+fun <D> Store<List<D>>.mapByIndex(index: Int): Store<D> =
+    SubStore(this, lensForElement(index))
 
 /**
  * Creates a new [Store] containing the corresponding value for the given [key] from the original [Store]'s [Map].
  *
  * @param key in the map to point to
  */
-fun <K, V> Store<Map<K, V>>.sub(key: K): Store<V> =
-    SubStore(this, lensOf(key))
+fun <K, V> Store<Map<K, V>>.mapByKey(key: K): Store<V> =
+    SubStore(this, lensForElement(key))
 
 /**
  * on a [Store] of nullable data this creates a [Store] with a nullable parent and non-nullable value.
@@ -94,8 +94,8 @@ fun <K, V> Store<Map<K, V>>.sub(key: K): Store<V> =
  *
  * @param lens [Lens] to use to create the [Store]
  */
-fun <P, T> Store<P?>.sub(lens: Lens<P & Any, T>): Store<T> =
-    sub(lens.toNullableLens())
+fun <P, T> Store<P?>.map(lens: Lens<P & Any, T>): Store<T> =
+    map(lens.withNullParent())
 
 /**
  * on a [Store] of nullable data this creates a [Store] with a nullable parent and non-nullable value.
@@ -106,5 +106,5 @@ fun <P, T> Store<P?>.sub(lens: Lens<P & Any, T>): Store<T> =
  *
  * @param default value to translate null to and from
  */
-fun <T> Store<T?>.orDefault(default: T): Store<T> =
-    sub(defaultLens(this.id, default))
+fun <T> Store<T?>.mapNull(default: T): Store<T> =
+    map(defaultLens(id, default))

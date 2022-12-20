@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.get
 
-val numberFormat = format({ it.toInt() }, { it.toString() })
+val numberFormat = lensOf(Int::toString, String::toInt)
 
 const val personPrefix = "dev.fritz2.examples.masterdetail.person"
 
@@ -140,9 +140,9 @@ fun RenderContext.details() {
             }
             div("card-body") {
                 div {
-                    formGroup("name", DetailStore.sub(Person.name()))
-                    formGroup("age", DetailStore.sub(Person.age() + numberFormat), inputType = "number")
-                    formGroup("salary", DetailStore.sub(Person.salary() + numberFormat), inputType = "number")
+                    formGroup("name", DetailStore.map(Person.name()))
+                    formGroup("age", DetailStore.map(Person.age() + numberFormat), inputType = "number")
+                    formGroup("salary", DetailStore.map(Person.salary() + numberFormat), inputType = "number")
                 }
             }
             div("card-footer") {

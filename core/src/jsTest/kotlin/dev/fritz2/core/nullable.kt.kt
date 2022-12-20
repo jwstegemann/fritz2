@@ -11,7 +11,7 @@ import kotlin.test.assertNotNull
 class NullableTests {
     data class Customer(val mail: String?, val name: String)
 
-    private val mailLens: Lens<Customer, String?> = lens("mail", Customer::mail) { p, v -> p.copy(mail = v) }
+    private val mailLens: Lens<Customer, String?> = lensOf("mail", Customer::mail) { p, v -> p.copy(mail = v) }
 
     private val someName = "some name"
     private val someMail = "some mail"
@@ -27,7 +27,7 @@ class NullableTests {
         val nonNullValue = "some Value"
 
         val store = storeOf<String?>(null)
-        val defaultStore = store.orDefault(defaultValue)
+        val defaultStore = store.mapNull(defaultValue)
 
         val valueWithDefaultId = Id.next()
         val valueWithoutDefaultId = Id.next()
@@ -58,7 +58,7 @@ class NullableTests {
     @Test
     fun nullableAttributeWithoutDefaultOnNonNullableStore() = runTest {
         val store = storeOf(customerWithoutMail)
-        val subStore = store.sub(mailLens)
+        val subStore = store.map(mailLens)
 
         val valueId = Id.next()
 
@@ -85,8 +85,8 @@ class NullableTests {
     @Test
     fun nullableAttributeWithDefaultOnNonNullableStore() = runTest {
         val store = storeOf(customerWithoutMail)
-        val subStore = store.sub(mailLens)
-        val subStoreWithDefault = subStore.orDefault(defaultMail)
+        val subStore = store.map(mailLens)
+        val subStoreWithDefault = subStore.mapNull(defaultMail)
 
         val valueId = Id.next()
         val valueWithDefaultId = Id.next()
@@ -132,7 +132,7 @@ class NullableTests {
 
             customerStore.data.render {
                 if (it != null) {
-                    val mailStore = customerStore.sub(mailLens)
+                    val mailStore = customerStore.map(mailLens)
                     p(id = mailValueId) { mailStore.data.renderText() }
 
                     button(id = setMailId) {
@@ -203,10 +203,10 @@ class NullableTests {
 
             customerStore.data.render {
                 if (it != null) {
-                    val mailStore = customerStore.sub(mailLens)
+                    val mailStore = customerStore.map(mailLens)
                     p(id = mailValueId) { mailStore.data.renderText() }
 
-                    val mailStoreWithDefault = mailStore.orDefault(defaultMail)
+                    val mailStoreWithDefault = mailStore.mapNull(defaultMail)
                     p(id = mailValueWithDefaultId) { mailStoreWithDefault.data.renderText() }
 
                     button(id = setMailId) {

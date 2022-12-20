@@ -15,11 +15,11 @@ class SubStoreTests {
     data class Address(val street: String = "", val postalCode: PostalCode)
     data class PostalCode(val code: Int)
 
-    private val nameLens = lens("name", Person::name) { p, v -> p.copy(name = v) }
-    private val addressLens = lens("address", Person::address) { p, v -> p.copy(address = v) }
-    private val streetLens = lens("street", Address::street) { p, v -> p.copy(street = v) }
-    private val postalCodeLens = lens("postalCode", Address::postalCode) { p, v -> p.copy(postalCode = v) }
-    private val codeLens = lens("code", PostalCode::code) { p, v -> p.copy(code = v) }
+    private val nameLens = lensOf("name", Person::name) { p, v -> p.copy(name = v) }
+    private val addressLens = lensOf("address", Person::address) { p, v -> p.copy(address = v) }
+    private val streetLens = lensOf("street", Address::street) { p, v -> p.copy(street = v) }
+    private val postalCodeLens = lensOf("postalCode", Address::postalCode) { p, v -> p.copy(postalCode = v) }
+    private val codeLens = lensOf("code", PostalCode::code) { p, v -> p.copy(code = v) }
 
     @Test
     fun testSubStore() = runTest {
@@ -27,11 +27,11 @@ class SubStoreTests {
         val person = Person("Foo", Address("Bar Street 3", PostalCode(9999)))
         val store = object : RootStore<Person>(person) {}
 
-        val nameSub = store.sub(nameLens)
-        val addressSub = store.sub(addressLens)
-        val streetSub = addressSub.sub(streetLens)
-        val postalCodeSub = addressSub.sub(postalCodeLens)
-        val codeSub = postalCodeSub.sub(codeLens)
+        val nameSub = store.map(nameLens)
+        val addressSub = store.map(addressLens)
+        val streetSub = addressSub.map(streetLens)
+        val postalCodeSub = addressSub.map(postalCodeLens)
+        val codeSub = postalCodeSub.map(codeLens)
 
         val nameId = "name-${Id.next()}"
         val streetId = "street-${Id.next()}"
@@ -77,23 +77,24 @@ class SubStoreTests {
     }
 
     @Test
-    fun testSubStoreWithFormat() = runTest {
+    fun testSubStoreWithLensOf() = runTest {
 
         val person = Person("Foo", Address("Bar Street 3", PostalCode(9999)))
         val store = object : RootStore<Person>(person, id = "person") {}
 
-        val personFormatLens = format(
+        val personFormatLens = lensOf(
+            { value: Person ->
+                "${value.name},${value.address.street},${value.address.postalCode.code}"
+            },
             { value: String ->
                 val fields = value.split(",")
                 val name = fields[0]
                 val street = fields[1]
                 val code = fields[2].toInt()
                 Person(name, Address(street, PostalCode(code)))
-            }, { value: Person ->
-                "${value.name},${value.address.street},${value.address.postalCode.code}"
             })
 
-        val completeSub = store.sub(personFormatLens)
+        val completeSub = store.map(personFormatLens)
 
         render {
             div {
@@ -212,7 +213,7 @@ class SubStoreTests {
         assertEquals(3, container.childElementCount)
         assertEquals("abc", container.textContent)
 
-        store.sub(1).update("d")
+        store.mapByIndex(1).update("d")
 
         delay(200)
         assertEquals(3, container.childElementCount)
@@ -242,7 +243,7 @@ class SubStoreTests {
         assertEquals(3, container.childElementCount)
         assertEquals("abc", container.textContent)
 
-        store.sub(2).update("d")
+        store.mapByKey(2).update("d")
 
         delay(200)
         assertEquals(3, container.childElementCount)

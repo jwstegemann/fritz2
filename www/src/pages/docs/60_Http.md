@@ -225,7 +225,7 @@ object MyAuthentication : Authentication<Principal>() {
     override fun authenticate() {
         createSomeModal { // example
             input {
-                loginStore.sub(Credentials.name()).let {
+                loginStore.map(Credentials.name()).let {
                     value(it.data)
                     changes.values() handledBy it.update
                 }
@@ -233,7 +233,7 @@ object MyAuthentication : Authentication<Principal>() {
             }
 
             input {
-                loginStore.sub(Credentials.password()).let {
+                loginStore.map(Credentials.password()).let {
                     value(it.data)
                     changes.values() handledBy it.update
                 }

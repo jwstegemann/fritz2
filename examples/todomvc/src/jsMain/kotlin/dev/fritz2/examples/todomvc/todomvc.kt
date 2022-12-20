@@ -134,10 +134,10 @@ fun main() {
                 ToDoListStore.data.combine(router.data) { all, route ->
                     filters[route]?.function?.invoke(all) ?: all
                 }.renderEach(ToDo::id) { toDo ->
-                    val toDoStore = ToDoListStore.sub(toDo, ToDo::id)
+                    val toDoStore = ToDoListStore.mapByElement(toDo, ToDo::id)
                     toDoStore.data.drop(1) handledBy ToDoListStore.save
-                    val textStore = toDoStore.sub(ToDo.text())
-                    val completedStore = toDoStore.sub(ToDo.completed())
+                    val textStore = toDoStore.map(ToDo.text())
+                    val completedStore = toDoStore.map(ToDo.completed())
 
                     val editingStore = storeOf(false)
 
