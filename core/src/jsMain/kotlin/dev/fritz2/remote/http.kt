@@ -11,7 +11,7 @@ import org.w3c.fetch.Response as FetchResponse
 external fun btoa(decoded: String): String
 
 /**
- * Represents the common fields and attributes of an HTTP response.
+ * Represents the fields and attributes of an HTTP response.
  * It contains also the original [Request] which was made to get this [Response].
  *
  * More info at [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Response)
