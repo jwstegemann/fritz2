@@ -1,12 +1,12 @@
 ---
-title: Basic Concepts
+title: Fundamentals
 description: "Learn about the basic concepts of fritz2"
 layout: layouts/docs.njk
-permalink: /docs/basicconcepts/
+permalink: /docs/fundamentals/
 eleventyNavigation:
-    key: basicconcepts
+    key: fundamentals
     parent: documentation
-    title: Basic Concepts
+    title: Fundamentals
     order: 19
 ---
 
@@ -97,7 +97,7 @@ parts of fritz2!
 
 Let's have a look at the result in a browser:
 
-![running example in browser](/img/basicconcept_animation.gif)
+![running example in browser](/img/fundamentals_animation.gif)
 
 Now we have a good notion of the app and how it works, let's dive into the code and discover the various building 
 blocks, that drives this app.
