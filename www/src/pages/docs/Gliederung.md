@@ -2,9 +2,9 @@
 
 -> Konzept der Navigation erklären:
 
-- Stufe1: Überblick über Thema
-- Stufe2: Notwendig für das Schreiben von Applikation
-- Stufe3: Spezialfälle
+- Stufe1: Überblick über Thema (Overview)
+- Stufe2: Notwendig für das Schreiben von Applikation (Essentials)
+- Stufe3: Spezialfälle (Advanced Topics)
 
 # Getting Started
 
