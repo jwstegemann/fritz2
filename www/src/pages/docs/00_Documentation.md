@@ -40,7 +40,7 @@ Those topics are the foundation for building fritz2 applications.
 After those steps, feel free to read the other *essential* sections or even the *advanced topics*.
 
 ::: info
-Please also have a look at our examples, which are referenced by the different topics and sections!
+Please also have a look at our [examples](/examples), which are referenced by the different topics and sections!
 They show all the explained topics in working code, so studying those will help you to progress.
 :::
 

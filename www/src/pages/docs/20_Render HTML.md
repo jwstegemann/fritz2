@@ -18,12 +18,17 @@ like `div`.
 
 ```kotlin
 fun main() {
-    render { // by default target = document.body
+    render { // offers created root `RenderContext`; start your UI code from within her
+        
+        // create some HTML tag; `div` produces a `Tag`, that is also a `RenderContext`.
+        // This enbales the nested calling and therefore the declarative approach!
         div("header", id = "header") {
             
         }
         div("container") {
             h1 { +"Hello World!" }
+            //   ^^^^^^^^^^^^^^^
+            //   create some text node inside a tag
         }
         div("footer") {
 
@@ -75,61 +80,6 @@ render {
         +"Some important content"
     }
 }
-```
-
-fritz2 also lets you manage multiple classes in a `List<String>` or `Flow<List<String>>` with the `classList`-attribute.
-
-Additionally, you can build a `Map<String, Boolean>` from your model data that enables and disables single classes
-dynamically:
-
-```kotlin
-render {
-    div {
-        classMap(toDoStore.data.map {
-            mapOf(
-                "completed" to it.completed, // a boolean-attribute in the data-model
-                "editing" to it.editing
-            )
-        })
-    }
-}
-```
-
-fritz2 also offers a function for setting the inline `style` attribute to your elements:
-
-```kotlin
-render {
-    p {
-        inlineStyle("color: red")
-        +"this is red text"
-    }
-}
-```
-
-Of course, it is also possible to dynamically style an element by passing a `Flow` of CSS styles into `inlineStyle`:
-```kotlin
-render {
-    val enabled = storeOf(true)
-
-    div {
-        inlineStyle(enabled.data.map {
-            if (it) "background-color: lightgreen;"
-            else "opacity: 0.5; background-color: lightgrey;"
-        })
-        +"Some important content"
-    }
-}
-```
-
-To set an initial CSS class (or any other attribute) immediately (for example to avoid flicker effects caused by the delay
-of the first value becoming available on the flow), the respective attribute-method must be called twice.
-First with the static value that should be set immediately, then with the `Flow` that provides the dynamic values:
-
-```kotlin
-val visibility: Flow<String> = ...
-
-className("invisible")
-className(visibility)
 ```
 
 ### Apply Attributes to your UI: Reactive or Static
@@ -202,9 +152,7 @@ val isOpened = storeOf(true)
 render {
     button {
         +"Toggle"
-        // This mechanism is later explained in depth in "Store Creation" chapter.
-        // Just accept for now this simply toggles the boolean value in the store by each click.
-        clicks.map { !isOpened.current } handledBy isOpened.update
+        clicks handledBy isOpened.handle { !it }
 
         attr("aria-controls", isOpened.data.map { if (it) "disclosure" else null })
         //                                                                  ^^^^
@@ -229,6 +177,7 @@ render {
     - renderEach
     - renderEach mit IdProvider -> nur auflisten; Verweis auf Abschnitt in State Management
     - renderEach auf Store -> nur auflisten; Verweis auf Abschnitt in State Management
+
 
 ### Structure UI
 
@@ -283,8 +232,6 @@ render {
         p {
             +"Hello World!"
         }
-
-        clicks handledBy someHandler // you will see what this does in the next chapter
     }
 }
 ```
@@ -292,6 +239,46 @@ render {
 Using `Div` as receiver type in the example above allows you to access the specific attributes and events of your
 container-element from your content-lambda. Use `RenderContext` if this is not necessary or intended.
 
+### Inline Styles
+
+fritz2 also offers a function for setting the inline `style` attribute to your elements:
+
+```kotlin
+render {
+    p {
+        inlineStyle("color: red")
+        +"this is red text"
+    }
+}
+```
+
+Of course, it is also possible to dynamically style an element by passing a `Flow` of CSS styles into `inlineStyle`:
+```kotlin
+render {
+    val enabled = storeOf(true)
+
+    div {
+        inlineStyle(enabled.data.map {
+            if (it) "background-color: lightgreen;"
+            else "opacity: 0.5; background-color: lightgrey;"
+        })
+        +"Some important content"
+    }
+}
+```
+
+### Avoid Flicker Effects with reactive Stylings
+
+To set an initial CSS class (or any other attribute) immediately (for example to avoid flicker effects caused by the delay
+of the first value becoming available on the flow), the respective attribute-method must be called twice.
+First with the static value that should be set immediately, then with the `Flow` that provides the dynamic values:
+
+```kotlin
+val visibility: Flow<String> = ...
+
+className("invisible")
+className(visibility)
+```
 
 ## Advanced Topics
 
@@ -334,6 +321,87 @@ The result is the following:
 ```
 For debugging proposes you can use the `scope.asDataAttr()` function to set current scope to the tag and see it
 in the DOM-Tree.
+
+### Customize the Starting Point - Anchor you global Render Function
+
+As you already should know, you need to call the global `render` function once, in order to create an initial
+`RenderContext`:
+
+```kotlin
+fun main() {
+    render {
+        // access to the created root `RenderContext`
+        // start your UI code from within here!
+    }
+}
+```
+
+This of course only works in combination with some *fitting* `index.html` in `jsMain/resources`, which is just a
+normal web-page. This page needs two configuration aspects to be set up correct:
+1. there must be some tag marked with some `id`; for example here the `<body>` tag has the (default) Id of `target`.
+2. the resulting js-artifact must be included as `<script>` tag with the correct name.
+
+```html
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+  </head>
+  <body>
+    <div id="myAppAnchor">
+        Loading...
+    </div>
+    <script src="<project-name>.js"></script>
+  </body>
+</html>
+```
+
+The global `render` factory accepts a parameter to select a custom Id:
+
+```kotlin
+fun main() {
+    render("#myAppAnchor") { // using id selector here, leave blank to use document.body + id = `target` by default
+        h1 { +"My App" }
+        div("some-fix-css-class") {
+            p(id = "someId") {
+                +"Hello World!"
+            }
+        }
+    }
+}
+```
+
+When calling `render` like that, your content will be mounted to an `HTMLElement` with `id="myAppAnchor"`.
+If you want to mount your content to the `body` of your `index.html`, you can omit this parameter.
+Instead of using the `selector` string with the [querySelector syntax](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector),
+you can also specify an `HTMLElement` directly on the `targetElement` parameter.
+
+You can also set an `override` parameter to `false`, which means that your content will be appended. By default, 
+all child elements will be removed before your content is appended to the `targetElement`.
+
+Run the project by calling `./gradlew jsRun` in your project's main directory. Add `-t` to enable automatic
+building and reloading in the browser after changing your code.
+
+### Reactive Styling with complex Rules
+
+fritz2 also lets you manage multiple classes in a `List<String>` or `Flow<List<String>>` with the `classList`-attribute.
+
+Additionally, you can build a `Map<String, Boolean>` from your model data that enables and disables single classes
+dynamically:
+
+```kotlin
+render {
+    div {
+        classMap(toDoStore.data.map {
+            mapOf(
+                "completed" to it.completed, // a boolean-attribute in the data-model
+                "editing" to it.editing
+            )
+        })
+    }
+}
+```
 
 ### (später) Custom Tags / RenderContexts
 

@@ -134,13 +134,6 @@ fun main() {
 ```
 ![running example in browser](/img/gettingstarted_inital.png)
 
-When calling `render` like that, your content will be mounted to an `HTMLElement` with `id="target"`.
-If you want to mount your content to the `body` of your `index.html`, you can omit this parameter.
-Instead of using the `selector` string with the [querySelector syntax](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector),
-you can also specify an `HTMLElement` directly on the `targetElement` parameter.
-Setting the `override` parameter to `false` means that your content will be appended. By default, all child
-elements will be removed before your content is appended to the `targetElement`.
-
 Run the project by calling `./gradlew jsRun` in your project's main directory. Add `-t` to enable automatic
 building and reloading in the browser after changing your code.
 
