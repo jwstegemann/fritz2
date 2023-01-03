@@ -346,7 +346,7 @@ fun main() {
                     +content
                 }
             }
-            button("p-2 bg-blue-400 text-white border border-1 border-gray-300rounded-md") {
+            button("p-2 bg-blue-400 text-white border border-1 border-gray-300 rounded-md") {
                 +"Clear"
                 clicks handledBy store.handle { "" }
             }

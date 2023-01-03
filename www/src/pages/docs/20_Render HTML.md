@@ -12,25 +12,28 @@ eleventyNavigation:
 
 ## Overview
 
+### Create a basic UI
+
 fritz2 offers a rich DSL to create the HTML for your application. You just have to call the global `render` function
 inside to create an initial `RenderContext` in which you can then call the HTML-Tag functions provided by fritz2
-like `div`.
+like `div`. All of those factories has to be nested by intention, so this results in a *declarative* way of creating
+UIs.
 
 ```kotlin
 fun main() {
     render { // offers created root `RenderContext`; start your UI code from within her
         
         // create some HTML tag; `div` produces a `Tag`, that is also a `RenderContext`.
-        // This enbales the nested calling and therefore the declarative approach!
-        div("header", id = "header") {
+        // This enables the nested calling and therefore the declarative approach!
+        div(id = "header") {
             
         }
-        div("container") {
+        div(id = "container") {
             h1 { +"Hello World!" }
             //   ^^^^^^^^^^^^^^^
             //   create some text node inside a tag
         }
-        div("footer") {
+        div(id = "footer") {
 
         }
     }
@@ -41,145 +44,182 @@ This code results in:
 
 ```html
 <body id="target">
-    <div id="header" class="header"></div>
-    <div class="container">
+    <div id="header"></div>
+    <div id="container">
         <h1>Hello World!</h1>
     </div>
-    <div class="footer"></div>
+    <div id="footer"></div>
 </body>
 ```
 
-### Apply Styling to your UI: Reactive or Static
+If you compare the result with the code, you will immediately recognize that the DOM structure is reflected by the 
+declaring code. This leads to easy to read UI definitions and is some core feature of fritz2.
 
-The `class` attribute of a `Tag` for working with CSS style-classes is somewhat special. You can set the static values
-of each `Tag` for `class` and `id` by using the optional parameters of its factory function:
+### Make your UI reactive
 
-```kotlin
-render {
-    div("some-static-css-class") {
-        button(id = "someId")
-    }
-}
-```
+fritz2 supports reactive UIs as one of its core features, so let us enhance this example with some dynamic content.
 
-Use this one-liner to add styling and meaning to your elements by using semantic CSS class-names. Also, it keeps your
-code clean when using CSS frameworks like Bootstrap, Tailwind etc.
+First of all we need a so called `Store` for holding the dynamic data of our application. Such stores are the heart
+of every fritz2 application; they provide the current value in a reactive way and handle all the data changes.
 
-To reactively change the styling of a rendered element, you can add dynamic classes by assigning a `Flow` of strings to
-the `className`-attribute (like with any other attribute).
+To bind the store's value reactively to the DOM, use some `render*`-functions on the `data`-property of a
+store, which offers a `Flow` of the store's value `T`. The function creates a so called mount-point, that manages the
+automatic update of the DOM on every change of the store's data. The mount-point uses a dedicated tag created in the 
+DOM as reference to the node, where the deletion and recreation of the defined UI-fragment happens.
 
-```kotlin
-render {
-    val enabled = storeOf(true)
+To react to (user) events like the click onto a button, a store provides so called `handler`s, which creates the new
+value of the store. The default handler `update` just takes the new value and substitutes the old state with it.
 
-    div("common-css-class") {
-        className(enabled.data.map {
-            if (it) "enabled-css-class"
-            else "disabled-css-class"
-        })
-        +"Some important content"
-    }
-}
-```
-
-### Apply Attributes to your UI: Reactive or Static
-
-To create rich HTML interfaces styling alone is not sufficient. You will need to use a variety of attributes. 
-In fritz2 there are several easy ways to achieve this, depending on your use case.
-
-You can set all HTML attributes inside the `Tag`'s content by calling a function of the according name. Every standard
-HTML attribute has two functions. One sets a static value every time the element is re-rendered, the second collects
-dynamic data coming from a `Flow`. When coming from a `Flow`, the attribute's value will be updated in the
-DOM whenever a new value appears on the `Flow`
-without having to re-render the whole element:
-
-```kotlin
-val flowOfInts = ... // i.e. get it from some store
-
-render {
-    input {
-        placeholder("some text")
-        maxLength(flowOfInts)
-        disabled(true)
-    }
-}
-```
-
-If you want to set a `Boolean` value, you can set an optional parameter `trueValue` which will be set as the
-attribute-value if your data is `true`:
-
-```kotlin
-val isLow = myStore.data.map { i -> i <= 0 }
-
-render {
-    button {
-        +"My button"
-        attr("data-low", isLow, trueValue = "true")
-        // isLow == true  -> <button data-low="true">My button</button>
-        // isLow == false -> <button>My button</button>
-    }
-}
-```
-
-This is sometimes needed for CSS-selection or animations.
-
-::: info
-The `className` function you have already encountered is also just a way to set a common attribute on a tag - although
-it works internally a bit different and offers more convenience variants due to its overall importance.
+:::info
+The reacting to events is not part of this chapter, but explained in short just to make the example understandable!
 :::
 
-To set a value for a custom (data-) attribute, use the `attr()`-function. It works for static and dynamic (from
-a `Flow`) values:
-
 ```kotlin
-render {
-    div {
-        attr("data-something", "someValue")
-        attr("data-something", flowOf("someValue"))
+fun main() {
+    // define a store to hold the dynamic data: In this case a `String`
+    val storedName = storeOf("World")
+
+    render {
+        div(id = "header") {
+        }
+        div(id = "container") {
+            storedName.data.render { name -> // current value is provided
+                //          ^^^^^^
+                //          create a "mount-point" to bind the store's data to a node in the DOM
+                //          every time the data changes, this inner UI-subtree gets deleted and newly created
+                h1 {
+                    +"Hello, "
+                    +name // use the provided data here
+                    +"!"
+                }
+            }
+        }
+        div(id = "footer") {
+            button {
+                +"Greet fritz2"
+            }.clicks.map { "fritz2" } handledBy storedName.update
+            // ^^^^^^^^^^^^^^^^^^^^^^                      ^^^^^^
+            // use the event to send a new                 use store's default handler
+            // value to the store                          to replace the old by the new value
+            // This mechanism will be explained in the chapter about store creation!
+        }
     }
 }
 ```
 
-Sometimes it is important for an attribute to only appear if some condition is `true`, for example some
-[ARIA](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA) properties like
-[aria-controls](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-controls) should
-preferably appear only if the dependent element exist. The `attr` functions for `Flows` behave in such a way, that they
-only set an attribute if the value is *not* `null`. This behaviour could be used to achieve the desired effect:
+The DOM structure now looks as follows:
+```html
+<body id="target">
+<div id="header"></div>
+<div id="container">
+    <div class="mount-point" data-mount-point="">
+        <h1>Hello, World!</h1>
+    </div>
+</div>
+<div id="footer">
+    <button>Greet fritz2</button>
+</div>
+</body>
+```
+
+When you click the button, the whole `h1`-subtree will be removed and changed to `<h1>Hello, fritz2!</h1>`
+
+### Style and Enrich your UI with Attributes
+
+As last teasing aspects we want to demonstrate, how fritz2 supports styling an UI or setting attributes of a tag.
+
+The tag-factories accept static CSS-classes as a `String` as first parameter, as this is such a common use case.
+(This is why we used the named parameter for the ids so far)
+fritz2 is totally agnostic of any CSS-framework or even handcrafted CSS. Use whatever fits best!
+
+As being reactive is such an important aspect of fritz2, styling and attributes can be set based upon the store's state. 
+The button becomes reactively disabled, if it gets clicked once, because the click changes the state of the store. 
+This leads to a change which is evaluated inside the `disabled`-function, that sets the related property of 
+the `<button>`-tag. So not only DOM-fragments can be bound to state changes, but also attributes and styling.
+
+These last building blocks make fritz2 a fully reactive web framework!
 
 ```kotlin
-val isOpened = storeOf(true)
+fun main() {
+    val storedName = storeOf("World")
 
-render {
-    button {
-        +"Toggle"
-        clicks handledBy isOpened.handle { !it }
-
-        attr("aria-controls", isOpened.data.map { if (it) "disclosure" else null })
-        //                                                                  ^^^^
-        //      make whole attribute disappear if disclosure-div is not rendered
-    }
-
-    isOpened.data.render {
-        if (it) {
-            div(id = "disclosure") {
-                +"I am open!"
+    render {
+        div("w-48 m-4 flex flex-col gap-2") {
+            // ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            // set (static) CSS classnames as first parameter of a tag factory
+            div(id = "header") {
+            }
+            div(id = "container") {
+                h1 {
+                    +"Hello, "
+                    storedName.data.render { name ->
+                        span(if (name == "fritz2") "font-bold" else "") {
+                            // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                            // set classname depending on the store's content
+                            +name
+                        }
+                        +"!"
+                    }
+                }
+            }
+            div(id = "footer") {
+                button("p-2 text-white border border-1 border-gray-300 rounded-md") {
+                    +"Greet fritz2"
+                    className(storedName.data.map { if (it == "fritz2") "bg-gray-500" else "bg-blue-400" })
+                    //        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                    //        set CSS classes reactively
+                    disabled(storedName.data.map { it == "fritz2" })
+                    //       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                    //       set disabled attribute reactively
+                }.clicks.map { "fritz2" } handledBy storedName.update
             }
         }
     }
 }
 ```
+
+The final DOM structure now looks like this:
+```html
+<body id="target">
+<div class="w-48 m-4 flex flex-col gap-2">
+    <div id="header"></div>
+    <div>
+        <h1>Hello,
+            <div class="mount-point" data-mount-point="">
+                <span>World</span>!
+            </div>
+        </h1>
+    </div>
+    <div>
+        <button class="p-2 bg-blue-400 text-white border border-1 border-gray-300 rounded-md">Greet
+            fritz2
+        </button>
+    </div>
+</div>
+</body>
+```
+
+Clicking the button will change the button section to this:
+```html
+<button disabled class="p-2 bg-gray-500 text-white border border-1 border-gray-300 rounded-md">Greet
+    fritz2
+</button>
+```
+Pay attention to the changed CSS-classes and the added `disabled` attribute! 
+
+(tailwindcss users might recognize that the better approach in this case would be the usage of `disabled:` prefix;
+this would make the `className` call obsolete and shorten the code - accept this solution for demonstration purposes
+though!)
+
 ## Essentials
 
-Before we dive into the topic of *reactive rendering*, let us introduce some model types, that is used for the
-upcoming examples:
+Before we dive into the essential topics, let us introduce some model types, that is used for some upcoming examples:
 ```kotlin
 // example of an entity
 data class Person(
-    val id: Int,
+    val id: Int, // stable identifier
     val name: String,
     val age: Int
-    // optionally add this
-    // val interests: List<Interest>
 )
 
 // example of some value type
@@ -388,6 +428,8 @@ concerning performance!
 This `renderEach` implementation does the patch-determination applying the standard `equals`-method of the list's 
 type `T`. This is the reason, why is targeted to *value* objects: They are implicitly defined by their equality!
 
+Have a look at its usage in our [master detail](/examples/masterdetail/) example.
+
 #### Reactive Rendering of Lists of entities
 
 As `List<T>` as value of a store is a common use case, where `T` is an *entity*, thus it has some stable *identity*
@@ -436,6 +478,8 @@ relying on equality. But if only a small set of properties of an element could p
 important aspect, rely on this application of `renderEach` and add additional mount-points inside the elements subtrees. 
 You will learn about those in Chapter XYZ.
 
+Have a look at its application in our [todomvc](/examples/todomvc/) example.
+
 #### Summary of Reactive Rendering 
 
 fritz2 offers the following `render*`-functions in order to implement reactive rendering of some store's 
@@ -455,6 +499,126 @@ This special variant and its application are described in Chapter Store-XYZ.
 |-----------------------------|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------|-------------|
 | `Store<List<T>>.renderEach` | idProvider            | creates a mount-point optimizing changes by `idProvider`. Provides a `Store<T>` inside the `content` expression. Use for entities | `div`       |
 
+
+### Apply Styling to your UI: Reactive or Static
+
+The `class` attribute of a `Tag` for working with CSS style-classes is somewhat special. You can set the static values
+of each `Tag` for `class` and `id` by using the optional parameters of its factory function:
+
+```kotlin
+render {
+    div("some-static-css-class") {
+        button(id = "someId")
+    }
+}
+```
+
+Use this one-liner to add styling and meaning to your elements by using semantic CSS class-names. Also, it keeps your
+code clean when using CSS frameworks like Bootstrap, Tailwind etc.
+
+To reactively change the styling of a rendered element, you can add dynamic classes by assigning a `Flow` of strings to
+the `className`-attribute (like with any other attribute).
+
+```kotlin
+render {
+    val enabled = storeOf(true)
+
+    div("common-css-class") {
+        className(enabled.data.map {
+            if (it) "enabled-css-class"
+            else "disabled-css-class"
+        })
+        +"Some important content"
+    }
+}
+```
+
+### Apply Attributes to your UI: Reactive or Static
+
+To create rich HTML interfaces styling alone is not sufficient. You will need to use a variety of attributes.
+In fritz2 there are several easy ways to achieve this, depending on your use case.
+
+You can set all HTML attributes inside the `Tag`'s content by calling a function of the according name. Every standard
+HTML attribute has two functions. One sets a static value every time the element is re-rendered, the second collects
+dynamic data coming from a `Flow`. When coming from a `Flow`, the attribute's value will be updated in the
+DOM whenever a new value appears on the `Flow`
+without having to re-render the whole element:
+
+```kotlin
+val flowOfInts = ... // i.e. get it from some store
+
+render {
+    input {
+        placeholder("some text")
+        maxLength(flowOfInts)
+        disabled(true)
+    }
+}
+```
+
+If you want to set a `Boolean` value, you can set an optional parameter `trueValue` which will be set as the
+attribute-value if your data is `true`:
+
+```kotlin
+val isLow = myStore.data.map { i -> i <= 0 }
+
+render {
+    button {
+        +"My button"
+        attr("data-low", isLow, trueValue = "true")
+        // isLow == true  -> <button data-low="true">My button</button>
+        // isLow == false -> <button>My button</button>
+    }
+}
+```
+
+This is sometimes needed for CSS-selection or animations.
+
+::: info
+The `className` function you have already encountered is also just a way to set a common attribute on a tag - although
+it works internally a bit different and offers more convenience variants due to its overall importance.
+:::
+
+To set a value for a custom (data-) attribute, use the `attr()`-function. It works for static and dynamic (from
+a `Flow`) values:
+
+```kotlin
+render {
+    div {
+        attr("data-something", "someValue")
+        attr("data-something", flowOf("someValue"))
+    }
+}
+```
+
+Sometimes it is important for an attribute to only appear if some condition is `true`, for example some
+[ARIA](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA) properties like
+[aria-controls](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-controls) should
+preferably appear only if the dependent element exist. The `attr` functions for `Flows` behave in such a way, that they
+only set an attribute if the value is *not* `null`. This behaviour could be used to achieve the desired effect:
+
+```kotlin
+val isOpened = storeOf(true)
+
+render {
+    button {
+        +"Toggle"
+        clicks handledBy isOpened.handle { !it }
+
+        attr("aria-controls", isOpened.data.map { if (it) "disclosure" else null })
+        //                                                                  ^^^^
+        //      make whole attribute disappear if disclosure-div is not rendered
+    }
+
+    isOpened.data.render {
+        if (it) {
+            div(id = "disclosure") {
+                +"I am open!"
+            }
+        }
+    }
+}
+```
 
 ### Minimize DOM structure of Mount-Points
 
@@ -761,10 +925,10 @@ render {
 }
 ```
 
-### (später) Custom Tags / RenderContexts
+### Rendering on Stand-alone Flows
 
-**TODO**
+**TODO** RC-4
 
-### Rendering mit Stand Alone Flow
+### Custom Tags / RenderContexts
 
-**TODO**
+**TODO** RC-4 or later 
