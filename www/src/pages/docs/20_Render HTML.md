@@ -170,14 +170,372 @@ render {
 ```
 ## Essentials
 
-- Beispiel mit Liste<CustomDataClass>
-- reaktives Rendern / Content
-    - T
-    - text
-    - renderEach
-    - renderEach mit IdProvider -> nur auflisten; Verweis auf Abschnitt in State Management
-    - renderEach auf Store -> nur auflisten; Verweis auf Abschnitt in State Management
+Before we dive into the topic of *reactive rendering*, let us introduce some model types, that is used for the
+upcoming examples:
+```kotlin
+// example of an entity
+data class Person(
+    val id: Int,
+    val name: String,
+    val age: Int
+    // optionally add this
+    // val interests: List<Interest>
+)
 
+// example of some value type
+enum class Interest {
+    Programming,
+    Sports,
+    History,
+    WritingDocumentation
+}
+```
+
+### Reactive Rendering
+
+As you already know all [state handling](/fundamentals/#state-handling) is done with `Store`s in fritz2.
+
+Based upon the `data`-property, which provides a `Flow` of the store's generic data type, there exist a variety of
+`render*`-functions, that can be used to create *reactive* UIs:
+
+Tabelle
+
+#### Reactive Rendering of some T
+
+In order to render the whole store's data type, there is the `render`-function. As last and only required parameter,
+it needs a functional expression with a `Tag` as receiver (remember that a `Tag` *is* a `RenderContext`), providing the
+data as parameter and returning `Unit`. Inside this `content` parameter, you then have access to the current data
+and can use all HTML tag factories to create the desired UI-fragment.
+
+```kotlin
+// define some Person and "store" it
+val storedPerson = storeOf(Person(1, "Fritz", 42))
+
+// somewhere inside any `RenderContext`
+storedPerson.data.render { person -> // the current store's value gets injected
+    dl {
+        dt { +"Id" }
+        // use the data type to render its contents by accessing its properties
+        // as the DOM consists only of strings, we must take care of the needed type conversion from `Int` to `String`
+        dd { +person.id.toString() }
+        dt { +"Name" }
+        dd { +person.name }
+        dt { +"Age" }
+        dd { +person.age.toString() }
+    }
+}
+```
+
+As result the following DOM-fragment is rendered:
+```html
+<div class="mount-point" data-mount-point="">
+    <dl>
+        <dt>Id</dt>
+        <dd>1</dd>
+        <dt>Name</dt>
+        <dd>Fritz</dd>
+        <dt>Age</dt>
+        <dd>42</dd>
+    </dl>
+</div>
+```
+
+The `render`-function creates a so called `mount-point`, which is fritz2's name for the data-binding concept, that
+reactively combines some store's data with some node in the DOM-tree. The created mount-point now takes care of 
+reacting to new values and keep the UI-fragment up to date.
+
+Remember that this is the upper part of fritz2's [circle of life](/fundamentals/#understanding-the-circle-of-life)!
+
+It is important to know the following facts about `render` and mount-points:
+- as default some special `<div>` tag is rendered, which is marked with the pure informational `data-mount-point`
+attribute and with a special CSS class `mount-point`, that simply sets the display mode to `contents` in order to
+exclude this artificial tag from the visible UI.
+- on every change to the store's data, the *whole* subtree beneath that `<div>` tag is dropped and rebuilt with the
+new data's content.
+
+:::info
+As a direct consequence of the last fact, you should strive to keep the reactive UI-fragments as minimal as you can,
+as re-rendering a subtree is work for the browser. 
+
+As rule of thumb memoize this: The smaller the changing portions are, the faster the result will be!
+:::
+
+Take a look at our [basic example](/examples/gettingstarted/) too, which demonstrates the `render` function.
+
+#### Reactice Rendering of Text-Nodes
+
+As creating a reactive is a common use case, fritz2 offers a *dedicated* variant render function called `renderText`
+on data flows of type `String`:
+
+```kotlin
+val storedText = storeOf("fritz2")
+
+// somewhere inside any `RenderContext`
+div {
+    // Attention: We need a *Tag* here, not just a `RenderContext`! 
+    storedText.data.renderText()
+}
+```
+
+As result the following DOM-fragment is rendered:
+```html
+<div>
+    <span>fritz2</span>
+</div>
+```
+
+This is extremely useful in situations, where a longer text has some smaller dynamic parts. As only the smaller parts
+will change, the other parts must not be part of the mount-point:
+
+```kotlin
+val storedText = storeOf("fritz2")
+
+p {
+    +"There is some excellent Kotlin based framework named "
+    storedText.data.renderText() // only dynamic part is here; the other text-nodes are static!
+    +", that empowers one to easily create reactive SPAs in pure Kotlin."
+}
+```
+
+Imagine a `render` based solution on the contrary:
+```kotlin
+val storedText = storeOf("fritz2")
+
+p {
+    storedText.data.render { frameworkName ->
+        +"There is some excellent Kotlin based framework named "
+        +frameworkName
+        +", that empowers one to easily create reactive SPAs in pure Kotlin."
+    }
+}
+```
+Of course the former could have also be written with `String`-templating, instead of separate text-nodes too.
+
+The important advantages of the dedicated `renderText` solution compared to the general `render` based solution are:
+- the solution with `renderText` fits better to the *declarative* UI approach, as it better reflects the node structure
+and thus is better to read.
+- the mount-point encompasses a much smaller DOM-subtree, so it is more efficient.
+
+#### Reactive Rendering of Lists of value objects
+
+As `List<T>` as value of a store is a common use case, fritz2 offers a special rendering function for this too:
+`renderEach`.
+
+```kotlin
+// define some store with type of `List<T>`
+val storedInterests = storeOf(Interest.values().toList())
+
+// somewhere inside any `RenderContext` declare the container for the whole list
+ul {
+    // for every value of store's interest list, the provided `content` expression is executed
+    storedInterests.data.renderEach { interest -> // the current applied value of the data flow
+        // just declare the UI for one item
+        li {
+            +interest.toString()
+        }
+    }
+}
+```
+
+As result the following DOM-fragment is rendered:
+```html
+<div class="mount-point" data-mount-point="">
+    <li>Programming</li>
+    <li>Sports</li>
+    <li>History</li>
+    <li>WritingDocumentation</li>
+</div>
+```
+
+It is important to spot the main difference to the former render-functions: The store's data type is an (ordered)
+collection type, so its value consists of an arbitrary amount of elements of the same type. It appears to be
+an inherent property of same types, that their UI-representation are also of the same type. `renderEach` supports
+this property in a way, that its `content` parameter only describes the UI-fragment for *one* item of the list.
+The UI-container, which holds those items is therefore *not* part of the reactive expression and thus the
+mount-point.
+
+Another important aspect to handle the reactive rendering of `List`s in a specialized way are *performance*
+optimizations.
+
+In order to gain some understanding for this technical aspect, consider the above example realized with the standard
+`render`-function:
+
+```kotlin
+val storedInterests = storeOf(Interest.values().toList())
+
+ul {
+    storedInterests.data.render { interests -> // name suggests we get a `List<T>` here of course!
+        // "manually" create <li> tags for each item
+        interests.forEach {
+            li {
+                +it.toString()
+            }
+        }
+    }
+}
+```
+
+You cannot spot the difference by looking at the rendered DOM structure, which remains the same for both solutions.
+But looking at the code, we can conclude, that the second approach will definitely delete the whole subtree of the 
+mount-point and re-create the whole `<li>`-tags even if only *one* element of the list changes.
+
+`renderEach` instead creates a specialized mount-point in order to identify elements for re-rendering.
+This mount-point compares the last version of your list with the new one on every change and applies the minimum
+necessary patches to the DOM. Assuming again that only one item changes, the untouched items may remain inside the DOM
+and only the changed item's DOM subtree needs to be deleted and recreated. You can imagine, that this is a game changer
+concerning performance!
+
+This `renderEach` implementation does the patch-determination applying the standard `equals`-method of the list's 
+type `T`. This is the reason, why is targeted to *value* objects: They are implicitly defined by their equality!
+
+#### Reactive Rendering of Lists of entities
+
+As `List<T>` as value of a store is a common use case, where `T` is an *entity*, thus it has some stable *identity*
+lasting all changes, fritz2 offers a special application of the `renderEach`-function for this use case.
+When dealing with entities you can pass an additional parameter called `idProvider`, which is an expression that takes
+one item `T` and determines its stable identity. Armed with this information, the internal patch-determination is then
+simply based upon the id and not upon the `equals`-method anymore.
+
+```kotlin
+// define some person-entities and "store" them
+val persons = listOf(
+    Person(1, "Fritz", 42),
+    Person(2, "Cäsar", 66),
+    Person(3, "Cleopatra", 50)
+)
+
+val storedPersons = storeOf(persons)
+
+// somewhere inside any `RenderContext`
+ul {
+    storedPersons.data.renderEach(Person::id) { person ->
+        //                        ^^^^^^^^^^
+        //                        provide a function to determine the stable identity of one `T`
+        li {
+            dl {
+                dt { +"Id" }
+                dd { +person.id.toString() }
+                dt { +"Name" }
+                dd { +person.name }
+                dt { +"Age" }
+                dd { +person.age.toString() }
+            }
+        }
+    }
+}
+```
+
+As the identity is stable, the following properties holds for the rendered items:
+- an element is only rendered *once*, so only adding or deleting items to the store will lead to changes in the UI,
+as those new elements will be added or inserted or the deleted elements will disappear from the DOM.
+- any change to an existing item will *not* change the UI anymore. 
+
+The latter is an important aspect to consider before the use of `renderEach` for entities: 
+If you still need to reflect those changes, it might be a better choice to rely on the default `renderEach` application 
+relying on equality. But if only a small set of properties of an element could possibly change and performance is an
+important aspect, rely on this application of `renderEach` and add additional mount-points inside the elements subtrees. 
+You will learn about those in Chapter XYZ.
+
+#### Summary of Reactive Rendering 
+
+fritz2 offers the following `render*`-functions in order to implement reactive rendering of some store's 
+`data`-property:
+
+| Render-Function            | Additional parameters | Description                                                                                                                    | Default Tag |    
+|----------------------------|-----------------------|--------------------------------------------------------------------------------------------------------------------------------|-------------|
+| `Flow<T>.render`           | -                     | creates a mount-point providing the whole store's data value `T` inside `content` expression                                   | `div`       |
+| `Flow<String>.renderText`  | -                     | creates a mount-point creating a text-node                                                                                     | `span`      |
+| `Flow<List<T>>.renderEach` | -                     | creates a mount-point optimizing changes by `T.equals`. Provides a `T` inside the `content` expression. Use for value objects  | `div`       |
+| `Flow<List<T>>.renderEach` | idProvider            | creates a mount-point optimizing changes by `idProvider`. Provides a `T` inside the `content` expression. Use for entities     | `div`       |
+
+There is one more `renderEach` variant, which is defined as extension directly upon a `Store` and not on a `Flow`.
+This special variant and its application are described in Chapter Store-XYZ.
+
+| Render-Function             | Additional parameters | Description                                                                                                                       | Default Tag |    
+|-----------------------------|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------|-------------|
+| `Store<List<T>>.renderEach` | idProvider            | creates a mount-point optimizing changes by `idProvider`. Provides a `Store<T>` inside the `content` expression. Use for entities | `div`       |
+
+
+### Minimize DOM structure of Mount-Points
+
+Let's recap the first reactive rendering example:
+```kotlin
+val storedPerson = storeOf(Person(1, "Fritz", 42))
+
+storedPerson.data.render { person -> 
+    dl {
+        dt { +"Id" }
+        dd { +person.id.toString() }
+        dt { +"Name" }
+        dd { +person.name }
+        dt { +"Age" }
+        dd { +person.age.toString() }
+    }
+}
+```
+
+As result the following DOM-fragment is rendered:
+```html
+<div class="mount-point" data-mount-point="">
+    <dl>
+        <dt>Id</dt>
+        <dd>1</dd>
+        <dt>Name</dt>
+        <dd>Fritz</dd>
+        <dt>Age</dt>
+        <dd>42</dd>
+    </dl>
+</div>
+```
+
+As there is the preliminary `<dl>` tag, grouping all further UI below itself as children, the *artificially* created
+`<div>`-tag as mount-point reference to the DOM is just overhead! We can improve ths DOM structure by telling the 
+`render`-function to *use* some existing tag as mount-point reference instead of creating a dedicated one:
+
+```kotlin
+dl { // `this` is the <dl>-Tag in this scope!
+    // pass the existing tag *ìnto* `render` for using it as the mount-point reference 
+    storedPerson.data.render(into = this) { person -> 
+        dt { +"Id" }
+        dd { +person.id.toString() }
+        // ...
+    }
+}
+```
+
+As result the following, reduced DOM-fragment is rendered:
+```html
+<dl data-mount-point="">
+    <dt>Id</dt>
+    <dd>1</dd>
+    <dt>Name</dt>
+    <dd>Fritz</dd>
+    <dt>Age</dt>
+    <dd>42</dd>
+</dl>
+```
+
+:::warning
+As you know, the mount-point has the *full* control over the DOM-subtree below its reference tag and will drop it
+completely on every change of the data.
+
+So be cautious to **never ever** put other tags around this `render`-expression! This will be deleted sooner or 
+later by the mount-point.
+
+```kotlin
+dl {
+    div { +"Do not put any elements between a referenced tag and its related `render` function!" }    
+    storedPerson.data.render(into = this) { person -> 
+        dt { +"Id" }
+        dd { +person.id.toString() }
+        // ...
+    }
+    div { +"Even this might appear on initial rendering, it will at least be dropped after first change!" }
+}
+```
+:::
+
+In fact all `render*`-variants offer the `into` parameter, so this works for `renderText` or `renderEach` too.
 
 ### Structure UI
 

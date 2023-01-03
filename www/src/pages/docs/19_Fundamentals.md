@@ -103,9 +103,10 @@ Now we have a good notion of the app and how it works, let's dive into the code 
 blocks, that drives this app.
 
 :::warning
-Just as short remark: We use [tailwindcss](https://tailwindcss.com) for the styling in this example. You are of course free to
-use any other CSS framework or even hand crafted CSS, if that fit your needs best! The running examples are often
-built with [bootstrap](https://getbootstrap.com/) for example.
+Just as short remark: We use [tailwindcss](https://tailwindcss.com) for the styling in this example. As fritz2 is 
+totally agnostic of any CSS styling framework, you are free to use any other CSS framework or even handcrafted CSS, 
+if that fit your needs best! 
+The [running examples](/examples) are often built with [bootstrap](https://getbootstrap.com/) for example.
 :::
 
 ### Starting point
@@ -198,7 +199,7 @@ well-defined node inside the DOM of your browser, which is created by the `rende
 So the call of render onto some flow *connects* the store with some node of the DOM. 
 
 Now the *"magic"* can happen: Every time the data inside the store changes, the new value will appear at the target
-node and change the whole sub-tree based upon the code you write inside the `render` functions parameter.
+node and change the whole subtree based upon the code you write inside the `render` functions parameter.
 
 In thís case the `p` tag will be removed from the DOM and a new tag will be rendered with the new text value inside.
 
