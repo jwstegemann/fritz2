@@ -251,6 +251,8 @@ in the handle expression:
 We will look at the first two of them here; the [emitting-handler](#emittinghandler---observer-pattern-for-handlers) 
 is rather an advanced topic and covered in a dedicated section there.
 
+Have a look at our [nested model](/examples/masterdetail) example too.
+
 #### Example Use Case
 
 Let's imagine some application that manages a list of persons.
@@ -484,9 +486,65 @@ section {
 }
 ```
 
-### Ad Hoc Handler
+### Calling a Handler directly
+
+If you need to purposefully fire an action somewhere inside a `RenderContext` or a `Store` you can directly invoke
+a `Handler`:
+```kotlin
+//call handler with data
+someStore.someHandler(someValue)
+
+//call handler without data
+someStore.someHandler()
+```
+
+### Ad Hoc Handler - Handler without a Store
+
+It is possible in fritz2 to create some handler without any store.
+
+Common use cases are the combination of multiple handler calls based upon the same event or to simply create a working
+placeholder before the store is ready.
+
+The syntax is simple: Just pass an expression of type `(A) -> Unit` to the `handledBy`-function, where `A` is the 
+inner type of the flow.
+
+Look at this example:
+```kotlin
+section {
+    button {
+        +"Remove Fritz"
+        clicks.map { 1 } handledBy { id ->
+            // `removePerson` handler is not ready yet; but UI should be checked to work
+            console.log("Would delete person with id=$id")
+        }
+    }
+}
+```
 
 ### Extend None Custom (Local) Stores 
+
+Sometimes creating a [custom store](#custom-stores) is kinda overkill or there are certain situations, where it is
+simply more feasible to rely on [store-mapping](/docs/storemapping/) which implies there is no custom store available.
+
+In those cases - often in some small local code area - it is totally ok, to customize a standard store created by 
+`storeOf`-factory.
+
+```kotlin
+val storedPerson = storeOf(Person(1, "fritz2", emptySet()))
+
+// define handler on some store object
+val addInterest = storedPerson.handle<Interest> { person, interest ->
+    person.copy(interests = person.interests + interest)
+}
+
+// somewhere inside a `RenderContext`
+button {
+    +"Make fritz write documentation"
+    clicks.map { Interest.WritingDocumentation } handledBy addInterest
+}
+```
+
+As the `handler`-factory functions are *extension* functions, it is possible to extend a "closed" store-object.
 
 ### Connecting stores to each other
 
@@ -506,6 +564,8 @@ object InputStore : RootStore<String>("") {
     }
 }
 ```
+
+Have a look at our [nested model](/examples/nestedmodel) example too.
 
 ### History in Stores
 
@@ -636,8 +696,25 @@ val personListStore = object : RootStore<List<Person>>(emptyList<Person>()) {
 }
 ```
 After connecting these two stores via their handlers, a saved `Person` will also be added to the list
-in `personListStore`. All depending components will be updated accordingly.
+in `personListStore`. All dependent components will be updated accordingly.
 
 To see a complete example visit our
 [validation example](/examples/validation) which uses connected
 stores and validate a `Person` before adding it to a list of `Person`s.
+
+### React to changes inside the Store itself
+
+If you need a handler's code to be executed whenever the model is changed,
+you have to use the `drop(1)` function on a `Flow` to skip the `initialData`:
+
+```kotlin
+val store = object : RootStore<String>("initial") {
+    init {
+        data.drop(1) handledBy {
+            console.log("model changed to: $it")
+        }
+    }
+}
+```
+
+By using the ad-hoc `handledBy` function here your store gets not updated after new data arrives.
