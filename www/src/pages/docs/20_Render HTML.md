@@ -213,7 +213,7 @@ though!)
 
 ## Essentials
 
-Before we dive into the essential topics, let us introduce some model types, that is used for some upcoming examples:
+Before we dive into the essential topics, let us introduce some model types, that are used for some upcoming examples:
 ```kotlin
 // example of an entity
 data class Person(
