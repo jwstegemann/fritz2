@@ -33,7 +33,6 @@ enum class Interest {
 data class Person(
     val id: Int, // stable identifier
     val name: String,
-    val age: Int,
     val interests: List<Interest>
 )
 ```
@@ -236,6 +235,254 @@ We use flows for the "output" of a store by its `data`-property and for
 [all HTML5-events](https://www.fritz2.dev/api/core/dev.fritz2.core/-with-events/index.html).
 
 ### Custom Handler in depth
+
+As you have already learned from the [overview](#custom-handler) it often makes sense to write custom
+handlers for a dedicated task.
+
+There are three different variants of handler factories available, which differ in the amount of parameters available
+in the handle expression:
+
+| Factory                        | Parameters in handle-expression | Use case                                                                                                                                                                                                                               |
+|--------------------------------|---------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `Store<T>.handle<Unit>`        | `value: T`                      | New state can only be generated from the old one or some external source. There is no information from the event source available. Typical use cases are resetting to initial state or clearing the store.                             |
+| `Store<T>.handle<A>`           | `value: T`, `action: A`         | New state can be based upon information passed from the event source. Typical use cases are updating some part of the overall value or adding or dropping a list item. The default handler `update` uses this, where its `A` is a ``T. |
+| `Store<T>.handleAndEmit<A, E>` | `value: T`, `action: A`         | New state can be based upon information passed from the event source. Typical use cases are updating some part of the overall value or adding or dropping a list item. As bonus one can `emit` some value `E`.                         |
+
+We will look at the first two of them here; the [emitting-handler](#emittinghandler---observer-pattern-for-handlers) 
+is rather an advanced topic and covered in a dedicated section there.
+
+#### Example Use Case
+
+Let's imagine some application that manages a list of persons.
+The application should allow to...
+- ... add a new person
+- ... add some interest to a specific person
+- ... clear the whole list
+
+First we need a store for a `List<Person>`, where we can create the needed handlers and some simple UI code, that will
+render all persons:
+
+```kotlin
+val storedPersons = object : RootStore<List<Person>>(emptyList()) {
+    // here we will place our custom handlers
+}
+
+// somewhere inside a `RenderContext`
+section {
+    h1 { +"Persons:" }
+    ul {
+        storedPersons.data.renderEach { person ->
+            dl {
+                dt { +"Id:" }
+                dd { +person.id.toString() }
+                dt { +"Name:" }
+                dd { +person.name }
+                dt { +"Interests:" }
+                dd { +person.interests.joinToString() }
+            }
+        }
+    }
+}
+```
+
+#### Implement some Handler with Action
+
+Now we can implement the first requirement: Add a new person.
+In order to do so, we will need a new `Person`-object to be passed into the handler. Inside the handle-code we can then
+add this person to the existing list, if the object is not already present in the list to avoid duplicates.
+
+Thus, we need the typical `handle`-factory, which accepts a so-called *action* parameter. This could be an arbitrary 
+type `A`. The existing default handler `update` uses the `T` as action, as it simply substitutes the old state by the
+passed new object of the same type. But an action can be any type and is not limited to anything.
+
+In our case the type `T` of the store is `List<Person>`, but as action it is sufficient to have a single 
+`Person`-object. 
+
+```kotlin
+val storedPersons = object : RootStore<List<Person>>(emptyList()) {
+
+    val addPerson: Handler<Person> = handle { persons, newPerson ->
+        //                 ^^^^^^^            ^^^^^^^  ^^^^^^^^^
+        //                 defines the        the      the new
+        //                 type of parameter  "old"    person
+        //                 to pass            value    to add
+        if (persons.any { it.id == newPerson.id }) persons else persons + newPerson
+        //  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^               ^^^^^^^^^^^^^^^^^^^
+        //  use the "old" value and the action                  add the action to the
+        //  to check for duplicates                             old value to create the new value
+    }
+}
+```
+The above handle-code shows some typical pattern: We create the new store's value by analyzing first the "old" value
+with some information from the action and then decide whether the old state could remain or there must be some update
+also using some information from the action.
+
+Let's "simulate" some UI, that uses this handler:
+
+```kotlin
+val storedPersons = object : RootStore<List<Person>>(emptyList()) {
+    val addPerson: Handler<Person> = handle { persons, newPerson ->
+        if (persons.any { it.id == newPerson.id }) persons else persons + newPerson
+    }
+}
+
+// somewhere inside a `RenderContext`
+// (rendering of person omitted) 
+
+section {
+    button {
+        +"Add Fritz"
+        clicks.map {
+            // we define some static person; in real life this might be created by some user input
+            Person(1, "Fritz", setOf(Interest.Programming, Interest.History))
+        } handledBy storedPersons.addPerson
+        // in order to call `addPerson`, we need a `Flow<A>` as first parameter for `handledBy`
+        // So the flow defines the action `A`, that the handle-code will receive,
+        // in this case some `Person`-object
+    }
+} 
+```
+
+#### Use Meta-Information in Action
+
+In order to implement the second requirement, which is to add some interest to some specific person, we should
+recap the shape of our model: `Person` is an *entity*, so it has some stable identifier. To determine the person in
+the list, which some new interest should be added to this person's interests list, we simply can rely on the
+`Person.id`-property.
+
+So our action consists of two parts:
+- the new interest: meta-information to help to identify a person
+- the id of the specific person: the real information payload, that will be added to person's interests list
+
+For simple cases like this, a `Pair` is a sufficient choice to group both information. But of course you could also
+create some (data) class or any other kotlin feature that fits.
+
+```kotlin
+val storedPersons = object : RootStore<List<Person>>(emptyList()) {
+    val addPerson: Handler<Person> = // ...
+
+    val addInterest: Handler<Pair<Int, Interest>> = handle { persons, (idForUpdate, newInterest) ->
+        //                   ^^^^^^^^^^^^^^^^^^^                       ^^^^^^^^^^^^^^^^^^^^^^^^
+        //                   combine information                       destructure information
+        //                   with meta-information                     and meta-information
+        //                   as action parameter                       for expressive naming
+        persons.map { person ->
+            if (person.id == idForUpdate) person.copy(interests = person.interests + newInterest) else person
+            //               ^^^^^^^^^^^                                             ^^^^^^^^^^^
+            //               use meta-information to determine the specific          use the information portion
+            //               person that must get an update                          from action to update the person
+        }
+    }
+}
+
+// somewhere inside a `RenderContext`
+// (rendering of person omitted) 
+
+section {
+    button {
+        +"Make Fritz write Documentation"
+        clicks.map {
+            // create the Pair of meta-information and information
+            1 to Interest.WritingDocumentation
+        } handledBy storedPersons.addInterest
+    }
+} 
+```
+
+#### Create Handler without external Information
+
+The last task is quite easy: It should be possible, to clear the complete list of users.
+
+We can set an empty list as new store's value without any further information. Thus, the handler we must create does not
+need any action parameter at all.
+
+fritz2 offers a special variant for cases like this, where the action type is `Unit`.
+
+```kotlin
+val storedPersons = object : RootStore<List<Person>>(emptyList()) {
+    val addPerson: Handler<Person> = // ...
+    val addInterest: Handler<Pair<Int, Interest>> = // ...
+
+    val clear: Handler<Unit> = handle { emptyList() }
+}
+
+// somewhere inside a `RenderContext`
+// (rendering of person omitted) 
+
+section {
+    button {
+        +"Clear Persons"
+        clicks.map { } handledBy storedPersons.clear
+        //     ^^^^^^^^
+        //     use empty mapping to create `Flow<Unit>`!
+    }
+}
+```
+
+Don't be fooled: Inside the handle-code the "old" value would be available; we simply do not need it for our 
+implementation. Just to make this more explicit, look at this:
+```kotlin
+val clear: Handler<Unit> = handle { persons ->
+    console.log("Dropped list of ${persons.size} persons...")    
+    emptyList() 
+}
+```
+
+There are other use-cases where the access to the old state is definitely needed, and you always have access there.
+
+#### Complete example
+
+Just to show you the final result en block:
+```kotlin
+val storedPersons = object : RootStore<List<Person>>(emptyList()) {
+
+    val addPerson: Handler<Person> = handle { persons, newPerson ->
+        if (persons.any { it.id == newPerson.id }) persons else persons + newPerson
+    }
+
+    val addInterest: Handler<Pair<Int, Interest>> = handle { persons, (idForUpdate, newInterest) ->
+        persons.map { person ->
+            if (person.id == idForUpdate) person.copy(interests = person.interests + newInterest) else person
+        }
+    }
+
+    val clear: Handler<Unit> = handle { emptyList() }
+}
+
+section {
+    h1 { +"Persons:" }
+    ul {
+        storedPersons.data.renderEach { person ->
+            dl {
+                dt { +"Id:" }
+                dd { +person.id.toString() }
+                dt { +"Name:" }
+                dd { +person.name }
+                dt { +"Interests:" }
+                dd { +person.interests.joinToString() }
+            }
+        }
+    }
+}
+section {
+    button {
+        +"Add Fritz"
+        clicks.map {
+            Person(1, "Fritz", setOf(Interest.Programming, Interest.History))
+        } handledBy storedPersons.addPerson
+    }
+    button {
+        +"Make Fritz write Documentation"
+        clicks.map {
+            1 to Interest.WritingDocumentation
+        } handledBy storedPersons.addInterest
+    }
+    button {
+        +"Clear Persons"
+        clicks.map {  } handledBy storedPersons.clear
+    }
+}
+```
 
 ### Ad Hoc Handler
 
