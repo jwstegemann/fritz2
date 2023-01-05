@@ -103,6 +103,11 @@ lens: lensOf("id"
 
 - emittingHandler (Richtung Observer Pattern / Hollywood Prinzip)
 
+
+// done until here
+// rest should be done too!
+
+
 # Validation
 
 ## Stufe 1
