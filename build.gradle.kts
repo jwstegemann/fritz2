@@ -10,18 +10,23 @@ plugins {
 // consider moving to idiomatic solution of gradle for dependency sharing once it is ready:
 // https://docs.gradle.org/current/userguide/platforms.html
 extra.apply {
-    // Dependencies
+    // core
     set("kotlinVersion", "1.7.20")
     set("kspVersion", "1.7.20-1.0.6")
     set("coroutinesVersion", "1.6.4")
+    set("serializationVersion", "1.4.0")
+
+    // test-server
+    set("ktorVersion", "2.2.2")
+    set("logbackVersion", "1.4.5")
+
+    // lenses-annotation-processor
     set("kotlinpoetVersion", "1.12.0")
     set("compileTestingVersion", "1.4.9")
-    set("logbackVersion", "1.2.11")
-    set("ktorVersion", "1.6.8") // TODO investigate update to 2.x
-    set("serializationVersion", "1.4.0")
     set("autoServiceVersion", "1.0.1")
     set("junitJupiterParamsVersion", "5.8.2")
     set("assertJVersion", "3.23.1")
+
     // npm
     set("popperjs", "2.11.5")
     set("scroll-into-view-if-needed", "2.2.29")

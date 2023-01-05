@@ -2,17 +2,20 @@ package dev.fritz2
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
-import io.ktor.application.*
-import io.ktor.auth.*
-import io.ktor.features.*
 import io.ktor.http.*
-import io.ktor.http.cio.websocket.*
 import io.ktor.http.content.*
-import io.ktor.jackson.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
+import io.ktor.serialization.jackson.*
+import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import io.ktor.server.plugins.*
+import io.ktor.server.plugins.callloging.*
+import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import io.ktor.server.websocket.*
 import io.ktor.util.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +24,10 @@ import kotlinx.coroutines.withContext
 import org.slf4j.event.Level
 import java.util.*
 
-fun main(args: Array<String>): Unit = EngineMain.main(args)
+fun main() {
+    val port = System.getenv("PORT")?.toInt() ?: 3000
+    embeddedServer(Netty, port = port, module = Application::module).start(wait = true)
+}
 
 typealias Json = Map<String, Any>
 
@@ -62,7 +68,7 @@ object CRUDRepo {
     }
 }
 
-fun Application.main() {
+fun Application.module() {
 
     install(CallLogging) {
         level = Level.INFO
@@ -72,34 +78,13 @@ fun Application.main() {
         jackson()
     }
 
-    install(Authentication) {
+    authentication {
         basic("auth") {
             realm = "Authenticated"
             validate { if (it.name == "test" && it.password == "password") UserIdPrincipal(it.name) else null }
         }
     }
 
-    install(CORS) {
-        method(HttpMethod.Options)
-        method(HttpMethod.Get)
-        method(HttpMethod.Post)
-        method(HttpMethod.Put)
-        method(HttpMethod.Delete)
-        method(HttpMethod.Patch)
-        method(HttpMethod.Head)
-        header(HttpHeaders.Authorization)
-        header(HttpHeaders.ContentType)
-        header(HttpHeaders.Accept)
-        header(HttpHeaders.CacheControl)
-        header("test")
-        header("authtoken")
-        anyHost()
-        host("localhost")
-        allowXHttpMethodOverride()
-        // throws error wit latest ktor
-//        allowCredentials = true
-        allowNonSimpleContentTypes = true
-    }
 
     install(WebSockets)
 
@@ -113,24 +98,24 @@ fun Application.main() {
         route("/rest") {
             get {
                 val body = CRUDRepo.read()
-                log.info("GET: $body")
+                call.application.environment.log.info("GET: $body")
                 call.respond(body)
             }
             get("{id}") {
                 val id = call.parameters["id"] ?: throw MissingRequestParameterException("id")
                 val json = CRUDRepo.read(id) ?: throw NotFoundException("item with id=$id not found")
-                log.info("GET: id=$id; json=$json")
+                call.application.environment.log.info("GET: id=$id; json=$json")
                 call.respond(json)
             }
             post {
                 val body = call.receive<Json>()
-                log.info("POST: $body")
+                call.application.environment.log.info("POST: $body")
                 call.respond(CRUDRepo.create(body))
             }
             put("{id}") {
                 val id = call.parameters["id"] ?: throw MissingRequestParameterException("id")
                 val body = call.receive<Json>()
-                log.info("PUT: $id; $body")
+                call.application.environment.log.info("PUT: $id; $body")
                 call.respond(CRUDRepo.update(id, body))
             }
             delete("{id}") {
@@ -183,7 +168,7 @@ fun Application.main() {
         route("authenticated") {
             get("/get") {
                 val isValid = call.request.headers["authtoken"] != "123456789"
-                if(isValid) call.respond(HttpStatusCode.Unauthorized)
+                if (isValid) call.respond(HttpStatusCode.Unauthorized)
                 else call.respondText("GET")
             }
         }
@@ -191,15 +176,15 @@ fun Application.main() {
         route("/extra") {
             post("/arraybuffer") {
                 val received = call.receiveChannel().toByteArray()
-                log.info("[arraybuffer] received: $received")
+                call.application.environment.log.info("[arraybuffer] received: $received")
                 call.respondBytes(received)
             }
             post("/formData") {
                 call.receiveMultipart().forEachPart {
                     when (it) {
-                        is PartData.FormItem -> log.info("[formData] received: ${it.value}")
-                        is PartData.FileItem -> log.info("[formData] received: ${it.originalFileName}")
-                        else -> log.info("[formData] received: name=${it.name}, contentType=${it.contentType}")
+                        is PartData.FormItem -> call.application.environment.log.info("[formData] received: ${it.value}")
+                        is PartData.FileItem -> call.application.environment.log.info("[formData] received: ${it.originalFileName}")
+                        else -> call.application.environment.log.info("[formData] received: name=${it.name}, contentType=${it.contentType}")
                     }
                 }
             }
@@ -219,21 +204,23 @@ fun Application.main() {
                     when (frame) {
                         is Frame.Text -> {
                             val text = frame.readText()
-                            log.info("[ws-text] receiving: $text")
+                            call.application.environment.log.info("[ws-text] receiving: $text")
                             outgoing.send(Frame.Text("Client said: $text"))
                             if (text.equals("bye", ignoreCase = true)) {
                                 close(CloseReason(CloseReason.Codes.NORMAL, "Client said BYE"))
                             }
                         }
+
                         is Frame.Close -> {
-                            log.info("[ws-text] closing: ${closeReason.await()}")
+                            call.application.environment.log.info("[ws-text] closing: ${closeReason.await()}")
                         }
-                        else -> log.info(frame.frameType.name)
+
+                        else -> call.application.environment.log.info(frame.frameType.name)
                     }
                 } catch (e: ClosedReceiveChannelException) {
-                    log.error("[ws-text] close: ${closeReason.await()}")
+                    call.application.environment.log.error("[ws-text] close: ${closeReason.await()}")
                 } catch (e: Throwable) {
-                    log.error("[ws-text] error: ${closeReason.await()}")
+                    call.application.environment.log.error("[ws-text] error: ${closeReason.await()}")
                     e.printStackTrace()
                 }
             }
@@ -244,18 +231,20 @@ fun Application.main() {
                     when (frame) {
                         is Frame.Binary -> {
                             val data = frame.data
-                            log.info("[ws-binary] receiving: $data")
+                            call.application.environment.log.info("[ws-binary] receiving: $data")
                             outgoing.send(Frame.Binary(true, data))
                         }
+
                         is Frame.Close -> {
-                            log.info("[ws-binary] closing: ${closeReason.await()}")
+                            call.application.environment.log.info("[ws-binary] closing: ${closeReason.await()}")
                         }
-                        else -> log.info(frame.frameType.name)
+
+                        else -> call.application.environment.log.info(frame.frameType.name)
                     }
                 } catch (e: ClosedReceiveChannelException) {
-                    log.error("[ws-binary] close: ${closeReason.await()}")
+                    call.application.environment.log.error("[ws-binary] close: ${closeReason.await()}")
                 } catch (e: Throwable) {
-                    log.error("[ws-binary] error: ${closeReason.await()}")
+                    call.application.environment.log.error("[ws-binary] error: ${closeReason.await()}")
                     e.printStackTrace()
                 }
             }
@@ -269,25 +258,27 @@ fun Application.main() {
                             val bodyIn = withContext(Dispatchers.IO) {
                                 objectMapper.readValue(frame.readText(), jacksonTypeRef<MutableMap<String, Any>>())
                             }
-                            log.info("[ws-json] receiving: $bodyIn")
-                            if(bodyIn["_id"] == "test") {
+                            call.application.environment.log.info("[ws-json] receiving: $bodyIn")
+                            if (bodyIn["_id"] == "test") {
                                 bodyIn["name"] = "Hans"
-                                log.info("[ws-json] sending: $bodyIn")
+                                call.application.environment.log.info("[ws-json] sending: $bodyIn")
                                 val bodyOut = withContext(Dispatchers.IO) {
                                     objectMapper.writeValueAsString(bodyIn)
                                 }
                                 outgoing.send(Frame.Text(bodyOut))
                             }
                         }
+
                         is Frame.Close -> {
-                            log.info("[ws-json] closing: ${closeReason.await()}")
+                            call.application.environment.log.info("[ws-json] closing: ${closeReason.await()}")
                         }
-                        else -> log.info(frame.frameType.name)
+
+                        else -> call.application.environment.log.info(frame.frameType.name)
                     }
                 } catch (e: ClosedReceiveChannelException) {
-                    log.error("[ws-json] close: ${closeReason.await()}")
+                    call.application.environment.log.error("[ws-json] close: ${closeReason.await()}")
                 } catch (e: Throwable) {
-                    log.error("[ws-json] error: ${closeReason.await()}")
+                    call.application.environment.log.error("[ws-json] error: ${closeReason.await()}")
                     e.printStackTrace()
                 }
             }
