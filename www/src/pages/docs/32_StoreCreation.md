@@ -223,7 +223,11 @@ for example. On the other end of the `Flow`, a simple function called for each e
 Between those two ends, various actions can be taken on the data (formatting strings, filtering the values, combining values, etc).
 
 The great thing about `Flow`s is that they are _cold_, which means that nothing is calculated before the result is needed.
-This makes them perfect for fritz2's use case.
+This makes them perfect for fritz2's use case: 
+It uses flows for the "output" of a store by its `data`-property and for 
+[all HTML5-events](https://www.fritz2.dev/api/core/dev.fritz2.core/-with-events/index.html).
+
+They do not consume any memory or CPU load, until they get rendered: The mount-points consumes them and pull new values.
 
 In Kotlin, there is another communication model called `Channel` which is the _hot_ counterpart of the `Flow`.
 fritz2 only uses `Channel`s internally to feed the flows, so you should not encounter them while using fritz2.
@@ -231,8 +235,6 @@ fritz2 only uses `Channel`s internally to feed the flows, so you should not enco
 To get more information about `Flow`s, `Channel`s, and their API,
 have a look at the [official documentation](https://kotlinlang.org/docs/reference/coroutines/flow.html).
 
-We use flows for the "output" of a store by its `data`-property and for 
-[all HTML5-events](https://www.fritz2.dev/api/core/dev.fritz2.core/-with-events/index.html).
 
 ### Custom Handler in depth
 

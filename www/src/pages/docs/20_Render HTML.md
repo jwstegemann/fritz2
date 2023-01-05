@@ -493,7 +493,8 @@ fritz2 offers the following `render*`-functions in order to implement reactive r
 | `Flow<List<T>>.renderEach` | idProvider            | creates a mount-point optimizing changes by `idProvider`. Provides a `T` inside the `content` expression. Use for entities     | `div`       |
 
 There is one more `renderEach` variant, which is defined as extension directly upon a `Store` and not on a `Flow`.
-This special variant and its application are described in Chapter Store-XYZ.
+This special variant and its application are described in 
+[chapter about store mapping](/docs/storemapping/#reactive-rendering-of-lists-of-entities-with-automatically-mapped-element-store).
 
 | Render-Function             | Additional parameters | Description                                                                                                                       | Default Tag |    
 |-----------------------------|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------|-------------|

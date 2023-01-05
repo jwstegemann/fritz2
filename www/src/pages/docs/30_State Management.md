@@ -273,7 +273,6 @@ val store = object : RootStore<String>("initial") {
 ```
 By using the ad-hoc `handledBy` function here your store gets not updated after new data arrives.
 
-
 ### Handling nullable values in `Store`s
 
 If you have a `Store` with a nullable content, you can use `orDefault` to derive a non-nullable `Store` from it,
