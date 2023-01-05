@@ -7,7 +7,7 @@ eleventyNavigation:
     key: web-components
     parent: documentation
     title: Web Components
-    order: 90
+    order: 100
 ---
 
 With fritz2, you can easily use [WebComponents](https://webcomponents.org) in any HTML-context. 

@@ -7,7 +7,7 @@ eleventyNavigation:
     key: storemapping
     parent: documentation
     title: Store Mapping
-    order: 34
+    order: 50
 ---
 
 ## Overview

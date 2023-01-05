@@ -7,7 +7,7 @@ eleventyNavigation:
     key: render
     parent: documentation
     title: Render HTML
-    order: 20
+    order: 30
 ---
 
 ## Overview

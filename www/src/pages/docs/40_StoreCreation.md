@@ -7,7 +7,7 @@ eleventyNavigation:
     key: createstores
     parent: documentation
     title: Store Creation
-    order: 32
+    order: 40
 ---
 
 ## Overview

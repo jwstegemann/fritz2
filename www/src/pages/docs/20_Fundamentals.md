@@ -7,7 +7,7 @@ eleventyNavigation:
     key: fundamentals
     parent: documentation
     title: Fundamentals
-    order: 19
+    order: 20
 ---
 
 ## What is fritz2?
@@ -217,10 +217,10 @@ every store has: `update`:
 
 ```kotlin
 input {
-    changes.values() handledBy store.update
-//  ^^^^^^^ ^^^^^^^^           ^^^^^^^^^^^^
-//  use     connect to         change the state
-//  event   handler            of the store
+    changes.values() handledBy   store.update
+//  ^^^^^^^^^^^^^^^^ ^^^^^^^^    ^^^^^^^^^^^^
+//  use event with   connect to  reference to some handler,
+//  new value        handler     that changes the state of the store
 }
 ```
 

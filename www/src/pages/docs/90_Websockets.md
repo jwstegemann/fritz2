@@ -7,7 +7,7 @@ eleventyNavigation:
     key: websockets
     parent: documentation
     title: Websockets
-    order: 70
+    order: 90
 ---
 
 fritz2 offers support for websockets you can use with different protocols. To use it, you first have to create a socket:
