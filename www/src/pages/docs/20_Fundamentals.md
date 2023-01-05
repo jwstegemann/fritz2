@@ -179,7 +179,7 @@ Once you have created the store, it can be used for...
 - ... rendering the current state into your UI
 - ... dealing with state changes triggered by (user) events.
 
-### Reactive rendering
+### Reactive Rendering
 
 Using the state to render portions of your UI is quite easy: Every store offers a predefined `data` property, which
 is simply a `Flow` holding the current data. The framework offers an extension method on flows called `render`, that
@@ -317,7 +317,7 @@ tools to make writing apps more pleasant.
 Armed with this basic knowledge, you should keep on reading about the UI-Rendering and the chapters explaining the 
 essentials of stores.
 
-## Complete example
+## Complete Example
 
 This is the full source of the example above, including all styling to make it look as in the screenshot.
 You can just copy and paste it into the vanilla [tailwind template](https://github.com/jwstegemann/fritz2-tailwind-template)

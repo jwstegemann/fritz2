@@ -52,7 +52,7 @@ Let us take a step back and explore, how this concept of lenses can be used to m
 Imagine a use case, where we want to render the interests of a person like a kind of tags as comma seperated values.
 We would also like to change them by typing them as CSV.
 
-In order to further process interests of a person, it makes more sense to store them a `List<Person>` though. 
+In order to further process interests of a person, it makes more sense to store them a `List<Interests>` though. 
 So that should be the canonical state representation in our application.
 ```kotlin
 val interestsStore: Store<List<Interest>> = storeOf(emptyList())
@@ -68,7 +68,7 @@ val interestLens: Lens<List<Interest>, String> = lensOf(
 )
 ```
 
-Armed with this lens, we can finally map the whole interest-store and use the store for the UI:
+Armed with this lens, we can finally map the whole interest-store and use the resulting store for the UI:
 ```kotlin
 val interestsStore: Store<List<Interest>> = storeOf(emptyList())
 
@@ -79,7 +79,7 @@ val interestLens: Lens<List<Interest>, String> = lensOf(
 
 val csvInterests: Store<String> = interestsStore.map(interestLens)
 //  ^^^^^^^^^^^^^^^^^^^^^^^^^^^                  ^^^^^^^^^^^^^^^^^
-//  We create a new store with the               we use the map function to "map" the store
+//  We create a new store with the               we use the `map` function to "map" the store
 //  desired type (2nd of the `Lens`)             and provide the lens, that `map` uses to process the mapping
 
 render {
@@ -103,7 +103,7 @@ render {
 As you can see, the mapped store fits perfectly into the desired (yet a little artificial) requirements for the UI:
 There is no mapping inside the UI, nor are there any custom handler or data-flows in the store.
 
-To be fair, the heavy work is done by the manual creation of the lens thought.
+To be fair, the heavy work is done by the manual creation of the lens though.
 
 fritz2 offers some more tools to make lens generation easier, especially for the use case of destructuring complex
 model types.
@@ -253,7 +253,7 @@ applicationStore.data.render { person ->
 }
 ```
 
-### Handling nullable values in `Store`s
+### Handling nullable Values in `Store`s
 
 If you have a `Store` with a nullable content, you can use `mapNull` to derive a non-nullable `Store` from it,
 that transparently translates a `null`-value from its parent `Store` to the given default-value and vice versa.
@@ -376,7 +376,7 @@ case `com.soywiz.klock.Date`).
 
 ## Advanced Topics
 
-### Reactive Rendering of Lists of entities with automatically Mapped Element Store
+### Reactive Rendering of Lists of Entities with automatically Mapped Element Store
 
 There is a special convenience method for the [reactive rendering](/docs/render/#reactive-rendering) of list of 
 entities, that can only be explained with the already explained knowledge about `Store`s and `Lens`es.

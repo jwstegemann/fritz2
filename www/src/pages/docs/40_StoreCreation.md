@@ -86,7 +86,7 @@ Whenever such an event is raised, a new value appears on the `Flow` and is proce
 There are some more [convenience functions](https://www.fritz2.dev/api/core/dev.fritz2.core/-listener/index.html) to
 help you to extract data from an event or control event-processing.
 
-### Custom Stores
+### Custom Store
 
 In order to extend a store with own handlers or some specific data-flows, you can create your own store-object:
 ```kotlin
@@ -236,7 +236,7 @@ To get more information about `Flow`s, `Channel`s, and their API,
 have a look at the [official documentation](https://kotlinlang.org/docs/reference/coroutines/flow.html).
 
 
-### Custom Handler in depth
+### Custom Handler in Depth
 
 As you have already learned from the [overview](#custom-handler) it often makes sense to write custom
 handlers for a dedicated task.
@@ -271,18 +271,19 @@ val storedPersons = object : RootStore<List<Person>>(emptyList()) {
     // here we will place our custom handlers
 }
 
-// somewhere inside a `RenderContext`
-section {
-    h1 { +"Persons:" }
-    ul {
-        storedPersons.data.renderEach { person ->
-            dl {
-                dt { +"Id:" }
-                dd { +person.id.toString() }
-                dt { +"Name:" }
-                dd { +person.name }
-                dt { +"Interests:" }
-                dd { +person.interests.joinToString() }
+render {
+    section {
+        h1 { +"Persons:" }
+        ul {
+            storedPersons.data.renderEach { person ->
+                dl {
+                    dt { +"Id:" }
+                    dd { +person.id.toString() }
+                    dt { +"Name:" }
+                    dd { +person.name }
+                    dt { +"Interests:" }
+                    dd { +person.interests.joinToString() }
+                }
             }
         }
     }
@@ -330,21 +331,22 @@ val storedPersons = object : RootStore<List<Person>>(emptyList()) {
     }
 }
 
-// somewhere inside a `RenderContext`
+render {
 // (rendering of person omitted) 
 
-section {
-    button {
-        +"Add Fritz"
-        clicks.map {
-            // we define some static person; in real life this might be created by some user input
-            Person(1, "Fritz", setOf(Interest.Programming, Interest.History))
-        } handledBy storedPersons.addPerson
-        // in order to call `addPerson`, we need a `Flow<A>` as first parameter for `handledBy`
-        // So the flow defines the action `A`, that the handle-code will receive,
-        // in this case some `Person`-object
+    section {
+        button {
+            +"Add Fritz"
+            clicks.map {
+                // we define some static person; in real life this might be created by some user input
+                Person(1, "Fritz", setOf(Interest.Programming, Interest.History))
+            } handledBy storedPersons.addPerson
+            // in order to call `addPerson`, we need a `Flow<A>` as first parameter for `handledBy`
+            // So the flow defines the action `A`, that the handle-code will receive,
+            // in this case some `Person`-object
+        }
     }
-} 
+}
 ```
 
 #### Use Meta-Information in Action
@@ -379,18 +381,19 @@ val storedPersons = object : RootStore<List<Person>>(emptyList()) {
     }
 }
 
-// somewhere inside a `RenderContext`
-// (rendering of person omitted) 
+render {
+    // (rendering of person omitted) 
 
-section {
-    button {
-        +"Make Fritz write Documentation"
-        clicks.map {
-            // create the Pair of meta-information and information
-            1 to Interest.WritingDocumentation
-        } handledBy storedPersons.addInterest
+    section {
+        button {
+            +"Make Fritz write Documentation"
+            clicks.map {
+                // create the Pair of meta-information and information
+                1 to Interest.WritingDocumentation
+            } handledBy storedPersons.addInterest
+        }
     }
-} 
+}
 ```
 
 #### Create Handler without external Information
@@ -410,15 +413,16 @@ val storedPersons = object : RootStore<List<Person>>(emptyList()) {
     val clear: Handler<Unit> = handle { emptyList() }
 }
 
-// somewhere inside a `RenderContext`
-// (rendering of person omitted) 
+render {
+    // (rendering of person omitted) 
 
-section {
-    button {
-        +"Clear Persons"
-        clicks.map { } handledBy storedPersons.clear
-        //     ^^^^^^^^
-        //     use empty mapping to create `Flow<Unit>`!
+    section {
+        button {
+            +"Clear Persons"
+            clicks.map { } handledBy storedPersons.clear
+            //     ^^^^^^^^
+            //     use empty mapping to create `Flow<Unit>`!
+        }
     }
 }
 ```
@@ -434,7 +438,7 @@ val clear: Handler<Unit> = handle { persons ->
 
 There are other use-cases where the access to the old state is definitely needed, and you always have access there.
 
-#### Complete example
+#### Complete Example
 
 Just to show you the final result en block:
 ```kotlin
@@ -453,37 +457,39 @@ val storedPersons = object : RootStore<List<Person>>(emptyList()) {
     val clear: Handler<Unit> = handle { emptyList() }
 }
 
-section {
-    h1 { +"Persons:" }
-    ul {
-        storedPersons.data.renderEach { person ->
-            dl {
-                dt { +"Id:" }
-                dd { +person.id.toString() }
-                dt { +"Name:" }
-                dd { +person.name }
-                dt { +"Interests:" }
-                dd { +person.interests.joinToString() }
+render {
+    section {
+        h1 { +"Persons:" }
+        ul {
+            storedPersons.data.renderEach { person ->
+                dl {
+                    dt { +"Id:" }
+                    dd { +person.id.toString() }
+                    dt { +"Name:" }
+                    dd { +person.name }
+                    dt { +"Interests:" }
+                    dd { +person.interests.joinToString() }
+                }
             }
         }
     }
-}
-section {
-    button {
-        +"Add Fritz"
-        clicks.map {
-            Person(1, "Fritz", setOf(Interest.Programming, Interest.History))
-        } handledBy storedPersons.addPerson
-    }
-    button {
-        +"Make Fritz write Documentation"
-        clicks.map {
-            1 to Interest.WritingDocumentation
-        } handledBy storedPersons.addInterest
-    }
-    button {
-        +"Clear Persons"
-        clicks.map {  } handledBy storedPersons.clear
+    section {
+        button {
+            +"Add Fritz"
+            clicks.map {
+                Person(1, "Fritz", setOf(Interest.Programming, Interest.History))
+            } handledBy storedPersons.addPerson
+        }
+        button {
+            +"Make Fritz write Documentation"
+            clicks.map {
+                1 to Interest.WritingDocumentation
+            } handledBy storedPersons.addInterest
+        }
+        button {
+            +"Clear Persons"
+            clicks.map { } handledBy storedPersons.clear
+        }
     }
 }
 ```
@@ -539,16 +545,17 @@ val addInterest = storedPerson.handle<Interest> { person, interest ->
     person.copy(interests = person.interests + interest)
 }
 
-// somewhere inside a `RenderContext`
-button {
-    +"Make fritz write documentation"
-    clicks.map { Interest.WritingDocumentation } handledBy addInterest
+render {
+    button {
+        +"Make fritz write documentation"
+        clicks.map { Interest.WritingDocumentation } handledBy addInterest
+    }
 }
 ```
 
 As the `handler`-factory functions are *extension* functions, it is possible to extend a "closed" store-object.
 
-### Connecting stores to each other
+### Connecting Stores to Each Other
 
 Most real-world applications contain multiple stores which need to be linked to properly react to model changes.
 
@@ -704,7 +711,7 @@ To see a complete example visit our
 [validation example](/examples/validation) which uses connected
 stores and validate a `Person` before adding it to a list of `Person`s.
 
-### React to changes inside the Store itself
+### React to Changes inside the Store itself
 
 If you need a handler's code to be executed whenever the model is changed,
 you have to use the `drop(1)` function on a `Flow` to skip the `initialData`:

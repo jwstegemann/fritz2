@@ -124,7 +124,7 @@ The DOM structure now looks as follows:
 
 When you click the button, the whole `h1`-subtree will be removed and changed to `<h1>Hello, fritz2!</h1>`
 
-### Style and Enrich your UI with Attributes
+### Style and Enrich Your UI with Attributes
 
 As last teasing aspects we want to demonstrate, how fritz2 supports styling an UI or setting attributes of a tag.
 
@@ -191,8 +191,8 @@ The final DOM structure now looks like this:
         </h1>
     </div>
     <div>
-        <button class="p-2 bg-blue-400 text-white border border-1 border-gray-300 rounded-md">Greet
-            fritz2
+        <button class="p-2 bg-blue-400 text-white border border-1 border-gray-300 rounded-md">
+            Greet fritz2
         </button>
     </div>
 </div>
@@ -201,8 +201,8 @@ The final DOM structure now looks like this:
 
 Clicking the button will change the button section to this:
 ```html
-<button disabled class="p-2 bg-gray-500 text-white border border-1 border-gray-300 rounded-md">Greet
-    fritz2
+<button disabled class="p-2 bg-gray-500 text-white border border-1 border-gray-300 rounded-md">
+    Greet fritz2
 </button>
 ```
 Pay attention to the changed CSS-classes and the added `disabled` attribute! 
@@ -251,17 +251,18 @@ and can use all HTML tag factories to create the desired UI-fragment.
 // define some Person and "store" it
 val storedPerson = storeOf(Person(1, "Fritz", 42))
 
-// somewhere inside any `RenderContext`
-storedPerson.data.render { person -> // the current store's value gets injected
-    dl {
-        dt { +"Id" }
-        // use the data type to render its contents by accessing its properties
-        // as the DOM consists only of strings, we must take care of the needed type conversion from `Int` to `String`
-        dd { +person.id.toString() }
-        dt { +"Name" }
-        dd { +person.name }
-        dt { +"Age" }
-        dd { +person.age.toString() }
+render {
+    storedPerson.data.render { person -> // the current store's value gets injected
+        dl {
+            dt { +"Id" }
+            // use the data type to render its contents by accessing its properties
+            // as the DOM consists only of strings, we must take care of the needed type conversion from `Int` to `String`
+            dd { +person.id.toString() }
+            dt { +"Name" }
+            dd { +person.name }
+            dt { +"Age" }
+            dd { +person.age.toString() }
+        }
     }
 }
 ```
@@ -310,10 +311,11 @@ on data flows of type `String`:
 ```kotlin
 val storedText = storeOf("fritz2")
 
-// somewhere inside any `RenderContext`
-div {
-    // Attention: We need a *Tag* here, not just a `RenderContext`! 
-    storedText.data.renderText()
+render {
+    div {
+        // Attention: We need a *Tag* here, not just a `RenderContext`! 
+        storedText.data.renderText()
+    }
 }
 ```
 
@@ -330,10 +332,12 @@ will change, the other parts must not be part of the mount-point:
 ```kotlin
 val storedText = storeOf("fritz2")
 
-p {
-    +"There is some excellent Kotlin based framework named "
-    storedText.data.renderText() // only dynamic part is here; the other text-nodes are static!
-    +", that empowers one to easily create reactive SPAs in pure Kotlin."
+render {
+    p {
+        +"There is some excellent Kotlin based framework named "
+        storedText.data.renderText() // only dynamic part is here; the other text-nodes are static!
+        +", that empowers one to easily create reactive SPAs in pure Kotlin."
+    }
 }
 ```
 
@@ -341,11 +345,13 @@ Imagine a `render` based solution on the contrary:
 ```kotlin
 val storedText = storeOf("fritz2")
 
-p {
-    storedText.data.render { frameworkName ->
-        +"There is some excellent Kotlin based framework named "
-        +frameworkName
-        +", that empowers one to easily create reactive SPAs in pure Kotlin."
+render {
+    p {
+        storedText.data.render { frameworkName ->
+            +"There is some excellent Kotlin based framework named "
+            +frameworkName
+            +", that empowers one to easily create reactive SPAs in pure Kotlin."
+        }
     }
 }
 ```
@@ -356,7 +362,7 @@ The important advantages of the dedicated `renderText` solution compared to the 
 and thus is better to read.
 - the mount-point encompasses a much smaller DOM-subtree, so it is more efficient.
 
-#### Reactive Rendering of Lists of value objects
+#### Reactive Rendering of Lists of Value Objects
 
 As `List<T>` as value of a store is a common use case, fritz2 offers a special rendering function for this too:
 `renderEach`.
@@ -365,13 +371,14 @@ As `List<T>` as value of a store is a common use case, fritz2 offers a special r
 // define some store with type of `List<T>`
 val storedInterests = storeOf(Interest.values().toList())
 
-// somewhere inside any `RenderContext` declare the container for the whole list
-ul {
-    // for every value of store's interest list, the provided `content` expression is executed
-    storedInterests.data.renderEach { interest -> // the current applied value of the data flow
-        // just declare the UI for one item
-        li {
-            +interest.toString()
+render {
+    ul {
+        // for every value of store's interest list, the provided `content` expression is executed
+        storedInterests.data.renderEach { interest -> // the current applied value of the data flow
+            // just declare the UI for one item
+            li {
+                +interest.toString()
+            }
         }
     }
 }
@@ -403,12 +410,14 @@ In order to gain some understanding for this technical aspect, consider the abov
 ```kotlin
 val storedInterests = storeOf(Interest.values().toList())
 
-ul {
-    storedInterests.data.render { interests -> // name suggests we get a `List<T>` here of course!
-        // "manually" create <li> tags for each item
-        interests.forEach {
-            li {
-                +it.toString()
+render {
+    ul {
+        storedInterests.data.render { interests -> // name suggests we get a `List<T>` here of course!
+            // "manually" create <li> tags for each item
+            interests.forEach {
+                li {
+                    +it.toString()
+                }
             }
         }
     }
@@ -430,7 +439,7 @@ type `T`. This is the reason, why is targeted to *value* objects: They are impli
 
 Have a look at its usage in our [master detail](/examples/masterdetail/) example.
 
-#### Reactive Rendering of Lists of entities
+#### Reactive Rendering of Lists of Entities
 
 As `List<T>` as value of a store is a common use case, where `T` is an *entity*, thus it has some stable *identity*
 lasting all changes, fritz2 offers a special application of the `renderEach`-function for this use case.
@@ -448,19 +457,20 @@ val persons = listOf(
 
 val storedPersons = storeOf(persons)
 
-// somewhere inside any `RenderContext`
-ul {
-    storedPersons.data.renderEach(Person::id) { person ->
-        //                        ^^^^^^^^^^
-        //                        provide a function to determine the stable identity of one `T`
-        li {
-            dl {
-                dt { +"Id" }
-                dd { +person.id.toString() }
-                dt { +"Name" }
-                dd { +person.name }
-                dt { +"Age" }
-                dd { +person.age.toString() }
+render {
+    ul {
+        storedPersons.data.renderEach(Person::id) { person ->
+            //                        ^^^^^^^^^^
+            //                        provide a function to determine the stable identity of one `T`
+            li {
+                dl {
+                    dt { +"Id" }
+                    dd { +person.id.toString() }
+                    dt { +"Name" }
+                    dd { +person.name }
+                    dt { +"Age" }
+                    dd { +person.age.toString() }
+                }
             }
         }
     }
@@ -501,7 +511,7 @@ This special variant and its application are described in
 | `Store<List<T>>.renderEach` | idProvider            | creates a mount-point optimizing changes by `idProvider`. Provides a `Store<T>` inside the `content` expression. Use for entities | `div`       |
 
 
-### Apply Styling to your UI: Reactive or Static
+### Apply Styling to Your UI: Reactive or Static
 
 The `class` attribute of a `Tag` for working with CSS style-classes is somewhat special. You can set the static values
 of each `Tag` for `class` and `id` by using the optional parameters of its factory function:
@@ -534,7 +544,7 @@ render {
 }
 ```
 
-### Apply Attributes to your UI: Reactive or Static
+### Apply Attributes to Your UI: Reactive or Static
 
 To create rich HTML interfaces styling alone is not sufficient. You will need to use a variety of attributes.
 In fritz2 there are several easy ways to achieve this, depending on your use case.
@@ -621,20 +631,22 @@ render {
 }
 ```
 
-### Minimize DOM structure of Mount-Points
+### Minimize DOM Structure of Mount-Points
 
 Let's recap the first reactive rendering example:
 ```kotlin
 val storedPerson = storeOf(Person(1, "Fritz", 42))
 
-storedPerson.data.render { person -> 
-    dl {
-        dt { +"Id" }
-        dd { +person.id.toString() }
-        dt { +"Name" }
-        dd { +person.name }
-        dt { +"Age" }
-        dd { +person.age.toString() }
+render {
+    storedPerson.data.render { person ->
+        dl {
+            dt { +"Id" }
+            dd { +person.id.toString() }
+            dt { +"Name" }
+            dd { +person.name }
+            dt { +"Age" }
+            dd { +person.age.toString() }
+        }
     }
 }
 ```
@@ -790,7 +802,7 @@ render {
 }
 ```
 
-### Avoid Flicker Effects with reactive Stylings
+### Avoid Flicker Effects with Reactive Stylings
 
 To set an initial CSS class (or any other attribute) immediately (for example to avoid flicker effects caused by the delay
 of the first value becoming available on the flow), the respective attribute-method must be called twice.
@@ -845,7 +857,7 @@ The result is the following:
 For debugging proposes you can use the `scope.asDataAttr()` function to set current scope to the tag and see it
 in the DOM-Tree.
 
-### Customize the Starting Point - Anchor you global Render Function
+### Customize the Starting Point - Anchor Your global Render Function
 
 As you already should know, you need to call the global `render` function once, in order to create an initial
 `RenderContext`:
@@ -928,8 +940,8 @@ render {
 
 ### Rendering on Stand-alone Flows
 
-**TODO** RC-4
+Coming soon
 
 ### Custom Tags / RenderContexts
 
-**TODO** RC-4 or later 
+Coming soon 
