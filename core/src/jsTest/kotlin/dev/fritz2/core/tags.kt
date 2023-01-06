@@ -6,9 +6,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLParagraphElement
+import org.w3c.dom.HTMLSpanElement
+import org.w3c.dom.asList
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 
 class TagTests {
@@ -16,7 +19,7 @@ class TagTests {
     @Test
     fun testTextNodes() = runTest {
 
-        
+
         val id1 = Id.next()
         val id2 = Id.next()
 
@@ -42,7 +45,7 @@ class TagTests {
 
     @Test
     fun testTextOnString() = runTest {
-        
+
         val id1 = Id.next()
         val id2 = Id.next()
         val text = "testText"
@@ -73,7 +76,7 @@ class TagTests {
 
     @Test
     fun testTextOnFlowOfString() = runTest {
-        
+
         val testId = Id.next()
         val text = "testText"
 
@@ -86,14 +89,19 @@ class TagTests {
         delay(100)
 
         val element = document.getElementById(testId) as HTMLDivElement
+        val mountPointTag = element.firstChild!! as HTMLSpanElement
 
         assertEquals(testId, element.id)
         assertEquals(text, element.textContent)
+        assertTrue(
+            mountPointTag.hasAttribute("data-mount-point"),
+            "Attribute `data-mount-point` missing, found only the following attributes: "
+                    + mountPointTag.attributes.asList().joinToString(",") { it.name })
     }
 
     @Test
     fun testCommentOnString() = runTest {
-        
+
         val id1 = Id.next()
         val comment = "testComment"
 
@@ -116,7 +124,7 @@ class TagTests {
 
     @Test
     fun testSingleTag() = runTest {
-        
+
         val testId = Id.next()
         val testClass = "testClass"
 
@@ -137,7 +145,7 @@ class TagTests {
 
     @Test
     fun testSingleTagWithBaseClass() = runTest {
-        
+
         val testId = Id.next()
         val baseClass = "baseClass"
         val testClass = "testClass"
@@ -159,7 +167,7 @@ class TagTests {
 
     @Test
     fun testSingleTagWithBaseClassOnly() = runTest {
-        
+
         val testId = Id.next()
         val baseClass = "baseClass"
 
@@ -180,7 +188,7 @@ class TagTests {
 
     @Test
     fun testMultipleTags() = runTest {
-        
+
         val testRange = (0..4)
         val testIds = testRange.map { "testId$it" }
         val testClasses = testRange.map { "testClass$it" }
@@ -211,7 +219,7 @@ class TagTests {
 
     @Test
     fun testRenderWithCondition() = runTest {
-        
+
         val outerId = Id.next()
         val innerId = Id.next()
 
@@ -253,7 +261,7 @@ class TagTests {
 
     @Test
     fun testAnnex() = runTest {
-        
+
         val contentId = Id.next()
 
         render {
@@ -277,7 +285,7 @@ class TagTests {
 
     @Test
     fun testWheneverWithStaticData() = runTest {
-        
+
         val steering = storeOf(false)
         val getAttribute = { document.getElementById("root")!!.getAttribute("data-foo") }
 
@@ -298,7 +306,7 @@ class TagTests {
 
     @Test
     fun testWheneverWithFlowData() = runTest {
-        
+
         val steering = storeOf(false)
         val value = object : RootStore<String>("first") {
             private val items = listOf("first", "second", "skipped", "fourth")

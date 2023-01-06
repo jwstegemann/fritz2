@@ -152,7 +152,7 @@ internal class BuildContext(
  */
 const val MOUNT_POINT_STYLE_CLASS = "mount-point"
 
-internal val SET_MOUNT_POINT_DATA_ATTRIBUTE: Tag<HTMLElement>.() -> Unit = {
+internal val SET_MOUNT_POINT_DATA_ATTRIBUTE: Tag<*>.() -> Unit = {
     attr("data-mount-point", true)
 }
 
