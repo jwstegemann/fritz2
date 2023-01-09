@@ -5,7 +5,7 @@ plugins {
 }
 
 application {
-    mainClass.set("io.ktor.server.netty.EngineMain")
+    mainClass.set("dev.fritz2.ServerKt")
 }
 
 repositories {
@@ -17,13 +17,14 @@ dependencies {
     implementation(kotlin("stdlib"))
     implementation(kotlin("reflect"))
     implementation(kotlin("stdlib-jdk8"))
-    implementation("io.ktor:ktor-server-netty:${rootProject.extra["ktorVersion"]}")
-    implementation("ch.qos.logback:logback-classic:${rootProject.extra["logbackVersion"]}")
     implementation("io.ktor:ktor-server-core:${rootProject.extra["ktorVersion"]}")
-    implementation("io.ktor:ktor-auth:${rootProject.extra["ktorVersion"]}")
-    implementation("io.ktor:ktor-jackson:${rootProject.extra["ktorVersion"]}")
-    implementation("io.ktor:ktor-websockets:${rootProject.extra["ktorVersion"]}")
-    testImplementation("io.ktor:ktor-server-tests:${rootProject.extra["ktorVersion"]}")
+    implementation("io.ktor:ktor-server-netty:${rootProject.extra["ktorVersion"]}")
+    implementation("io.ktor:ktor-server-call-logging-jvm:${rootProject.extra["ktorVersion"]}")
+    implementation("io.ktor:ktor-server-auth-jvm:${rootProject.extra["ktorVersion"]}")
+    implementation("io.ktor:ktor-server-content-negotiation:${rootProject.extra["ktorVersion"]}")
+    implementation("io.ktor:ktor-serialization-jackson:${rootProject.extra["ktorVersion"]}")
+    implementation("io.ktor:ktor-server-websockets-jvm:${rootProject.extra["ktorVersion"]}")
+    implementation("ch.qos.logback:logback-classic:${rootProject.extra["logbackVersion"]}")
 }
 
 tasks.register<com.github.psxpaul.task.JavaExecFork>("start") {
