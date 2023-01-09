@@ -25,6 +25,11 @@ val pages = mapOf(
         "Complex",
         "Complex example showing fritz2 validation",
         RenderContext::complex
+    ),
+    "fundamentals" to DemoPage(
+        "Fundamentals",
+        "small example to demonstrate the fundamental concepts and functions",
+        RenderContext::fundamentals
     )
 )
 

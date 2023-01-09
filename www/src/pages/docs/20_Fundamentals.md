@@ -97,7 +97,7 @@ parts of fritz2!
 
 Let's have a look at the result in a browser:
 
-![running example in browser](/img/fundamentals_animation.gif)
+@/snippets/index.html#fundamentals
 
 Now we have a good notion of the app and how it works, let's dive into the code and discover the various building 
 blocks, that drives this app.
@@ -113,7 +113,7 @@ The [running examples](/examples) are often built with [bootstrap](https://getbo
 
 The fritz2 framework requires very low ceremony to set up an application. Just call once inside your code the global 
 `render` function, to create an initial so called `RenderContext`. Think of it as a context, where you can place all
-your UI elements, that is HTML `tags` in the end.
+your UI elements, that are HTML `tags` in the end.
 
 ```kotlin
 import dev.fritz2.core.*
