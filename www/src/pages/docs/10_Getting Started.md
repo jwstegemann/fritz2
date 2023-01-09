@@ -17,7 +17,7 @@ To use fritz2, you have to set up a Kotlin multiplatform-project. To do so you c
   our [tailwind specific template](https://github.com/jwstegemann/fritz2-tailwind-template) from GitHub instead.
 * checkout the [examples](https://fritz2.dev/examples) and see how to use some features of fritz2
 * have a look at
-  the [official documentation](https://kotlinlang.org/docs/reference/building-mpp-with-gradle.html#setting-up-a-multiplatform-project)
+  the [official documentation](https://kotlinlang.org/docs/multiplatform-get-started.html)
   and use the following `build.gradle.kts` file:
 
 ## Setup Gradle Build

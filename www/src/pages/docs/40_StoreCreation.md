@@ -233,7 +233,7 @@ In Kotlin, there is another communication model called `Channel` which is the _h
 fritz2 only uses `Channel`s internally to feed the flows, so you should not encounter them while using fritz2.
 
 To get more information about `Flow`s, `Channel`s, and their API,
-have a look at the [official documentation](https://kotlinlang.org/docs/reference/coroutines/flow.html).
+have a look at the [official documentation](https://kotlinlang.org/docs/flow.html).
 
 
 ### Custom Handler in Depth
