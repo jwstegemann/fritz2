@@ -49,7 +49,7 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, WithEvents<E> {
      * @param value to use
      */
     fun attr(name: String, value: String?) {
-        if(value != null) domNode.setAttribute(name, value)
+        if (value != null) domNode.setAttribute(name, value)
         else domNode.removeAttribute(name)
     }
 
@@ -247,7 +247,7 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, WithEvents<E> {
      * @receiver text-content
      */
     fun Flow<String>.renderText(into: Tag<*>? = null) {
-        val target = into ?: span {}
+        val target = into?.apply(SET_MOUNT_POINT_DATA_ATTRIBUTE) ?: span(content = SET_MOUNT_POINT_DATA_ATTRIBUTE)
 
         mountSimple(job, this) { content ->
             target.domNode.clear()
