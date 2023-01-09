@@ -17,7 +17,7 @@ We always try our best with fritz2 and would love your feedback! Please feel fre
 [issue](https://github.com/jwstegemann/fritz2/issues).
 
 Whenever you find something missing, misleading or even plain wrong in our documentation please open an
-[PR](https://github.com/jwstegemann/fritz2-docs/pulls) or [issue](https://github.com/jwstegemann/fritz2-docs/issues).
+[PR](https://github.com/jwstegemann/fritz2/pulls) or [issue](https://github.com/jwstegemann/fritz2-docs/issues).
 We also encourage everybody to share their own examples and showcases with us,
 as this is often the best way to learn something new.
 
