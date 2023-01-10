@@ -63,8 +63,8 @@ First of all we need a so called `Store` for holding the dynamic data of our app
 of every fritz2 application; they provide the current value in a reactive way and handle all the data changes.
 
 To bind the store's value reactively to the DOM, use some `render*`-functions on the `data`-property of a
-store, which offers a `Flow` of the store's value `T`. The function creates a so called mount-point, that manages the
-automatic update of the DOM on every change of the store's data. The mount-point uses a dedicated tag created in the 
+store, which offers a `Flow` of the store's value `T`. The function creates a so called *mount-point*, that manages the
+automatic update of the DOM on every change of the store's data. The *mount-point* uses a dedicated tag created in the 
 DOM as reference to the node, where the deletion and recreation of the defined UI-fragment happens.
 
 To react to (user) events like the click onto a button, a store provides so called `handler`s, which creates the new
@@ -238,7 +238,20 @@ As you already know all [state handling](/fundamentals/#state-handling) is done 
 Based upon the `data`-property, which provides a `Flow` of the store's generic data type, there exist a variety of
 `render*`-functions, that can be used to create *reactive* UIs:
 
-Tabelle
+| Render-Function            | Additional parameters | Description                                                                                                                    | Default Tag |    
+|----------------------------|-----------------------|--------------------------------------------------------------------------------------------------------------------------------|-------------|
+| `Flow<T>.render`           | -                     | creates a mount-point providing the whole store's data value `T` inside `content` expression                                   | `div`       |
+| `Flow<String>.renderText`  | -                     | creates a mount-point creating a text-node                                                                                     | `span`      |
+| `Flow<List<T>>.renderEach` | -                     | creates a mount-point optimizing changes by `T.equals`. Provides a `T` inside the `content` expression. Use for value objects  | `div`       |
+| `Flow<List<T>>.renderEach` | idProvider            | creates a mount-point optimizing changes by `idProvider`. Provides a `T` inside the `content` expression. Use for entities     | `div`       |
+
+There is one more `renderEach` variant, which is defined as extension directly upon a `Store` and not on a `Flow`.
+This special variant and its application are described in
+[chapter about store mapping](/docs/storemapping/#reactive-rendering-of-lists-of-entities-with-automatically-mapped-element-store).
+
+| Render-Function             | Additional parameters | Description                                                                                                                       | Default Tag |    
+|-----------------------------|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------|-------------|
+| `Store<List<T>>.renderEach` | idProvider            | creates a mount-point optimizing changes by `idProvider`. Provides a `Store<T>` inside the `content` expression. Use for entities | `div`       |
 
 #### Reactive Rendering of some T
 
@@ -489,27 +502,6 @@ important aspect, rely on this application of `renderEach` and add additional mo
 You will learn about those in Chapter XYZ.
 
 Have a look at its application in our [todomvc](/examples/todomvc/) example.
-
-#### Summary of Reactive Rendering 
-
-fritz2 offers the following `render*`-functions in order to implement reactive rendering of some store's 
-`data`-property:
-
-| Render-Function            | Additional parameters | Description                                                                                                                    | Default Tag |    
-|----------------------------|-----------------------|--------------------------------------------------------------------------------------------------------------------------------|-------------|
-| `Flow<T>.render`           | -                     | creates a mount-point providing the whole store's data value `T` inside `content` expression                                   | `div`       |
-| `Flow<String>.renderText`  | -                     | creates a mount-point creating a text-node                                                                                     | `span`      |
-| `Flow<List<T>>.renderEach` | -                     | creates a mount-point optimizing changes by `T.equals`. Provides a `T` inside the `content` expression. Use for value objects  | `div`       |
-| `Flow<List<T>>.renderEach` | idProvider            | creates a mount-point optimizing changes by `idProvider`. Provides a `T` inside the `content` expression. Use for entities     | `div`       |
-
-There is one more `renderEach` variant, which is defined as extension directly upon a `Store` and not on a `Flow`.
-This special variant and its application are described in 
-[chapter about store mapping](/docs/storemapping/#reactive-rendering-of-lists-of-entities-with-automatically-mapped-element-store).
-
-| Render-Function             | Additional parameters | Description                                                                                                                       | Default Tag |    
-|-----------------------------|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------|-------------|
-| `Store<List<T>>.renderEach` | idProvider            | creates a mount-point optimizing changes by `idProvider`. Provides a `Store<T>` inside the `content` expression. Use for entities | `div`       |
-
 
 ### Apply Styling to Your UI: Reactive or Static
 

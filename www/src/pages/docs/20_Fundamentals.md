@@ -212,8 +212,8 @@ of `String`s, where the data is the current input value and cuts off all the met
 
 Once we got our flow of data in the right shape, we can connect it to the store in order to update its state.
 This is done by so called `handler`s. A handler is just some method, that produces the new state of the store.
-In this case we want the new input value to completely replace the old one. This can be done by a predefined handler
-every store has: `update`:
+In this case we want the new input value to completely replace the old one. This can be done by a predefined `update`
+handler every store has:
 
 ```kotlin
 input {
@@ -271,10 +271,10 @@ val storeWithExplicitId = storeOf("Data", id = "42")
 val storeWithRandomId = storeOf("Data") // id is created by `Id.next()`
 ```
 
-This Id is useful for linking portions of the UI which is semantically connected by the data. As the store holds the
+This *id* is useful for linking portions of the UI which is semantically connected by the data. As the store holds the
 data, it makes sense, that it also keeps track of its identity.
 
-Here we use the Id to connect the `label` to the `ìnput` field, so that clicking on the label text will focus the input;
+Here we use the *id* to connect the `label` to the `input` field, so that clicking on the label text will focus the input;
 this is a well known HTML function.
 
 ```kotlin
