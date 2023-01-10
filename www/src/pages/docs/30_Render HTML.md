@@ -552,7 +552,7 @@ render {
 
 ### Apply Attributes to Your UI: Reactive or Static
 
-To create rich HTML interfaces styling alone is not sufficient. You will need to use a variety of attributes.
+To create rich HTML interfaces, styling alone is not sufficient. You will need to use a variety of attributes.
 In fritz2 there are several easy ways to achieve this, depending on your use case.
 
 You can set all HTML attributes inside the `Tag`'s content by calling a function of the according name. Every standard
@@ -877,10 +877,10 @@ fun main() {
 }
 ```
 
-This of course only works in combination with some *fitting* `index.html` in `jsMain/resources`, which is just a
+This of course only works in combination with some *fitting* `index.html` in `jsMain/resources`-folder, which is just a
 normal web-page. This page needs two configuration aspects to be set up correct:
-1. there must be some tag marked with some `id`; for example here the `<body>` tag has the (default) Id of `target`.
-2. the resulting js-artifact must be included as `<script>` tag with the correct name.
+1. there must be some html-tag as target reference; by default the `document.body` tag is used.
+2. the resulting js-artifact must be included as `<script>` tag beneath the static html.
 
 ```html
 <!doctype html>
@@ -898,11 +898,14 @@ normal web-page. This page needs two configuration aspects to be set up correct:
 </html>
 ```
 
-The global `render` factory accepts a parameter to select a custom Id:
+The global `render` factory accepts a 
+`selector` string (see [querySelector](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector))
+or alternatively a [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement)
+to select the target html-tag:
 
 ```kotlin
 fun main() {
-    render("#myAppAnchor") { // using id selector here, leave blank to use document.body + id = `target` by default
+    render("#myAppAnchor") { // using id selector here, leave blank to use document.body by default
         h1 { +"My App" }
         div("some-fix-css-class") {
             p(id = "someId") {
@@ -915,11 +918,9 @@ fun main() {
 
 When calling `render` like that, your content will be mounted to an `HTMLElement` with `id="myAppAnchor"`.
 If you want to mount your content to the `body` of your `index.html`, you can omit this parameter.
-Instead of using the `selector` string with the [querySelector syntax](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector),
-you can also specify an `HTMLElement` directly on the `targetElement` parameter.
 
-You can also set an `override` parameter to `false`, which means that your content will be appended. By default, 
-all child elements will be removed before your content is appended to the `targetElement`.
+The second option is to set an `override` parameter to `false`, which means that your content will be appended.
+By default, all child elements will be removed otherwise before your content is appended to the target html-tag.
 
 Run the project by calling `./gradlew jsRun` in your project's main directory. Add `-t` to enable automatic
 building and reloading in the browser after changing your code.
