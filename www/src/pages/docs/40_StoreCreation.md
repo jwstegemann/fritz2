@@ -576,10 +576,10 @@ Have a look at our [nested model](/examples/nestedmodel) example too.
 
 ### History in Stores
 
-Sometimes you may want to keep the history of states in your `Store`, so you can navigate back in time to build an
+Sometimes you may want to keep the history of states in your store, so you can navigate back in time to build an
 undo-function or maybe just for debugging...
 
-fritz2 offers a history service to do so.
+fritz2 offers a `history` factory to do so.
 
 ```kotlin
 val store = object : RootStore<String>("") {
@@ -587,10 +587,11 @@ val store = object : RootStore<String>("") {
 }
 ```
 
-By default you synchronise the history with the updates of your `Store`,
+By default, you synchronise the history with the updates of your store,
 so each new state will be added to the history automatically.
 
-Calling `history(synced = false)`, you can control the content of the history by manually adding new entries. Call `push(entry)` to do so.
+Calling `history(synced = false)`, you can control the content of the history
+by manually adding new entries. Call `push(entry)` to do so.
 
 You can access the complete history via its `data` attribute as `Flow<List<T>>`
 or by using `current` attribute which returns a `List<T>`. For your convenience `history` also offers
@@ -598,27 +599,27 @@ or by using `current` attribute which returns a `List<T>`. For your convenience 
 * a `back()` method to get the latest entry and remove it from the history
 * a `clear()` method to clear the history
 
-For a `Store` with a minimal undo function you just have to write:
+For a store with a minimal undo function you just have to write:
 ```kotlin
-val store = object : RootStore<String>("") {
-    val history = history()
+val storedData = object : RootStore<String>("") {
+    val hist = history()
 
     // your handlers go here (add history.clear() here where suitable)
 
-    val undo = handle { history.back() }
+    val undo = handle { hist.back() }
 }
 
 render {
     div("form") {
         input {
-            value(store.data)
-            changes.values() handledBy store.update
+            value(storedData.data)
+            changes.values() handledBy storedData.update
         }
-        store.history.available.render {
+        storedData.hist.available.render {
             if(it) {
                 button("btn") {
                     +"Undo"
-                }.clicks handledBy store.undo
+                }.clicks handledBy storedData.undo
             }
         }
     }
@@ -627,13 +628,13 @@ render {
 
 ### Track Processing State of Stores
 
-When one of your `Handler`s contains long running actions (like server-calls, etc.) you might want to keep the user
+When one of your handlers contain a long-running action (like server-call, etc.) you might want to keep the user
 informed about that something is going on.
 
-Using fritz2 you can use the `tracker`-service to implement this:
+Using fritz2 you can use the `tracker` factory to implement this:
 
 ```kotlin
-val store = object : RootStore<String>("") {
+val storedData = object : RootStore<String>("") {
     val tracking = tracker()
 
     val save = handle { model ->
@@ -646,11 +647,11 @@ val store = object : RootStore<String>("") {
 
 render {
     button("btn") {
-        className(store.tracking.data.map {
+        className(storedData.tracking.data.map {
             if(it) "spinner" else ""
         })
         +"save"
-        clicks handledBy store.save
+        clicks handledBy storedData.save
     }
 }
 ```
