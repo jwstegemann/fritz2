@@ -477,7 +477,7 @@ simply based upon the id and not upon the `equals`-method anymore.
 // define some person-entities and "store" them
 val persons = listOf(
     Person(1, "Fritz", 42),
-    Person(2, "Cäsar", 66),
+    Person(2, "Caesar", 66),
     Person(3, "Cleopatra", 50)
 )
 

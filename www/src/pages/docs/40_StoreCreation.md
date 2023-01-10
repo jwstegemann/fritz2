@@ -59,7 +59,7 @@ This store supports the former functions by exposing the following two propertie
 This is described in the [reactive rendering](/docs/render/#reactive-rendering) sections of the 
 [Render HTML](/docs/render) chapter.
 - `update`: This is a `Handler` which manages the state changes of the store. This default handler takes one `T` and
-simply substitutes the old value `T` of the store with it.
+simply substitutes the "old" state `T` of the store with it.
 
 You can use this handler to conveniently implement _two-way-databinding_ by using the `changes` event-flow
 of an `input`-`Tag`, for example:
@@ -108,7 +108,7 @@ val storedInterests = InterestsStore()
 
 ### Custom Handler
 
-Our custom store already has the handler `update` as we already know, which simply substitutes the old store's value 
+Our custom store already has the handler `update` as we already know which simply substitutes the "old" store's state 
 with a new one. This is not sufficient, when dealing with a list. It would be awkward to *add* some interest for
 example.
 
@@ -244,11 +244,11 @@ handlers for a dedicated task.
 There are three different variants of handler factories available, which differ in the amount of parameters available
 in the handle expression:
 
-| Factory                        | Parameters in handle-expression | Use case                                                                                                                                                                                                                               |
-|--------------------------------|---------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `Store<T>.handle<Unit>`        | `value: T`                      | New state can only be generated from the old one or some external source. There is no information from the event source available. Typical use cases are resetting to initial state or clearing the store.                             |
-| `Store<T>.handle<A>`           | `value: T`, `action: A`         | New state can be based upon information passed from the event source. Typical use cases are updating some part of the overall value or adding or dropping a list item. The default handler `update` uses this, where its `A` is a ``T. |
-| `Store<T>.handleAndEmit<A, E>` | `value: T`, `action: A`         | New state can be based upon information passed from the event source. Typical use cases are updating some part of the overall value or adding or dropping a list item. As bonus one can `emit` some value `E`.                         |
+| Factory                        | Parameters in handle-expression | Use case                                                                                                                                                                                                                              |
+|--------------------------------|---------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `Store<T>.handle<Unit>`        | `state: T`                      | New state can only be generated from the old one or some external source. There is no information from the event source available. Typical use cases are resetting to initial state or clearing the store.                            |
+| `Store<T>.handle<A>`           | `state: T`, `action: A`         | New state can be based upon information passed from the event source. Typical use cases are updating some part of the overall state or adding or dropping a list item. The default handler `update` uses this, where its `A` is a `T`.|
+| `Store<T>.handleAndEmit<A, E>` | `state: T`, `action: A`         | New state can be based upon information passed from the event source. Typical use cases are updating some part of the overall state or adding or dropping a list item. As bonus one can `emit` some value `E`.                        |
 
 We will look at the first two of them here; the [emitting-handler](#emittinghandler---observer-pattern-for-handlers) 
 is rather an advanced topic and covered in a dedicated section there.
@@ -310,15 +310,15 @@ val storedPersons = object : RootStore<List<Person>>(emptyList()) {
         //                 ^^^^^^^            ^^^^^^^  ^^^^^^^^^
         //                 defines the        the      the new
         //                 type of parameter  "old"    person
-        //                 to pass            value    to add
+        //                 to pass            state    to add
         if (persons.any { it.id == newPerson.id }) persons else persons + newPerson
         //  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^               ^^^^^^^^^^^^^^^^^^^
-        //  use the "old" value and the action                  add the action to the
-        //  to check for duplicates                             old value to create the new value
+        //  use the "old" state and the action                  add the action to the
+        //  to check for duplicates                             old state to create the new state
     }
 }
 ```
-The above handle-code shows some typical pattern: We create the new store's value by analyzing first the "old" value
+The above handle-code shows some typical pattern: We create the new store's state by analyzing first the "old" state
 with some information from the action and then decide whether the old state could remain or there must be some update
 also using some information from the action.
 
@@ -357,20 +357,20 @@ the list, which some new interest should be added to this person's interests lis
 `Person.id`-property.
 
 So our action consists of two parts:
-- the new interest: meta-information to help to identify a person
-- the id of the specific person: the real information payload, that will be added to person's interests list
+- the id of the specific person, where the interest will be added to (meta-information)
+- the interest to add (information)
 
 For simple cases like this, a `Pair` is a sufficient choice to group both information. But of course you could also
 create some (data) class or any other kotlin feature that fits.
 
 ```kotlin
 val storedPersons = object : RootStore<List<Person>>(emptyList()) {
-    val addPerson: Handler<Person> = // ...
+    val addPerson: Handler<Person> = {...}
 
     val addInterest: Handler<Pair<Int, Interest>> = handle { persons, (idForUpdate, newInterest) ->
         //                   ^^^^^^^^^^^^^^^^^^^                       ^^^^^^^^^^^^^^^^^^^^^^^^
-        //                   combine information                       destructure information
-        //                   with meta-information                     and meta-information
+        //                   combine meta-information                  destructure meta-information
+        //                   with information                          and information
         //                   as action parameter                       for expressive naming
         persons.map { person ->
             if (person.id == idForUpdate) person.copy(interests = person.interests + newInterest) else person
@@ -382,7 +382,7 @@ val storedPersons = object : RootStore<List<Person>>(emptyList()) {
 }
 
 render {
-    // (rendering of person omitted) 
+    // (rendering of person omitted)
 
     section {
         button {
@@ -400,15 +400,15 @@ render {
 
 The last task is quite easy: It should be possible, to clear the complete list of users.
 
-We can set an empty list as new store's value without any further information. Thus, the handler we must create does not
+We can set an empty list as new store's state without any further information. Thus, the handler we must create does not
 need any action parameter at all.
 
 fritz2 offers a special variant for cases like this, where the action type is `Unit`.
 
 ```kotlin
 val storedPersons = object : RootStore<List<Person>>(emptyList()) {
-    val addPerson: Handler<Person> = // ...
-    val addInterest: Handler<Pair<Int, Interest>> = // ...
+    val addPerson: Handler<Person> = {...}
+    val addInterest: Handler<Pair<Int, Interest>> = {...}
 
     val clear: Handler<Unit> = handle { emptyList() }
 }
@@ -419,15 +419,13 @@ render {
     section {
         button {
             +"Clear Persons"
-            clicks.map { } handledBy storedPersons.clear
-            //     ^^^^^^^^
-            //     use empty mapping to create `Flow<Unit>`!
+            clicks handledBy storedPersons.clear
         }
     }
 }
 ```
 
-Don't be fooled: Inside the handle-code the "old" value would be available; we simply do not need it for our 
+Don't be fooled: Inside the handle-code the "old" state would be available; we simply do not need it for our 
 implementation. Just to make this more explicit, look at this:
 ```kotlin
 val clear: Handler<Unit> = handle { persons ->
@@ -488,7 +486,7 @@ render {
         }
         button {
             +"Clear Persons"
-            clicks.map { } handledBy storedPersons.clear
+            clicks handledBy storedPersons.clear
         }
     }
 }
@@ -500,7 +498,7 @@ If you need to purposefully fire an action somewhere inside a `RenderContext` or
 a `Handler`:
 ```kotlin
 //call handler with data
-someStore.someHandler(someValue)
+someStore.someHandler(someAction)
 
 //call handler without data
 someStore.someHandler()
@@ -569,7 +567,7 @@ object SaveStore : RootStore<String>("") {
 object InputStore : RootStore<String>("") { 
     val input = handle<String> { _, input ->
         SaveStore.save(input) // call other store`s handler
-        input // do not forget to return the "next" store value!
+        input // do not forget to return the "next" store state!
     }
 }
 ```
@@ -578,7 +576,7 @@ Have a look at our [nested model](/examples/nestedmodel) example too.
 
 ### History in Stores
 
-Sometimes you may want to keep the history of values in your `Store`, so you can navigate back in time to build an
+Sometimes you may want to keep the history of states in your `Store`, so you can navigate back in time to build an
 undo-function or maybe just for debugging...
 
 fritz2 offers a history service to do so.
@@ -590,7 +588,7 @@ val store = object : RootStore<String>("") {
 ```
 
 By default you synchronise the history with the updates of your `Store`,
-so each new value will be added to the history automatically.
+so each new state will be added to the history automatically.
 
 Calling `history(synced = false)`, you can control the content of the history by manually adding new entries. Call `push(entry)` to do so.
 
@@ -683,7 +681,7 @@ offered data type to the type brackets:
 val personStore = object : RootStore<Person>(Person(...)) {
     val save = handleAndEmit<Person> { person ->
         emit(person) // emits current person
-        Person(...) // return a new empty person (set as new store value)
+        Person(...) // return a new empty person (set as new store state)
     }
 }
 ```
