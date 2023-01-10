@@ -253,7 +253,7 @@ This special variant and its application are described in
 |-----------------------------|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------|-------------|
 | `Store<List<T>>.renderEach` | idProvider            | creates a mount-point optimizing changes by `idProvider`. Provides a `Store<T>` inside the `content` expression. Use for entities | `div`       |
 
-#### Reactive Rendering of some T
+#### Reactive Rendering of some `T`
 
 In order to render the whole store's data type, there is the `render`-function. As last and only required parameter,
 it needs a functional expression with a `Tag` as receiver (remember that a `Tag` *is* a `RenderContext`), providing the
@@ -294,8 +294,8 @@ As result the following DOM-fragment is rendered:
 </div>
 ```
 
-The `render`-function creates a so called `mount-point`, which is fritz2's name for the data-binding concept, that
-reactively combines some store's data with some node in the DOM-tree. The created mount-point now takes care of 
+The `render`-function creates a *mount-point*, that reactively combines some store's data with 
+some node in the DOM-tree. The created mount-point now takes care of 
 reacting to new values and keep the UI-fragment up to date.
 
 Remember that this is the upper part of fritz2's [circle of life](/fundamentals/#understanding-the-circle-of-life)!
@@ -304,7 +304,7 @@ It is important to know the following facts about `render` and mount-points:
 - as default some special `<div>` tag is rendered, which is marked with the pure informational `data-mount-point`
 attribute and with a special CSS class `mount-point`, that simply sets the display mode to `contents` in order to
 exclude this artificial tag from the visible UI.
-- on every change to the store's data, the *whole* subtree beneath that `<div>` tag is dropped and rebuilt with the
+- on every change to the store's data, the **whole subtree** beneath that `<div>` tag is dropped and rebuilt with the
 new data's content.
 
 :::info
@@ -316,9 +316,10 @@ As rule of thumb memoize this: The smaller the changing portions are, the faster
 
 Take a look at our [basic example](/examples/gettingstarted/) too, which demonstrates the `render` function.
 
-#### Reactice Rendering of Text-Nodes
+#### Reactive Rendering of Text-Nodes
 
-As creating a reactive is a common use case, fritz2 offers a *dedicated* variant render function called `renderText`
+As creating a reactive UI rendering texts dynamically is a common use case, 
+for which fritz2 offers a *dedicated* variant render function called `renderText`
 on data flows of type `String`:
 
 ```kotlin
@@ -339,8 +340,21 @@ As result the following DOM-fragment is rendered:
 </div>
 ```
 
-This is extremely useful in situations, where a longer text has some smaller dynamic parts. As only the smaller parts
-will change, the other parts must not be part of the mount-point:
+There is also an extension function `asString`, which converts a `Flow<T>` to a `Flow<String>` by calling the 
+`toString` method internally:
+
+```kotlin
+val storedCount = storeOf<Int>(0)
+
+render {
+    div {
+        storedCount.data.asString().renderText()
+    }
+}
+```
+
+The `renderText` function is useful in situations, where a longer text has some smaller dynamic parts. 
+As only the smaller parts will change, the other parts must not be part of the mount-point:
 
 ```kotlin
 val storedText = storeOf("fritz2")
@@ -377,8 +391,7 @@ and thus is better to read.
 
 #### Reactive Rendering of Lists of Value Objects
 
-As `List<T>` as value of a store is a common use case, fritz2 offers a special rendering function for this too:
-`renderEach`.
+As `List<T>` as value of a store is a common use case, fritz2 offers a special `renderEach` function for this too:
 
 ```kotlin
 // define some store with type of `List<T>`
