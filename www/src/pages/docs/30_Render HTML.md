@@ -233,7 +233,7 @@ enum class Interest {
 
 ### Reactive Rendering
 
-As you already know all [state handling](/fundamentals/#state-handling) is done with `Store`s in fritz2.
+As you already know all [state handling](/docs/fundamentals/#state-handling) is done with `Store`s in fritz2.
 
 Based upon the `data`-property, which provides a `Flow` of the store's generic data type, there exist a variety of
 `render*`-functions, that can be used to create *reactive* UIs:
@@ -298,7 +298,7 @@ The `render`-function creates a *mount-point*, that reactively combines some sto
 some node in the DOM-tree. The created mount-point now takes care of 
 reacting to new values and keep the UI-fragment up to date.
 
-Remember that this is the upper part of fritz2's [circle of life](/fundamentals/#understanding-the-circle-of-life)!
+Remember that this is the upper part of fritz2's [circle of life](/docs/fundamentals/#understanding-the-circle-of-life)!
 
 It is important to know the following facts about `render` and mount-points:
 - as default some special `<div>` tag is rendered, which is marked with the pure informational `data-mount-point`
@@ -512,7 +512,8 @@ The latter is an important aspect to consider before the use of `renderEach` for
 If you still need to reflect those changes, it might be a better choice to rely on the default `renderEach` application 
 relying on equality. But if only a small set of properties of an element could possibly change and performance is an
 important aspect, rely on this application of `renderEach` and add additional mount-points inside the elements subtrees. 
-You will learn about those in Chapter XYZ.
+You will learn about those in 
+[chapter about store mapping](/docs/storemapping/#reactive-rendering-of-lists-of-entities-with-automatically-mapped-element-store).
 
 Have a look at its application in our [todomvc](/examples/todomvc/) example.
 
