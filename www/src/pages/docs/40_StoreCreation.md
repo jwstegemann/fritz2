@@ -115,24 +115,24 @@ example.
 For purposes like this, you can create your own handler inside some `Store` scope with one of the `handle`-factory
 functions.
 
-In this case we need the factory that takes first one `action`-parameter, which is simply our interest we want to add,
-and as second parameter we provide an expression, that creates the new value of the store. It therefore gets two
-parameters:
-- the "old" value of the store
-- the action parameter
+In this case we need the `handle` function that takes a `action` type-parameter,
+which is simply our `Interest` we want to add. Then the lambda function inside the `handle` factory
+has the following two parameters for returning the new state of the store:
+- the *old* `state` of the store
+- the `action` parameter
 
 We can determine the new state simply by adding the new interest to the existing list:
 
 ```kotlin
 val storedInterests = object : RootStore<List<Interest>>(emptyList()) {
 
-    val add: Handler<Interest> = handle { value, new ->
+    val add: Handler<Interest> = handle { state: List<Interest>, action: Interest ->
         if(state.contains(action)) state else state + action
     }
 }
 ```
 
-We can craft a small UI, where the user can click on one item of the list of all exsiting interests to add one to
+We can craft a small UI, where the user can click on one item of the list of all existing interests to add one to
 his personal interests:
 ```kotlin
 div { +"all interests:" }
@@ -140,7 +140,7 @@ ul {
     Interest.values().forEach { interest ->
         li {
             +interest.toString()
-            clicks.map { interest } handledBy InterestsStore.add
+            clicks.map { interest } handledBy storedInterests.add
             //     ^^^^^^^^^^^^^^^^ ^^^^^^^^^ ^^^^^^^^^^^^^^^^^^
             //     map click to a             connect the Flow with
             //     Flow of Interest           the custom handler
@@ -157,8 +157,8 @@ ul {
 
 ### Custom Data-Flow Property
 
-Besides custom handlers a custom store is also a perfect place to hold custom `data`-flows, which do sorts like
-mapping, filtering or other operations before the final result should get rendered.
+Besides custom handlers a custom store is also a perfect place to hold custom `data`-flows, which do things like
+mapping, filtering, sorting or other operations before the final result should get rendered.
 
 Imagine you want to list the interests grouped by some criteria (which should in real world applications part of the
 model of course). You could add a property to your store, that does the filtering and mapping:
@@ -169,7 +169,7 @@ val storedInterests = object : RootStore<List<Interest>>(emptyList()) {
         .filter { interest -> interest.any { it == Interest.History || it == Interest.Sports } }
         .map { it.toString() }
     
-    val add = handle // ...
+    val add = handle {...}
 }
 ```
 And then you can use it for your UI rendering:
