@@ -311,6 +311,9 @@ new data's content.
 As a direct consequence of the last fact, you should strive to keep the reactive UI-fragments as minimal as you can,
 as re-rendering a subtree is work for the browser. 
 
+We call this concept of minimizing the dynamic UI-parts 
+[precise rendering](#minimize-dom-structure-changes-within-reactive-updates-aka-precise-rendering).
+
 As rule of thumb memoize this: The smaller the changing portions are, the faster the result will be!
 :::
 
@@ -636,6 +639,119 @@ render {
     }
 }
 ```
+
+### Minimize DOM Structure Changes within Reactive Updates aka Precise Rendering
+
+In order to improve the performance and memory-footprint, you should always try to keep the reactive parts of your
+UI as small as possible. This can be achieved by putting the `render*`-functions as close to the dynamic subtree 
+as possible.
+
+Let's recap the first reactive rendering example:
+```kotlin
+val storedPerson = storeOf(Person(1, "Fritz", 42))
+
+render {
+    storedPerson.data.render { person ->
+        dl {
+            dt { +"Id" }
+            dd { +person.id.toString() }
+            dt { +"Name" }
+            dd { +person.name }
+            dt { +"Age" }
+            dd { +person.age.toString() }
+        }
+    }
+}
+```
+This code will recreate the whole definition list, if the `storedPerson` changes - even in only one of its properties.
+
+Now let's try to analyse, how this object might change by looking at each property:
+- `id`: this must be stable by definition; so it will never change.
+- `name`: it is very unlikely that their names might change.
+- `age`: this is in fact the only regularly changing property. Each passing year it must be increased.
+
+So in fact we only need to react to changes of one portion of the `Person` model: the `age`-property.
+
+:::info
+The following example uses some concepts, that have not yet been explained.
+
+The function of [handlers]((/docs/createstores/#custom-handler-in-depth)) and custom
+[data-flows](/docs/createstores/#custom-data-flow-property) are explained in the upcoming chapter
+[Store Creation](/docs/createstores). We just need to tease these functions here, in order to show a working example.
+Please just accept the description without a deeper understanding of those techniques. It will be sufficient, to
+grasp the overall concept.
+
+The concept of *precise rendering* fits best here - so please excuse this decent lookahead!
+:::
+
+This enables us to put the reactive rendering code much closer to the corresponding UI-elements. As result the whole
+dynamic subtree will become much smaller, which will improve performance and reduce memory-usage:
+```kotlin
+// define a small helper type to hold all static parts of a `Person`
+data class StaticPerson(val id: Int, val name: String)
+
+val storedPerson = object : RootStore<Person>(Person(1, "Fritz", 42)) {
+
+    // collect all static properties of the person into the helper class object
+    val staticPart: Flow<StaticPerson> = data.map { StaticPerson(it.id, it.name) }.distinctUntilChanged()
+    //                                                                             ^^^^^^^^^^^^^^^^^^^^^^
+    // Emit only a new value on the flow, if the new value really differs from the old one, that is `equals` fails.
+
+    // create specific data flow for the `age`-property
+    val age: Flow<Int> = data.map { it.age }
+
+    // For now accept that this element will change the store's state.
+    // The concept of handlers is described in the next chapter "Creating Stores"
+    val increaseAge = handle { state -> state.copy(age = state.age + 1) }
+}
+
+render {
+    dl {
+        storedPerson.staticPart.render { person ->
+            //       ^^^^^^^^^^
+            //       the upcoming `render`-function will only react to changes to this data part.
+            //       as this data won't change, this will be rendered only once!
+            dt { +"Id" }
+            dd { +person.id.toString() }
+            dt { +"Name" }
+            dd { +person.name }
+            dt { +"Artificial random value to show that this UI part will not react to age changes!" }
+            dd { +Id.next() } // This changes on re-rendering! It won't change in this app though.
+        }
+        dt { +"Age" }
+        dd {
+            storedPerson.age.renderText()
+            //           ^^^
+            //           Same here: the render function will only react to changes of the `age`-portion
+            //           of some `Person`-object. As this might change quite often, this part of the
+            //           UI will also change in the same manner.
+        }
+    }
+    button {
+        +"Increase Age"
+        clicks handledBy storedPerson.increaseAge
+    }
+}
+```
+In the above example the rather static aspects are exposed as separate data-flow `staticPart`, which will be configured
+by adding `distinctUntilChanged`. The latter will filter out all values, that are equal to their predecessors. This
+way every change to the store's value, exposed by its `data`-flow, will only appear on this flow, if some relevant
+properties have changed.
+
+As the example only enables to change the `age`-property, which is *not* part of the static-parts, the `staticPart`
+flow will not emit a new value, so the mount-point will not re-render ist subtree.
+
+On the other hand, the `age`-property is exposed by some special data-flow `storedPerson.age`. This one will emit a
+new value on every change to the main model. The latter is realized by the `<button>`-tag below, which will trigger
+some [handler in the store](/docs/createstores/#custom-handler-in-depth) that increases the `Person.age`-property.
+
+As this value is quite atomic, we can place the mount-point as deep into the static UI-part as possible. In this case
+directly as text-node inside the `<dd>`-tag. This is quite *precise*, that's why we call this concept 
+*precise rendering*.
+
+You can verify the two different behaviours of rendering in the example, by clicking the [[Increase Age]]-button.
+After each click, a new `Person`-object is created by the handler. The "Age" data will show the increased value, but
+the "Artificial random value" remains the same, which proves, that the first mount-point does not get some update.
 
 ### Minimize DOM Structure of Mount-Points
 
