@@ -676,8 +676,9 @@ As there is the preliminary `<dl>` tag, grouping all further UI below itself as 
 `render`-function to *use* some existing tag as mount-point reference instead of creating a dedicated one:
 
 ```kotlin
-dl { // `this` is the <dl>-Tag in this scope!
-    // pass the existing tag *ìnto* `render` for using it as the mount-point reference 
+dl {
+    // `this` is the <dl>-Tag in this scope!
+    // pass the existing tag *into* `render` for using it as the mount-point reference 
     storedPerson.data.render(into = this) { person -> 
         dt { +"Id" }
         dd { +person.id.toString() }
