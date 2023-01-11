@@ -227,7 +227,7 @@ using interfaces. However, the code above is a decent solution for small (conven
 
 ### Calling `map` on a `Store` with nullable Content
 
-To call `map` on a nullable `Store` only makes sense, when you have checked, that its value is not null:
+To call `map` on a nullable `Store` only makes sense, when you have checked, that its state is not null:
 
 ```kotlin
 @Lenses
@@ -253,13 +253,13 @@ applicationStore.data.render { person ->
 }
 ```
 
-### Handling nullable Values in `Store`s
+### Handling nullable States in `Store`s
 
-If you have a `Store` with a nullable content, you can use `mapNull` to derive a non-nullable `Store` from it,
+If you have a `Store` with a nullable state, you can use `mapNull` to derive a non-nullable `Store` from it,
 that transparently translates a `null`-value from its parent `Store` to the given default-value and vice versa.
 
 In the following case, when you enter some text in the input and remove it again,
-you will have a value of `null` in your `nameStore`:
+you will have a state of `null` in your `nameStore`:
 
 ```kotlin
 val nameStore = storeOf<String?>(null)
@@ -283,24 +283,27 @@ data class Person(val name: String?)
 
 //...
 
-val applicationStore = storeOf(Person(null))
+val personStore = storeOf(Person(null))
 
 //...
 
-val nameStore = applicationStore.map(Person.name()).mapNull("")
+val nameStore = personStore.map(Person.name()).mapNull("")
 ```
 
 ### Formatting Values
 
-In html you can only use `Strings` in your attributes like in the `value` attribute of `input {}`. To use other data
+In html you can only use `String`s in your attributes like in the `value` attribute of `input {}`. To use other data
 types in your model you have to specify how to represent a specific value as `String` (e.g. Number, Currency, Date).
 When you work with `input {}` you also need parse the entered text back to your data type.
 For all Kotlin basic types there is a convenience function `asString()` which generates a `Lens` from this type to 
 `String` and vice versa. Therefore, it calls internally the `T.toString()` and `String.toT()` functions.
 
 ```kotlin
-val ageLens: Lens<Person, Int> = Person.age() // cannot used in Tag attributes
-val ageLensAsString: Lens<Person, String> = Person.age().asString() // now it is useable
+@Lenses
+data class Person(val age: Int)
+
+val ageLens: Lens<Person, Int> = Person.age() // cannot be used in tag attributes
+val ageLensAsString: Lens<Person, String> = Person.age().asString() // now it is usable
 ```
 
 fritz2 also provides a special `lensOf()` function for creating a `Lens<P, String>` for special types that are not 
@@ -310,47 +313,30 @@ basic:
 fun <P> lensOf(format: (P) -> String, parse: (String) -> P): Lens<P, String>
 ```
 
-The following [validation example](/examples/validation) demonstrates its usage:
+If you use other types like `kotlinx.datetime.LocalDate` in your data classes, you have to specify a special lens for it.
+This lens then converts the value to a `String` and vice versa.
 ```kotlin
-import dev.fritz2.lens.format
+import kotlinx.datetime.*
+
+@Lenses
+data class Person(val birthday: LocalDate)
 
 object Formats {
-    private val dateFormat: DateFormat = DateFormat("yyyy-MM-dd")
-    val date: Lens<Date, String> = lensOf(
-        format = { dateFormat.format(it) },
-        parse = { dateFormat.parseDate(it) }
-    )
+    val date: Lens<LocalDate, String> = lensOf(LocalDate::toString, String::toLocalDate)
 }
 ```
 
-When you have created a special `Lens` for your own data type like `Formats.date`, you can then use it to create a
-new `Store`:
-concatenate your Lenses before using them in the `map()` method e.g. `map(Person.birthday() + Fromat.dateLens)` or
-call the method `map()` on the `Store` of your custom type `P` with your formatting `Lens` e.g `map(Format.dateLens)`.
+Now you can use the `Formats.date` lens for deriving appropriate stores:
 
-Here is the code from the [validation example](/examples/validation)
-which uses the special `Lens` in the `Formats` object specified above for the `com.soywiz.klock.Date` type:
 ```kotlin
-import com.soywiz.klock.Date
-...
+val personStore = storeOf<Person>(Person(LocalDate(1990, 1, 1)))
 
-val personStore = object : RootStore<Person>(Person(createUUID()))
-...
-val birthday = personStore.map(Person.birthday() + Format.date)
-// or
-val birthday = personStore.map(Person.birthday()).map(Format.date)
-...
-input("form-control", id = birthday.id) {
-    value = birthday.data
-    type = const("date")
-
-    changes.values() handledBy birthday.update
-}
+val birthday: Store<String> = personStore.map(Person.birthday() + Formats.date)
+// or when interim store is needed
+val birthday: Store<String> = personStore.map(Person.birthday()).map(Formats.date)
 ```
-The resulting store is a `Store<String>`.
 
-You can of course reuse your custom formatting `Lens` for every `Store` of the same type (in this
-case `com.soywiz.klock.Date`).
+Take a look at our complete [validation example](/examples/validation) to get an impression on that topic.
 
 ### Summary of Store-Mapping-Factories
 
