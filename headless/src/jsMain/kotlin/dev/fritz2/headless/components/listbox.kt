@@ -136,7 +136,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         tag: TagFactory<Tag<CV>>,
         initialize: ValidationMessages<CV>.() -> Unit
     ) {
-        value.validationMessages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
+        value.validationMessages.map { it.isNotEmpty() }.render { isNotEmpty ->
             if (isNotEmpty) {
                 addComponentStructureInfo(
                     "listboxValidationMessages",

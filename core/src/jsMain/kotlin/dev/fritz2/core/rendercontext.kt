@@ -5,7 +5,6 @@ package dev.fritz2.core
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.scan
 import kotlinx.dom.clear
@@ -29,7 +28,7 @@ interface RenderContext : WithJob, WithScope {
 
         val mountContext = MountContext(Job(job), target)
 
-        mountSimple(job, this.distinctUntilChanged()) {
+        mountSimple(job, this) {
             mountContext.job.cancelChildren()
             mountContext.runBeforeUnmounts()
             target.domNode.clear()

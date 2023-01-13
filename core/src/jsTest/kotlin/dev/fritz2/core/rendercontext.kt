@@ -92,8 +92,6 @@ class RenderContextTests {
 
     @Test
     fun testRenderReactsOnlyToNewValues() = runTest {
-        document.body?.id = "target"
-
         fun getSpanText(id: String) = (document.getElementById(id) as HTMLSpanElement).textContent
 
         data class Model(val static: String, val reactive: String)
@@ -104,7 +102,7 @@ class RenderContextTests {
         val idValueReactive = Id.next()
         val idHash = Id.next()
 
-        render("#target") {
+        render {
             div {
                 store.data.map { it.static }.render { _ ->
                     span(id = idHash) { +uniqueHashes.next() }
