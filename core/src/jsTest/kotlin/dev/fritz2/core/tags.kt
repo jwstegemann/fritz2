@@ -4,14 +4,12 @@ import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLParagraphElement
 import org.w3c.dom.HTMLSpanElement
 import org.w3c.dom.asList
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 
 class TagTests {
@@ -97,6 +95,56 @@ class TagTests {
             mountPointTag.hasAttribute("data-mount-point"),
             "Attribute `data-mount-point` missing, found only the following attributes: "
                     + mountPointTag.attributes.asList().joinToString(",") { it.name })
+    }
+
+    @Test
+    fun testRenderTextOnlyReactsToChangedValues() = runTest {
+        fun getSpanText(id: String) = (document.getElementById(id) as HTMLSpanElement).textContent
+        fun getStaticSpan(id: String) =
+            document.getElementById(id)!!.firstChild as HTMLSpanElement
+        fun getStaticTextNode(id: String) = document.getElementById(id)!!.firstChild!!.firstChild
+
+        data class Model(val static: String, val reactive: String)
+
+        val model = Model("fritz", "RC-3")
+        val store = storeOf(model)
+        val idValueReactive = Id.next()
+        val idMain = Id.next()
+
+        render {
+            div(id = idMain) {
+                // this should be re-rendered only after last change
+                store.data.map { it.static }.renderText()
+
+                store.data.map { it.reactive }.render { reactive ->
+                    span(id = idValueReactive) { +reactive }
+                }
+            }
+        }
+
+        delay(100)
+
+        assertEquals("RC-3", getSpanText(idValueReactive))
+        val firstRenderedSpan = getStaticTextNode(idMain)
+        assertEquals("fritz", getStaticSpan(idMain).textContent)
+
+        // update with repeated value should omit rendering
+        store.update(model.copy(reactive = "RC-4"))
+        delay(100)
+
+        assertEquals("RC-4", getSpanText(idValueReactive))
+        val firstRenderedSpanCheck = getStaticTextNode(idMain)
+        assertSame(firstRenderedSpan, firstRenderedSpanCheck)
+        assertEquals("fritz",  getStaticSpan(idMain).textContent)
+
+        // update with new value should trigger re-render
+        store.update(Model("fritz2", "1.0-FINAL"))
+        delay(100)
+
+        assertEquals("1.0-FINAL", getSpanText(idValueReactive))
+        val secondRenderedSpan = getStaticTextNode(idMain)
+        assertNotSame(firstRenderedSpan, secondRenderedSpan)
+        assertEquals("fritz2", getStaticSpan(idMain).textContent)
     }
 
     @Test

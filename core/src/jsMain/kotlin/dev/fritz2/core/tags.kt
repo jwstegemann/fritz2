@@ -249,7 +249,7 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, WithEvents<E> {
     fun Flow<String>.renderText(into: Tag<*>? = null) {
         val target = into?.apply(SET_MOUNT_POINT_DATA_ATTRIBUTE) ?: span(content = SET_MOUNT_POINT_DATA_ATTRIBUTE)
 
-        mountSimple(job, this) { content ->
+        mountSimple(job, this.distinctUntilChanged()) { content ->
             target.domNode.clear()
             target.domNode.appendChild(window.document.createTextNode(content))
         }
