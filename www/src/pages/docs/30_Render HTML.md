@@ -693,9 +693,7 @@ data class StaticPerson(val id: Int, val name: String)
 val storedPerson = object : RootStore<Person>(Person(1, "Fritz", 42)) {
 
     // collect all static properties of the person into the helper class object
-    val staticPart: Flow<StaticPerson> = data.map { StaticPerson(it.id, it.name) }.distinctUntilChanged()
-    //                                                                             ^^^^^^^^^^^^^^^^^^^^^^
-    // Emit only a new value on the flow, if the new value really differs from the old one, that is `equals` fails.
+    val staticPart: Flow<StaticPerson> = data.map { StaticPerson(it.id, it.name) }
 
     // create specific data flow for the `age`-property
     val age: Flow<Int> = data.map { it.age }
@@ -733,10 +731,11 @@ render {
     }
 }
 ```
+
 In the above example the rather static aspects are exposed as separate data-flow `staticPart`, which will be configured
-by adding `distinctUntilChanged`. The latter will filter out all values, that are equal to their predecessors. This
-way every change to the store's value, exposed by its `data`-flow, will only appear on this flow, if some relevant
-properties have changed.
+internally by the `render`-function by adding `distinctUntilChanged`. The latter will filter out all values, that are
+equal to their predecessors. This way every change to the store's value, exposed by its `data`-flow, will only appear 
+on this flow, if some relevant properties have changed.
 
 As the example only enables to change the `age`-property, which is *not* part of the static-parts, the `staticPart`
 flow will not emit a new value, so the mount-point will not re-render ist subtree.
@@ -752,6 +751,10 @@ directly as text-node inside the `<dd>`-tag. This is quite *precise*, that's why
 You can verify the two different behaviours of rendering in the example, by clicking the [[Increase Age]]-button.
 After each click, a new `Person`-object is created by the handler. The "Age" data will show the increased value, but
 the "Artificial random value" remains the same, which proves, that the first mount-point does not get some update.
+
+:::info
+The above concept applies also to the `renderText`-function or [mapped stores](/docs/storemapping/).
+:::
 
 ### Minimize DOM Structure of Mount-Points
 
