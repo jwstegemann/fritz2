@@ -663,7 +663,8 @@ render {
     }
 }
 ```
-This code will recreate the whole definition list, if the `storedPerson` changes - even in only one of its properties.
+This code will recreate the whole `dl`-block, if the `storedPerson` state changes - 
+even when only one of its properties changes.
 
 Now let's try to analyse, how this object might change by looking at each property:
 - `id`: this must be stable by definition; so it will never change.
@@ -733,7 +734,7 @@ render {
 ```
 
 In the above example the rather static aspects are exposed as separate data-flow `staticPart`, which will be configured
-internally by the `render`-function by adding `distinctUntilChanged`. The latter will filter out all values, that are
+internally by the `render`-function. The latter will filter out all values, that are
 equal to their predecessors. This way every change to the store's value, exposed by its `data`-flow, will only appear 
 on this flow, if some relevant properties have changed.
 
