@@ -131,7 +131,7 @@ an elegant way: **Headless** Components!
 ## Headless
 
 In search of a replacement for the previous component library of fritz2, we found the
-brilliant [headlessui](https://headlessui.dev/) which we picked up as a solution for us and which serves as inspiration
+brilliant [headlessui](https://headlessui.com/) which we picked up as a solution for us and which serves as inspiration
 and template at the same time.
 
 The idea behind it is as simple as the benefit is hard to grasp:

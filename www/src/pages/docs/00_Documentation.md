@@ -13,18 +13,38 @@ eleventyNavigation:
 Since we want you to build the best, most efficient, successful, and whatever-else-you-want web-apps with fritz2,
 we happily provide you with all the documentation you need in order to use it.
 
-We aim to present the different topics and concepts in a helpful order. If you want to stick with it,
-we suggest to start reading with [Project Setup](/docs/start), otherwise just pick your topic of interest from the menu.
-
-![state management in fritz2](/img/fritz2_cycle_of_life.svg =640x)
-
 We always try our best with fritz2 and would love your feedback! Please feel free to open an
 [issue](https://github.com/jwstegemann/fritz2/issues).
 
 Whenever you find something missing, misleading or even plain wrong in our documentation please open an
-[PR](https://github.com/jwstegemann/fritz2-docs/pulls) or [issue](https://github.com/jwstegemann/fritz2-docs/issues).
+[PR](https://github.com/jwstegemann/fritz2/pulls) or [issue](https://github.com/jwstegemann/fritz2-docs/issues). 
+Probably the easiest way to do so is by using the "Edit this page on Github" link you find at the bottom of each page.
+
 We also encourage everybody to share their own examples and showcases with us,
 as this is often the best way to learn something new.
+
+## How to read this Documentation
+
+Most topics are split in three parts, that differ in the sense of detail, abstraction and importance:
+
+- *Overview* - This section gives you a rather short overview about the topic and the supporting fritz2 APIs. 
+It focuses on the big picture and might simplify some aspects. Read this to get a first impression about a feature
+or as short reminder.
+- *Essentials* - This section covers all essential aspects of a feature. You will need this knowledge in order to build
+a real life fritz2 application.
+- *Advanced Topics* - This section presents more advanced or special interest topics. Read this if you are interested
+in some deeper knowledge about some fritz2 features.
+
+If you are new to fritz2, we recommend you to read first all the *overview* sections en bloc and skip all the rest.
+As next step you should then read the *essential* sections for the render HTML, store creation and store mappings.
+Those topics are the foundation for building fritz2 applications.
+
+After those steps, feel free to read the other *essential* sections or even the *advanced topics*.
+
+::: info
+Please also have a look at our [examples](/examples), which are referenced by the different topics and sections!
+They show all the explained topics in working code, so studying those will help you to progress.
+:::
 
 ## Where does the name come from?
 

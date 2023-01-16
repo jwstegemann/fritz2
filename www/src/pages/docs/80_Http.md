@@ -7,7 +7,7 @@ eleventyNavigation:
     key: http
     parent: documentation
     title: Http
-    order: 60
+    order: 80
 ---
 
 Using the browser's default fetch API can get quite tiresome, which is why fritz2 offers a small fluent api wrapper for it.
@@ -79,7 +79,7 @@ To see a complete example of this, visit our
 
 In the real world, instead of creating the JSON manually, better use 
 [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization).
-Get inspired by our [repositories example](/examples/repositories).
+Get inspired by our [masterdetail example](/examples/masterdetail).
 
 
 You can easily set up your local webpack server to proxy services (avoid CORS, etc.) when developing locally in 

@@ -27,9 +27,9 @@ For background information on why we think headless components are the optimal w
 detailed one [blog post](/blog/posts/paradigm-shift-for-components/).
 
 ::: info
-Note: for the styling information we use in the examples the [tailwindcss](https:tailwindcss.com) framework. Since
+Note: for the styling information we use in the examples the [tailwindcss](https://tailwindcss.com) framework. Since
 fritz2 is agnostic about the styling information, you can of course use other frameworks such as
-[Bootstrap](https:getbootstrap.com) or simply some plain CSS.
+[Bootstrap](https://getbootstrap.com) or simply some plain CSS.
 :::
 
 ## Setup
@@ -163,7 +163,7 @@ representation of a component:
 
 Bricks often have a functionality in themselves, which is achieved solely through their use within a component. Examples
 of this are the various `labels`, which usually set certain
-[ARIA](https:developer.mozilla.orgen-USdocsWebAccessibilityARIA) attributes or trigger established functions.
+[ARIA](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA) attributes or trigger established functions.
 
 A good example of this are the labels on the text components [InputField](#inputField) and [TextArea](#textArea).
 If these are used, a mouse click on these elements automatically focuses the associated input field.
@@ -503,7 +503,7 @@ listbox<String> {
 Some bricks of the headless components (e.g. the `popOverPanel` or the `listboxItem`) are positioned dynamically
 and hover over the rest of the content. These are often faded in and out dynamically.
 
-These blocks are implemented using the library [Popper.js]("https:popper.js.org"). Bid accordingly
+These blocks are implemented using the library [Popper.js](https://popper.js.org). Bid accordingly
 they offer a unified configuration interface to the most important attributes.
 
 The following configurations are available in the scope of such a brick that implements the abstract class `PopUpPanel`

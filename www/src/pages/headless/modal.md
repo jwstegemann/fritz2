@@ -201,15 +201,15 @@ Parameters: **no**
 
 Default-Tag: No tag is rendered!
 
-| Scope property     | Typ                            | Description                                                                                                                                         |
-|--------------------|--------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| `restoreFocus`     | `Boolean`                      | If `true` (default) the focus will be reset to the last focused element after closing the modal.                                                    |
-| `setInitialFocus`  | `InitialFocus`                 | If `InsistToSet` (default), the focus is set to the first focusable DOM element or the element marked with [`setInitialFocus()`](focus-management). |
-| `openState`        | `DatabindingProperty<Boolean>` | Mandatory (two-way) data-binding for opening and closing.                                                                                           |
-| `opened`           | `Flow<Boolean>`                | Data stream that provides Boolean values related to the "open" state. Quite useless within a modal, as it is always `true`                          |
-| `close`            | `SimpleHandler<Unit>`          | Handler to close the list box from inside.                                                                                                          |
-| `open`             | `SimpleHandler<Unit>`          | handler to open; does not make sense to use within a modal!                                                                                         |
-| `toggle`           | `SimpleHandler<Unit>`          | handler for switching between open and closed; does not make sense to use within a modal.                                                           |
+| Scope property     | Typ                            | Description                                                                                                                                          |
+|--------------------|--------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `restoreFocus`     | `Boolean`                      | If `true` (default) the focus will be reset to the last focused element after closing the modal.                                                     |
+| `setInitialFocus`  | `InitialFocus`                 | If `InsistToSet` (default), the focus is set to the first focusable DOM element or the element marked with [`setInitialFocus()`](#focus-management). |
+| `openState`        | `DatabindingProperty<Boolean>` | Mandatory (two-way) data-binding for opening and closing.                                                                                            |
+| `opened`           | `Flow<Boolean>`                | Data stream that provides Boolean values related to the "open" state. Quite useless within a modal, as it is always `true`                           |
+| `close`            | `SimpleHandler<Unit>`          | Handler to close the list box from inside.                                                                                                           |
+| `open`             | `SimpleHandler<Unit>`          | handler to open; does not make sense to use within a modal!                                                                                          |
+| `toggle`           | `SimpleHandler<Unit>`          | handler for switching between open and closed; does not make sense to use within a modal.                                                            |
 
 
 ### modalPanel

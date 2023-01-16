@@ -6,6 +6,7 @@ const markdownItKbd = require('markdown-it-kbd');
 const markdownItAnchor = require('markdown-it-anchor');
 const markdownItContainer = require('markdown-it-container');
 const markdownItImsize = require('markdown-it-imsize');
+const markdownItIframe = require('./markdown-it-iframe');
 
 const tocPlugin = require('eleventy-plugin-toc');
 const heroiconsPlugin = require('eleventy-plugin-heroicons');
@@ -78,6 +79,7 @@ module.exports = (config) => {
             .use(markdownItContainer, "info")
             .use(markdownItContainer, "warning")
             .use(markdownItImsize)
+            .use(markdownItIframe, { width: 250, height: 250 })
     )
 
     config.addPlugin(tocPlugin, {

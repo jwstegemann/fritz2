@@ -1,0 +1,146 @@
+# Documentation
+
+-> Konzept der Navigation erklären:
+
+- Stufe1: Überblick über Thema (Overview)
+- Stufe2: Notwendig für das Schreiben von Applikation (Essentials)
+- Stufe3: Spezialfälle (Advanced Topics)
+
+# Getting Started
+
+# Basic Concepts
+
+- Simples Beispiel -> Getting Started Example: Store + input
+
+# Render HTML (DOM)
+
+## Stufe 1
+
+- reaktives Styling
+- reaktive Attribute
+
+## Stufe 2
+
+- Beispiel mit Liste<CustomDataClass>
+- reaktives Rendern / Content
+    - T
+    - text
+    - renderEach
+    - renderEach mit IdProvider -> nur auflisten; Verweis auf Abschnitt in State Management
+    - renderEach auf Store -> nur auflisten; Verweis auf Abschnitt in State Management
+- Structure UI
+
+## Stufe 3
+
+- Scope
+- (später) Custom Tags / RenderContexts
+- Rendering mit Stand Alone Flow
+
+# Store Use Cases
+
+- Strukturbild (also echte Grafik)
+- einzelne Aspekte listen + Verweise auf folgende Kapitel
+- Validierung
+
+# Store Mapping
+
+## Stufe 1
+
+- map(Lens)
+- Store -> anderen Store, der
+
+```
+Store<A> <-> Store<B>
+             ^^^^^^^
+             für UI sinnvoller
+             
+tags = listOf("a", "b", "c")
+val a = Store<List<String>>
+<->
+tags = "a,b,c" // CSV
+val b = Store<String> // für Input
+
+lens: lensOf("id"
+  { p -> p.split(",") } // a -> b
+  { p, v -> v.joinToString() } // b (ggf. unter Nutzung des alten Wertes "a") -> a
+)
+```
+
+- -> p braucht man hier nicht (evtl. ohne p -> Jan muss formatOf anpassen!)
+
+## Stufe 2
+
+- Spezialfall: abgeleiteter Store hat nur Teile vom Parent-Modell (ganz oft einzelnes Attribut!) -> p wird benötigt, um
+  setter zu implementieren.
+- manuell
+- @Lenses Annotation für Convenience Fälle
+- alle anderen map Fälle
+- renderEach mit IdProvider
+- renderEach auf dem Store
+
+## Stufe 3
+
+???
+
+
+# Store Creation
+
+## Stufe 1
+
+- Beispiel mit CustomDataClass, Liste<CustomDataClass> + ggf. verschachtelte Liste
+- zu zeigen:
+  - abgeleiteter Flow als val
+  - custom Handler
+
+## Stufe 2
+
+- ad hoc handler
+- anderen Store aufrufen (a ruft b direkt auf)
+- tracking?
+- history?
+
+## Stufe 3
+
+- emittingHandler (Richtung Observer Pattern / Hollywood Prinzip)
+
+
+// done until here
+// rest should be done too!
+
+
+# Validation
+
+## Stufe 1
+
+- simples Beispiel ohne custom Message (wenn das geht!)
+
+## Stufe 2
+
+- Eigene Validator Klasse
+- Validator mit Listen
+- Custom Message
+- Metadata
+
+## Stufe 3
+
+- Validator Komposition
+
+# Router
+
+wie vorhanden
+
+# Http
+
+## Stufe 1
+
+- Basic
+
+## Stufe 2
+
+- Authentication (Middleware Herkunft nicht explizit zeigen!)
+
+## Stufe 3
+
+- Middleware
+  - Authentication als Beispielverweis zu Beginn
+- Custom Beispiel wie vorhanden

@@ -21,9 +21,9 @@ fun <T> history(capacity: Int = 0, initialValue: List<T> = emptyList()) =
  * so that each update is automatically stored in history.
  *
  * @receiver [Store] to sync with
- * @param synced if true, the the history will sync with store updates
  * @param capacity max number of entries in history
  * @param initialEntries initial entries in history
+ * @param synced if true, the history will sync with store updates
  */
 fun <D> Store<D>.history(capacity: Int = 0, initialEntries: List<D> = emptyList(), synced: Boolean = true) =
     History(capacity, initialEntries).apply {

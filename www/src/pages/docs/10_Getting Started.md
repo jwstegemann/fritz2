@@ -17,7 +17,7 @@ To use fritz2, you have to set up a Kotlin multiplatform-project. To do so you c
   our [tailwind specific template](https://github.com/jwstegemann/fritz2-tailwind-template) from GitHub instead.
 * checkout the [examples](https://fritz2.dev/examples) and see how to use some features of fritz2
 * have a look at
-  the [official documentation](https://kotlinlang.org/docs/reference/building-mpp-with-gradle.html#setting-up-a-multiplatform-project)
+  the [official documentation](https://kotlinlang.org/docs/multiplatform-get-started.html)
   and use the following `build.gradle.kts` file:
 
 ## Setup Gradle Build
@@ -133,13 +133,6 @@ fun main() {
 }
 ```
 ![running example in browser](/img/gettingstarted_inital.png)
-
-When calling `render` like that, your content will be mounted to an `HTMLElement` with `id="target"`.
-If you want to mount your content to the `body` of your `index.html`, you can omit this parameter.
-Instead of using the `selector` string with the [querySelector syntax](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector),
-you can also specify an `HTMLElement` directly on the `targetElement` parameter.
-Setting the `override` parameter to `false` means that your content will be appended. By default, all child
-elements will be removed before your content is appended to the `targetElement`.
 
 Run the project by calling `./gradlew jsRun` in your project's main directory. Add `-t` to enable automatic
 building and reloading in the browser after changing your code.
