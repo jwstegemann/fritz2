@@ -58,7 +58,7 @@ This store supports the former functions by exposing the following two propertie
 - `data`: This `Flow` of `T` can be used to render the current state into the UI by using some `render*`-functions. 
 This is described in the [reactive rendering](/docs/render/#reactive-rendering) sections of the 
 [Render HTML](/docs/render) chapter.
-- `update`: This is a `Handler` which manages the state changes of the store. This default handler takes one `T` and
+- `update`: This is a `Handler` which manages a state changes of the store. This particular handler takes one `T` and
 simply substitutes the "old" state `T` of the store with it.
 
 You can use this handler to conveniently implement _two-way-databinding_ by using the `changes` event-flow
@@ -108,8 +108,8 @@ val storedInterests = InterestsStore()
 
 ### Custom Handler
 
-Our custom store already has the handler `update` as we already know which simply substitutes the "old" store's state 
-with a new one. This is not sufficient, when dealing with a list. It would be awkward to *add* some interest for
+Our custom store already has the handler `update` which - as we already know - simply substitutes the store's "old" state 
+with a new one. This is not sufficient, when for example dealing with a list. It would be awkward to *add* some interest for
 example.
 
 For purposes like this, you can create your own handler inside some `Store` scope with one of the `handle`-factory
@@ -244,11 +244,11 @@ handlers for a dedicated task.
 There are three different variants of handler factories available, which differ in the amount of parameters available
 in the handle expression:
 
-| Factory                        | Parameters in handle-expression | Use case                                                                                                                                                                                                                              |
-|--------------------------------|---------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `Store<T>.handle<Unit>`        | `state: T`                      | New state can only be generated from the old one or some external source. There is no information from the event source available. Typical use cases are resetting to initial state or clearing the store.                            |
-| `Store<T>.handle<A>`           | `state: T`, `action: A`         | New state can be based upon information passed from the event source. Typical use cases are updating some part of the overall state or adding or dropping a list item. The default handler `update` uses this, where its `A` is a `T`.|
-| `Store<T>.handleAndEmit<A, E>` | `state: T`, `action: A`         | New state can be based upon information passed from the event source. Typical use cases are updating some part of the overall state or adding or dropping a list item. As bonus one can `emit` some value `E`.                        |
+| Factory                        | Parameters in handle-expression | Use case                                                                                                                                                                                                                                  |
+|--------------------------------|---------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `Store<T>.handle<Unit>`        | `state: T`                      | New state can only be generated from the old one or some external source. There is no information from the event source available. Typical use cases are resetting to initial state or clearing the store.                                |
+| `Store<T>.handle<A>`           | `state: T`, `action: A`         | New state can be based upon information passed from the event source. Typical use cases are updating some part of the overall state or adding or dropping a list item. The default handler `update` uses this, where its `A` is a `T`.    |
+| `Store<T>.handleAndEmit<A, E>` | `state: T`, `action: A`         | New state can be based upon information passed from the event source. Typical use cases are updating some part of the overall state or adding or dropping a list item. This handler ist a `Flow` itself one can `emit` some value `E` on. |
 
 We will look at the first two of them here; the [emitting-handler](#emittinghandler---observer-pattern-for-handlers) 
 is rather an advanced topic and covered in a dedicated section there.
@@ -318,7 +318,7 @@ val storedPersons = object : RootStore<List<Person>>(emptyList()) {
     }
 }
 ```
-The above handle-code shows some typical pattern: We create the new store's state by analyzing first the "old" state
+The above handler-code shows some typical pattern: We create the new store's state by analyzing first the "old" state
 with some information from the action and then decide whether the old state could remain or there must be some update
 also using some information from the action.
 
@@ -425,7 +425,7 @@ render {
 }
 ```
 
-Don't be fooled: Inside the handle-code the "old" state would be available; we simply do not need it for our 
+Don't be fooled: Inside the handler-code the "old" state would be available; we simply do not need it for our 
 implementation. Just to make this more explicit, look at this:
 ```kotlin
 val clear: Handler<Unit> = handle { persons ->
@@ -434,7 +434,7 @@ val clear: Handler<Unit> = handle { persons ->
 }
 ```
 
-There are other use-cases where the access to the old state is definitely needed, and you always have access there.
+There are other use-cases where the access to the old state is definitely needed, and you always have access therefore.
 
 #### Complete Example
 
@@ -628,8 +628,8 @@ render {
 
 ### Track Processing State of Stores
 
-When one of your handlers contain a long-running action (like server-call, etc.) you might want to keep the user
-informed about that something is going on.
+When one of your handlers contains a long-running action (like server-call, etc.) you might want to keep the user
+informed that something is going on.
 
 Using fritz2 you can use the `tracker` factory to implement this:
 
@@ -671,7 +671,7 @@ If you want your tracking to continue instead, just handle exceptions within the
 
 ### EmittingHandler - Observer Pattern for Handlers
 
-In cases where you don't know which `Handler` of another store will handle the exposed data, you can use
+In cases where you don't know which `Handler` of another store will handle the data exposed by your handler, you can use
 the `EmittingHandler`, a type of handler that doesn't just take data
 as an argument but also emits data on a new `Flow` for other handlers to receive.
 

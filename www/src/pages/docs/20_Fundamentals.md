@@ -26,12 +26,12 @@ the DOM structure very closely.
 - State Handling: `Store`s take care of the data and offer functions to update the data by UI events (`handler`s) 
 and to use the data to `render` some UI portions *reactively*.
 
-Looks quite simple you think? In fact it is! The main principles and concepts are that simple, that's why we consider
+Looks quite simple you think? In fact it is. The main principles and concepts are that simple, that's why we consider
 fritz2 rather *lightweight*. After getting the first overview in this chapter, you will just learn more about 
 convenience functions that makes writing real world apps more pleasant in the following chapters.
 
 You will be also able to understand the following picture, that shows the above concepts embedded into the overall
-data flow. We will refer to this later on! 
+data flow. We will refer to this later on. 
 
 ![state management in fritz2](/img/fritz2_cycle_of_life.svg =640x)
 
@@ -93,26 +93,26 @@ This is the rendered structure of the main part below the `body` tag:
 ```
 
 Although this is rather some enhanced "hello-world"-example, it demonstrates almost all the fundamental concepts and
-parts of fritz2!
+parts of fritz2.
 
 Let's have a look at the result in a browser:
 
 @/snippets/index.html#fundamentals
 
 Now we have a good notion of the app and how it works, let's dive into the code and discover the various building 
-blocks, that drives this app.
+blocks, that drive this app.
 
 :::warning
 Just as short remark: We use [tailwindcss](https://tailwindcss.com) for the styling in this example. As fritz2 is 
 totally agnostic of any CSS styling framework, you are free to use any other CSS framework or even handcrafted CSS, 
-if that fit your needs best! 
+if that fits your needs! 
 The [running examples](/examples) are often built with [bootstrap](https://getbootstrap.com/) for example.
 :::
 
 ### Starting point
 
-The fritz2 framework requires very low ceremony to set up an application. Just call once inside your code the global 
-`render` function, to create an initial so called `RenderContext`. Think of it as a context, where you can place all
+The fritz2 framework requires very low ceremony to set up an application. Just call the global 
+`render` function once inside your code, to create an initial so called `RenderContext`. Think of it as a context, where you can place all
 your UI elements, that are HTML `tags` in the end.
 
 ```kotlin
@@ -128,7 +128,7 @@ fun main() {
 
 ### UI-Elements aka HTML-Tags
 
-Inside a `RenderContext` fritz2 offers factory functions for all HTML elements, like `div`, `span`, `p` and so on.
+Inside a `RenderContext` fritz2 offers factory functions for all HTML5 elements, like `div`, `span`, `p` and so on.
 Those functions always create some special `Tag` implementation, which itself is just a new `RenderContext`. This 
 enables of course the *nesting* of factories and leads to a *declarative* way of defining your UI.
 
@@ -176,7 +176,7 @@ For our example we only need one store, which we can declare with the `storeOf` 
 ```
 
 Once you have created the store, it can be used for...
-- ... rendering the current state into your UI
+- ... rendering the UI based on the current state
 - ... dealing with state changes triggered by (user) events.
 
 ### Reactive Rendering
@@ -201,7 +201,7 @@ So the call of render onto some flow *connects* the store with some node of the 
 Now the *"magic"* can happen: Every time the data inside the store changes, the new value will appear at the target
 node and change the whole subtree based upon the code you write inside the `render` functions parameter.
 
-In thís case the `p` tag will be removed from the DOM and a new tag will be rendered with the new text value inside.
+In this case the `p` tag will be removed from the DOM and a new tag will be rendered with the new text value inside.
 
 ### Dealing with State Changes
 
@@ -304,24 +304,24 @@ which holds all the HTML tags and keeps track on the emitting of events. The sto
 well defined node by calling the `render` extension method on the `data`-flow of the store. Every time the stored data
 changes, the new data will be applied to the rendering code, which then creates a new dom sub-tree accordingly.
 
-From within the DOM on the right side, the user (in almost all cases!) can interact with the UI and produces events,
+From within the DOM on the right side, the user (in almost all cases!) can interact with the UI and produce events,
 which then will be used to update the store's data through so called `handler`s. The latter has access to the current
 state and the new value and can then use both to create the new state.
 
-The new state will then appear as data of the flow and lead to a change to the UI. Voilà, you have a circle of 
+The new state will then appear on the `data`-flow and finally result in a change of the UI. Voilà, you have a circle of 
 (data)-life.
 
-That's the core of fritz2's way of building reactive web applications! No more *magic* left; just some more helpful
+That's the core of fritz2's way of building reactive web applications. No more *magic* left; just some more helpful
 tools to make writing apps more pleasant.
 
-Armed with this basic knowledge, you should keep on reading about the UI-Rendering and the chapters explaining the 
+Armed with this basic knowledge, you should go on reading about the UI-Rendering and the chapters explaining the 
 essentials of stores.
 
 ## Complete Example
 
-This is the full source of the example above, including all styling to make it look as in the screenshot.
+This is the full source of the example above, including all styling to make it look like the screenshot.
 You can just copy and paste it into the vanilla [tailwind template](https://github.com/jwstegemann/fritz2-tailwind-template)
-project, replacing the `main` function and the run the app.
+project, replacing the `main` function and then run the app.
 
 ```kotlin
 import dev.fritz2.core.*

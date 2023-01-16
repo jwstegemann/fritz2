@@ -14,9 +14,9 @@ eleventyNavigation:
 
 ### Create a basic UI
 
-fritz2 offers a rich DSL to create the HTML for your application. You just have to call the global `render` function
-inside to create an initial `RenderContext` in which you can then call the HTML-Tag functions provided by fritz2
-like `div`. All of those factories has to be nested by intention, so this results in a *declarative* way of creating
+fritz2 offers a rich DSL to create the HTML for your application. You just have to call the global `render` function to 
+create an initial `RenderContext` in which you can then call the HTML-Tag factory-functions provided by fritz2
+like `div`. All of those factories have to be nested by intention, so this results in a *declarative* way of creating
 UIs.
 
 ```kotlin
@@ -67,11 +67,11 @@ store, which offers a `Flow` of the store's value `T`. The function creates a so
 automatic update of the DOM on every change of the store's data. The *mount-point* uses a dedicated tag created in the 
 DOM as reference to the node, where the deletion and recreation of the defined UI-fragment happens.
 
-To react to (user) events like the click onto a button, a store provides so called `handler`s, which creates the new
-value of the store. The default handler `update` just takes the new value and substitutes the old state with it.
+To react to (user) events like the click onto a button, a store provides so called `handler`s, which create the new
+value of the store. The default handler `update` just takes a new value and substitutes the old state with it.
 
 :::info
-The reacting to events is not part of this chapter, but explained in short just to make the example understandable!
+The reacting to events is not part of this chapter, but explained in short just to make the example understandable.
 :::
 
 ```kotlin
@@ -130,7 +130,7 @@ As last teasing aspects we want to demonstrate, how fritz2 supports styling an U
 
 The tag-factories accept static CSS-classes as a `String` as first parameter, as this is such a common use case.
 (This is why we used the named parameter for the ids so far)
-fritz2 is totally agnostic of any CSS-framework or even handcrafted CSS. Use whatever fits best!
+fritz2 is totally agnostic of any CSS-framework or even handcrafted CSS. Use whatever fits your needs.
 
 As being reactive is such an important aspect of fritz2, styling and attributes can be set based upon the store's state. 
 The button becomes reactively disabled, if it gets clicked once, because the click changes the state of the store. 
@@ -207,9 +207,9 @@ Clicking the button will change the button section to this:
 ```
 Pay attention to the changed CSS-classes and the added `disabled` attribute! 
 
-(tailwindcss users might recognize that the better approach in this case would be the usage of `disabled:` prefix;
-this would make the `className` call obsolete and shorten the code - accept this solution for demonstration purposes
-though!)
+(tailwindcss users might recognize that a better approach for this case would be the usage of `disabled:` prefix;
+this would make the `className` call obsolete and shorten the code - please accept this solution for demonstration purposes
+only.)
 
 ## Essentials
 
@@ -235,7 +235,7 @@ enum class Interest {
 
 As you already know all [state handling](/docs/fundamentals/#state-handling) is done with `Store`s in fritz2.
 
-Based upon the `data`-property, which provides a `Flow` of the store's generic data type, there exist a variety of
+Based upon the `data`-property, which provides a `Flow` of the store's generic data type, there are a variety of
 `render*`-functions, that can be used to create *reactive* UIs:
 
 | Render-Function            | Additional parameters | Description                                                                                                                    | Default Tag |    
@@ -255,7 +255,7 @@ This special variant and its application are described in
 
 #### Reactive Rendering of some `T`
 
-In order to render the whole store's data type, there is the `render`-function. As last and only required parameter,
+In order to render the whole store's data type, there is the `render`-function. As its only required parameter,
 it needs a functional expression with a `Tag` as receiver (remember that a `Tag` *is* a `RenderContext`), providing the
 data as parameter and returning `Unit`. Inside this `content` parameter, you then have access to the current data
 and can use all HTML tag factories to create the desired UI-fragment.
@@ -394,7 +394,7 @@ and thus is better to read.
 
 #### Reactive Rendering of Lists of Value Objects
 
-As `List<T>` as value of a store is a common use case, fritz2 offers a special `renderEach` function for this too:
+As a `List<T>` as value of a store is a common use case, fritz2 offers a special `renderEach` function for this too:
 
 ```kotlin
 // define some store with type of `List<T>`
@@ -461,10 +461,10 @@ mount-point and re-create the whole `<li>`-tags even if only *one* element of th
 This mount-point compares the last version of your list with the new one on every change and applies the minimum
 necessary patches to the DOM. Assuming again that only one item changes, the untouched items may remain inside the DOM
 and only the changed item's DOM subtree needs to be deleted and recreated. You can imagine, that this is a game changer
-concerning performance!
+concerning performance.
 
-This `renderEach` implementation does the patch-determination applying the standard `equals`-method of the list's 
-type `T`. This is the reason, why is targeted to *value* objects: They are implicitly defined by their equality!
+This `renderEach` implementation does the patch-determination by applying the standard `equals`-method of the list's 
+type `T`. This is the reason, why it is targeted to *value* objects: They are implicitly defined by their equality!
 
 Have a look at its usage in our [master detail](/examples/masterdetail/) example.
 
@@ -986,7 +986,7 @@ in the DOM-Tree.
 
 ### Customize the Starting Point - Anchor Your global Render Function
 
-As you already should know, you need to call the global `render` function once, in order to create an initial
+As you already know, you need to call the global `render` function once, in order to create an initial
 `RenderContext`:
 
 ```kotlin

@@ -37,7 +37,7 @@ a setter-expression:
 val nameLens: Lens<Person, String> = lensOf({ it.name }, { person, value -> person.copy(name = value) })
 ```
 
-The lense can then be used to access the `name`-property of a `Person` or to create a new person with changed name:
+The lens can then be used to access the `name`-property of a `Person` or to create a new person with changed name:
 ```kotlin
 val fritz2 = Person(1, "fritz2")
 val nameOfFritz2: String = nameLens.get(person) // nameOfFritz2 = "fritz2"
@@ -100,7 +100,7 @@ render {
     }
 }
 ```
-As you can see, the mapped store fits perfectly into the desired (yet a little artificial) requirements for the UI:
+As you can see, the mapped store fits perfectly to the desired (yet a little artificial) requirements for the UI:
 There is no mapping inside the UI, nor are there any custom handler or data-flows in the store.
 
 To be fair, the heavy work is done by the manual creation of the lens though.
@@ -148,7 +148,7 @@ val nameLens = lensOf("name", { it.name }, { person, value -> person.copy(name =
 
 No magic there. The first parameter sets an id for the `Lens`. When using `Lens`es with `Store`s,
 the `id` will be used to generate a valid HTML `id` representing the path through your model.
-This can be used to identify your elements semantically (for automated ui-tests for example).
+This can be used to identify your elements semantically (for validation or automated ui-tests for example).
 
 If you have deep nested structures or a lot of them, you may want to automate this behavior.
 fritz2 offers an annotation `@Lenses` you can add to your data-classes in the `commonMain` source-set of
@@ -367,7 +367,7 @@ Take a look at our complete [validation example](/examples/validation) to get an
 There is a special convenience method for the [reactive rendering](/docs/render/#reactive-rendering) of list of 
 entities, that can only be explained with the already explained knowledge about `Store`s and `Lens`es.
 
-If a store contains a type of `List<T>`, then there exist an extension method called `renderEach` *directly* onto the
+On a store of `List<T>` an extension method called `renderEach` ia defined *directly* on the
 store. It is mandatory to pass an `idProvider`, so this is targeted to entity-types.
 
 Inside the content-parameter expression of `renderEach`, instead of some `T` a whole `Store<T>` gets injected. So
