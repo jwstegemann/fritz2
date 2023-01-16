@@ -256,7 +256,7 @@ This special variant and its application are described in
 #### Reactive Rendering of some `T`
 
 In order to render the whole store's data type, there is the `render`-function. As its only required parameter,
-it needs a functional expression with a `Tag` as receiver (remember that a `Tag` *is* a `RenderContext`), providing the
+it needs a lambda expression with a `Tag` as receiver (remember that a `Tag` *is* a `RenderContext`), providing the
 data as parameter and returning `Unit`. Inside this `content` parameter, you then have access to the current data
 and can use all HTML tag factories to create the desired UI-fragment.
 
@@ -294,7 +294,7 @@ As result the following DOM-fragment is rendered:
 </div>
 ```
 
-The `render`-function creates a *mount-point*, that reactively combines some store's data with 
+The `render`-function creates a *mount-point*, that reactively connect some store's data with 
 some node in the DOM-tree. The created mount-point now takes care of 
 reacting to new values and keep the UI-fragment up to date.
 
@@ -309,10 +309,11 @@ new data's content.
 
 :::info
 As a direct consequence of the last fact, you should strive to keep the reactive UI-fragments as minimal as you can,
-as re-rendering a subtree is work for the browser. 
+as re-rendering a subtree is work for the browser.
 
-We call this concept of minimizing the dynamic UI-parts 
-[precise rendering](#minimize-dom-structure-changes-within-reactive-updates-aka-precise-rendering).
+fritz2 supports you in doing so, for example by:
+- [precise rendering of complex / hierarchical data structure](#minimize-dom-structure-changes-within-reactive-updates-aka-precise-rendering) 
+- [efficient rendering of lists](#reactive-rendering-of-lists-of-value-objects)
 
 As rule of thumb memoize this: The smaller the changing portions are, the faster the result will be!
 :::
@@ -509,14 +510,14 @@ render {
 As the identity is stable, the following properties holds for the rendered items:
 - an element is only rendered *once*, so only adding or deleting items to the store will lead to changes in the UI,
 as those new elements will be added or inserted or the deleted elements will disappear from the DOM.
-- any change to an existing item will *not* change the UI anymore. 
+- any change to an existing item will *not* trigger any re-rendering action anymore.
 
 The latter is an important aspect to consider before the use of `renderEach` for entities: 
-If you still need to reflect those changes, it might be a better choice to rely on the default `renderEach` application 
-relying on equality. But if only a small set of properties of an element could possibly change and performance is an
-important aspect, rely on this application of `renderEach` and add additional mount-points inside the elements subtrees. 
-You will learn about those in 
+If you still need to reflect those changes, you have the following two options:
+- If you want to apply precise rendering rely on this application of `renderEach` and add additional mount-points 
+inside the elements subtrees. You will learn about those in
 [chapter about store mapping](/docs/storemapping/#reactive-rendering-of-lists-of-entities-with-automatically-mapped-element-store).
+- Otherwise, it might be a better choice to stick to the default `renderEach` application relying on equality.
 
 Have a look at its application in our [todomvc](/examples/todomvc/) example.
 

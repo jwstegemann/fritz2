@@ -23,10 +23,10 @@ of the applied framework API.
 The main concepts of fritz2 are:
 - Declarative UI Creation: This is achieved through HTML tag alike factories that can be nested in order to resemble
 the DOM structure very closely.
-- State Handling: `Store`s take care of the data and offer functions to update the data by UI events (`handler`s) 
+- State Handling: `Store`s take care of the data and offer functions to update the data by (UI-) events (`handler`s) 
 and to use the data to `render` some UI portions *reactively*.
 
-Looks quite simple you think? In fact it is. The main principles and concepts are that simple, that's why we consider
+Looks quite simple you think? In fact, it is. The main principles and concepts are that simple, that's why we consider
 fritz2 rather *lightweight*. After getting the first overview in this chapter, you will just learn more about 
 convenience functions that makes writing real world apps more pleasant in the following chapters.
 
@@ -45,7 +45,7 @@ topics and offers almost the same functionalities.
 Let's dive into a small example to demonstrate the *fundamental* concepts and functions.
 
 Assume some input field, where a user can enter some text. The text should then be displayed in some section below.
-As small bonus, we consider a button, which will clear the input:
+As small bonus, we consider a button, which will capitalize the input:
 
 ```kotlin
 import dev.fritz2.core.*
@@ -71,8 +71,8 @@ fun main() {
                 p{ +content }
             }
             button {
-                +"Clear"
-                clicks handledBy store.handle { "" }
+                +"Capitalize"
+                clicks handledBy store.handle { it.uppercase() }
             }
         }
     }
@@ -88,7 +88,7 @@ This is the rendered structure of the main part below the `body` tag:
     <div class="mount-point" data-mount-point="">
         <p>Hello, fritz2!</p>
     </div>
-    <button>Clear</button>
+    <button>Capitalize</button>
 </div>
 ```
 
@@ -195,8 +195,10 @@ store.data.render { content -> // the data from store
 
 How is this reactive? Here is a simplified answer to this question: The store holds some `Flow` which literally 
 resembles some real flow, as inside the flow some data is transported to a drain. The drain in this case is a 
-well-defined node inside the DOM of your browser, which is created by the `render` call. 
-So the call of render onto some flow *connects* the store with some node of the DOM. 
+well-defined node inside the DOM of your browser, which is created by the `render` call. Every time the stored data
+changes, the new data will be applied to the rendering code, which then creates a new dom subtree accordingly.
+
+So the call of render onto some flow *connects* the store with some node of the DOM: The so called "mount-point".
 
 Now the *"magic"* can happen: Every time the data inside the store changes, the new value will appear at the target
 node and change the whole subtree based upon the code you write inside the `render` functions parameter.
@@ -224,13 +226,13 @@ input {
 }
 ```
 
-As you might remember we have to initialize every store with some state value. In order to pass this value reactively
-into the input element, we have to set the tag specific `value` property with the data-flow of the store:
+In order to pass the current value of the store into the input element reactively, we have to set the tag 
+specific `value` property with the data-flow of the store:
 
 ```kotlin
 input {
-    // the initial state will be rendered into the input
-    // also any external state change (see the clear button below)
+    // the current state will be rendered into the input (at first the initial value of course)
+    // also any external state change (see the Capitalize button below)
     // will update the input itself!
     value(store.data)
 }
@@ -242,21 +244,21 @@ of data-binding for most form elements for example.
 
 As contrary, if only one aspect is connected to a store, we call this *one way data-binding*.
 
-Let's have a look to the teaser for *custom* handlers of a store: Clearing the store's state by one button click: 
+Let's have a look to the teaser for *custom* handlers of a store: Capitalizing the store's state by one button click: 
 
 ```kotlin
 button {
-    +"Clear"
-    clicks handledBy store.handle { "" }
-//  ^^^^^^ ^^^^^^^^^       ^^^^^^^^^^^^^
+    +"Capitalize"
+    clicks handledBy store.handle { it.uppercase() }
+//  ^^^^^^ ^^^^^^^^^       ^^^^^^^^^^^^^^^^^^^^^^^^^
 //  use    connect to      change the state
 //  event  handler         of the store
 }
 ```
 
 Often the predefined `update` handler (which simply replaces the store's content with a new value) is not sufficient
-for all use cases. So fritz2 allows to define custom handlers, like the one above, which simply sets an empty `String`
-as new value.
+for all use cases. So fritz2 allows to define custom handlers, like the one above, which simply takes the old state, 
+capitalize it and set the result as new value.
 
 ### Identifying Data
 
@@ -301,12 +303,13 @@ main concepts of fritz2 within the cycling flow of data.
 
 On the left side there is the store, that keeps track of the application data. On the other side there is the DOM, 
 which holds all the HTML tags and keeps track on the emitting of events. The store's data gets connected to some
-well defined node by calling the `render` extension method on the `data`-flow of the store. Every time the stored data
-changes, the new data will be applied to the rendering code, which then creates a new dom sub-tree accordingly.
+well-defined node (the "mount-point") by calling the `render` extension method on the `data`-flow of the store. 
+Every time the stored data changes, the new data will be applied to the rendering code, which then creates a new dom 
+subtree accordingly.
 
 From within the DOM on the right side, the user (in almost all cases!) can interact with the UI and produce events,
 which then will be used to update the store's data through so called `handler`s. The latter has access to the current
-state and the new value and can then use both to create the new state.
+state and the value passed by the event-flow and can then use both to create the new state.
 
 The new state will then appear on the `data`-flow and finally result in a change of the UI. Voilà, you have a circle of 
 (data)-life.
@@ -347,8 +350,8 @@ fun main() {
                 }
             }
             button("p-2 bg-blue-400 text-white border border-1 border-gray-300 rounded-md") {
-                +"Clear"
-                clicks handledBy store.handle { "" }
+                +"Capitalize"
+                clicks handledBy store.handle { it.uppercase() }
             }
         }
     }

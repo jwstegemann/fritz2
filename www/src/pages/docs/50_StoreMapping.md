@@ -290,6 +290,30 @@ val personStore = storeOf(Person(null))
 val nameStore = personStore.map(Person.name()).mapNull("")
 ```
 
+### Combining Lenses
+
+A `Lens` supports the `plus`-operator with another lens in order to create a new lens, that combines the two in such a
+way, that the `get` and `set`-functions are chained in natural order.
+
+Imagine the following example:
+```kotlin
+data class Address(val street: String)
+data class Person(val address: Address)
+
+val addressOfPerson: Lens<Person, Address> = lensOf("address", Person::address) { p, v -> p.copy(address = v) }
+val streetOfAddress: Lens<Address, String> = lensOf("street", Address::street) { p, v -> p.copy(street = v) }
+
+// combine two lenses:
+val streetOfPerson = address + street
+
+// apply the combined lens to an example object:
+val person = Person(Address("Lerchenweg"))
+formattedBirthday.get(person) // -> "Lerchenweg"
+formattedBirthday.set("Rosenstraße") // Person(address = Address("Rosenstraße"))
+```
+
+This feature is i.a. very useful for formatting values like you will learn about in the next section.
+
 ### Formatting Values
 
 In html you can only use `String`s in your attributes like in the `value` attribute of `input {}`. To use other data

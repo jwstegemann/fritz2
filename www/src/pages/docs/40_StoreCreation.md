@@ -638,7 +638,7 @@ val storedData = object : RootStore<String>("") {
     val tracking = tracker()
 
     val save = handle { model ->
-        tracking.track("myTransaction") {
+        tracking.track() {
             delay(1500) // do something that takes a while
             "$model."
         }
@@ -655,11 +655,7 @@ render {
     }
 }
 ```
-The service provides you with a `Flow` representing the description of the currently running transaction or `null`.
-
-Filter the `Flow` using the meta-data you chose when calling `track(meta-data)` if you want to react to only certain transactions.
-
-Of course, you can also use the meta-data to show to the user what is currently running (in a status-bar for example).
+The service provides you with a boolean `Flow` representing the state of the running transaction.
 
 Beware that you are responsible for handling exceptions, if you use an unsafe operation within the tracking scope.
 The tracker is safe in the way, that it will catch any escaped exception, then stops the tracking, and finally it will
