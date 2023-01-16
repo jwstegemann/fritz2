@@ -2,10 +2,7 @@ package dev.fritz2.core
 
 import kotlinx.browser.document
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import kotlinx.dom.clear
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
@@ -166,7 +163,7 @@ internal val SET_MOUNT_POINT_DATA_ATTRIBUTE: Tag<*>.() -> Unit = {
  */
 inline fun <T> mountSimple(parentJob: Job, upstream: Flow<T>, crossinline collect: suspend (T) -> Unit) {
     (MainScope() + parentJob).launch(start = CoroutineStart.UNDISPATCHED) {
-        upstream.onEach { collect(it) }.catch {
+        upstream.distinctUntilChanged().onEach { collect(it) }.catch {
             when (it) {
                 is CollectionLensGetException -> {}
                 else -> console.error(it)

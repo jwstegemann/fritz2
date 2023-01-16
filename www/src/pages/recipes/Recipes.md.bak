@@ -33,7 +33,7 @@ das folgende pattern verwendet werden, um dies zu erreichen.
 ```kotlin
 val messages: Flow<List<String>>
 
-messages.map { it.isNotEmpty() }.distinctUntilChanged().render { isNotEmpty ->
+messages.map { it.isNotEmpty() }.render { isNotEmpty ->
     if (isNotEmpty) {
         div { // only shown, when list is not empty
             messages.renderEach {
