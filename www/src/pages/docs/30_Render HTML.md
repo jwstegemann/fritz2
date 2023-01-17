@@ -59,15 +59,15 @@ declaring code. This leads to easy to read UI definitions and is some core featu
 
 fritz2 supports reactive UIs as one of its core features, so let us enhance this example with some dynamic content.
 
-First of all we need a so called `Store` for holding the dynamic data of our application. Such stores are the heart
+First of all we need a so-called `Store` for holding the dynamic data of our application. Such stores are the heart
 of every fritz2 application; they provide the current value in a reactive way and handle all the data changes.
 
 To bind the store's value reactively to the DOM, use some `render*`-functions on the `data`-property of a
-store, which offers a `Flow` of the store's value `T`. The function creates a so called *mount-point*, that manages the
+store, which offers a `Flow` of the store's value `T`. The function creates a so-called *mount-point*, that manages the
 automatic update of the DOM on every change of the store's data. The *mount-point* uses a dedicated tag created in the 
 DOM as reference to the node, where the deletion and recreation of the defined UI-fragment happens.
 
-To react to (user) events like the click onto a button, a store provides so called `handler`s, which create the new
+To react to (user) events like the click onto a button, a store provides so-called `handler`s, which create the new
 value of the store. The default handler `update` just takes a new value and substitutes the old state with it.
 
 :::info

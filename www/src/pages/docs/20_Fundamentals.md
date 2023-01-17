@@ -112,8 +112,8 @@ The [running examples](/examples) are often built with [bootstrap](https://getbo
 ### Starting point
 
 The fritz2 framework requires very low ceremony to set up an application. Just call the global 
-`render` function once inside your code, to create an initial so called `RenderContext`. Think of it as a context, where you can place all
-your UI elements, that are HTML `tags` in the end.
+`render` function once inside your code, to create an initial so-called `RenderContext`. Think of it as a context, 
+where you can place all your UI elements, that are HTML `tags` in the end.
 
 ```kotlin
 import dev.fritz2.core.*
@@ -198,7 +198,7 @@ resembles some real flow, as inside the flow some data is transported to a drain
 well-defined node inside the DOM of your browser, which is created by the `render` call. Every time the stored data
 changes, the new data will be applied to the rendering code, which then creates a new dom subtree accordingly.
 
-So the call of render onto some flow *connects* the store with some node of the DOM: The so called "mount-point".
+So the call of render onto some flow *connects* the store with some node of the DOM: The so-called "mount-point".
 
 Now the *"magic"* can happen: Every time the data inside the store changes, the new value will appear at the target
 node and change the whole subtree based upon the code you write inside the `render` functions parameter.
@@ -213,7 +213,7 @@ We use the extension function onto this event called `values`, which simply redu
 of `String`s, where the data is the current input value and cuts off all the meta information, we do not need here.
 
 Once we got our flow of data in the right shape, we can connect it to the store in order to update its state.
-This is done by so called `handler`s. A handler is just some method, that produces the new state of the store.
+This is done by so-called `handler`s. A handler is just some method, that produces the new state of the store.
 In this case we want the new input value to completely replace the old one. This can be done by a predefined `update`
 handler every store has:
 
@@ -294,7 +294,7 @@ association of validation messages to their corresponding form-elements.
 
 ## Understanding the Circle of Life
 
-Let's have another look at the so called *circle of life* again:
+Let's have another look at the so-called *circle of life* again:
 
 ![state management in fritz2](/img/fritz2_cycle_of_life.svg =640x)
 
@@ -308,7 +308,7 @@ Every time the stored data changes, the new data will be applied to the renderin
 subtree accordingly.
 
 From within the DOM on the right side, the user (in almost all cases!) can interact with the UI and produce events,
-which then will be used to update the store's data through so called `handler`s. The latter has access to the current
+which then will be used to update the store's data through so-called `handler`s. The latter has access to the current
 state and the value passed by the event-flow and can then use both to create the new state.
 
 The new state will then appear on the `data`-flow and finally result in a change of the UI. Voilà, you have a circle of 
