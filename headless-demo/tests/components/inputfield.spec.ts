@@ -32,8 +32,7 @@ test.describe('To check the', () => {
 
             await page.press("#inputField-field", key);
             const fieldfill = page.locator('#result');
-            expect(fieldfill).toContainText(text);
-        
+            await expect(fieldfill).toContainText(text);
         });
     
     }

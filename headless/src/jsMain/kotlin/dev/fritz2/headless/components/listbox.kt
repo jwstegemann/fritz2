@@ -196,7 +196,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
 
         override fun render() {
             super.render()
-            trapFocus(restoreFocus = false)
+            trapFocusWhenever(opened)
 
             closeOnEscape()
             closeOnBlur()

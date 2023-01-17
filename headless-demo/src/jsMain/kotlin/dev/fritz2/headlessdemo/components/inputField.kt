@@ -1,4 +1,4 @@
-package dev.fritz2.headlessdemo
+package dev.fritz2.headlessdemo.components
 
 import dev.fritz2.core.*
 import dev.fritz2.headless.components.inputField
