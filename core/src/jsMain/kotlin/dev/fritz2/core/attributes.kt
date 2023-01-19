@@ -89,13 +89,6 @@ fun Tag<HTMLElement>.contentEditable(value: Flow<String>) = attr("contenteditabl
 
 
 /*
- * HTMLTitleElement attributes
- */
-fun Tag<HTMLTitleElement>.text(value: String) = attr("text", value)
-fun Tag<HTMLTitleElement>.text(value: Flow<String>) = attr("text", value)
-
-
-/*
  * HTMLBaseElement attributes
  */
 fun Tag<HTMLBaseElement>.href(value: String) = attr("href", value)
@@ -183,9 +176,6 @@ fun Tag<HTMLStyleElement>.type(value: Flow<String>) = attr("type", value)
 /*
  * HTMLBodyElement attributes
  */
-fun Tag<HTMLBodyElement>.text(value: String) = attr("text", value)
-fun Tag<HTMLBodyElement>.text(value: Flow<String>) = attr("text", value)
-
 fun Tag<HTMLBodyElement>.link(value: String) = attr("link", value)
 fun Tag<HTMLBodyElement>.link(value: Flow<String>) = attr("link", value)
 
@@ -319,9 +309,6 @@ fun Tag<HTMLAnchorElement>.hreflang(value: Flow<String>) = attr("hreflang", valu
 
 fun Tag<HTMLAnchorElement>.type(value: String) = attr("type", value)
 fun Tag<HTMLAnchorElement>.type(value: Flow<String>) = attr("type", value)
-
-fun Tag<HTMLAnchorElement>.text(value: String) = attr("text", value)
-fun Tag<HTMLAnchorElement>.text(value: Flow<String>) = attr("text", value)
 
 fun Tag<HTMLAnchorElement>.referrerPolicy(value: String) = attr("referrerpolicy", value)
 fun Tag<HTMLAnchorElement>.referrerPolicy(value: Flow<String>) = attr("referrerpolicy", value)
@@ -1213,10 +1200,6 @@ fun Tag<HTMLOptionElement>.selected(value: Flow<Boolean>, trueValue: String = ""
 fun Tag<HTMLOptionElement>.value(value: String) = attr("value", value)
 fun Tag<HTMLOptionElement>.value(value: Flow<String>) = attr("value", value)
 
-fun Tag<HTMLOptionElement>.text(value: String) = attr("text", value)
-fun Tag<HTMLOptionElement>.text(value: Flow<String>) = attr("text", value)
-
-
 /*
  * HTMLTextAreaElement attributes
  */
@@ -1448,9 +1431,6 @@ fun Tag<HTMLScriptElement>.defer(value: Flow<Boolean>, trueValue: String = "") =
 
 fun Tag<HTMLScriptElement>.crossOrigin(value: String?) = attr("crossorigin", value)
 fun Tag<HTMLScriptElement>.crossOrigin(value: Flow<String?>) = attr("crossorigin", value)
-
-fun Tag<HTMLScriptElement>.text(value: String) = attr("text", value)
-fun Tag<HTMLScriptElement>.text(value: Flow<String>) = attr("text", value)
 
 fun Tag<HTMLScriptElement>.nonce(value: String) = attr("nonce", value)
 fun Tag<HTMLScriptElement>.nonce(value: Flow<String>) = attr("nonce", value)
