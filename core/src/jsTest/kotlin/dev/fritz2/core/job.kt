@@ -17,7 +17,7 @@ class AdHocHandlerTests {
 
         render {
             button(id = idButton) {
-                clicks.map { 41 } handledBy {value ->
+                clicks.map { 41 } handledBy { value ->
                     result = value + 1
                 }
             }
@@ -27,6 +27,41 @@ class AdHocHandlerTests {
         (document.getElementById(idButton) as HTMLButtonElement).click()
 
         delay(50)
+        assertEquals(42, result)
+    }
+
+    @Test
+    fun givenSomeAdHocHandlerWhenCanceledItWillStopExecution() = runTest {
+        val idButton = Id.next()
+        var result = 0
+        val busyFlag = storeOf(true)
+
+        render {
+            busyFlag.data.render {
+                if (it) {
+                    button(id = idButton) {
+                        clicks.map { 41 } handledBy { value ->
+                            result = value + 1
+                            do {
+                                delay(10)
+                            } while (busyFlag.current)
+                            result = -1
+                        }
+                    }
+                }
+            }
+        }
+
+        delay(50)
+        (document.getElementById(idButton) as HTMLButtonElement).click()
+
+        delay(50)
+        assertEquals(42, result)
+
+        busyFlag.update(false)
+        delay(50)
+
+        assertNull(document.getElementById(idButton))
         assertEquals(42, result)
     }
 
