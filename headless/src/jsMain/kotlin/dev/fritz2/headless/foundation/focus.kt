@@ -4,8 +4,9 @@ import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.InitialFocus.*
 import kotlinx.browser.document
 import kotlinx.browser.window
-import kotlinx.coroutines.awaitAnimationFrame
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.events.KeyboardEvent
 import kotlin.math.max
@@ -80,7 +81,7 @@ fun focusIn(container: HTMLElement, focusOptions: FocusOptions): FocusResult {
     else if (focusOptions.previous || focusOptions.last) Direction.Previous
     else return FocusResult.NoDirection
 
-    val startIndex = if (focusOptions.next) max(0, elements.indexOf(active)) + 1
+    val startIndex = if (focusOptions.next) elements.indexOf(active) + 1
     else if (focusOptions.previous) max(0, elements.indexOf(active)) - 1
     else if (focusOptions.first) 0
     else if (focusOptions.last) elements.size - 1
@@ -116,10 +117,10 @@ fun focusIn(container: HTMLElement, focusOptions: FocusOptions): FocusResult {
 
     // This is a little weird, but let me try and explain: There are a few scenario's
     // in chrome for example where a focused `<a>` tag does not get the default focus
-    // styles and sometimes they do. This highly depends on whether you started by
+    // styles, and sometimes they do. This highly depends on whether you started by
     // clicking or by using your keyboard. When you programmatically add focus `anchor.focus()`
     // then the active element (document.activeElement) is this anchor, which is expected.
-    // However in that case the default focus styles are not applied *unless* you
+    // However, in that case the default focus styles are not applied *unless* you
     // also add this tabindex.
     next?.let {
         if (!it.hasAttribute("tabindex")) it.setAttribute("tabindex", "0")
@@ -131,7 +132,7 @@ fun focusIn(container: HTMLElement, focusOptions: FocusOptions): FocusResult {
 const val INITIAL_FOCUS_DATA_ATTR = "data-fritz2-initialFocus"
 
 /**
- * Mark some [Tag] with a data-attribute [INITIAL_FOCUS_DATA_ATTR] so that the [trapFocus] function can find
+ * Mark some [Tag] with a data-attribute [INITIAL_FOCUS_DATA_ATTR] so that the [trapFocusInMountpoint] function can find
  * this [Tag] and set the initial focus to it.
  *
  * @param tag The target [Tag] that should get the initial focus within a focus-trap
@@ -141,7 +142,7 @@ fun setInitialFocus(tag: HTMLElement) {
 }
 
 /**
- * Mark some [Tag] with a data-attribute [INITIAL_FOCUS_DATA_ATTR] so that the [trapFocus] function can find
+ * Mark some [Tag] with a data-attribute [INITIAL_FOCUS_DATA_ATTR] so that the [trapFocusInMountpoint] function can find
  * this [Tag] and set the initial focus to it.
  */
 fun Tag<HTMLElement>.setInitialFocus() {
@@ -149,7 +150,7 @@ fun Tag<HTMLElement>.setInitialFocus() {
 }
 
 /**
- * This type is used to decide which strategy for setting an initial focus is appropriate for [trapFocus] function.
+ * This type is used to decide which strategy for setting an initial focus is appropriate for [trapFocusInMountpoint] function.
  *
  * There are three values available:
  * - [DoNotSet]
@@ -189,23 +190,44 @@ enum class InitialFocus(val focus: Boolean) {
  *
  * This is often useful for components that acts as overlays like modal dialogs or menus.
  *
+ * This variant should be applied, if the trap area is inside a mount-point, thus its removal from the DOM ends the
+ * trapping.
+ *
+ * @see trapFocusWhenever
+ *
  * @param restoreFocus sets the focus back to the element that had the focus before the container with the trap was
  *                      entered.
  * @param setInitialFocus will automatically focus the first element of the container or that one, which has been
  *                        tagged by [setInitialFocus] function if the [InitialFocus] value has `focus=true`.
  */
-fun Tag<HTMLElement>.trapFocus(restoreFocus: Boolean = true, setInitialFocus: InitialFocus = TryToSet) {
-    setInitialFocusOnDemand(setInitialFocus)
-    trapFocusOn(
-        keydowns.filter { setOf(Keys.Tab, Keys.Shift + Keys.Tab).contains(shortcutOf(it)) },
-        restoreFocus
-    )
+fun Tag<HTMLElement>.trapFocusInMountpoint(restoreFocus: Boolean = true, setInitialFocus: InitialFocus = TryToSet) {
+    setInitialFocusOnDemandFromMountpoint(setInitialFocus)
+    trapFocusOn(keydowns.filter { setOf(Keys.Tab, Keys.Shift + Keys.Tab).contains(shortcutOf(it)) })
+    restoreFocusOnDemandFromMountpoint(restoreFocus)
+}
+
+private fun Tag<HTMLElement>.restoreFocusOnDemandFromMountpoint(restoreFocus: Boolean) {
+    if (restoreFocus) {
+        beforeUnmount(document.activeElement) { _, element ->
+            (element as HTMLElement).focus()
+        }
+    }
+}
+
+private fun Tag<HTMLElement>.setInitialFocusOnDemandFromMountpoint(setInitialFocus: InitialFocus) {
+    if (setInitialFocus.focus) {
+        afterMount { _, _ ->
+            setInitialFocusOnDemand(setInitialFocus)
+        }
+    }
 }
 
 /**
- * This variant of [trapFocus] allows to reactively trap a focus based on a conditional [Flow] of [Boolean].
+ * This variant of [trapFocusInMountpoint] allows to reactively trap a focus based on a conditional [Flow] of [Boolean].
+ * This should be applied in all situations, where the DOM subtree of the trap is not inside a mount-point, but
+ * only activated or disabled by some [Flow].
  *
- * @see trapFocus
+ * @see trapFocusInMountpoint
  *
  * @param condition some boolean [Flow] that will enable the trap only on ``true`` values.
  * @param restoreFocus sets the focus back to the element that had the focus before the container with the trap was
@@ -218,26 +240,45 @@ fun Tag<HTMLElement>.trapFocusWhenever(
     restoreFocus: Boolean = true,
     setInitialFocus: InitialFocus = TryToSet
 ) {
+    val sharedCondition = condition.shareIn(MainScope() + job, SharingStarted.Eagerly, 1)
+    var focusedElementBeforeTrap: Element? = null
+    sharedCondition.distinctUntilChanged() handledBy {
+        if (it) {
+            if (setInitialFocus != DoNotSet) {
+                focusedElementBeforeTrap = document.activeElement
+            }
+            setInitialFocusOnDemandFromWhenever(setInitialFocus)
+        }
+    }
     trapFocusOn(
-        condition.onEach {
-            if (it) setInitialFocusOnDemand(setInitialFocus)
-        }.combine(keydowns, ::Pair)
-            .filter { it.first }
-            .map { it.second }
-            .filter { setOf(Keys.Tab, Keys.Shift + Keys.Tab).contains(shortcutOf(it)) },
-        restoreFocus
+        sharedCondition.flatMapLatest { isActive ->
+            keydowns.filter { isActive && setOf(Keys.Tab, Keys.Shift + Keys.Tab).contains(shortcutOf(it)) }
+        }
+    )
+    restoreFocusOnDemandFromWhenever(
+        sharedCondition.filter { it }.map { focusedElementBeforeTrap }
+            .combine(sharedCondition.map { !it && restoreFocus }, ::Pair)
     )
 }
 
-private fun Tag<HTMLElement>.trapFocusOn(
-    tabEvents: Flow<KeyboardEvent>,
-    restoreFocus: Boolean = true
-) {
-    restoreFocusOnDemand(restoreFocus)
+private fun Tag<HTMLElement>.restoreFocusOnDemandFromWhenever(condition: Flow<Pair<Element?, Boolean>>) {
+    condition handledBy { (initiallyFocusedElement, restoreFocus) ->
+        if (restoreFocus && initiallyFocusedElement != null) {
+            (initiallyFocusedElement as HTMLElement).focus()
+        }
+    }
+}
 
-    // handle tab key
+private fun Tag<HTMLElement>.setInitialFocusOnDemandFromWhenever(setInitialFocus: InitialFocus) {
+    if (setInitialFocus.focus) {
+        setInitialFocusOnDemand(setInitialFocus)
+    }
+}
+
+private fun Tag<HTMLElement>.trapFocusOn(tabEvents: Flow<KeyboardEvent>) {
     tabEvents handledBy { event ->
         event.preventDefault()
+        event.stopImmediatePropagation()
         focusIn(
             domNode,
             if (shortcutOf(event).shift) FocusOptions(previous = true, wrapAround = true)
@@ -246,30 +287,18 @@ private fun Tag<HTMLElement>.trapFocusOn(
     }
 }
 
-private fun Tag<HTMLElement>.restoreFocusOnDemand(restoreFocus: Boolean) {
-    if (restoreFocus) {
-        beforeUnmount(document.activeElement) { _, element ->
-            (element as HTMLElement).focus()
-        }
-    }
-}
-
 private fun Tag<HTMLElement>.setInitialFocusOnDemand(setInitialFocus: InitialFocus) {
-    if (setInitialFocus.focus) {
-        afterMount { _, _ ->
-            val active = document.activeElement as HTMLElement
-            if (!isElementWithinFocusableElements(active, domNode)) {
-                val initialFocus = domNode.querySelector("[$INITIAL_FOCUS_DATA_ATTR]")
-                if (initialFocus != null) {
-                    if (active != initialFocus) {
-                        (initialFocus as HTMLElement).focus()
-                    }
-                } else {
-                    if (focusIn(domNode, FocusOptions(first = true)) == FocusResult.Error) {
-                        if (setInitialFocus == InsistToSet) {
-                            console.warn("There are no focusable elements inside the focus-trap!")
-                        }
-                    }
+    val active = document.activeElement as HTMLElement
+    if (!isElementWithinFocusableElements(active, domNode)) {
+        val initialFocus = domNode.querySelector("[$INITIAL_FOCUS_DATA_ATTR]")
+        if (initialFocus != null) {
+            if (active != initialFocus) {
+                (initialFocus as HTMLElement).focus()
+            }
+        } else {
+            if (focusIn(domNode, FocusOptions(first = true)) == FocusResult.Error) {
+                if (setInitialFocus == InsistToSet) {
+                    console.warn("There are no focusable elements inside the focus-trap!")
                 }
             }
         }

@@ -26,7 +26,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
         opened.render {
             if (it) {
                 panel?.invoke(this)!!.apply {
-                    trapFocus(restoreFocus, setInitialFocus)
+                    trapFocusInMountpoint(restoreFocus, setInitialFocus)
                 }
             }
         }

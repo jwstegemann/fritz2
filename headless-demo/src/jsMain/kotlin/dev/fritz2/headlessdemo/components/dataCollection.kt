@@ -1,4 +1,4 @@
-package dev.fritz2.headlessdemo
+package dev.fritz2.headlessdemo.components
 
 import dev.fritz2.core.*
 import dev.fritz2.headless.components.DataCollection
@@ -7,6 +7,8 @@ import dev.fritz2.headless.components.inputField
 import dev.fritz2.headless.components.tabGroup
 import dev.fritz2.headless.foundation.SortDirection
 import dev.fritz2.headless.foundation.utils.scrollintoview.ScrollPosition
+import dev.fritz2.headlessdemo.FakePersons
+import dev.fritz2.headlessdemo.Person
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement

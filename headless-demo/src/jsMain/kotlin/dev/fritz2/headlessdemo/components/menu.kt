@@ -1,10 +1,11 @@
-package dev.fritz2.headlessdemo
+package dev.fritz2.headlessdemo.components
 
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.storeOf
 import dev.fritz2.core.transition
 import dev.fritz2.headless.components.menu
 import dev.fritz2.headless.foundation.utils.popper.Placement
+import dev.fritz2.headlessdemo.result
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 
@@ -89,12 +90,7 @@ fun RenderContext.menuDemo() {
         }
 
 
-        div(
-            """mt-4 p-2.5
-            | bg-primary-100 rounded shadow-sm
-            | ring-2 ring-primary-500 
-            | text-sm text-primary-800""".trimMargin(), id = "result"
-        ) {
+        result {
             span("font-medium") { +"Execute Action: " }
             span { action.data.map { "$it file..." }.renderText() }
         }

@@ -2,11 +2,19 @@ package dev.fritz2.headlessdemo
 
 import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.SHOW_COMPONENT_STRUCTURE
+import dev.fritz2.headlessdemo.components.*
+import dev.fritz2.headlessdemo.foundation.testTrapFocus
 import dev.fritz2.routing.routerOf
 
-data class DemoPage(val title: String, val description: String, val content: RenderContext.() -> Unit)
+sealed interface Page {
+    val content: RenderContext.() -> Unit
+}
 
-val pages = mapOf(
+data class DemoPage(val title: String, val description: String, override val content: RenderContext.() -> Unit) : Page
+
+data class TestDrive(override val content: RenderContext.() -> Unit) : Page
+
+val pages: Map<String, Page> = mapOf(
     "checkboxGroup" to DemoPage(
         "Headless Checkboxgroup",
         """Checkbox groups give you the same functionality as native HTML checkbox inputs, without any of the styling. 
@@ -85,7 +93,8 @@ val pages = mapOf(
         "Headless Toast",
         """Display notification-like content in arbitrary positions on the screen.""".trimMargin(),
         RenderContext::toastDemo
-    )
+    ),
+    "focus" to TestDrive(RenderContext::testTrapFocus)
 )
 
 fun RenderContext.overview() {
@@ -95,7 +104,7 @@ fun RenderContext.overview() {
             span("block text-primary-800 sm:inline") { +"Headless Demos" }
         }
         div("w-3/4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12") {
-            pages.forEach {
+            pages.filter { it.value is DemoPage }.map { (k, v) -> k to v as DemoPage }.forEach { (key, value) ->
                 a(
                     """-m-3 p-3 pr-5 flex items-start rounded-lg hover:bg-gray-50 hover:ring-2 hover:ring-white 
                     | ring-offset-2 ring-offset-primary-600 hover:outline-none shadow-lg rounded-lg bg-white 
@@ -104,11 +113,11 @@ fun RenderContext.overview() {
                     href("#")
                     icon("flex-shrink-0 h-6 w-6 text-primary-800", content = HeroIcons.support)
                     div("ml-4") {
-                        p("text-base font-medium text-gray-900") { +it.value.title }
-                        p("mt-1 text-sm text-gray-500") { +it.value.description }
+                        p("text-base font-medium text-gray-900") { +value.title }
+                        p("mt-1 text-sm text-gray-500") { +value.description }
                     }
 
-                    href("#${it.key}")
+                    href("#$key")
                 }
             }
         }

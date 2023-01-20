@@ -123,7 +123,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
 
         override fun render() {
             super.render()
-            trapFocus()
+            trapFocusWhenever(opened)
 
             closeOnEscape()
             closeOnBlur()
