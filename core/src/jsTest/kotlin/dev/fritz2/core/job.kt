@@ -4,14 +4,30 @@ import kotlin.test.*
 import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
 
 
 class AdHocHandlerTests {
 
     @Test
-    fun givenSomeAdHocHandlerWhenNewValuesAppearOnTheFlowItWillExecuteItsExpression() {
+    fun givenSomeAdHocHandlerWhenNewValuesAppearOnTheFlowItWillExecuteItsExpression() = runTest {
+        val idButton = Id.next()
+        var result = 0
 
+        render {
+            button(id = idButton) {
+                clicks.map { 41 } handledBy {value ->
+                    result = value + 1
+                }
+            }
+        }
+
+        delay(50)
+        (document.getElementById(idButton) as HTMLButtonElement).click()
+
+        delay(50)
+        assertEquals(42, result)
     }
 
     @Test
