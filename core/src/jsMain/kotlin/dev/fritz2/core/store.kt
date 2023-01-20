@@ -24,7 +24,7 @@ interface Store<D> : WithJob {
      */
     fun <A> handle(
         execute: suspend (D, A) -> D
-    ) = SimpleHandler<A> { flow, job ->
+    ) = SimpleHandler<A> { flow ->
         flow.onEach { enqueue { d -> execute(d, it) } }
             .catch { d -> errorHandler(d) }
             .launchIn(MainScope() + job)
@@ -37,7 +37,7 @@ interface Store<D> : WithJob {
      */
     fun handle(
         execute: suspend (D) -> D
-    ) = SimpleHandler<Unit> { flow, job ->
+    ) = SimpleHandler<Unit> { flow ->
         flow.onEach { enqueue { d -> execute(d) } }
             .catch { d -> errorHandler(d) }
             .launchIn(MainScope() + job)
@@ -51,7 +51,7 @@ interface Store<D> : WithJob {
      */
     fun <A, E> handleAndEmit(
         execute: suspend FlowCollector<E>.(D, A) -> D
-    ) = EmittingHandler<A, E>({ inFlow, outFlow, job ->
+    ) = EmittingHandler<A, E>({ inFlow, outFlow ->
             inFlow.onEach { enqueue { d -> outFlow.execute(d, it) } }
                 .catch { d -> errorHandler(d) }
                 .launchIn(MainScope() + job)
@@ -65,7 +65,7 @@ interface Store<D> : WithJob {
     fun <E> handleAndEmit(
         execute: suspend FlowCollector<E>.(D) -> D
     ) =
-        EmittingHandler<Unit, E>({ inFlow, outFlow, job ->
+        EmittingHandler<Unit, E>({ inFlow, outFlow ->
             inFlow.onEach { enqueue { d -> outFlow.execute(d) } }
                 .catch { d -> errorHandler(d) }
                 .launchIn(MainScope() + job)
