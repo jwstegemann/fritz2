@@ -2,10 +2,11 @@ package dev.fritz2.core
 
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 
 /**
  * Defines a type for transforming one value into the next
@@ -24,7 +25,7 @@ interface Store<D> : WithJob {
      */
     fun <A> handle(
         execute: suspend (D, A) -> D
-    ) = SimpleHandler<A> { flow ->
+    ) = SimpleHandler<A> { flow, job ->
         flow.onEach { enqueue { d -> execute(d, it) } }
             .catch { d -> errorHandler(d) }
             .launchIn(MainScope() + job)
@@ -37,7 +38,7 @@ interface Store<D> : WithJob {
      */
     fun handle(
         execute: suspend (D) -> D
-    ) = SimpleHandler<Unit> { flow ->
+    ) = SimpleHandler<Unit> { flow, job ->
         flow.onEach { enqueue { d -> execute(d) } }
             .catch { d -> errorHandler(d) }
             .launchIn(MainScope() + job)
@@ -51,7 +52,7 @@ interface Store<D> : WithJob {
      */
     fun <A, E> handleAndEmit(
         execute: suspend FlowCollector<E>.(D, A) -> D
-    ) = EmittingHandler<A, E>({ inFlow, outFlow ->
+    ) = EmittingHandler<A, E>({ inFlow, outFlow, job ->
             inFlow.onEach { enqueue { d -> outFlow.execute(d, it) } }
                 .catch { d -> errorHandler(d) }
                 .launchIn(MainScope() + job)
@@ -65,7 +66,7 @@ interface Store<D> : WithJob {
     fun <E> handleAndEmit(
         execute: suspend FlowCollector<E>.(D) -> D
     ) =
-        EmittingHandler<Unit, E>({ inFlow, outFlow ->
+        EmittingHandler<Unit, E>({ inFlow, outFlow, job ->
             inFlow.onEach { enqueue { d -> outFlow.execute(d) } }
                 .catch { d -> errorHandler(d) }
                 .launchIn(MainScope() + job)
@@ -123,16 +124,23 @@ open class RootStore<D>(
     initialData: D,
     override val id: String = Id.next()
 ) : Store<D> {
+    override val path: String = ""
 
     private val state: MutableStateFlow<D> = MutableStateFlow(initialData)
-    private val mutex = Mutex()
-
-    override val path: String = ""
+    private val queue = Channel<Update<D>>(Channel.UNLIMITED)
 
     /**
      * [Job] used as parent job on all coroutines started in [Handler]s in the scope of this [Store]
      */
-    override val job: Job = Job()
+    override val job: Job = MainScope().launch {
+        queue.consumeEach { update ->
+            try {
+                state.value = update(state.value)
+            } catch (t: Throwable) {
+                errorHandler(t)
+            }
+        }
+    }
 
     /**
      * Emits a [Flow] with the current data of this [Store].
@@ -152,11 +160,7 @@ open class RootStore<D>(
     /**
      * in a [RootStore] an [Update] is handled by applying it to the internal [StateFlow].
      */
-    override suspend fun enqueue(update: Update<D>) {
-        mutex.withLock {
-            state.value = update(state.value)
-        }
-    }
+    override suspend fun enqueue(update: Update<D>) = queue.send(update)
 
     /**
      * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].

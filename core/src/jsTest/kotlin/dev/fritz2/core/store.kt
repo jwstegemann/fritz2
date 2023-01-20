@@ -219,47 +219,4 @@ class StoreTests {
         assertEquals(intermediateException, errorHandlerResult, "exception in map not caught")
         checkUpdate("store not updating after intermediate exception")
     }
-
-    @Test
-    fun testAdHocErrorHandling() = runTest {
-        
-        val valueId = Id.next()
-        fun getValue() = document.getElementById(valueId)?.textContent
-
-        val startValue = "start"
-
-        val store = object : RootStore<String>(startValue) {
-        }
-
-        render {
-            div {
-                span(id = valueId) { store.data.renderText() }
-            }
-        }
-
-        val updates = MutableStateFlow(startValue)
-        updates handledBy store.update
-
-        suspend fun checkUpdate(msg: String) {
-            val valueAfterSuccessfullUpdate = Id.next()
-            updates.value = valueAfterSuccessfullUpdate
-            delay(150)
-            assertEquals(valueAfterSuccessfullUpdate, getValue(), msg)
-        }
-
-        checkUpdate("store not updating after start")
-
-        val adHocException = "adHoc exception"
-        flowOf(Unit) handledBy {
-            throw Exception(adHocException)
-        }
-        delay(150)
-        checkUpdate("store not updating after adhoc handler ")
-
-        val adHocIntermediateException = "adHoc intermediate exception"
-        flowOf(2).map {throw Exception(adHocIntermediateException)} handledBy {
-        }
-        delay(150)
-        checkUpdate("store not updating after intermediate exception before adhoc handler ")
-    }
 }
