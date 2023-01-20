@@ -57,7 +57,7 @@ class AdHocHandlerTests {
         assertTrue(storeForCanceling.current)
         assertNull(document.getElementById(idButton))
 
-        busyFlag = true
+        busyFlag = false
         delay(50)
         assertEquals(
             "true",

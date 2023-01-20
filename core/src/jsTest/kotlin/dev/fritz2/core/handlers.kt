@@ -10,10 +10,7 @@ import kotlinx.coroutines.flow.single
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLParagraphElement
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFails
-import kotlin.test.fail
+import kotlin.test.*
 
 class HandlersTests {
 
@@ -24,7 +21,7 @@ class HandlersTests {
                 fail(cause.message)
             }
 
-            val dec = handle { it -1 }
+            val dec = handle { it - 1 }
         }
 
         lateinit var currentParagraph: HTMLParagraphElement
@@ -124,6 +121,55 @@ class HandlersTests {
         delay(100)
         assertEquals(2, store.countHandlerCalls, "wrong number of handler calls")
         assertEquals("value: start..", result.textContent, "wrong dom content of result-node")
+    }
+
+    @Test
+    fun cancelJobAtHandledByDuringConnectedHandlerWorksWontCancelHandler() = runTest {
+        var busyFlag = true
+        val storeForCanceling = storeOf(false)
+
+        val heavyWork = object : RootStore<Boolean>(false) {
+            val doWork = handle {
+                storeForCanceling.update(true)
+                do {
+                    delay(10)
+                } while (busyFlag)
+                true
+            }
+        }
+
+        val idButton = Id.next()
+        val idWorkState = Id.next()
+
+        render {
+            heavyWork.data.render {
+                p(id = idWorkState) { +it.toString() }
+            }
+            storeForCanceling.data.render {
+                if (!it) { // job of button will be canceled if `storeForCanceling` is set to `true`
+                    button(id = idButton) {
+                        clicks handledBy heavyWork.doWork
+                    }
+                }
+            }
+        }
+
+        delay(100)
+        assertFalse(heavyWork.current)
+
+        (document.getElementById(idButton) as HTMLButtonElement).click()
+        delay(100)
+
+        assertTrue(storeForCanceling.current)
+        assertNull(document.getElementById(idButton))
+
+        busyFlag = false
+        delay(50)
+        assertEquals(
+            "true",
+            document.getElementById(idWorkState)?.textContent,
+            "Handler has finished and set state to `true`"
+        )
     }
 
     @Test
