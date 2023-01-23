@@ -157,7 +157,7 @@ open class RootStore<D>(
     /**
      * in a [RootStore] an [Update] is handled by applying it to the internal [StateFlow].
      */
-    override suspend fun enqueue(update: Update<D>) = queue.send(update)
+    override suspend fun enqueue(update: Update<D>): Unit = queue.send(update)
 
     /**
      * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
