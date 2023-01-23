@@ -1,36 +1,35 @@
 package dev.fritz2.tracking
 
 import dev.fritz2.core.Store
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.debounce
 
 /**
  * convenience method for creating a [Tracker]
  */
-fun tracker(defaultTransaction: String = "...", debounceTimeout: Long = 100): Tracker =
-    Tracker(defaultTransaction, debounceTimeout)
+fun tracker(debounceTimeout: Long = 100): Tracker = Tracker(debounceTimeout)
 
 /**
  * tracks running transactions (e.g. inside a [Store])
  *
- * @param defaultTransaction default transactions text (used if not specified when [track] is called)
  * @param debounceTimeout denounces values in the [Flow] of running transaction by this value
  */
 class Tracker(
-    private val defaultTransaction: String,
     private val debounceTimeout: Long,
 ) {
 
-    private val state: MutableStateFlow<String?> = MutableStateFlow(null)
+    private val state: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     /**
      * Gives a [Flow] to check if a transaction is running.
      */
-    val data: Flow<Boolean> = state.debounce(debounceTimeout).distinctUntilChanged().map { it != null }
+    val data: Flow<Boolean> = state.debounce(debounceTimeout)
 
     /**
      * Represents the current transaction which is running or null.
      */
-    val current: String?
+    val current: Boolean
         get() = state.value
 
     /**
@@ -39,25 +38,14 @@ class Tracker(
      * Works also with unsafe operations that throw exceptions, as the tracking gets stopped. The exceptions are
      * not swallowed though.
      *
-     * @param transaction text describing the transaction
      * @param operation function to track
      */
-    suspend fun <T> track(transaction: String = defaultTransaction, operation: suspend () -> T): T {
-        state.value = transaction
+    suspend fun <T> track(operation: suspend () -> T): T {
+        state.value = true
         return try {
             operation()
         } finally {
-            state.value = null
+            state.value = false
         }
     }
-
-    /**
-     * Gives a [Flow] to check, if a certain transaction is running
-     *
-     * @param transaction name of transaction to monitor
-     */
-    operator fun invoke(transaction: String): Flow<Boolean> =
-        state.debounce(debounceTimeout).distinctUntilChanged().map {
-            it != null && it == transaction
-        }
 }

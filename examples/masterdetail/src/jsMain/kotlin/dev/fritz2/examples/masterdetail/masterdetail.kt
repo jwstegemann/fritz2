@@ -52,7 +52,7 @@ object DetailStore : RootStore<Person>(Person()) {
     }
 
     val addOrUpdate = handle { person ->
-        running.track("addOrUpdatePerson") {
+        running.track() {
             delay(1500)
             person.copy(saved = true).also { dirtyPerson ->
                 window.localStorage.setItem("${personPrefix}.${dirtyPerson.id}", Person.serialize(dirtyPerson))

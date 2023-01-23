@@ -27,7 +27,7 @@ class TrackingTests {
             val running = tracker()
 
             val longRunningHandler = handle {
-                running.track(transactionText) {
+                running.track() {
                     delay(600)
                     endValue
                 }
