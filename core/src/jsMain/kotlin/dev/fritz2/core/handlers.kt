@@ -31,7 +31,7 @@ fun <T> flowOnceOf(value: T) = OnlyOnceFlow(value)
 /**
  * Base-interface of the different types of handlers
  *
- * @property process function describing how this handler collects a flow when called
+ * @property process function describing how this handler collects a [Flow] when called
  */
 interface Handler<A> {
     val process: (Flow<A>, Job) -> Unit
