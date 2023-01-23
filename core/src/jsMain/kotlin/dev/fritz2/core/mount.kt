@@ -194,8 +194,7 @@ internal fun <V> RenderContext.mountPatches(
     val target = into?.apply {
         this.domNode.clear()
         SET_MOUNT_POINT_DATA_ATTRIBUTE()
-    }
-        ?: div(MOUNT_POINT_STYLE_CLASS, content = SET_MOUNT_POINT_DATA_ATTRIBUTE)
+    } ?: div(MOUNT_POINT_STYLE_CLASS, content = SET_MOUNT_POINT_DATA_ATTRIBUTE)
 
     val mountPoints = mutableMapOf<Node, MountPointImpl>()
 
