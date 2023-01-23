@@ -31,7 +31,12 @@ class ListBoxTest {
         val componentState = storeOf(TestModel(), TestModel.validation).map(TestModel.listBox)
 
         render {
-            listbox<String, HTMLDivElement>("classes", componentId, { set(scopeTestKey, scopeTestValue) }, RenderContext::div) {
+            listbox<String, HTMLDivElement>(
+                "classes",
+                componentId,
+                { set(scopeTestKey, scopeTestValue) },
+                RenderContext::div
+            ) {
                 value(componentState)
                 scope.asDataAttr(scopeTestKey)
                 listboxLabel {
@@ -47,7 +52,7 @@ class ListBoxTest {
                             attr("data-active", active.asString())
                             attr("data-selected", selected.asString())
                             attr("data-disabled", disabled.asString())
-                            if(index % 2 == 0) disable(true)
+                            if (index % 2 == 0) disable(true)
                         }
                     }
                 }
@@ -58,7 +63,7 @@ class ListBoxTest {
             }
         }
 
-        delay(100)
+        delay(500)
         val listBoxElement = getElementById<HTMLDivElement>(componentId)
         assertEquals(componentId, listBoxElement.id)
         assertEquals("DIV", listBoxElement.tagName)
@@ -81,7 +86,6 @@ class ListBoxTest {
             assertEquals(if(index == 0) "true" else "false", item.getAttribute("data-selected"), "wrong selected $index")
             assertEquals(if(index % 2 == 0) "true" else "false", item.getAttribute("data-disabled"), "wrong disabled $index")
         }
-
         assertFails { getElementById<HTMLDivElement>("$componentId-validation-messages") }
     }
 

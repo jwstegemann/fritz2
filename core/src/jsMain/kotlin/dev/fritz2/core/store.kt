@@ -1,12 +1,9 @@
 package dev.fritz2.core
 
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
 
 /**
  * Defines a type for transforming one value into the next
@@ -132,7 +129,7 @@ open class RootStore<D>(
     /**
      * [Job] used as parent job on all coroutines started in [Handler]s in the scope of this [Store]
      */
-    override val job: Job = MainScope().launch {
+    override val job: Job = MainScope().launch(start = CoroutineStart.UNDISPATCHED) {
         queue.consumeEach { update ->
             try {
                 state.value = update(state.value)
