@@ -53,7 +53,7 @@ allprojects {
 
 subprojects {
     group = "dev.fritz2"
-    version = "1.0-RC3"
+    version = "1.0-SNAPSHOT"
 }
 
 tasks.dokkaHtmlMultiModule.configure {
