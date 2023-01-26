@@ -2,13 +2,13 @@
   "internal": [
     {
       "title": "Getting Started",
-      "description": "Create HTML, handle events and bind data the fritz2 way.",
+      "description": "Create HTML, handle events, and bind data the fritz2 way.",
       "route":"/gettingstarted",
       "icon": "trending-up"
     },
     {
       "title": "Nested Model",
-      "description": "Data binding of elements in deep nested models and lists is easy like a breeze in fritz2. See how to do so using lenses.",
+      "description": "Data binding of elements in deep nested models and lists is easy as pie in fritz2. See how to do so using lenses.",
       "route": "/nestedmodel",
       "icon": "collection"
     },
@@ -20,7 +20,7 @@
     },
     {
       "title": "Routing",
-      "description": "Create a routing through your single-page-app and handle parameters (deep links).",
+      "description": "Create routing through your single-page-app and handle parameters (deep links).",
       "route": "/routing",
       "icon": "map"
     },
@@ -32,7 +32,7 @@
     },
     {
       "title": "Master Detail",
-      "description": "Use master detail pattern to separate the details section from the collection view. Includes undo and spinner.",
+      "description": "Use the master detail pattern to separate the details section from the collection view. Includes undo and spinner.",
       "route": "/masterdetail",
       "icon": "archive"
     },
@@ -50,7 +50,7 @@
     },
     {
       "title": "Tic-Tac-Toe",
-      "description": "Demonstrates the combination of UI, logic and state with fritz2",
+      "description": "Demonstrates the combination of UI, logic, and state with fritz2.",
       "route": "/tictactoe",
       "icon": "view-grid"
     }
@@ -58,13 +58,13 @@
   "external": [
     {
       "title": "Spring TodoMVC",
-      "description": "TodoMVC fullstack web-application build with Spring backend",
+      "description": "TodoMVC fullstack web-application built with Spring backend.",
       "route":"https://github.com/jamowei/fritz2-spring-todomvc",
       "icon": "globe"
     },
     {
       "title": "Ktor TodoMVC",
-      "description": "TodoMVC fullstack web-application build with Ktor backend",
+      "description": "TodoMVC fullstack web-application built with Ktor backend.",
       "route":"https://github.com/jamowei/fritz2-ktor-todomvc",
       "icon": "globe"
     }
