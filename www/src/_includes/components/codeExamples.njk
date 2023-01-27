@@ -6,7 +6,7 @@
     </div>
     <div class="p-4">
         <p class="pb-4 prose max-w-prose">
-            Let's start creating our first elements, or <em>tags</em> as we call them, by using the DSL.
+            Let's start with creating our first elements, or <em>tags</em> as we call them, using the DSL.
             First we need to call the <code>render</code> function in order to create a <code>RenderContext</code>
             for our tags. Every tag is just a function representing an HTML-element, <code>&lt;div&gt;</code> in this case.
             You can nest them just like in HTML. To style your tags, add CSS-class-names directly as first parameter.
@@ -129,7 +129,7 @@ render {
             That's why our framework also natively supports validation as part of the data-handling.
         </p>
         <p class="pb-4 prose max-w-prose">
-            In order to evaluate the data correctness, create a container for the messages by implementing
+            In order to evaluate data correctness, create a container for the messages by implementing
             <code>ValidationMessage</code>. You also have to provide a <code>Validation</code> instance by using the factory
             function <code>validation</code>. The latter contains all the domain rules to check the validity state. 
             There is a special <code>storeOf</code> factory function which directly accepts a
