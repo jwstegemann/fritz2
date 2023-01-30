@@ -218,21 +218,21 @@ As a reminder, the three common configuration concepts are simple configuration 
 [`Property`s](#properties) and [`Hook`s](#hooks).
 
 These configuration properties have often direct impact on the inner state of the component. This is especially true for
-the (two-way) data-binding aspects lots of components offer. This includes, for example, information about the selection
+the (two-way) data binding aspects lots of components offer. This includes, for example, information about the selection
 of the selection components ([RadioGroup](#radioGroup), [CheckboxGroup](#checkboxGroup) or
 [ListBox](#listBox)), but also the input values for text field components ([InputField](#inputField)
 and [TextArea](#textArea)).
 
 In addition, there are often certain 'flows' and 'handlers', via which special states (selected, disabled, focused or
 open) or the behavior in the event of changes (user clicks on a close button) can define. Those are most of the time
-derived from the data-binding, so the former is some very important and powerful aspect.
+derived from the data binding, so the former is some very important and powerful aspect.
 
 Typical patterns are the dynamic setting of CSS classes depending on a specific state via `className`
 or the complete creation or deletion of DOM structures:
 
 ```kotlin
 checkboxGroup {
-    // special data-binding property for the selection management.
+    // special data binding property for the selection management.
     // component will automatically use the current selections and also set or remove those by user interaction. 
     value(someStore)
 
@@ -344,12 +344,12 @@ pass)
 
 ### Databinding
 
-Some headless components support data-binding. This means that the component reacts to dynamic data from the outside,
+Some headless components support data binding. This means that the component reacts to dynamic data from the outside,
 processes and uses this data internally if necessary, and is also able to communicate changes to the outside world.
 This corresponds to the classic two-way data binding that makes up the core of fritz2.
 
 Due to the importance of this mechanism, there is a specialized `Property` called `DatabindingProperty<T>`, which is
-suitable for most data-binding scenarios.
+suitable for most data binding scenarios.
 
 This property therefore requires the following parameters via `invoke` for use:
 
@@ -366,14 +366,14 @@ Since this information can all be derived from a `Store`, the property offers a 
 method.
 
 Thus, this special property allows the user, very easily and with greatly reduced boilerplate code to expose and manage
-the data for data-binding.
+the data for data binding.
 
 ```kotlin
 val name = storeOf("fritz2")
 
 inputField {
 
-    // pass the store into the data-binding-property `value`, so that the input-field can be preset with external data
+    // pass the store into the data binding-property `value`, so that the input-field can be preset with external data
     // and also react to user input to update the external store.
     value(name)
 
@@ -473,13 +473,13 @@ the open-state of the component:
 
 | Scope property | Typ                              | Description                                                           |
 |----------------|----------------------------------|-----------------------------------------------------------------------|
-| `openState`    | `DatabindingProperty<Boolean>`   | Optional (two-way) data-binding for opening and closing.              |
+| `openState`    | `DatabindingProperty<Boolean>`   | Optional (two-way) data binding for opening and closing.              |
 | `opened`       | `Flow<Boolean>`                  | Data stream that provides Boolean values related to the "open" state. |
 | `close`        | `SimpleHandler<Unit>`            | Handler to close the disclosure from inside.                          |
 | `open`         | `SimpleHandler<Unit>`            | handler to open.                                                      |
 | `toggle`       | `SimpleHandler<Unit>`            | handler for switching between open and closed.                        |
 
-The open state of such a component can be set via the data-binding property `openState`, e.g. to an external `Store`
+The open state of such a component can be set via the data binding property `openState`, e.g. to an external `Store`
 or `Flow`. This can be used, for example, to control the visibility of the selection list of a `listbox` divergent from the standard behavior, e.g. always kept open:
 
 ```kotlin

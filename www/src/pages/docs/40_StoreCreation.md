@@ -61,7 +61,7 @@ This is described in the [reactive rendering](/docs/render/#reactive-rendering) 
 - `update`: This is a `Handler` which manages a state changes of the store. This particular handler takes one `T` and
 simply substitutes the "old" state `T` of the store with it.
 
-You can use this handler to conveniently implement _two-way-databinding_ by using the `changes` event-flow
+You can use this handler to conveniently implement _two-way data binding_ by using the `changes` event-flow
 of an `input`-`Tag`, for example:
 
 ```kotlin

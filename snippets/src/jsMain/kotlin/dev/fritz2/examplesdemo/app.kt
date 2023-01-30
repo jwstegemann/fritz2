@@ -18,7 +18,7 @@ val pages = mapOf(
     ),
     "reactive" to DemoPage(
         "Reactive",
-        "Reactive example showing fritz2 two-way data-binding",
+        "Reactive example showing fritz2 two-way data binding",
         RenderContext::reactive
     ),
     "complex" to DemoPage(

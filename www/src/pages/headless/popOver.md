@@ -176,7 +176,7 @@ Default-Tag: `div`
 
 | Scope property        | Typ                            | Description                                                                                                                  |
 |-----------------------|--------------------------------|------------------------------------------------------------------------------------------------------------------------------|
-| `openState`           | `DatabindingProperty<Boolean>` | Mandatory (two-way) data-binding for opening and closing.                                                                    |
+| `openState`           | `DatabindingProperty<Boolean>` | Mandatory (two-way) data binding for opening and closing.                                                                    |
 | `opened`              | `Flow<Boolean>`                | Data stream that provides Boolean values related to the "open" state. Quite useless within a popover, as it is always `true` |
 | `close`               | `SimpleHandler<Unit>`          | Handler to close the popover panel from inside.                                                                              |
 | `open`                | `SimpleHandler<Unit>`          | handler to open; does not make sense to use within a popover!                                                                |

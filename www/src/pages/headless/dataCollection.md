@@ -175,7 +175,7 @@ vertical position of the active item (start, center, end or nearest).
 ## Selection
 
 `DataCollection` supports selecting single or multiple items. To enable selection for your data collection you have to
-provide a suitable two-way-data-binding:
+provide a suitable two-way data binding:
 
 ```kotlin
 dataCollection<Person> {
@@ -267,13 +267,13 @@ Parameters: `classes`, `id`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-| Scope property  | Typ                                      | Description                                                                                                                         |
-|-----------------|------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------|
-| `data`          | `CollectionDataProperty<T>`              | Mandatory one-way data-binding for the items the collection should manage.                                                          |
-| `sortBy`        | `SimpleHandler<SortingOrder<T>?>`        | Optional `Handler` that can implement any sorting logic based upon a `SortingOrder<T>` instance.                                    |
-| `toggleSorting` | `SimpleHandler<Sorting<T>>`              | Optional `Handler` that implements a toggling sort logic, that is switching between the three directions `NONE`, `ASC` and `DESC`   |
-| `filterBy`      | `SimpleHandler<((List<T>) -> List<T>)?>` | Optional `Handler` that can implement any logic to reduce the current `List<T>` items to the filtered `List<T>`.                    |
-| `selection`     | `SelectionMode<T>`                       | Basically an optional intermediate property to offer `DataBinding` properties for either `single` or `mulit` selection modes.       |
+| Scope property  | Typ                                      | Description                                                                                                                        |
+|-----------------|------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|
+| `data`          | `CollectionDataProperty<T>`              | Mandatory one-way data binding for the items the collection should manage.                                                          |
+| `sortBy`        | `SimpleHandler<SortingOrder<T>?>`        | Optional `Handler` that can implement any sorting logic based upon a `SortingOrder<T>` instance.                                   |
+| `toggleSorting` | `SimpleHandler<Sorting<T>>`              | Optional `Handler` that implements a toggling sort logic, that is switching between the three directions `NONE`, `ASC` and `DESC`  |
+| `filterBy`      | `SimpleHandler<((List<T>) -> List<T>)?>` | Optional `Handler` that can implement any logic to reduce the current `List<T>` items to the filtered `List<T>`.                   |
+| `selection`     | `SelectionMode<T>`                       | Basically an optional intermediate property to offer `DataBinding` properties for either `single` or `mulit` selection modes.      |
 
 Functions:
 

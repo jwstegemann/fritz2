@@ -14,7 +14,7 @@ eleventyNavigation:
 
 ### Create a basic UI
 
-fritz2 offers a rich DSL to create the HTML for your application. You just have to call the global `render` function to 
+fritz2 offers a rich DSL to create the HTML for your application. You simply call the global `render` function to 
 create an initial `RenderContext` in which you can then call the HTML-Tag factory-functions provided by fritz2
 like `div`. All of those factories have to be nested by intention, so this results in a *declarative* way of creating
 UIs.

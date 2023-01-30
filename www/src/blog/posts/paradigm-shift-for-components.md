@@ -158,7 +158,7 @@ functional structure of a simple selection can be decomposed as follows:
 
 ```text
 - single selection
-    - two-way data-binding (→ What is selected? → Preselection)
+    - two-way data binding (→ What is selected? → Preselection)
     // for each option
         - option (→ Is this option selected?)
             - toggle (→ changes selextion)
@@ -169,7 +169,7 @@ In practice, we supplement the functionality with a few often useful, but still 
 
 ```text
 - single selection
-    - two-way data-binding
+    - two-way data binding
     - label (optional)
     - description (optional)
     - validation (optional) (→ Is this selection valid? → Messages)
@@ -198,7 +198,7 @@ val frameworks = listOf("fritz2", "Spring", "flask")
 val storedChoice = storeOf(frameworks.first())
 // headless start
 radioGroup<String>() { // <div>
-    value(storedChoice) // databinding
+    value(storedChoice) // data binding
     frameworks.forEach { option ->
         radioGroupOption(option) { // <div>
             radioGroupOptionToggle() { // <input type=radio>
@@ -224,7 +224,7 @@ val frameworks = listOf(
 val storedChoice = storeOf(null)
 // headless start
 radioGroup<Framework?>() { // <div>
-    value(storedChoice) // databinding
+    value(storedChoice) // data binding
     radioGroupLabel() { // <label>
         +"Choose some framework please" 
     }

@@ -111,9 +111,9 @@ Parameters: `classes`, `id`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-| Scope property | Typ                           | Description                                             |
-|----------------|-------------------------------|---------------------------------------------------------|
-| `value`        | `DatabindingProperty<String>` | Mandatory (two-way) data-binding for the input value.   |
+| Scope property | Typ                           | Description                                           |
+|----------------|-------------------------------|-------------------------------------------------------|
+| `value`        | `DatabindingProperty<String>` | Mandatory (two-way) data binding for the input value. |
 
 ### textareaTextfield
 

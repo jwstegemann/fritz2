@@ -23,7 +23,7 @@ By clicking on the building block created by `listboxButton` or [[Space]] with f
 list is displayed. The `listboxButton` often shows the currently selected item.
 
 It is mandatory to specify a data stream or a store of type `T` as data binding via the `value` property. The component
-supports two-way-data-binding, i.e. it reflects a selected element from the outside by a `Flow<T>`
+supports two-way data binding, i.e. it reflects a selected element from the outside by a `Flow<T>`
 but also emits the updated selection to the outside by some `Handler`.
 
 You can navigate within the selection list using the keyboard. By [[Enter]], [[Space]] or a mouse click an item is
@@ -47,7 +47,7 @@ val characters = listOf("Luke", "Leia", "Han",)
 val bestCharacter = storeOf("Luke")
 
 listbox<String> {
-    // set up (two-way-)data-binding
+    // set up (two-way) data binding
     value(bestCharacter)
     
     listboxButton {
@@ -294,8 +294,8 @@ Default-Tag: `div`
 
 | Scope property | Typ                            | Description                                                                                                                   |
 |----------------|--------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
-| `value`        | `DatabindingProperty<T>`       | Mandatory (tow-way) data-binding for a selected item.                                                                         |
-| `openState`    | `DatabindingProperty<Boolean>` | Optional (two-way) data-binding for opening and closing.                                                                      |
+| `value`        | `DatabindingProperty<T>`       | Mandatory (tow-way) data binding for a selected item.                                                                         |
+| `openState`    | `DatabindingProperty<Boolean>` | Optional (two-way) data binding for opening and closing.                                                                      |
 | `opened`       | `Flow<Boolean>`                | Data stream that provides Boolean values related to the "open" state. Quite useless within a list box, as it is always `true` |
 | `close`        | `SimpleHandler<Unit>`          | Handler to close the list box from inside. Should not be used, as the component handles this internally.                      |
 | `open`         | `SimpleHandler<Unit>`          | handler to open; does not make sense to use within a list box!                                                                |

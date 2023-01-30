@@ -64,12 +64,12 @@ val router = routerOf(mapOf("page" to "welcome", "foo" to "bar"))
 
 render {
     section {
-        // use a child Store for two-way data-binding
+        // use a child Store for two-way data binding
         val foo = router.map("foo")
         foo.update("bars")
 
         // or use special select() function where other contains the rest of the map entries
-        // for one-way data-binding
+        // for one-way data binding
         router.select(key = "page").render { (page, other) ->
             when(page) {
                 "welcome" -> div { +"Welcome" }

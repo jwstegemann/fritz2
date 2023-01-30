@@ -16,7 +16,7 @@ import kotlin.math.min
 /**
  * This data class groups all basic elements of a data collection in one object.
  *
- * @param data one-way data-binding [Flow] of a [List] of some data type [T] as data source
+ * @param data one-way data binding [Flow] of a [List] of some data type [T] as data source
  * @param idProvider an optional [IdProvider] to identify items.
  * @param id an optional id for the root [Tag] of the data collection
  */

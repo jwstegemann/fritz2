@@ -42,7 +42,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
      * location for correcting the stream.
      */
     val selected by lazy {
-        // set a databinding if user has not provided one
+        // set a data binding if user has not provided one
         if (!value.isSet) value(storeOf(0))
 
         value.data.combine(disabledTabs.data) { index, disabledStates ->
@@ -106,7 +106,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
 
     fun render() {
         attr("id", componentId)
-        // We need to emit all internal changes to the outside for realising two-way-data-binding!
+        // We need to emit all internal changes to the outside for realising two-way data binding!
         // This includes the automatic correction by `selectDefaultTab` of `selected` setup.
         selected handledBy ::selectDefaultTab
     }

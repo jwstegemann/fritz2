@@ -129,7 +129,7 @@ Default-Tag: `button`
 
 | Scope property | Typ                            | Description                                                      |
 |----------------|--------------------------------|------------------------------------------------------------------|
-| `value`        | `DatabindingProperty<Boolean>` | Mandatory (two-way) data-binding representing the boolean state. |
+| `value`        | `DatabindingProperty<Boolean>` | Mandatory (two-way) data binding representing the boolean state. |
 | `enabled`      | `Flow<Boolean>`                | Current state. (Default `false`)                                 |
 
 
@@ -141,7 +141,7 @@ Default-Tag: `div`
 
 | Scope property | Typ                            | Description                                                      |
 |----------------|--------------------------------|------------------------------------------------------------------|
-| `value`        | `DatabindingProperty<Boolean>` | Mandatory (two-way) data-binding representing the boolean state. |
+| `value`        | `DatabindingProperty<Boolean>` | Mandatory (two-way) data binding representing the boolean state. |
 | `enabled`      | `Flow<Boolean>`                | Current state. (Default `false`)                                 |
 
 

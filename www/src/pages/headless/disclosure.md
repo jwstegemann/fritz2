@@ -75,7 +75,7 @@ val toggle = storeOf(true) // show Panel at start
 
 disclosure {
     
-    // establish two-way-data-binding
+    // establish two-way data binding
     openClose(toggle)
     
     disclosureButton {
@@ -148,7 +148,7 @@ Default-Tag: `div`
 
 | Scope property | Typ                              | Description                                                                                    |
 |----------------|----------------------------------|------------------------------------------------------------------------------------------------|
-| `openState`    | `DatabindingProperty<Boolean>`   | Optional (two-way) data-binding for opening and closing.                                       |
+| `openState`    | `DatabindingProperty<Boolean>`   | Optional (two-way) data binding for opening and closing.                                       |
 | `opened`       | `Flow<Boolean>`                  | Data stream that provides Boolean values related to the "open" state.                          |
 | `close`        | `SimpleHandler<Unit>`            | Handler to close the disclosure from inside.                                                   |
 | `open`         | `SimpleHandler<Unit>`            | handler to open; does not make sense to use within a disclosure!                               |

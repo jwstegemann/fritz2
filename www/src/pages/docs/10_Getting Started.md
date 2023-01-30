@@ -1,6 +1,6 @@
 ---
 title: Getting Started
-description: "Learn how to get started with fritz2"
+description: "How to get started with fritz2"
 layout: layouts/docs.njk
 permalink: /docs/start/
 eleventyNavigation:
@@ -11,13 +11,12 @@ eleventyNavigation:
 ---
 ## Create a Project
 
-To use fritz2, you have to set up a Kotlin multiplatform-project. To do so you can either
+To use fritz2, set up a Kotlin multiplatform-project. To do so you can either
 * [clone our template from GitHub](https://github.com/jwstegemann/fritz2-template)
 * If you want to use fritz2 together with [tailwindcss](https://tailwindcss.com/) for the styling, clone
   our [tailwind specific template](https://github.com/jwstegemann/fritz2-tailwind-template) from GitHub instead.
-* checkout the [examples](https://fritz2.dev/examples) and see how to use some features of fritz2
-* have a look at
-  the [official documentation](https://kotlinlang.org/docs/multiplatform-get-started.html)
+* Check out the [examples](https://fritz2.dev/examples) and see how to use the fritz2 features
+* Have a look at the [official multiplatform documentation](https://kotlinlang.org/docs/multiplatform-get-started.html)
   and use the following `build.gradle.kts` file:
 
 ## Setup Gradle Build
@@ -25,7 +24,7 @@ To use fritz2, you have to set up a Kotlin multiplatform-project. To do so you c
 ```kotlin
 plugins {
     kotlin("multiplatform") version "1.7.20"
-    // KSP support
+    // KSP support needed for Lens generation
     id("com.google.devtools.ksp") version "1.7.20-1.0.6"
 }
 
@@ -33,7 +32,7 @@ repositories {
     mavenCentral()
 }
 
-val fritz2Version = "1.0-RC2"
+val fritz2Version = "1.0-RC3"
 
 //group = "my.fritz2.app"
 //version = "0.0.1-SNAPSHOT"
@@ -48,7 +47,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation("dev.fritz2:core:$fritz2Version")
-                // implementation("dev.fritz2:headless:$fritz2Version") // optional
+                // implementation("dev.fritz2:headless:$fritz2Version") // optional headless comp
             }
         }
         val jvmMain by getting {
@@ -63,7 +62,7 @@ kotlin {
 }
 
 /**
- * KSP support - start
+ * KSP support for Lens generation - start
  */
 dependencies {
     add("kspCommonMainMetadata", "dev.fritz2:lenses-annotation-processor:$fritz2Version")
@@ -110,7 +109,7 @@ You can mark an element of your choice with an id (or use the body by default) t
   </head>
   <body id="target">
     Loading...
-    <script src="<project-name>.js"></script>
+    <script src="project-name.js"></script>
   </body>
 </html>
 ```
@@ -118,7 +117,7 @@ You can mark an element of your choice with an id (or use the body by default) t
 `app.kt` is the starting point of your fritz2 app, so make sure it has a `main`-function.
 Inside `main`, create some content by opening a
 [render](https://www.fritz2.dev/api/core/dev.fritz2.core/render.html) context and
-mount it to the DOM of your `index.html`:
+mounting it to the DOM of your `index.html`:
 
 ```kotlin
 fun main() {
@@ -139,7 +138,7 @@ building and reloading in the browser after changing your code.
 
 ## Pre-release builds
 
-If you want to use the newest snapshot-builds of fritz2 before we release them add the 
+If you want to use the latest fritz2 snapshot-builds before we release them, add the 
 following lines to your `build.gradle.kts`:
 
 ```kotlin
@@ -151,5 +150,5 @@ repositories {
 val fritz2Version = "1.0-SNAPSHOT" // set the newer snapshot version here
 ```
 
-If you find any problems with these snapshot-versions please
+If you encounter any problems with these snapshot-versions, please
 [open an issue](https://github.com/jwstegemann/fritz2/issues/new/choose).

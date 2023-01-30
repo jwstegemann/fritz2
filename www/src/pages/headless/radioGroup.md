@@ -23,7 +23,7 @@ an option can be selected. Only one option can be selected at a time; the previo
 is automatically deselected accordingly.
 
 It is therefore mandatory to specify a data stream or a store  of a `List<T>` as data binding via the `value` property.
-The component supports two-way-data-binding, i.e. it reflects selected element from the outside by a `Flow<T>`
+The component supports two-way data binding, i.e. it reflects selected element from the outside by a `Flow<T>`
 but also emits the updated selection to the outside by some `Handler`.
 
 The available options are not injected directly into the component as parameter, but one at a time by calling the
@@ -47,7 +47,7 @@ val plans = listOf<Plan>(/* ... */)
 val choice = storeOf<Plan?>(null)
 
 radioGroup<HTMLFieldSetElement, Plan?>(tag = RenderContext::fieldset) {
-    // set up (two-way-)data-binding
+    // set up (two-way) data binding
     value(choice)
     
     // using a loop is a typical pattern to create the options
@@ -231,7 +231,7 @@ Default-Tag: `div`
 
 | Scope property | Typ                       | Description                                        |
 |----------------|---------------------------|----------------------------------------------------|
-| `value`        | `DatabindingProperty<T>`  | Mandatory (two-way) data-binding for the selection |
+| `value`        | `DatabindingProperty<T>`  | Mandatory (two-way) data binding for the selection |
 
 
 ### radioGroupLabel

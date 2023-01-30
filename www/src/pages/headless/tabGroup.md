@@ -152,7 +152,7 @@ currentIndex.data handledBy {
 
 tabGroup {
     
-    // apply two-way-data-binding via index based store
+    // apply two-way data binding via index based store
     value(currentIndex)
     
     tabList {
@@ -283,7 +283,7 @@ Default-Tag: `div`
 
 | Scope property    | Typ                        | Description                                                                              |
 |---------------|----------------------------|------------------------------------------------------------------------------------------|
-| `value`       | `DatabindingProperty<Int>` | Optionally (two-way) data-binding for setting or querying the current active tab's index |
+| `value`       | `DatabindingProperty<Int>` | Optionally (two-way) data binding for setting or querying the current active tab's index |
 | `selected`    | `Flow<Int>`                | Data stream of the current tab index.                                                    |
 | `orientation` | `Orientation`              | Field for setting the orientation. Default is `Horizontal`                               |
 

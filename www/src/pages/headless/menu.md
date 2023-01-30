@@ -245,7 +245,7 @@ Default-Tag: `div`
 
 | Scope property           | Typ                            | Description                                                                                                               |
 |----------------------|--------------------------------|---------------------------------------------------------------------------------------------------------------------------|
-| `openState`    | `DatabindingProperty<Boolean>` | Optional (two-way) data-binding for opening and closing.                                                                  |
+| `openState`    | `DatabindingProperty<Boolean>` | Optional (two-way) data binding for opening and closing.                                                                  |
 | `opened`       | `Flow<Boolean>`                | Data stream that provides Boolean values related to the "open" state. Quite useless within a menu, as it is always `true` |
 | `close`        | `SimpleHandler<Unit>`          | Handler to close the list box from inside. Should not be used, as the component handles this internally.                  |
 | `open`         | `SimpleHandler<Unit>`          | handler to open; does not make sense to use within a menu!                                                                |
