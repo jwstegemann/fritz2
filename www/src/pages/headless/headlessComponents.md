@@ -11,30 +11,30 @@ eleventyNavigation:
     classes: "font-bold capitalize"
 ---
 
-Instead of the classic approach of offering taylor-made and fully functional and stylish components,
-fritz2 takes a different approach: So-called headless components.
+Instead of the classic approach of providing taylor-made, fully functional, and styled components,
+fritz2 takes a different approach: so-called headless components.
 
-These basically represent a modular system, that empowers the user to easily build user interfaces supporting typical
-functionalities. These include, for example, functions such as multiple or also single selection of elements from a
-given list, modal dialogs, pop-up windows, input fields and much more.
+They represent a modular system which empowers the user to easily build user interfaces supporting typical
+functionalities. These include functions like multiple and single selection of elements from a
+given list, modal dialogs, pop-up windows, input fields, and many more.
 
-The pure functionality of such elements, in particular the user interaction and the corresponding data handling, such as
-navigating within a selection list or clicking a button with the mouse, is controlled and provided encapsulated by the
-headless components. The user only has to worry about the pure display aspects, i.e. the structure of the required tags
+The pure functionality of such elements, in particular user interaction and the corresponding data handling, such as
+navigating within a selection list or clicking a button, is controlled and encapsulated by the
+headless components. The user has to worry about the pure display aspects only, i.e. the structure of the required tags
 and the styling.
 
-For background information on why we think headless components are the optimal way to go for fritz2 users, we refer to a
-detailed one [blog post](/blog/posts/paradigm-shift-for-components/).
+For background information on why we think headless components are the optimal way to go for fritz2 users, we refer you 
+to this detailed [blog post](/blog/posts/paradigm-shift-for-components/).
 
 ::: info
-Note: for the styling information we use in the examples the [tailwindcss](https://tailwindcss.com) framework. Since
-fritz2 is agnostic about the styling information, you can of course use other frameworks such as
-[Bootstrap](https://getbootstrap.com) or simply some plain CSS.
+Note: Our examples use the [tailwindcss](https://tailwindcss.com) framework for styling. Since
+fritz2 is agnostic about styling information, you can of course use other frameworks such as
+[Bootstrap](https://getbootstrap.com), or simply some plain CSS.
 :::
 
 ## Setup
 
-In order to use headless components within your project, just replace the dependency of the fritz2 `core` with
+In order to use headless components in your project, replace the dependency to the fritz2 `core` with
 `headless` in the `commonMain` source-set of your `build.gradle.kts` file:
 
 ```kotlin
@@ -43,7 +43,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                // add dependency to headless always in commonMain section!
+                // always add the dependency to headless in the commonMain section
                 implementation("dev.fritz2:headless:$fritz2Version")
             }
         }
@@ -59,64 +59,62 @@ our [tailwind specific template](https://github.com/jwstegemann/fritz2-tailwind-
 
 ## Structure of a Component
 
-Each component is created using a factory function. In rare cases there are also variants of factory functions
-(e.g. with [switch](switch/#switchwithlabel)). The word "component" therefore always designates in the following
-sections the associated factory function at the same time and vice versa.
+Each component is created using a factory function. In rare cases, there are variants of factory functions
+(e.g. with [switch](switch/#switchwithlabel)). In the following sections, the word "component" always refers to 
+the associated factory function as well, and vice versa.
 
-Components, in turn, consist of other building blocks, called "bricks", that are often more deeply nested. These are
-carried out analogously by factory functions too.
+Components in turn consist of building blocks called "bricks" which are often more deeply nested. They are also 
+represented by factory functions.
 
-All components and many building blocks have their own scope in which the user haa to make some specific configuration
-in order to use the functionality of a component. For such a configuration there are essentially three different
-concepts: simple `var` fields (hereinafter also called "simple configuration"),
-[`Property`s](#properties) and [`Hook`s](#hooks). All three allow the user to adapt the structure, the behavior and
-generally the function of a component to the context in a meaningful way. The different concepts of configuration are
+All components and many of the building blocks have their own scope in which the user configures the functionality of 
+the component. There are essentially three concepts for this configuration: simple `var` fields 
+("simple configuration"), [`Property`s](#properties) and [`Hook`s](#hooks). All three allow adaptation of structure,
+behavior, and function in general of a component to the context in a meaningful way. These concepts of configuration are
 discussed in detail in a [dedicated section](#basic-concepts-for-configuration).
 
-Almost without exception, all factories (of components and bricks) always generate a `Tag`. The user has therefore
-access to all attributes of the generated tag, such as `className` or `attr`!
+Almost without exception, all factories of both components and bricks always generate a `Tag`, giving the user
+access to all attributes of the generated tag, such as `className` or `attr`.
 
 ```kotlin
 someComponent(/* params */) {
-    // Scope of `someComponent` == some `Tag` + specific extra props (`initialize`-Parameter)
+    // Scope of `someComponent` == a `Tag` + specific extra props (`initialize`-Parameter)
 
     someBrick(/* params */) {
-        // Scope of `SomeBrick` == some `Tag` + specific extra props + props from outer Scope! (`initialize`-Parameter)
+        // Scope of `SomeBrick` == a `Tag` + specific extra props + props from outer Scope (`initialize`-Parameter)
     }
 }
 ```
 
-Blocks always have the distinctive part or the full name of the component to which they belong as a prefix,
+Block names are always prefixed with the distinctive part or the full name of the component to which they belong,
 e.g. `radioGroupLabel` for a label within the `radioGroup` component.
 
-Almost all factory functions of components and building blocks have the same signature, that resembles the one of
-a `tag` by intention:
+Almost all factory functions of components and building blocks have the same signature, which intentionally resembles 
+the signature of a `Tag`:
 
 ```kotlin
 fun <C : HTMLElement> RenderContext.someComponent(
     classes: String? = null, // modify the styling
     id: String? = null, // set an explicit ID; will be autogenerated in cases where this is needed
-    scope: (ScopeContext.() -> Unit) = {}, // set some key-value-pairs into the scope
-    tag: TagFactory<Tag<C>>, // provide a factory to create some `Tag<C>` (there is *always* an overloaded function with some default `Tag`) 
-    initialize: SomeComponent<C>.() -> Unit // the builder function, that enables the component designer to define the content and access the scope of a component / brick
+    scope: (ScopeContext.() -> Unit) = {}, // set some key-value-pairs for the scope
+    tag: TagFactory<Tag<C>>, // provide a factory to create a `Tag<C>` (there is *always* an overloaded function with a default `Tag`) 
+    initialize: SomeComponent<C>.() -> Unit // the builder function which enables the component designer to define the content and access the scope of a component / brick
 ): Tag<C>
 ```
 
-In the API sections of the components, these standard parameters are only listed as a short, untyped list.
-Blocks often lack the option of explicitly setting an ID.
-
-More important, however, are additional parameters that one or the other brick requires. So they are described with
-emphasize and thus easy to recognize. In most cases, these are also mandatory parameters.
+In the API sections of the components documentation, these standard parameters are listed as a short, untyped list only.
+Blocks do not usually provide the option of explicitly setting an ID.
+The additional parameters that some bricks require are more important, so those are described with
+emphasis and thus easy to recognize. In most cases, these are mandatory parameters.
 
 ## API-Description
 
-Since each component consists of different bricks and these in turn have some fields with `Hook`s, `Property`s or
-simple `var` types, a strongly abstract overview is offered to show the big picture. This focuses on the special
+Since each component consists of different bricks which in turn have some fields with `Hook`s, `Property`s, or
+simple `var` types, a strongly abstract overview is offered to show the big picture. It focuses on the special
 headless aspects and also indicates helpful patterns in comments. Standard parameters or fields of the default tags, on
 the other hand, are omitted.
 
-The following example should introduce the schema. For clarification, the structures are additionally commented here;
-the real component documentation lacks this meta information.
+The following example clarifies this approach to documentation. While the following lines of code are explained with 
+additional commentary, the real component documentation omits this meta information.
 
 ```kotlin
 // component factory
@@ -147,56 +145,55 @@ someComponent() {
 
 ## UI = Headless + Tags + Styling
 
-In order to create a functioning UI from the headless components and their building blocks, the given
-Factory functions can be nested and combined with other `Tag`s in such a way that the desired
-overall structure is created. In addition, the appearance must be defined by adding styling.
+In order to create a functioning UI out of headless components and their building blocks, the given
+factory functions can be nested and combined with other `Tag`s to create the overall structure. In addition, the 
+appearance must be defined by adding styling.
 
-The headless components and modules offer the following starting points in order to specify the function and
+The headless components and modules offer the following starting points for specifying the function and
 representation of a component:
 
-- Use of a specific brick
+- Use a specific brick
 - Determine the `tag` to be generated in factory functions
-- Setting styling specifications in factory functions
-- Configuration in the scope of the component or block
+- Set styling specifications in factory functions
+- Configure the scope of the component or block
 
-### Use of a specific Brick
+### Use a specific Brick
 
-Bricks often have a functionality in themselves, which is achieved solely through their use within a component. Examples
+Bricks often have a functionality in themselves which is achieved solely through their use within a component. Examples
 of this are the various `labels`, which usually set certain
 [ARIA](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA) attributes or trigger established functions.
 
 A good example of this are the labels on the text components [InputField](#inputField) and [TextArea](#textArea).
-If these are used, a mouse click on these elements automatically focuses the associated input field.
+A mouse click on these elements automatically focuses the associated input field.
 
-This function is available without any further efforts as soon as the corresponding `Label` brick is called inside in
-the Scope of the component.
+This function is available without additional efforts as soon as the corresponding `Label` brick is called inside
+the component's scope.
 
-Other examples can be found in the various `*Toggle` blocks (e.g.
+Other examples can be found in the various `Toggle` blocks (e.g.
 [checkboxGroupOptionToggle](#checkboxgroupcheckboxgroupoptiontoggle)), which automatically select or deselect items
-based on defined user inputs. The user need do nothing more than applying these bricks accordingly in his component.
+based on defined user inputs. The user needs do no more than applying these bricks accordingly in his component.
 
 ### Determine the `Tag` to be generated in Factory Functions
 
-The headless components and their bricks always offer a good default type for the `Tag` to be generated. In order to
-achieve the greatest possible flexibility, the user is free to choose the type of tag himself.
+The headless components and their bricks always offer a default type for the `Tag` to be generated. However, in order to
+achieve the greatest possible flexibility, the user can freely to choose the type of tag to generate something that is 
+semantically appropriate for the specific context.
 
-In this way, he can create the tag that is semantically appropriate for the context.
-
-Again, the `Label` attributes can serve as an example. These mostly actually generate HTML
-`label`-tags. However, simply specifying the `tag` parameter is enough to override this behavior:
+Again, the `Label` attributes can serve as an example. They mostly generate HTML
+`label`-tags - however, simply specifying the `tag` parameter is enough to override this behavior:
 
 ```kotlin
 inputField() {
     inputFieldLabel(tag = RenderContext::span) { // Scope of `HTMLSpanElement`
-        +"Some Label Text"
+        +"Label Text"
     }
 }
 ```
 
-### Setting Styling Specifications in Factory Functions
+### Set Styling Specifications in Factory Functions
 
-Almost every factory function accepts a `classes` parameter, in order to set arbitrary CSS classes to the created `Tag`.
-This fine-grained control over the styling for nearly every brick, allows the user to easily shape the desired visual
+Almost every factory function accepts a `classes` parameter in order to set arbitrary CSS classes to the created `Tag`.
+This fine-grained control over the styling for nearly every brick allows the user to easily shape the desired visual
 result. 
 
 ```kotlin
@@ -204,31 +201,31 @@ inputField() {
     inputFieldLabel("text-indigo-500 p-8 mh-4") {
         //           ^^^^^^^^^^^^^^^^^^^^^^^^
         //           Some Styling, almost always first parameter
-        +"Some Label Text"
+        +"Label Text"
     }
 }
 ```
 
-### Configuration in the Scope of the Component or Block
+### Configure the Scope of the Component or Block
 
-As the last and also extremely powerful aspect, the components and bricks provide accessible fields ready for the user,
-through which he can or even has to carry out the configuration.
+As the last and extremely powerful aspect, the components and bricks provide readily accessible fields for the user
+through which the configuration is carried out.
 
-As a reminder, the three common configuration concepts are simple configuration via `public var` fields,
-[`Property`s](#properties) and [`Hook`s](#hooks).
+Reminder: the three common configuration concepts are simple configuration via `public var` fields,
+[`Property`s](#properties), and [`Hook`s](#hooks).
 
-These configuration properties have often direct impact on the inner state of the component. This is especially true for
-the (two-way) data binding aspects lots of components offer. This includes, for example, information about the selection
-of the selection components ([RadioGroup](#radioGroup), [CheckboxGroup](#checkboxGroup) or
+These configuration properties often have direct impact on the inner state of the component. This is especially true for
+the (two-way) data binding aspects lots of components offer. This includes, for example, information about the current 
+selection in selection components ([RadioGroup](#radioGroup), [CheckboxGroup](#checkboxGroup), or
 [ListBox](#listBox)), but also the input values for text field components ([InputField](#inputField)
 and [TextArea](#textArea)).
 
-In addition, there are often certain 'flows' and 'handlers', via which special states (selected, disabled, focused or
-open) or the behavior in the event of changes (user clicks on a close button) can define. Those are most of the time
-derived from the data binding, so the former is some very important and powerful aspect.
+In addition, a lot of scopes offer flows and handlers for the handling of special states (selected, disabled, focused, or
+open), or for the behavior on data change events (e.g. user clicks on a close button). Most of the time, these are
+derived from the data binding, so this is a very important and powerful aspect of our headless components.
 
-Typical patterns are the dynamic setting of CSS classes depending on a specific state via `className`
-or the complete creation or deletion of DOM structures:
+Typical patterns are the dynamic setting of CSS classes depending on a specific state via `className`,
+or the complete creation/deletion of DOM structures:
 
 ```kotlin
 checkboxGroup {
@@ -240,10 +237,10 @@ checkboxGroup {
         // offers `selected: Flow<Boolean>` property -> style checked and unchecked options differently
         className(selected.map {
             if (it) "ring-2 ring-indigo-500 border-transparent"
-            else "border-gray-300"
+            else "border border-gray-300"
         })
 
-        // conditionally modify a whole sub-structure: show an Icon only if option is selected
+        // conditionally modify the whole sub-structure: show an icon only if option is selected
         selected.render {
             if (it) {
                 svg("h-5 w-5 text-indigo-600") {
@@ -258,16 +255,16 @@ checkboxGroup {
 
 ## Basic concepts for configuration
 
-Headless components and modules often require similar mechanisms, regardless of the specific form,
-how they require and maintain certain data input from a user. Beyond pure data management, the user has to be able to
-directly modify the rendering or pass customized behaviour into the component or the brick.
+Headless components and modules often require similar mechanisms, regardless of the specific way they require and 
+maintain certain data inputs from a user. Beyond pure data management, the user must be able to
+directly modify the rendering or pass customized behaviour to the component or the brick.
 
-There are two basic concepts for this, which will be presented in more detail below:
+There are two basic concepts for this which will be presented in more detail below:
 - Properties
 - Hooks
 
-Since the data binding is particularly important, this special implementation of a `property` is explained in a
-dedicated section too.
+Since the data binding `Property` is a particularly important and special one, its implementation is explained later in a
+dedicated section.
 
 ### Properties
 
@@ -276,54 +273,54 @@ can or must be configured externally by the user. The property is always created
 exposed to the user within its scope.
 
 In order to tailor this public API as appropriately as possible, the concept proposes to create tailored `invoke`
-methods. Their parameter lists should reflect the need of the component or brick's functionality, but also be tailored
-to the typical kind of data types of the user's context. This is easily possible by providing different `invoke` methods
-for different data types.
+methods. Their parameter lists should reflect the need of the component's or brick's functionality, but should also be 
+tailored to the typical kind of data types of the user's context. This is easily achieved by providing different `invoke` 
+methods for different data types.
 
 ```kotlin
 class UserProperty : Property<User>() {
-    // only visible "modifying" API for the client, "hide" the complex type by offering the parameters directly!
+    // the only visible "modifying" API for the client - hides the complex type by offering the parameters directly
     operator fun invoke(name: String, alias: String, mail: String) {
         value = User(name, alias, mail)
     }
 
-    // perhaps some other `invoke`s with convenience parameters!
+    // optional: other `invoke`s with convenience parameters
     operator fun invoke(ldapData: LdapPrincipal) {
         value = User(/* extract the relevant parameters from `LdapPrincipal` instance */)
     }
 }
 
-// set the data within some headless-component:
+// set the data within a headless-component:
 someComponentOrBrick {
     user("Christian", "Chris", "chris@fritz2.org")
 }
 ```
 
-A property should be used whenever it is clear from the context that the required data emerge from different types. A
-suitable `invoke` function should then be provided for each type, so that a comfortable API for the user arises.
+A property should be used whenever it is clear from the context that the required data emerges from different types. A
+suitable `invoke` function should be provided for each type resulting in a comfortable API for the user.
 
 The component itself can then solve the following tasks elegantly thanks to the `Property` interface:
 
 - Check with `isSet` if a value was set. This is important in order to be able to fall back on a default value if
   necessary.
-- Pass the managed data to another property instance via ``use(item: T)``. This is crucial for use cases, where the
-  headless component is encapsulated in some component alike container, which itself exposes this data as public API.
+- Pass the managed data to another property instance via ``use(item: T)``. This is crucial for use cases where the
+  headless component is encapsulated in another component-like container which itself exposes this data as public API.
   This data has to be forwarded to the underlying headless component or brick.
 
 ```kotlin
 class SomeSpecificComponent {
 
-    // create property instance, so external user can provide user data
+    // create property instance so external user can provide user data
     val user = UserProperty()
 
     fun render() {
         someHeadlessComponent() {
 
-            // transfer data into the headless component, which requires it!
+            // transfer data into the headless component which requires it
             user.use(this@SomeSpecificComponent.user.value)
 
             someBrick() {
-                // `someBrick` might check if `user.isSet` and use some default fallback data by itself!
+                // `someBrick` might check if `user.isSet` and use some default fallback data by itself
                 // often the component can check and act in the same way too:
                 if (user.isSet) {
                     // apply user data
@@ -337,36 +334,35 @@ class SomeSpecificComponent {
 ```
 
 ::: info
-**Tip:** If there is only one data type as a source, you should not use a property implementation, but instead prefer a
-simple configuration! (cf. [Vertical TabGroups](tabgroup/#vertical-tabgroup) where there is only one `Enum` value to
-pass)
+**Tip:** If there is only one data type as a source, you should not use a property implementation, but instead prefer the
+simple configuration (cf. [Vertical TabGroups](tabgroup/#vertical-tabgroup) where there is only one `Enum` value to
+pass).
 :::
 
-### Databinding
+### Data Binding
 
 Some headless components support data binding. This means that the component reacts to dynamic data from the outside,
 processes and uses this data internally if necessary, and is also able to communicate changes to the outside world.
 This corresponds to the classic two-way data binding that makes up the core of fritz2.
 
-Due to the importance of this mechanism, there is a specialized `Property` called `DatabindingProperty<T>`, which is
+Due to the importance of this mechanism, there is a specialized `Property` called `DatabindingProperty<T>` which is
 suitable for most data binding scenarios.
 
-This property therefore requires the following parameters via `invoke` for use:
+This property requires the following parameters via `invoke`:
 
-- `id: String? = null`: An optional ID, which forms the basis for the further sub-structures' IDs of a headless
-  component.
+- `id: String? = null`: An optional ID which forms the basis for the IDs of a headless component's substructures.
 - `data: Flow<T>`: This mandatory data stream delivers the dynamic data from the outside to which the component must
   react.
 - `messages: Flow<List<ComponentValidationMessage>>? = null`: This data stream allows for the optional propagation of
-  validation messages. Many headless components already support this aspect natively!
+  validation messages. Many headless components already support this aspect natively.
 - `handler: ((Flow<T>) -> Unit)? = null`: An optional handler that defines how the component propagates internally made
   changes to the outside world.
 
-Since this information can all be derived from a `Store`, the property offers a corresponding overloaded `invoke`
+Since all this information can be derived from a `Store`, the property offers a corresponding overloaded `invoke`
 method.
 
-Thus, this special property allows the user, very easily and with greatly reduced boilerplate code to expose and manage
-the data for data binding.
+Summing up, this special property allows the user to expose and manage their data binding very easily and with greatly 
+reduced boilerplate code.
 
 ```kotlin
 val name = storeOf("fritz2")
@@ -384,21 +380,21 @@ inputField {
 ### Hooks
 
 The hook concept is really just a specialized [property](#properties) at its core, which instead of arbitrary data
-encapsulates a so-called *effect*. An effect is simply behavior that directly affects the user interface in some way; be
-it through structures in the DOM, or through reacting to events or even generating events.
+encapsulates a so-called *effect*. An effect is simply a behavior that directly affects the user interface in some way, 
+be it through structures in the DOM, or through reacting to events, or even generating events.
 
-The effect, in the case of a hook, is precisely the configuration that must be specified by the user of a component,
-but is applied by the headless component or brick in a specific place or situation.
+In case of a hook, the effect is precisely the configuration that must be specified by the user, but is applied by the 
+headless component or brick in a specific place or situation.
 
 Therefore, it makes sense to choose a `Property` as the base interface: The public API for setting the effect works in
 the same way as all other configurations thanks to the property concept. The effect itself, on the other hand, is
-designed to be applicable as extension function on a `Tag` with some payload parameter. So it can be called anywhere
+designed to be applicable as extension function on a `Tag` with some payload parameter, so it can be called anywhere
 within the `RenderContext`. On top of that, the effect also has a generic return type, so that the latter can be
-processed further if needed. The signature looks like that: `typealias Effect<C, R, P> = C.(P) -> R`
+processed further if needed. The signature looks like this: `typealias Effect<C, R, P> = C.(P) -> R`
 
 This allows the effect to handle all facets of a UI within the DOM.
 
-The configuration takes place as usual by custom tailored `invoke` methods.
+As usual with our headless components, the configuration is done via custom tailored `invoke` methods.
 
 A recurring pattern in hooks can be traced back to the duality of static and dynamic data:
 Sometimes a value to be rendered is static, other times it comes from a `Flow`. Both can be processed by
@@ -432,7 +428,7 @@ class SomeComponent {
 
     fun render() {
         div {
-            // apply hook, where needed
+            // apply hook where needed
             hook(label)
             // further structure...
             input {
@@ -442,7 +438,7 @@ class SomeComponent {
     }
 }
 
-// the user can configure the hook with static content...
+// the user can configure the hook with static content
 someCoponent {
     label("Hooks are great!")
 }
@@ -464,11 +460,10 @@ class for real projects.
 
 ### Closable Content - OpenClose
 
-Some headless components can be opened and closed, for example content
-expands ([Disclosure](disclosure)) in open state or a popup appears ([PopOver](popover)). These components implement the abstract 
-class `OpenClose`.
+Some headless components can be opened and closed, for example, content expands ([Disclosure](disclosure)) in open state, 
+or a popup appears ([PopOver](popover)). These components implement the abstract class `OpenClose`.
 
-In the scope of these components, there are various `Flow`s and `Handler`s available, in order to react or manipulate
+In the scope of these components, there are various `Flow`s and `Handler`s available for reacting to or manipulating 
 the open-state of the component:
 
 | Scope property | Typ                              | Description                                                           |
@@ -476,8 +471,8 @@ the open-state of the component:
 | `openState`    | `DatabindingProperty<Boolean>`   | Optional (two-way) data binding for opening and closing.              |
 | `opened`       | `Flow<Boolean>`                  | Data stream that provides Boolean values related to the "open" state. |
 | `close`        | `SimpleHandler<Unit>`            | Handler to close the disclosure from inside.                          |
-| `open`         | `SimpleHandler<Unit>`            | handler to open.                                                      |
-| `toggle`       | `SimpleHandler<Unit>`            | handler for switching between open and closed.                        |
+| `open`         | `SimpleHandler<Unit>`            | Handler to open.                                                      |
+| `toggle`       | `SimpleHandler<Unit>`            | Handler for switching between open and closed.                        |
 
 The open state of such a component can be set via the data binding property `openState`, e.g. to an external `Store`
 or `Flow`. This can be used, for example, to control the visibility of the selection list of a `listbox` divergent from the standard behavior, e.g. always kept open:
@@ -503,8 +498,8 @@ listbox<String> {
 Some bricks of the headless components (e.g. the `popOverPanel` or the `listboxItem`) are positioned dynamically
 and hover over the rest of the content. These are often faded in and out dynamically.
 
-These blocks are implemented using the library [Popper.js](https://popper.js.org). Bid accordingly
-they offer a unified configuration interface to the most important attributes.
+These blocks are implemented using the library [Popper.js](https://popper.js.org). Accordingly, they offer a unified 
+configuration interface to the most important attributes.
 
 The following configurations are available in the scope of such a brick that implements the abstract class `PopUpPanel`
 in order to influence the positioning of the content:
@@ -529,7 +524,7 @@ popOverPanel {
 ```
 
 ::: info
-As such a floating panel will often need a higher ``z-index`` than the rest of the page(-section) it appears in, 
+Since such a floating panel will often need a higher ``z-index`` than the rest of the page(-section) it appears in, 
 we have set a default value of ``30`` for it. This offers enough flexibility to position elements below or above the 
 popup. 
 
