@@ -127,18 +127,19 @@ When you click the button, the whole `h1`-subtree will be removed and changed to
 
 ### Style and Enrich Your UI with Attributes
 
-As last teasing aspects we want to demonstrate, how fritz2 supports styling a UI or setting attributes of a tag.
+As a final teaser, we would like to demonstrate the styling of a UI and setting attributes of a tag.
 
-The tag-factories accept static CSS-classes as a `String` as first parameter, as this is such a common use case.
-(This is why we used the named parameter for the ids so far)
-fritz2 is totally agnostic of any CSS-framework or even handcrafted CSS. Use whatever fits your needs.
+The tag-factories accept static CSS-classes as a `String` as first parameter, as this is such a common use case (this is 
+why we used the named parameter for the ids throughout previous chapters).
+fritz2 is totally agnostic of any CSS-framework or even handcrafted CSS - use whatever fits your needs!
 
-As being reactive is such an important aspect of fritz2, styling and attributes can be set based upon the store's state. 
-The button becomes reactively disabled, if it gets clicked once, because the click changes the state of the store. 
-This leads to a change which is evaluated inside the `disabled`-function, that sets the related property of 
-the `<button>`-tag. So not only DOM-fragments can be bound to state changes, but also attributes and styling.
+Since being reactive is such an important aspect of fritz2, styling and attributes can be set based upon the store's 
+state. Example:
+A button is reactively disabled when it is clicked because the click changes the state of the store. 
+The changed state (its data) is evaluated inside the `disabled`-function which sets the related property of 
+the `<button>`-tag. 
 
-These last building blocks make fritz2 a fully reactive web framework!
+All the building blocks we showcased here make fritz2 a fully reactive web framework.
 
 ```kotlin
 fun main() {
@@ -208,13 +209,13 @@ Clicking the button will change the button section to this:
 ```
 Pay attention to the changed CSS-classes and the added `disabled` attribute! 
 
-(tailwindcss users might recognize that a better approach for this case would be the usage of `disabled:` prefix;
-this would make the `className` call obsolete and shorten the code - please accept this solution for demonstration purposes
+(tailwindcss users might recognize a better approach for this case: the usage of the `disabled:` prefix. This would make 
+the `className` call obsolete and shorten the code - so please accept this solution for demonstration purposes
 only.)
 
 ## Essentials
 
-Before we dive into the essential topics, let us introduce some model types, that are used for some upcoming examples:
+Before we dive into the essential topics, let us introduce some model types we will use in our upcoming examples:
 ```kotlin
 // example of an entity
 data class Person(
@@ -234,39 +235,39 @@ enum class Interest {
 
 ### Reactive Rendering
 
-As you already know all [state handling](/docs/fundamentals/#state-handling) is done with `Store`s in fritz2.
+As you already know, all [state handling](/docs/fundamentals/#state-handling) is done with `Store`s in fritz2.
 
 Based upon the `data`-property, which provides a `Flow` of the store's generic data type, there are a variety of
-`render*`-functions, that can be used to create *reactive* UIs:
+`render*`-functions which can be used to create *reactive* UIs:
 
-| Render-Function            | Additional parameters | Description                                                                                                                    | Default Tag |    
-|----------------------------|-----------------------|--------------------------------------------------------------------------------------------------------------------------------|-------------|
-| `Flow<T>.render`           | -                     | creates a mount-point providing the whole store's data value `T` inside `content` expression                                   | `div`       |
-| `Flow<String>.renderText`  | -                     | creates a mount-point creating a text-node                                                                                     | `span`      |
-| `Flow<List<T>>.renderEach` | -                     | creates a mount-point optimizing changes by `T.equals`. Provides a `T` inside the `content` expression. Use for value objects  | `div`       |
-| `Flow<List<T>>.renderEach` | idProvider            | creates a mount-point optimizing changes by `idProvider`. Provides a `T` inside the `content` expression. Use for entities     | `div`       |
+| Render-Function            | Additional parameters | Description                                                                                                                   | Default Tag |    
+|----------------------------|-----------------------|-------------------------------------------------------------------------------------------------------------------------------|-------------|
+| `Flow<T>.render`           | -                     | Creates a mount-point providing the whole store's data value `T` inside `content` expression                                  | `div`       |
+| `Flow<String>.renderText`  | -                     | Creates a mount-point creating a text-node                                                                                    | `span`      |
+| `Flow<List<T>>.renderEach` | -                     | Creates a mount-point optimizing changes by `T.equals`. Provides a `T` inside the `content` expression. Use for value objects | `div`       |
+| `Flow<List<T>>.renderEach` | idProvider            | Creates a mount-point optimizing changes by `idProvider`. Provides a `T` inside the `content` expression. Use for entities    | `div`       |
 
-There is one more `renderEach` variant, which is defined as extension directly upon a `Store` and not on a `Flow`.
-This special variant and its application are described in
+There is one more `renderEach` variant which is defined as an extension to a `Store` instead of a `Flow`.
+This special variant and its application are described in the 
 [chapter about store mapping](/docs/storemapping/#reactive-rendering-of-lists-of-entities-with-automatically-mapped-element-store).
 
 | Render-Function             | Additional parameters | Description                                                                                                                       | Default Tag |    
 |-----------------------------|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------|-------------|
-| `Store<List<T>>.renderEach` | idProvider            | creates a mount-point optimizing changes by `idProvider`. Provides a `Store<T>` inside the `content` expression. Use for entities | `div`       |
+| `Store<List<T>>.renderEach` | idProvider            | Creates a mount-point optimizing changes by `idProvider`. Provides a `Store<T>` inside the `content` expression. Use for entities | `div`       |
 
 #### Reactive Rendering of `T`
 
-In order to render the whole store's data type, there is the `render`-function. As its only required parameter,
-it needs a lambda expression with a `Tag` as receiver (remember that a `Tag` *is* a `RenderContext`), providing the
-data as parameter and returning `Unit`. Inside this `content` parameter, you then have access to the current data
+Use the `render`-function to render the store's data type as a whole.
+It requires a lambda expression with a `Tag` as receiver (remember that a `Tag` *is* a `RenderContext`), providing the
+data as a parameter and returning `Unit`. Inside this `content` parameter, you then have access to the current data
 and can use all HTML tag factories to create the desired UI-fragment.
 
 ```kotlin
-// define some Person and "store" it
+// define a Person and "store" it
 val storedPerson = storeOf(Person(1, "Fritz", 42))
 
 render {
-    storedPerson.data.render { person -> // the current store's value gets injected
+    storedPerson.data.render { person -> // the current store's value is injected
         dl {
             dt { +"Id" }
             // use the data type to render its contents by accessing its properties
@@ -281,7 +282,7 @@ render {
 }
 ```
 
-As result the following DOM-fragment is rendered:
+As a result, the following DOM-fragment is rendered:
 ```html
 <div class="mount-point" data-mount-point="">
     <dl>
@@ -295,36 +296,34 @@ As result the following DOM-fragment is rendered:
 </div>
 ```
 
-The `render`-function creates a *mount-point*, that reactively connect some store's data with 
-some node in the DOM-tree. The created mount-point now takes care of 
-reacting to new values and keep the UI-fragment up to date.
-
-Remember that this is the upper part of fritz2's [circle of life](/docs/fundamentals/#understanding-the-circle-of-life)!
+The `render`-function creates a *mount-point* which reactively connects a store's data with 
+a node in the DOM-tree. The created mount-point now takes care of reacting to new values and keeps the UI-fragment up 
+to date. This is the upper part of fritz2's [circle of life](/docs/fundamentals/#understanding-the-circle-of-life).
 
 It is important to know the following facts about `render` and mount-points:
-- as default some special `<div>` tag is rendered, which is marked with the pure informational `data-mount-point`
-attribute and with a special CSS class `mount-point`, that simply sets the display mode to `contents` in order to
+- As default, a special `<div>` tag is rendered which is marked with the purely informational `data-mount-point`
+attribute. It also has a special CSS class `mount-point` which simply sets the display mode to `contents` in order to
 exclude this artificial tag from the visible UI.
-- on every change to the store's data, the **whole subtree** beneath that `<div>` tag is dropped and rebuilt with the
+- On every change to the store's data, the **whole subtree** beneath that `<div>` tag is dropped and rebuilt with the
 new data's content.
 
 :::info
-As a direct consequence of the last fact, you should strive to keep the reactive UI-fragments as minimal as you can,
-as re-rendering a subtree is work for the browser.
+As a direct consequence of the last fact, we recommend keeping the reactive UI-fragments as minimal as you can,
+since re-rendering a subtree is work for the browser. 
 
-fritz2 supports you in doing so, for example by:
-- [precise rendering of complex / hierarchical data structure](#minimize-dom-structure-changes-within-reactive-updates-aka-precise-rendering) 
-- [efficient rendering of lists](#reactive-rendering-of-lists-of-value-objects)
-
-As rule of thumb memoize this: The smaller the changing portions are, the faster the result will be!
+fritz2 supports you in doing so, for example by
+- [precisely rendering complex / hierarchical data structure](#minimize-dom-structure-changes-within-reactive-updates-aka-precise-rendering) 
+- [efficiently rendering lists](#reactive-rendering-of-lists-of-value-objects)
+- 
+As rule of thumb, the smaller the changing parts are, the faster the result will be.
 :::
 
-Take a look at our [basic example](/examples/gettingstarted/) too, which demonstrates the `render` function.
+Also, take a look at our [basic example](/examples/gettingstarted/) which demonstrates the `render` function.
 
 #### Reactive Rendering of Text-Nodes
 
-As creating a reactive UI rendering texts dynamically is a common use case, 
-for which fritz2 offers a *dedicated* variant render function called `renderText`
+Since creating a reactive UI with dynamically rendered texts is a common use case, 
+fritz2 offers a *dedicated* render variant called `renderText`
 on data flows of type `String`:
 
 ```kotlin
@@ -332,7 +331,7 @@ val storedText = storeOf("fritz2")
 
 render {
     div {
-        // Attention: We need a *Tag* here, not just a `RenderContext`! 
+        // attention: needs a *Tag*, not just a `RenderContext`
         storedText.data.renderText()
     }
 }
@@ -345,7 +344,7 @@ As result the following DOM-fragment is rendered:
 </div>
 ```
 
-There is also an extension function `asString`, which converts a `Flow<T>` to a `Flow<String>` by calling the 
+There is also an extension function `asString` which converts a `Flow<T>` to a `Flow<String>` by calling the 
 `toString` method internally:
 
 ```kotlin
@@ -358,17 +357,17 @@ render {
 }
 ```
 
-The `renderText` function is useful in situations, where a longer text has some smaller dynamic parts. 
-As only the smaller parts will change, the other parts must not be part of the mount-point:
+The `renderText` function is useful when long text has smaller dynamic parts. 
+Since only the smaller parts will change, the other parts must not be part of the mount-point:
 
 ```kotlin
 val storedText = storeOf("fritz2")
 
 render {
     p {
-        +"There is some excellent Kotlin based framework named "
-        storedText.data.renderText() // only dynamic part is here; the other text-nodes are static!
-        +", that empowers one to easily create reactive SPAs in pure Kotlin."
+        +"There is an excellent Kotlin based framework named "
+        storedText.data.renderText() // only the dynamic part is here; the other text-nodes are static
+        +" which empowers one to easily create reactive SPAs in pure Kotlin."
     }
 }
 ```
@@ -380,33 +379,33 @@ val storedText = storeOf("fritz2")
 render {
     p {
         storedText.data.render { frameworkName ->
-            +"There is some excellent Kotlin based framework named "
+            +"There is an excellent Kotlin based framework named "
             +frameworkName
-            +", that empowers one to easily create reactive SPAs in pure Kotlin."
+            +" which empowers one to easily create reactive SPAs in pure Kotlin."
         }
     }
 }
 ```
-Of course the former could have also be written with `String`-templating, instead of separate text-nodes too.
+Of course the former could also have been written with `String`-templating instead of separate text-nodes.
 
 The important advantages of the dedicated `renderText` solution compared to the general `render` based solution are:
-- the solution with `renderText` fits better to the *declarative* UI approach, as it better reflects the node structure
+- The `renderText` solution fits better to the *declarative* UI approach, as it better reflects the node structure
 and thus is better to read.
-- the mount-point encompasses a much smaller DOM-subtree, so it is more efficient.
+- The mount-point encompasses a much smaller DOM-subtree, so it is more efficient.
 
 #### Reactive Rendering of Lists of Value Objects
 
-As a `List<T>` as value of a store is a common use case, fritz2 offers a special `renderEach` function for this too:
+Since a store of `List<T>` is a common use case, fritz2 offers a special `renderEach` function for this as well:
 
 ```kotlin
-// define some store with type of `List<T>`
+// define a store with some type of `List<T>`
 val storedInterests = storeOf(Interest.values().toList())
 
 render {
     ul {
         // for every value of store's interest list, the provided `content` expression is executed
         storedInterests.data.renderEach { interest -> // the current applied value of the data flow
-            // just declare the UI for one item
+            // just declare the UI for one item to render the complete list accordingly
             li {
                 +interest.toString()
             }
@@ -415,7 +414,7 @@ render {
 }
 ```
 
-As result the following DOM-fragment is rendered:
+As a result, the following DOM-fragment is rendered:
 ```html
 <div class="mount-point" data-mount-point="">
     <li>Programming</li>
@@ -426,14 +425,14 @@ As result the following DOM-fragment is rendered:
 ```
 
 It is important to spot the main difference to the former render-functions: The store's data type is an (ordered)
-collection type, so its value consists of an arbitrary amount of elements of the same type. It appears to be
-an inherent property of same types, that their UI-representation are also of the same type. `renderEach` supports
-this property in a way, that its `content` parameter only describes the UI-fragment for *one* item of the list.
-The UI-container, which holds those items is therefore *not* part of the reactive expression and thus the
+collection type, so its value consists of an arbitrary amount of elements of the same type. 
+An inherent property of equal types is that their UI-representation is also of the same type. `renderEach` supports
+this by describing only the UI-fragment for *one* item of the list with the `content` parameter.
+The UI-container which holds those items is therefore *not* part of the reactive expression and thus the
 mount-point.
 
-Another important aspect to handle the reactive rendering of `List`s in a specialized way are *performance*
-optimizations.
+Another important aspect of handling the reactive rendering of `List`s is *performance*
+optimization.
 
 In order to gain some understanding for this technical aspect, consider the above example realized with the standard
 `render`-function:
