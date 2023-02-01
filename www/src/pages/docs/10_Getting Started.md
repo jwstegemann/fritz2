@@ -136,7 +136,7 @@ fun main() {
 Run the project by calling `./gradlew jsRun` in your project's main directory. Add `-t` to enable automatic
 building and reloading in the browser after changing your code.
 
-## Pre-release builds
+## Pre-Release Builds
 
 If you want to use the latest fritz2 snapshot-builds before we release them, add the 
 following lines to your `build.gradle.kts`:

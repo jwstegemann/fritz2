@@ -12,26 +12,26 @@ eleventyNavigation:
 
 ## Overview
 
-### Create a basic UI
+### Create a Basic UI
 
-fritz2 offers a rich DSL to create the HTML for your application. You simply call the global `render` function to 
-create an initial `RenderContext` in which you can then call the HTML-Tag factory-functions provided by fritz2
+fritz2 offers a rich DSL to create the HTML for your application. Simply call the global `render` function to 
+create an initial `RenderContext`, then use the HTML-Tag factory-functions provided by fritz2, 
 like `div`. All of those factories have to be nested by intention, so this results in a *declarative* way of creating
 UIs.
 
 ```kotlin
 fun main() {
-    render { // offers created root `RenderContext`; start your UI code from within her
+    render { // offers created root `RenderContext` - start your UI code in here
         
-        // create some HTML tag; `div` produces a `Tag`, that is also a `RenderContext`.
-        // This enables the nested calling and therefore the declarative approach!
+        // create an HTML tag; `div` produces a `Tag` which is also a `RenderContext`.
+        // This enables nested calling and therefore the declarative approach
         div(id = "header") {
             
         }
         div(id = "container") {
             h1 { +"Hello World!" }
             //   ^^^^^^^^^^^^^^^
-            //   create some text node inside a tag
+            //   create a text node inside a tag
         }
         div(id = "footer") {
 
@@ -53,30 +53,31 @@ This code results in:
 ```
 
 If you compare the result with the code, you will immediately recognize that the DOM structure is reflected by the 
-declaring code. This leads to easy to read UI definitions and is some core feature of fritz2.
+declaring code. This leads to easy to read UI definitions and is a core feature of fritz2.
 
-### Make your UI reactive
+### Make Your UI Reactive
 
-fritz2 supports reactive UIs as one of its core features, so let us enhance this example with some dynamic content.
+fritz2 supports reactive UIs as one of its core features, so let us enhance the example with some dynamic content.
 
-First of all we need a so-called `Store` for holding the dynamic data of our application. Such stores are the heart
+First of all, we need a so-called `Store` for holding the dynamic data of our application. Such stores are the heart
 of every fritz2 application; they provide the current value in a reactive way and handle all the data changes.
 
-To bind the store's value reactively to the DOM, use some `render*`-functions on the `data`-property of a
-store, which offers a `Flow` of the store's value `T`. The function creates a so-called *mount-point*, that manages the
-automatic update of the DOM on every change of the store's data. The *mount-point* uses a dedicated tag created in the 
-DOM as reference to the node, where the deletion and recreation of the defined UI-fragment happens.
+The store's `data`-property offers a `Flow` of the stored value `T`. To reactively bind this value to the DOM, 
+use one of the `render*`-functions of the data flow on it. The function creates a so-called *mount-point* which manages 
+the automatic update of the DOM on every change of the store's data. The *mount-point* uses a dedicated tag created in the 
+DOM as reference to the node where the deletion and recreation of the defined UI-fragment happens.
 
 To react to (user) events like the click onto a button, a store provides so-called `handler`s, which create the new
-value of the store. The default handler `update` just takes a new value and substitutes the old state with it.
+value of the store. The default and built-in handler `update` simply substitutes the old state with a new value.
 
 :::info
-The reacting to events is not part of this chapter, but explained in short just to make the example understandable.
+Events and reacting to them will be explained in-depth in another chapter. The next example contains short commentary
+on this topic only to help you understand the example.
 :::
 
 ```kotlin
 fun main() {
-    // define a store to hold the dynamic data: In this case a `String`
+    // define a store to hold the dynamic data, in this case a `String`
     val storedName = storeOf("World")
 
     render {
@@ -100,8 +101,8 @@ fun main() {
             }.clicks.map { "fritz2" } handledBy storedName.update
             // ^^^^^^^^^^^^^^^^^^^^^^                      ^^^^^^
             // use the event to send a new                 use store's default handler
-            // value to the store                          to replace the old by the new value
-            // This mechanism will be explained in the chapter about store creation!
+            // value to the store                          to replace the old with the new value
+            // Event handling will be explained in the chapter about store creation!
         }
     }
 }
@@ -126,7 +127,7 @@ When you click the button, the whole `h1`-subtree will be removed and changed to
 
 ### Style and Enrich Your UI with Attributes
 
-As last teasing aspects we want to demonstrate, how fritz2 supports styling an UI or setting attributes of a tag.
+As last teasing aspects we want to demonstrate, how fritz2 supports styling a UI or setting attributes of a tag.
 
 The tag-factories accept static CSS-classes as a `String` as first parameter, as this is such a common use case.
 (This is why we used the named parameter for the ids so far)
@@ -253,7 +254,7 @@ This special variant and its application are described in
 |-----------------------------|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------|-------------|
 | `Store<List<T>>.renderEach` | idProvider            | creates a mount-point optimizing changes by `idProvider`. Provides a `Store<T>` inside the `content` expression. Use for entities | `div`       |
 
-#### Reactive Rendering of some `T`
+#### Reactive Rendering of `T`
 
 In order to render the whole store's data type, there is the `render`-function. As its only required parameter,
 it needs a lambda expression with a `Tag` as receiver (remember that a `Tag` *is* a `RenderContext`), providing the
@@ -641,7 +642,7 @@ render {
 }
 ```
 
-### Minimize DOM Structure Changes within Reactive Updates aka Precise Rendering
+### Minimize DOM Structure Changes within Reactive Updates: Precise Rendering
 
 In order to improve the performance and memory-footprint, you should always try to keep the reactive parts of your
 UI as small as possible. This can be achieved by putting the `render*`-functions as close to the dynamic subtree 
@@ -930,7 +931,7 @@ render {
 }
 ```
 
-### Avoid Flicker Effects with Reactive Stylings
+### Avoid Flicker Effects with Reactive Styling
 
 To set an initial CSS class (or any other attribute) immediately (for example to avoid flicker effects caused by the delay
 of the first value becoming available on the flow), the respective attribute-method must be called twice.
@@ -1047,7 +1048,7 @@ By default, all child elements will be removed otherwise before your content is 
 Run the project by calling `./gradlew jsRun` in your project's main directory. Add `-t` to enable automatic
 building and reloading in the browser after changing your code.
 
-### Reactive Styling with complex Rules
+### Reactive Styling with Complex Rules
 
 fritz2 also lets you manage multiple classes in a `List<String>` or `Flow<List<String>>` with the `classList`-attribute.
 
@@ -1067,7 +1068,7 @@ render {
 }
 ```
 
-### Rendering on Stand-alone Flows
+### Rendering on Stand-Alone Flows
 
 Coming soon
 

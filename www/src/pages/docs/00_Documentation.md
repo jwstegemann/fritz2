@@ -23,7 +23,7 @@ Probably the easiest way to do so is by using the "Edit this page on Github" lin
 We also encourage everybody to share their own examples and showcases with us,
 as this is often the best way to learn something new.
 
-## How to read this Documentation
+## How to Read This Documentation
 
 Most topics are split into three parts which differ in level of detail, abstraction, and importance:
 
@@ -45,7 +45,7 @@ Please also have a look at our working code [examples](/examples) referenced thr
 progress.
 :::
 
-## Where does the name come from?
+## Where Does the Name Come From?
 
 fritz2 actually has two meanings. For our project name, we were looking for something to connect it to St. Petersburg
 (Kotlin is an island in its proximity), and we came across Friedrich II. It was shortened to Fritz2 - so technically,

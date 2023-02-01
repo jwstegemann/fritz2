@@ -10,7 +10,7 @@ eleventyNavigation:
     order: 20
 ---
 
-## What is fritz2?
+## What Is Fritz2?
 
 It helps to understand what *fritz2* is in the first place. What does it do? What problems does it help me solve?
 Why would I want to use it?
@@ -109,7 +109,7 @@ that fits your needs.
 The [running examples](/examples) are often built with [bootstrap](https://getbootstrap.com/).
 :::
 
-### Starting point
+### Starting Point
 
 The fritz2 framework requires very low ceremony to set up an application. Just call the global 
 `render` function inside your code once to create an initial so-called `RenderContext`. Think of it as a context 
@@ -126,7 +126,7 @@ fun main() {
 }
 ```
 
-### UI-Elements aka HTML-Tags
+### UI-Elements Are HTML-Tags
 
 Inside a `RenderContext`, fritz2 offers factory functions for all HTML5 elements, like `div`, `span`, `p`, and so on.
 These functions create a special `Tag` implementation which in itself is just a new `RenderContext`. This 
@@ -208,7 +208,7 @@ node and change the whole subtree based upon the code you write inside the `rend
 In case of our example above, the `p` tag will be removed from the DOM and a new tag will be rendered with the new text 
 value inside.
 
-### Dealing with State Changes
+### Dealing With State Changes
 
 But how can the state of a store change? Often this is due to user input which creates an `event`
 inside the DOM. The `tag`s offer all events as predefined properties, like the `changes` event of an `input` tag.
