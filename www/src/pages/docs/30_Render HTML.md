@@ -442,7 +442,7 @@ val storedInterests = storeOf(Interest.values().toList())
 
 render {
     ul {
-        storedInterests.data.render { interests -> // name suggests we get a `List<T>` here of course!
+        storedInterests.data.render { interests -> // name suggests a list
             // "manually" create <li> tags for each item
             interests.forEach {
                 li {
@@ -454,31 +454,31 @@ render {
 }
 ```
 
-You cannot spot the difference by looking at the rendered DOM structure, which remains the same for both solutions.
-But looking at the code, we can conclude, that the second approach will definitely delete the whole subtree of the 
-mount-point and re-create the whole `<li>`-tags even if only *one* element of the list changes.
+You cannot spot the difference by looking at the rendered DOM structure because it remains the same for both solutions.
+But looking at the code, we can conclude that the second approach will definitely delete the whole subtree of the 
+mount-point and re-create all `<li>`-tags, even if only *one* element of the list changes.
 
 `renderEach` instead creates a specialized mount-point in order to identify elements for re-rendering.
-This mount-point compares the last version of your list with the new one on every change and applies the minimum
-necessary patches to the DOM. Assuming again that only one item changes, the untouched items may remain inside the DOM
-and only the changed item's DOM subtree needs to be deleted and recreated. You can imagine, that this is a game changer
+This mount-point compares the current version of your list with the new one on every change and applies the minimum
+necessary patches to the DOM. Assuming only one item changes, the untouched items can remain in the DOM, 
+and only the changed item's DOM subtree needs to be deleted and recreated. As you can imagine, this is a game changer
 concerning performance.
 
 This `renderEach` implementation does the patch-determination by applying the standard `equals`-method of the list's 
-type `T`. This is the reason, why it is targeted to *value* objects: They are implicitly defined by their equality!
+type `T`. This is the reason why it is targeted to *value* objects - they are implicitly defined by their equality.
 
 Have a look at its usage in our [master detail](/examples/masterdetail/) example.
 
 #### Reactive Rendering of Lists of Entities
 
-As `List<T>` as value of a store is a common use case, where `T` is an *entity*, thus it has some stable *identity*
-lasting all changes, fritz2 offers a special application of the `renderEach`-function for this use case.
-When dealing with entities you can pass an additional parameter called `idProvider`, which is an expression that takes
+Since a `List<T>` as value of a store is a common use case, `T` being an *entity* with a stable identity, fritz2 
+offers a specialized `renderEach`-function for it.
+When dealing with entities, you can pass an additional parameter called `idProvider`. This expression takes
 one item `T` and determines its stable identity. Armed with this information, the internal patch-determination is then
 simply based upon the id and not upon the `equals`-method anymore.
 
 ```kotlin
-// define some person-entities and "store" them
+// define some person-entities and store them
 val persons = listOf(
     Person(1, "Fritz", 42),
     Person(2, "Caesar", 66),
@@ -507,18 +507,16 @@ render {
 }
 ```
 
-As the identity is stable, the following properties holds for the rendered items:
-- an element is only rendered *once*, so only adding or deleting items to the store will lead to changes in the UI,
-as those new elements will be added or inserted or the deleted elements will disappear from the DOM.
-- any change to an existing item will *not* trigger any re-rendering action anymore.
+As the identity is stable, the following properties hold for the rendered items:
+- An element is only rendered *once*, so only adding or deleting items to the store will lead to changes in the UI.
+- Any change to an existing item will *not* trigger any re-rendering action anymore.
 
-The latter is an important aspect to consider before the use of `renderEach` for entities: 
-If you still need to reflect those changes, you have the following two options:
-- If you want to apply precise rendering rely on this application of `renderEach` and add additional mount-points 
-inside the elements subtrees. You will learn about those in
+The latter is an important aspect to consider before the use of `renderEach` for entities. If you still need to reflect 
+changes to the data within an entity and want to apply precise rendering, use this application of `renderEach`, 
+but add additional mount-points inside the elements subtrees. You will learn about those in the 
 [chapter about store mapping](/docs/storemapping/#reactive-rendering-of-lists-of-entities-with-automatically-mapped-element-store).
-- Otherwise, it might be a better choice to stick to the default `renderEach` application relying on equality.
 
+Otherwise, it might be a better choice to stick to the default `renderEach` application relying on equality.
 Have a look at its application in our [todomvc](/examples/todomvc/) example.
 
 ### Apply Styling to Your UI: Reactive or Static
@@ -535,7 +533,7 @@ render {
 ```
 
 Use this one-liner to add styling and meaning to your elements by using semantic CSS class-names. Also, it keeps your
-code clean when using CSS frameworks like Bootstrap, Tailwind etc.
+code clean when using CSS frameworks like Bootstrap, Tailwind, etc.
 
 To reactively change the styling of a rendered element, you can add dynamic classes by assigning a `Flow` of strings to
 the `className`-attribute (like with any other attribute).
@@ -556,29 +554,28 @@ render {
 
 ### Apply Attributes to Your UI: Reactive or Static
 
-To create rich HTML interfaces, styling alone is not sufficient. You will need to use a variety of attributes.
-In fritz2 there are several easy ways to achieve this, depending on your use case.
+To create rich HTML interfaces, styling alone is not sufficient - you will need to use a variety of attributes.
+In fritz2 there are several easy ways to do this, depending on your use case.
 
 You can set all HTML attributes inside the `Tag`'s content by calling a function of the according name. Every standard
 HTML attribute has two functions. One sets a static value every time the element is re-rendered, the second collects
 dynamic data coming from a `Flow`. When coming from a `Flow`, the attribute's value will be updated in the
-DOM whenever a new value appears on the `Flow`
-without having to re-render the whole element:
+DOM whenever a new value appears on the `Flow`, no re-rendering required:
 
 ```kotlin
-val flowOfInts = ... // i.e. get it from some store
+val flowOfInts = ... // i.e. get it from a store
 
 render {
     input {
-        placeholder("some text")
+        placeholder("a text")
         maxLength(flowOfInts)
         disabled(true)
     }
 }
 ```
 
-If you want to set a `Boolean` value, you can set an optional parameter `trueValue` which will be set as the
-attribute-value if your data is `true`:
+If you want to set a `Boolean` value, you can use the optional parameter `trueValue` which will be set as the
+attribute-value when your data is `true`:
 
 ```kotlin
 val isLow = myStore.data.map { i -> i <= 0 }
@@ -596,8 +593,8 @@ render {
 This is sometimes needed for CSS-selection or animations.
 
 ::: info
-The `className` function you have already encountered is also just a way to set a common attribute on a tag - although
-it works internally a bit different and offers more convenience variants due to its overall importance.
+The `className` function you have already encountered is just another way to set a common attribute on a tag. 
+Internally, it offers more convenience variants and works a bit differently, due to its overall importance.
 :::
 
 To set a value for a custom (data-) attribute, use the `attr()`-function. It works for static and dynamic (from
@@ -606,17 +603,17 @@ a `Flow`) values:
 ```kotlin
 render {
     div {
-        attr("data-something", "someValue")
-        attr("data-something", flowOf("someValue"))
+        attr("data-something", "value")
+        attr("data-something", flowOf("value"))
     }
 }
 ```
 
-Sometimes it is important for an attribute to only appear if some condition is `true`, for example some
+Sometimes it is important for an attribute to only appear if a certain condition is `true`. For example, some
 [ARIA](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA) properties like
 [aria-controls](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-controls) should
-preferably appear only if the dependent element exist. The `attr` functions for `Flows` behave in such a way, that they
-only set an attribute if the value is *not* `null`. This behaviour could be used to achieve the desired effect:
+preferably appear only if the dependent element exist. The `attr` functions for `Flows` behave in such a way - they
+only set an attribute if the value is *not* `null`. This behaviour can be used to achieve the desired effect:
 
 ```kotlin
 val isOpened = storeOf(true)
@@ -628,7 +625,7 @@ render {
 
         attr("aria-controls", isOpened.data.map { if (it) "disclosure" else null })
         //                                                                  ^^^^
-        //      make whole attribute disappear if disclosure-div is not rendered
+        //                 attribute disappears if disclosure-div is not rendered
     }
 
     isOpened.data.render {
@@ -643,7 +640,7 @@ render {
 
 ### Minimize DOM Structure Changes within Reactive Updates: Precise Rendering
 
-In order to improve the performance and memory-footprint, you should always try to keep the reactive parts of your
+In order to improve performance and memory-footprint, you should always try to keep the reactive parts of your
 UI as small as possible. This can be achieved by putting the `render*`-functions as close to the dynamic subtree 
 as possible.
 
@@ -664,30 +661,29 @@ render {
     }
 }
 ```
-This code will recreate the whole `dl`-block, if the `storedPerson` state changes - 
-even when only one of its properties changes.
+This code will recreate the whole `dl`-block when the `storedPerson` state changes, even if only one of its properties 
+changes.
 
-Now let's try to analyse, how this object might change by looking at each property:
-- `id`: this must be stable by definition; so it will never change.
-- `name`: it is very unlikely that their names might change.
-- `age`: this is in fact the only regularly changing property. Each passing year it must be increased.
+Let's analyze how this object might change by looking at each property:
+- `id`: this must be stable by definition, so it will never change.
+- `name`: name changes are very unlikely.
+- `age`: this is in fact the only regularly changing property - each passing year it must be increased.
 
-So in fact we only need to react to changes of one portion of the `Person` model: the `age`-property.
+So we only need to react to changes of one portion of the `Person` model: the `age`-property.
 
 :::info
-The following example uses some concepts, that have not yet been explained.
+The following example uses some concepts that have not yet been explained.
 
 The function of [handlers]((/docs/createstores/#custom-handler-in-depth)) and custom
 [data-flows](/docs/createstores/#custom-data-flow-property) are explained in the upcoming chapter
-[Store Creation](/docs/createstores). We just need to tease these functions here, in order to show a working example.
-Please just accept the description without a deeper understanding of those techniques. It will be sufficient, to
-grasp the overall concept.
-
-The concept of *precise rendering* fits best here - so please excuse this decent lookahead!
+[Store Creation](/docs/createstores). We do need to tease these functions here in order to show a working example.
+Please accept their function without a deeper understanding of those techniques for now. It's sufficient to
+grasp the general concept.
 :::
 
-This enables us to put the reactive rendering code much closer to the corresponding UI-elements. As result the whole
-dynamic subtree will become much smaller, which will improve performance and reduce memory-usage:
+The age being the only attribute likely to change lets us put the reactive rendering code much closer to the 
+corresponding UI-elements. As a result, the whole dynamic subtree will become much smaller. This will improve 
+performance and reduce memory-usage:
 ```kotlin
 // define a small helper type to hold all static parts of a `Person`
 data class StaticPerson(val id: Int, val name: String)
@@ -700,7 +696,7 @@ val storedPerson = object : RootStore<Person>(Person(1, "Fritz", 42)) {
     // create specific data flow for the `age`-property
     val age: Flow<Int> = data.map { it.age }
 
-    // For now accept that this element will change the store's state.
+    // For now, just accept that this element will change the store's state.
     // The concept of handlers is described in the next chapter "Creating Stores"
     val increaseAge = handle { state -> state.copy(age = state.age + 1) }
 }
@@ -715,8 +711,8 @@ render {
             dd { +person.id.toString() }
             dt { +"Name" }
             dd { +person.name }
-            dt { +"Artificial random value to show that this UI part will not react to age changes!" }
-            dd { +Id.next() } // This changes on re-rendering! It won't change in this app though.
+            dt { +"Artificial random value to show that this UI part will not react to age changes." }
+            dd { +Id.next() } // This changes on re-rendering. It won't change in this app though.
         }
         dt { +"Age" }
         dd {
@@ -734,10 +730,10 @@ render {
 }
 ```
 
-In the above example the rather static aspects are exposed as separate data-flow `staticPart`, which will be configured
-internally by the `render`-function. The latter will filter out all values, that are
-equal to their predecessors. This way every change to the store's value, exposed by its `data`-flow, will only appear 
-on this flow, if some relevant properties have changed.
+In the above example, the rather static aspects are exposed as separate data-flow `staticPart` and will be configured
+internally by the `render`-function. The latter will filter out all values which are equal to their predecessors. 
+This way, every change to the store's value exposed by its `data`-flow will only appear on this flow if and when 
+some relevant properties have changed.
 
 As the example only enables to change the `age`-property, which is *not* part of the static-parts, the `staticPart`
 flow will not emit a new value, so the mount-point will not re-render ist subtree.
