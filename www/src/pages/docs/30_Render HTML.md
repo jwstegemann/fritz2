@@ -730,25 +730,25 @@ render {
 }
 ```
 
-In the above example, the rather static aspects are exposed as separate data-flow `staticPart` and will be configured
+In the above example, the static aspects are exposed via the separate data-flow `staticPart` and will be configured
 internally by the `render`-function. The latter will filter out all values which are equal to their predecessors. 
 This way, every change to the store's value exposed by its `data`-flow will only appear on this flow if and when 
 some relevant properties have changed.
 
-As the example only enables to change the `age`-property, which is *not* part of the static-parts, the `staticPart`
+As the example only allows the changing of the `age`-property, which is *not* part of the static-parts, the `staticPart`
 flow will not emit a new value, so the mount-point will not re-render ist subtree.
 
 On the other hand, the `age`-property is exposed by some special data-flow `storedPerson.age`. This one will emit a
 new value on every change to the main model. The latter is realized by the `<button>`-tag below, which will trigger
-some [handler in the store](/docs/createstores/#custom-handler-in-depth) that increases the `Person.age`-property.
+a [handler in the store](/docs/createstores/#custom-handler-in-depth) which increases the `Person.age`-property.
 
-As this value is quite atomic, we can place the mount-point as deep into the static UI-part as possible. In this case
+As this value is atomic, we want to place the mount-point as deep into the static UI-part as possible. In this case,
 directly as text-node inside the `<dd>`-tag. This is quite *precise*, that's why we call this concept 
 *precise rendering*.
 
-You can verify the two different behaviours of rendering in the example, by clicking the [[Increase Age]]-button.
+You can verify the two different behaviours of rendering in the example by clicking the [[Increase Age]]-button.
 After each click, a new `Person`-object is created by the handler. The "Age" data will show the increased value, but
-the "Artificial random value" remains the same, which proves, that the first mount-point does not get some update.
+the "Artificial random value" remains the same, which proves that the first mount-point does not get an update.
 
 :::info
 The above concept applies also to the `renderText`-function or [mapped stores](/docs/storemapping/).
@@ -788,14 +788,14 @@ As result the following DOM-fragment is rendered:
 </div>
 ```
 
-As there is the preliminary `<dl>` tag, grouping all further UI below itself as children, the *artificially* created
-`<div>`-tag as mount-point reference to the DOM is just overhead! We can improve ths DOM structure by telling the 
-`render`-function to *use* some existing tag as mount-point reference instead of creating a dedicated one:
+Since the preliminary `<dl>` tag groups all its child UI-elements, the *artificially* created
+`<div>`-tag as mount-point reference to the DOM is overhead. We can improve ths DOM structure by telling the 
+`render`-function to *use* an existing tag as mount-point reference instead of creating a dedicated one:
 
 ```kotlin
 dl {
-    // `this` is the <dl>-Tag in this scope!
-    // pass the existing tag *into* `render` for using it as the mount-point reference 
+    // `this` is the <dl>-Tag in this scope
+    // pass the existing tag *into* `render` to use it as the mount-point reference 
     storedPerson.data.render(into = this) { person -> 
         dt { +"Id" }
         dd { +person.id.toString() }
@@ -804,7 +804,7 @@ dl {
 }
 ```
 
-As result the following, reduced DOM-fragment is rendered:
+As a result, the following reduced DOM-fragment is rendered:
 ```html
 <dl data-mount-point="">
     <dt>Id</dt>
@@ -817,11 +817,10 @@ As result the following, reduced DOM-fragment is rendered:
 ```
 
 :::warning
-As you know, the mount-point has the *full* control over the DOM-subtree below its reference tag and will drop it
-completely on every change of the data.
-
-So be cautious to **never ever** put other tags around this `render`-expression! This will be deleted sooner or 
-later by the mount-point.
+As you know, the mount-point has *full* control over the DOM-subtree below its reference tag and will drop it
+completely on every change of the data, so be cautious to **never ever** put other tags around this `render`-expression! 
+It will be deleted sooner or later by the mount-point. The two additional `div`s in the following code are located 
+inside the `dl`, which is the `this` we put into the render-function, and will thus disappear on re-render.
 
 ```kotlin
 dl {
@@ -831,22 +830,22 @@ dl {
         dd { +person.id.toString() }
         // ...
     }
-    div { +"Even this might appear on initial rendering, it will at least be dropped after first change!" }
+    div { +"Even though this might appear on initial rendering, it will be dropped after first change." }
 }
 ```
 :::
 
-In fact all `render*`-variants offer the `into` parameter, so this works for `renderText` or `renderEach` too.
+In fact all `render*`-variants offer the `into` parameter, so this applies to `renderText` and `renderEach` too.
 
 ### Structure UI
 
-It's very easy to create a lightweight reusable component with fritz2. Basically all you have to do is write a function
+It's very easy to create a lightweight reusable component with fritz2. All you have to do is write a function
 with `RenderContext` as its receiver type:
 
 ```kotlin
 fun RenderContext.myComponent() {
     p {
-        +"This is the smallest valid stateless component"
+        +"This is the smallest valid stateless component."
     }
 }
 
@@ -855,10 +854,10 @@ render {
 }
 ```
 
-Of course, you can also use a subtype of `RenderContext` like a certain `Tag` as receiver if you want to limit the usage
-of your component to this type as its parent.
+Of course, you can also use a subtype of `RenderContext`, like a certain `Tag`, as receiver if you want to limit the usage
+of your component to this parent type.
 
-By using plain functions, it's also straight forward to parametrize your component:
+Using plain functions, it's also straight forward to parametrize your component:
 
 ```kotlin
 fun RenderContext.myOtherComponent(person: Person) {
@@ -876,10 +875,10 @@ render {
 ```
 
 To allow nested components, use a lambda with `RenderContext` as its receiver, or the type of the element you are
-calling this lambda in:
+calling the lambda in:
 
 ```kotlin
-// return a html element if you need it
+// return an html element if you need it
 fun RenderContext.container(content: RenderContext.() -> Unit) {
     div("container") {
         content()
@@ -896,7 +895,7 @@ render {
 ```
 
 Using `Div` as receiver type in the example above allows you to access the specific attributes and events of your
-container-element from your content-lambda. Use `RenderContext` if this is not necessary or intended.
+container-element from your content-lambda. Use `RenderContext` where this is not necessary or intended.
 
 ### Inline Styles
 
@@ -911,7 +910,7 @@ render {
 }
 ```
 
-Of course, it is also possible to dynamically style an element by passing a `Flow` of CSS styles into `inlineStyle`:
+Of course, it is also possible to dynamically style an element by passing a `Flow` of CSS styles to `inlineStyle`:
 ```kotlin
 render {
     val enabled = storeOf(true)
@@ -921,14 +920,14 @@ render {
             if (it) "background-color: lightgreen;"
             else "opacity: 0.5; background-color: lightgrey;"
         })
-        +"Some important content"
+        +"Important content"
     }
 }
 ```
 
 ### Avoid Flicker Effects with Reactive Styling
 
-To set an initial CSS class (or any other attribute) immediately (for example to avoid flicker effects caused by the delay
+To immediately set any attribute like initial CSS classes (for example to avoid flicker effects caused by the delay
 of the first value becoming available on the flow), the respective attribute-method must be called twice.
 First with the static value that should be set immediately, then with the `Flow` that provides the dynamic values:
 
@@ -943,16 +942,16 @@ className(visibility)
 
 ### Scope
 
-fritz2 offers the option to use a `Scope` to add some information to a tag which can then be received by any
-child-tag of the corresponding DOM-subtree and which will not be rendered out by default. The values in the `Scope` are
+fritz2 offers the use of `Scope`s to add more information to a tag. It can then be received by any
+child-tag of the corresponding DOM-subtree and will not be rendered out by default. The values in the `Scope` are
 only available for tags inside the context of the tag which sets them.
 
-To append something to the `Scope` you have to create a `Scope.Key` by using the
+To append something to the `Scope`, you have to create a `Scope.Key` by using the
 `Scope.keyOf()` function.
 ```kotlin
 val myKey = Scope.keyOf<String>("myKeyName")
 ```
-The key is needed to set or get a value to the `Scope`.
+The key is needed to set or get a value of the `Scope`.
 ```kotlin
 val fooKey = Scope.keyOf<String>("foo")
 
@@ -978,26 +977,26 @@ The result is the following:
 </div>
 <div></div>
 ```
-For debugging proposes you can use the `scope.asDataAttr()` function to set current scope to the tag and see it
+For debugging purposes, you can use the `scope.asDataAttr()` function to set the current scope to the tag and see it
 in the DOM-Tree.
 
-### Customize the Starting Point - Anchor Your global Render Function
+### Customize the Starting Point - Anchor Your Global Render Function
 
-As you already know, you need to call the global `render` function once, in order to create an initial
+As you already know, you need to call the global `render` function once in order to create an initial
 `RenderContext`:
 
 ```kotlin
 fun main() {
     render {
         // access to the created root `RenderContext`
-        // start your UI code from within here!
+        // start your UI code from within here
     }
 }
 ```
 
-This of course only works in combination with some *fitting* `index.html` in `jsMain/resources`-folder, which is just a
-normal web-page. This page needs two configuration aspects to be set up correct:
-1. there must be some html-tag as target reference; by default the `document.body` tag is used.
+This of course only works in combination with a matching `index.html` in the `jsMain/resources`-folder, which is just a
+normal web-page. To set it up correctly,
+1. there must be one html-tag as target reference; by default the `document.body` tag is used.
 2. the resulting js-artifact must be included as `<script>` tag beneath the static html.
 
 ```html
@@ -1017,15 +1016,15 @@ normal web-page. This page needs two configuration aspects to be set up correct:
 ```
 
 The global `render` factory accepts a 
-`selector` string (see [querySelector](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector))
-or alternatively a [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement)
+`selector` string (see [querySelector](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector)), 
+or alternatively a [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement), 
 to select the target html-tag:
 
 ```kotlin
 fun main() {
     render("#myAppAnchor") { // using id selector here, leave blank to use document.body by default
         h1 { +"My App" }
-        div("some-fix-css-class") {
+        div("fix-css-class") {
             p(id = "someId") {
                 +"Hello World!"
             }
@@ -1035,19 +1034,19 @@ fun main() {
 ```
 
 When calling `render` like that, your content will be mounted to an `HTMLElement` with `id="myAppAnchor"`.
-If you want to mount your content to the `body` of your `index.html`, you can omit this parameter.
+If you want to mount your content to the `body` of your `index.html` instead, you can omit this parameter.
 
-The second option is to set an `override` parameter to `false`, which means that your content will be appended.
-By default, all child elements will be removed otherwise before your content is appended to the target html-tag.
+The second option is to set the `override` parameter to `false`, which means that your content will be appended.
+By default, all child elements will be removed before your content is appended to the target html-tag.
 
 Run the project by calling `./gradlew jsRun` in your project's main directory. Add `-t` to enable automatic
 building and reloading in the browser after changing your code.
 
-### Reactive Styling with Complex Rules
+### Reactive Styling With Complex Rules
 
 fritz2 also lets you manage multiple classes in a `List<String>` or `Flow<List<String>>` with the `classList`-attribute.
 
-Additionally, you can build a `Map<String, Boolean>` from your model data that enables and disables single classes
+Additionally, you can build a `Map<String, Boolean>` from your model data which enables and disables single classes
 dynamically:
 
 ```kotlin
