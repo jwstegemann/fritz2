@@ -4,9 +4,7 @@ import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
-import org.w3c.dom.HTMLBodyElement
-import org.w3c.dom.HTMLDivElement
-import org.w3c.dom.HTMLSpanElement
+import org.w3c.dom.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -132,4 +130,165 @@ class RenderContextTests {
         assertEquals("1.0-FINAL", getSpanText(idValueReactive))
         assertEquals("2", getSpanText(idHash))
     }
+
+
+    @Test
+    fun renderEachWithInsertingItemsSoThatTheSameInsertPatchMightBeCreatedWillStillRenderInsertedItemsInExpectedPosition() =
+        runTest {
+            val idList = Id.next()
+            fun joinLiTextNodes() = document.getElementById(idList)!!.childNodes.asList()
+                .mapNotNull { it.textContent }.joinToString("")
+
+            data class Item(val id: String)
+
+            val a = Item("1")
+            val b = Item("2")
+            val c = Item("3")
+
+            val storedItems = storeOf(listOf(a, b, c))
+            val insertFirstItemAtBeginning = storedItems.handle { state ->
+                buildList {
+                    add(a)
+                    addAll(state)
+                }
+            }
+
+            render {
+                ul(id = idList) {
+                    storedItems.data.renderEach(into = this) { item ->
+                        li { +item.id }
+                    }
+                }
+            }
+
+            delay(100)
+
+            insertFirstItemAtBeginning() // could generate Patch `Insert(element=Item("1"), index=1)`
+            delay(50)
+            assertEquals("1123", joinLiTextNodes())
+
+            insertFirstItemAtBeginning() // could generate Patch `Insert(element=Item("1"), index=1)` ->
+            // the same as above, must pass `distinctUntilChanged` filter of `mountSimple`!
+            delay(50)
+            assertEquals("11123", joinLiTextNodes())
+        }
+
+
+    @Test
+    fun renderEachWithInsertingItemsSoThatTheSameInsertMayPatchMightBeCreatedWillStillRenderInsertedItemsInExpectedPosition() =
+        runTest {
+            val idList = Id.next()
+            fun joinLiTextNodes() = document.getElementById(idList)!!.childNodes.asList()
+                .mapNotNull { it.textContent }.joinToString("")
+
+            data class Item(val id: String)
+
+            val a = Item("1")
+            val b = Item("2")
+            val c = Item("3")
+
+            val storedItems = storeOf(listOf(a, b, c))
+            val insertFirstItemAtBeginning = storedItems.handle { state ->
+                buildList {
+                    add(a)
+                    add(b)
+                    addAll(state)
+                }
+            }
+
+            render {
+                ul(id = idList) {
+                    storedItems.data.renderEach(into = this) { item ->
+                        li { +item.id }
+                    }
+                }
+            }
+
+            delay(100)
+
+            insertFirstItemAtBeginning() // could generate Patch `InsertMany(element=[Item("1"), Item("2")], index=1)`
+            delay(50)
+            assertEquals("12123", joinLiTextNodes())
+
+            insertFirstItemAtBeginning() // could generate Patch `InsertMany(element=[Item("1"), Item("2")], index=1)` ->
+            // the same as above, must pass `distinctUntilChanged` filter of `mountSimple`!
+            delay(50)
+            assertEquals("1212123", joinLiTextNodes())
+        }
+
+    @Test
+    fun renderEachWithDeletingItemsSoThatTheSameDeletePatchIsCreatedWillStillRemoveDeletedItemsFromDom() = runTest {
+
+        data class Item(val id: Int)
+
+        val storedItems = storeOf((1..3).map { Item(it) })
+        val dropFirstItem = storedItems.handle { state -> state.drop(1) }
+
+        val idList = Id.next()
+
+        render {
+            ul(id = idList) {
+                storedItems.data.renderEach(into = this) { item ->
+                    li { +item.toString() }
+                }
+            }
+        }
+
+        delay(100)
+
+        val ul = document.getElementById(idList)
+        assertEquals(3, ul?.childElementCount)
+
+        dropFirstItem() // will generate Patch `Delete(0, 1)`
+        delay(50)
+        assertEquals(2, ul?.childElementCount)
+
+        dropFirstItem() // will generate Patch `Delete(0, 1)` -> the same as above, must pass `distinctUntilChanged`
+        // filter of `mountSimple`!
+        delay(50)
+        assertEquals(1, ul?.childElementCount)
+    }
+
+    @Test
+    fun renderEachWithSwitchingItemsSoThatTheSameMovePatchIsCreatedWillStillRenderMovedItemsInExpectedOrder() =
+        runTest {
+            val idList = Id.next()
+            fun joinLiTextNodes() = document.getElementById(idList)!!.childNodes.asList()
+                .mapNotNull { it.textContent }.joinToString("")
+
+            data class Item(val id: String)
+
+            val a = Item("1")
+            val b = Item("2")
+            val c = Item("3")
+
+            val storedItems = storeOf(listOf(a, b, c))
+            val swapFirstAndSecondElement = storedItems.handle { state ->
+                buildList {
+                    add(state.drop(1).take(1).first())
+                    add(state.first())
+                    addAll(state.drop(2))
+                }
+            }
+
+
+            render {
+                ul(id = idList) {
+                    storedItems.data.renderEach(into = this) { item ->
+                        li { +item.id }
+                    }
+                }
+            }
+
+            delay(100)
+
+            swapFirstAndSecondElement() // will generate Patch `Move(0, 2)`
+            delay(50)
+            assertEquals("213", joinLiTextNodes())
+
+            swapFirstAndSecondElement() // will generate Patch `Move(0, 2)` -> the same as above,
+            // must pass `distinctUntilChanged` filter of `mountSimple`!
+            delay(50)
+            assertEquals("123", joinLiTextNodes())
+        }
 }
