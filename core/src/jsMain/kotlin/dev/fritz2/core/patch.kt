@@ -4,6 +4,11 @@ import kotlinx.coroutines.Job
 
 /**
  * A [Patch] describes the changes made to a [List].
+ *
+ * Pay attention that the sealed implementations should not be data classes - each generated patch must be applied in
+ * every case even though it might "equal" the preceding one. (Imagine deleting the first item of a list at least
+ * twice!) Using data classes patches could quite easily become equal and then might be dropped by [mountSimple]!
+ * Thus, it is intentional to implement those as regular classes.
  */
 sealed class Patch<out T> {
     /**
@@ -12,7 +17,7 @@ sealed class Patch<out T> {
      * @param element the new element that has been inserted
      * @param index the element has been inserted at this index
      */
-    data class Insert<T>(val element: T, val index: Int) : Patch<T>() {
+    class Insert<T>(val element: T, val index: Int) : Patch<T>() {
         /**
          * maps the new element
          *
@@ -28,7 +33,7 @@ sealed class Patch<out T> {
      * @param elements the new elements that have been inserted
      * @param index the elements have been inserted at this index
      */
-    data class InsertMany<T>(val elements: List<T>, val index: Int) : Patch<T>() {
+    class InsertMany<T>(val elements: List<T>, val index: Int) : Patch<T>() {
         /**
          * maps each of the new elements
          *
@@ -38,13 +43,14 @@ sealed class Patch<out T> {
             mapping(it, Job(parentJob))
         }, index)
     }
+
     /**
      * A [Patch] saying, that one or more elements have been deleted
      *
      * @param start the index of the first element, that has been deleted
      * @param count the number of elements, that have to be deleted
      */
-    data class Delete<T>(val start: Int, val count: Int = 1) : Patch<T>() {
+    class Delete<T>(val start: Int, val count: Int = 1) : Patch<T>() {
         /**
          * nothing to be mapped here...
          */
@@ -58,7 +64,7 @@ sealed class Patch<out T> {
      * @param from old index of the element
      * @param to new index of the element
      */
-    data class Move<T>(val from: Int, val to: Int) : Patch<T>() {
+    class Move<T>(val from: Int, val to: Int) : Patch<T>() {
         /**
          * nothing to be mapped here...
          */
