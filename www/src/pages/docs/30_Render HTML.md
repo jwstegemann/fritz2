@@ -133,6 +133,18 @@ The tag-factories accept static CSS-classes as a `String` as first parameter, as
 why we used the named parameter for the ids throughout previous chapters).
 fritz2 is totally agnostic of any CSS-framework or even handcrafted CSS - use whatever fits your needs!
 
+:::info
+fritz2 is totally agnostic of any specific CSS technology. At least there are the following possibilities you can apply:
+1. Use your custom handcrafted static CSS by adding a CSS-file under `jsMain/resources` and embed it in 
+the `jsMain/resources/index.html` file.
+2. Use static CSS from [CDN](https://developer.mozilla.org/en-US/docs/Glossary/CDN) 
+(e.g. [Bootstrap](https://getbootstrap.com/docs/5.3/getting-started/introduction/#quick-start)) - include it
+appropriately inside the `jsMain/resources/index.html` file.
+3. Use dynamic CSS with [tailwindcss](https://tailwindcss.com/) by using our 
+[ready-to-use template](https://github.com/jwstegemann/fritz2-tailwind-template).
+4. Use any other dynamic CSS by configuring [webpack](https://webpack.js.org/loaders/#styling) appropriately.
+:::
+
 Since being reactive is such an important aspect of fritz2, styling and attributes can be set based upon the store's 
 state. Example:
 A button is reactively disabled when it is clicked because the click changes the state of the store. 
