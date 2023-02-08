@@ -27,7 +27,7 @@ storeToSyncFrom.data.drop(1) handledBy { a ->
 }
 ````
 
-## Precise data-binding of lists when they could be emtpy
+## Precise data binding of lists when they could be emtpy
 Wenn das umschließende tag nur gerendert werden soll, wenn die Liste im Flow auch Einträge besitzt, kann
 das folgende pattern verwendet werden, um dies zu erreichen.
 ```kotlin

@@ -23,30 +23,29 @@ Probably the easiest way to do so is by using the "Edit this page on Github" lin
 We also encourage everybody to share their own examples and showcases with us,
 as this is often the best way to learn something new.
 
-## How to read this Documentation
+## How to Read This Documentation
 
-Most topics are split in three parts, that differ in the sense of detail, abstraction and importance:
+Most topics are split into three parts which differ in level of detail, abstraction, and importance:
 
-- *Overview* - This section gives you a rather short overview about the topic and the supporting fritz2 APIs. 
+- *Overview* - This section gives you a short overview about the topic and the supporting fritz2 APIs. 
 It focuses on the big picture and might simplify some aspects. Read this to get a first impression about a feature
 or as short reminder.
 - *Essentials* - This section covers all essential aspects of a feature. You will need this knowledge in order to build
 a real life fritz2 application.
 - *Advanced Topics* - This section presents more advanced or special interest topics. Read this if you are interested
-in some deeper knowledge about some fritz2 features.
+in deeper knowledge about a fritz2 feature.
 
-If you are new to fritz2, we recommend you to read first all the *overview* sections en bloc and skip all the rest.
-As next step you should then read the *essential* sections for the render HTML, store creation and store mappings.
-Those topics are the foundation for building fritz2 applications.
+If you are new to fritz2, we recommend reading all the *overview* sections first and skipping the rest for now.
+Next, read the *essential* sections for Rendering, Store Creation and Store Mapping as these are the foundation for
+fritz2 applications. All other essentials and the *advanced* topics will be much easier to understand after.
 
-After those steps, feel free to read the other *essential* sections or even the *advanced topics*.
 
 ::: info
-Please also have a look at our [examples](/examples), which are referenced by the different topics and sections!
-They show all the explained topics in working code, so studying those will help you to progress.
+Please also have a look at our working code [examples](/examples) referenced throughout the documentation to help you 
+progress.
 :::
 
-## Where does the name come from?
+## Where Does the Name Come From?
 
 fritz2 actually has two meanings. For our project name, we were looking for something to connect it to St. Petersburg
 (Kotlin is an island in its proximity), and we came across Friedrich II. It was shortened to Fritz2 - so technically,

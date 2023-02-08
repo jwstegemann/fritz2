@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.merge
  * Base class that provides all functionality needed for components, that have some "open" and "close" state of
  * representation.
  *
- * Just extend from this class to gain and provide access to the basic data-binding [openState] that holds the
+ * Just extend from this class to gain and provide access to the basic data binding [openState] that holds the
  * central state, the [opened] data-flow and expressive handler like [close] or [open] to set the state.
  *
  * Typical examples of [OpenClose] based components are modal dialogs or all popup-components, that appear and

@@ -12,9 +12,9 @@ import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLElement
 
 /**
- * This property keeps track of the external data-binding of some component.
+ * This property keeps track of the external data binding of some component.
  *
- * There are exactly four parts that defines a fully functional data-binding:
+ * There are exactly four parts that defines a fully functional data binding:
  * - an [id]
  * - the [data] [Flow] to react to change from the external data source
  * - a [handler] to push changes to the external data holder
@@ -25,7 +25,7 @@ import org.w3c.dom.HTMLElement
  * All four parts can be set individually by the basic [invoke] operation, but there is also a convenience [invoke]
  * function, which accepts a [Store] of [T] and automatically grab the four aspects out of it.
  *
- * As only the [data] field is mandatory, this [Property] enables one-way-data-binding as well as two-way-data-binding.
+ * As only the [data] field is mandatory, this [Property] enables one-way data binding as well as two-way data binding.
  *
  * In order to deal nicely with [ComponentValidationMessage]s, there are two convenience functions to use:
  * - [hasError] offers a [Boolean] [Flow] that simply signals if there are errors at all or not. This is especially
@@ -69,8 +69,8 @@ class DatabindingProperty<T> : Property<DatabindingProperty.DataBinding<T>>() {
 }
 
 /**
- * Common function to log a warning message for missing data-bindings.
- * This should be used for components, where the data-binding is crucial for their usage. A forgotten data-binding
+ * Common function to log a warning message for missing data bindings.
+ * This should be used for components, where the data binding is crucial for their usage. A forgotten data binding
  * should be recognizable at runtime by this warning message
  */
 internal fun warnAboutMissingDatabinding(

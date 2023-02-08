@@ -23,7 +23,7 @@ focused. Any number of options can be selected. The focus can be switched by usi
 [[Tab]] or [[Shift]] + [[Tab]] keys.
 
 It is therefore mandatory to specify a data stream or a store  of a `List<T>` as data binding via the `value` property.
-The component supports two-way-data-binding, i.e. it reflects selected elements from the outside by a `Flow<List<T>>`
+The component supports two-way data binding, i.e. it reflects selected elements from the outside by a `Flow<List<T>>`
 but also emits the updated selection to the outside by some `Handler`.
 
 The available options are not injected directly into the component as parameter, but one at a time by calling the
@@ -47,7 +47,7 @@ val mailingList = listOf<Newsletter>(/* ... */)
 val subscriptions = storeOf(emptyList<Newsletter>())
 
 checkboxGroup<HTMLFieldSetElement, Newsletter>(tag = RenderContext::fieldset) {
-    // set up (two-way-)data-binding
+    // set up (two-way) data binding
     value(subscriptions)
     
     // using a loop is a typical pattern to create the options
@@ -198,7 +198,7 @@ Default-Tag: `div`
 
 | Scope property | Typ                            | Description                                                          |
 |----------------|--------------------------------|----------------------------------------------------------------------|
-| `value`        | `DatabindingProperty<List<T>>` | Mandatory (two-way) data-binding for any number of selected options. |
+| `value`        | `DatabindingProperty<List<T>>` | Mandatory (two-way) data binding for any number of selected options. |
 
 
 ### checkboxGroupLabel
