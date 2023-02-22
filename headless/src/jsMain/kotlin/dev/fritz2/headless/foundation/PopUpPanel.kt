@@ -31,9 +31,18 @@ abstract class PopUpPanel<C : HTMLElement>(
         private const val POPUP_HIDDEN_FULL = "fritz2-popup-hidden-full"
         private const val POPUP_VISIBLE_FULL = "fritz2-popup-visible-full"
 
+        /**
+         * Use this class for adding the CSS attribute `position=relative` for a component, that uses [PopUpPanel].
+         * Remember that the referenced tag for the popup will need this, so that the popup can align properly.
+         */
+        const val POPUP_RELATIVE = "fritz2-popup-relative"
+
         init {
             addGlobalStyles(
                 listOf(
+                    """.$POPUP_RELATIVE {
+                        position: relative;
+                    }""".trimIndent(),
                     """.popper[data-popper-reference-hidden] {
                 visibility: hidden;
                 pointer-events: none;

@@ -146,7 +146,7 @@ fun <C : HTMLElement> RenderContext.popOver(
     initialize: PopOver<C>.() -> Unit
 ): Tag<C> {
     addComponentStructureInfo("popOver", this@popOver.scope, this)
-    return tag(this, classes(classes, "relative"), id, scope) {
+    return tag(this, classes(classes, PopUpPanel.POPUP_RELATIVE), id, scope) {
         PopOver(this, id).run {
             initialize(this)
             render()
