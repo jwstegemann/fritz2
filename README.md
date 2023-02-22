@@ -4,7 +4,6 @@
 [![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)
 [![Download](https://img.shields.io/maven-central/v/dev.fritz2/core)](https://search.maven.org/search?q=g:dev.fritz2)
 [![IR](https://img.shields.io/badge/Kotlin%2FJS-IR%20supported-yellow)](https://kotl.in/jsirsupported)
-[![Kotlin](https://img.shields.io/badge/kotlin-1.7-blue.svg?logo=kotlin)](http://kotlinlang.org)
 [![Examples](https://img.shields.io/badge/examples-showcase-yellow)](/examples)
 [![API](https://img.shields.io/badge/API-dokka-green)](https://fritz2.dev/api)
 [![Docs](https://img.shields.io/badge/docs-online-violet)](https://fritz2.dev/docs)
