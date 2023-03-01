@@ -370,10 +370,10 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
                     val index = indexOfItem(list, current?.first)
                     keydowns.mapNotNull { event ->
                         when (shortcutOf(event)) {
-                            Keys.ArrowUp -> list[max(index - 1, 0)]
-                            Keys.ArrowDown -> list[min(index + 1, list.size - 1)]
-                            Keys.Home -> list[0]
-                            Keys.End -> list[list.size - 1]
+                            Keys.ArrowUp -> list.getOrNull(max(index - 1, 0))
+                            Keys.ArrowDown -> list.getOrNull(min(index + 1, list.size - 1))
+                            Keys.Home -> list.firstOrNull()
+                            Keys.End -> list.lastOrNull()
                             else -> null
                         }?.let {
                             event.preventDefault()
