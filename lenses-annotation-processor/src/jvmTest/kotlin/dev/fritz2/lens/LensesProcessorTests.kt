@@ -86,11 +86,15 @@ class LensesProcessorTests {
                 |    { p, v -> p.copy(bar = v)}
                 |  )
                 |
+                |public fun <PARENT> Lens<PARENT, Foo>.bar(): Lens<PARENT, Int> = this + Foo.bar()
+                |
                 |public fun Foo.Companion.foo(): Lens<Foo, String> = lensOf(
                 |    "foo",
                 |    { it.foo },
                 |    { p, v -> p.copy(foo = v)}
                 |  )
+                |
+                |public fun <PARENT> Lens<PARENT, Foo>.foo(): Lens<PARENT, String> = this + Foo.foo()
                 |
                 |public fun Foo.Companion.fooBar(): Lens<Foo, MyType> = lensOf(
                 |    "fooBar",
@@ -98,11 +102,15 @@ class LensesProcessorTests {
                 |    { p, v -> p.copy(fooBar = v)}
                 |  )
                 |
+                |public fun <PARENT> Lens<PARENT, Foo>.fooBar(): Lens<PARENT, MyType> = this + Foo.fooBar()
+                |
                 |public fun Foo.Companion.baz(): Lens<Foo, MyGenericType<Int>> = lensOf(
                 |    "baz",
                 |    { it.baz },
                 |    { p, v -> p.copy(baz = v)}
                 |  )
+                |
+                |public fun <PARENT> Lens<PARENT, Foo>.baz(): Lens<PARENT, MyGenericType<Int>> = this + Foo.baz()
                 """.trimMargin()
             )
         }
@@ -151,6 +159,8 @@ class LensesProcessorTests {
                 |    { it.bar },
                 |    { p, v -> p.copy(bar = v)}
                 |  )
+                |
+                |public fun <PARENT> Lens<PARENT, Foo>.bar(): Lens<PARENT, Int> = this + Foo.bar()
                 """.trimMargin()
             )
             softly.assertThat(
@@ -169,6 +179,8 @@ class LensesProcessorTests {
                 |    { it.bar },
                 |    { p, v -> p.copy(bar = v)}
                 |  )
+                |
+                |public fun <PARENT> Lens<PARENT, Bar>.bar(): Lens<PARENT, Int> = this + Bar.bar()
                 """.trimMargin()
             )
         }
@@ -210,6 +222,8 @@ class LensesProcessorTests {
                 |    { it.bar },
                 |    { p, v -> p.copy(bar = v)}
                 |  )
+                |
+                |public fun <PARENT> Lens<PARENT, Foo>.bar(): Lens<PARENT, Int> = this + Foo.bar()
                 """.trimMargin()
             )
         }
@@ -331,6 +345,8 @@ class LensesProcessorTests {
                 |    { it.bar },
                 |    { p, v -> p.copy(bar = v)}
                 |  )
+                |
+                |public fun <PARENT> Lens<PARENT, Foo>.bar(): Lens<PARENT, Int> = this + Foo.bar()
                 """.trimMargin()
             )
         }
@@ -376,6 +392,8 @@ class LensesProcessorTests {
                 |    { it.bar },
                 |    { p, v -> p.copy(bar = v)}
                 |  )
+                |
+                |public fun <PARENT, T> Lens<PARENT, Foo<T>>.bar(): Lens<PARENT, T> = this + Foo<T>.bar()
                 """.trimMargin()
             )
             softly.assertThat(
@@ -394,11 +412,16 @@ class LensesProcessorTests {
                 |    { p, v -> p.copy(foo = v)}
                 |  )
                 |
+                |public fun <PARENT, T, E> Lens<PARENT, Bar<T, E>>.foo(): Lens<PARENT, T> = this + Bar<T, E>.foo()
+                |
                 |public fun <T, E> Bar.Companion.fooBar(): Lens<Bar<T, E>, E> = lensOf(
                 |    "fooBar",
                 |    { it.fooBar },
                 |    { p, v -> p.copy(fooBar = v)}
                 |  )
+                |
+                |public fun <PARENT, T, E> Lens<PARENT, Bar<T, E>>.fooBar(): Lens<PARENT, E> = this +
+                |    Bar<T, E>.fooBar()
                 """.trimMargin()
             )
         }
@@ -442,6 +465,8 @@ class LensesProcessorTests {
                 |    { it.item },
                 |    { p, v -> p.copy(item = v)}
                 |  )
+                |
+                |public fun <PARENT, T> Lens<PARENT, Data<T>>.item(): Lens<PARENT, T?> = this + Data<T>.item()
                 """.trimMargin()
             )
         }
