@@ -80,15 +80,16 @@ open class Router<T>(
     }
 
     init {
-        if (window.location.hash.isBlank()) {
-            window.location.hash = prefix + defaultRoute.serialize(defaultRoute.default)
-        } else {
+        if (window.location.hash.removePrefix(prefix).isNotBlank()) {
             state.value = defaultRoute.deserialize(window.location.hash.removePrefix(prefix))
         }
-
         val listener: (Event) -> Unit = {
             it.preventDefault()
-            state.value = defaultRoute.deserialize(window.location.hash.removePrefix(prefix))
+            if (window.location.hash.removePrefix(prefix).isNotBlank()) {
+                state.value = defaultRoute.deserialize(window.location.hash.removePrefix(prefix))
+            } else {
+                state.value = defaultRoute.default
+            }
         }
         window.addEventListener("hashchange", listener)
     }
