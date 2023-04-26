@@ -1,8 +1,7 @@
 package dev.fritz2.examples.validation
 
 import dev.fritz2.core.*
-import dev.fritz2.validation.ValidatingStore
-import dev.fritz2.validation.valid
+import dev.fritz2.validation.*
 import kotlinx.browser.document
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -18,7 +17,7 @@ object PersonListStore : RootStore<List<Person>>(emptyList()) {
 }
 
 object PersonStore : ValidatingStore<Person, Unit, Message>(
-    Person(), personValidator, id = Person.id, validateAfterUpdate = false
+    Person(), personValidator, metadataDefault = Unit, id = Person.id
 ) {
     val save = handle { person ->
         if (validate(person, Unit).valid) {

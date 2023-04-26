@@ -62,9 +62,9 @@ import kotlin.jvm.JvmInline
  * @param T metadata which perhaps is needed in validation process
  */
 @JvmInline
-value class Validation<D, T, M>(private inline val validate: (Inspector<D>, T?) -> List<M>) {
-    operator fun invoke(inspector: Inspector<D>, metadata: T? = null): List<M> = this.validate(inspector, metadata)
-    operator fun invoke(data: D, metadata: T? = null): List<M> = this.validate(inspectorOf(data), metadata)
+value class Validation<D, T, M>(private inline val validate: (Inspector<D>, T) -> List<M>) {
+    operator fun invoke(inspector: Inspector<D>, metadata: T): List<M> = this.validate(inspector, metadata)
+    operator fun invoke(data: D, metadata: T): List<M> = this.validate(inspectorOf(data), metadata)
 }
 
 /**
@@ -72,7 +72,7 @@ value class Validation<D, T, M>(private inline val validate: (Inspector<D>, T?) 
  * [MutableList] receiver and using an [Inspector] for getting the right [Inspector.path] from sub-models
  * next to the [Inspector.data].
  */
-fun <D, T, M> validation(validate: MutableList<M>.(Inspector<D>, T?) -> Unit): Validation<D, T, M> =
+fun <D, T, M> validation(validate: MutableList<M>.(Inspector<D>, T) -> Unit): Validation<D, T, M> =
     Validation { data, metadata ->
         buildList<M> { validate(data, metadata) }
     }

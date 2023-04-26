@@ -6,6 +6,7 @@ import dev.fritz2.core.Id
 import dev.fritz2.core.RootStore
 import dev.fritz2.core.Store
 import dev.fritz2.core.SubStore
+import dev.fritz2.core.Handler
 import kotlinx.coroutines.flow.*
 
 
@@ -21,19 +22,25 @@ import kotlinx.coroutines.flow.*
  * only be validated after the user has completed his input or if metadata is needed for the validation process.
  * Then be aware of the fact, that the call of the [validate] function actually updates the [messages] [Flow] already.
  *
+ * In order for the automatic validation to work, a [metadataDefault] value must be specified. This is needed due to no
+ * specific metadata being present during automatic validation. When calling [validate] manually, the appropriate
+ * metadata can be supplied directly.
+ *
  * If the new data is not passed to the store's state after validating it, the messages are probably out of sync with
  * the actual store's state!
  * This could lead to false assumptions and might produce hard to detect bugs in your application.
  *
  * @param initialData first current value of this [Store]
  * @param validation [Validation] function to use at the data on this [Store].
+ * @param metadataDefault default metadata to be used by the automatic validation (where no explicit values are given)
  * @param validateAfterUpdate flag to decide if a new value gets automatically validated after setting it to the [Store].
  * @param id id of this [Store]. Ids of parent [Store]s will be concatenated.
  */
 open class ValidatingStore<D, T, M>(
     initialData: D,
     private val validation: Validation<D, T, M>,
-    val validateAfterUpdate: Boolean = true,
+    private val metadataDefault: T,
+    private val validateAfterUpdate: Boolean = true,
     override val id: String = Id.next()
 ) : RootStore<D>(initialData, id) {
 
@@ -58,21 +65,37 @@ open class ValidatingStore<D, T, M>(
     }
 
     /**
-     * Validates the given [data] by using the optional [metadata] to update the
-     * [messages] list and returning them.
-     * Use this method from inside your [dev.fritz2.core.Handler]s to publish
+     * Validates the given [data] using the given [metadata], updates the [messages] list and returns them.
+     *
+     * Use this method from inside your [Handler]s to publish
      * the new state of the validation result via the [messages] flow.
      *
      * @param data data to validate
-     * @param metadata optional metadata for validation
+     * @param metadata metadata for validation
      * @return [List] of messages
      */
-    protected fun validate(data: D, metadata: T? = null): List<M> =
+    @Suppress("MemberVisibilityCanBePrivate")
+    protected fun validate(data: D, metadata: T): List<M> =
         validation(data, metadata).also { validationMessages.value = it }
+
+    /**
+     * Validates the given [data] using the specified [metadataDefault], updates the [messages] list and returns them.
+     *
+     * Use this method from inside your [Handler]s to publish
+     * the new state of the validation result via the [messages] flow.
+     *
+     * Please note: This method is applicable to stores without metadata only
+     * (metadata of type `Unit`).
+     *
+     * @param data data to validate
+     * @return [List] of messages
+     */
+    @Suppress("MemberVisibilityCanBePrivate")
+    protected fun validate(data: D): List<M> = validate(data, metadataDefault)
 
     init {
         if (validateAfterUpdate) data.drop(1) handledBy { newValue ->
-            validate(newValue)
+            validate(newValue, metadataDefault)
         }
     }
 }
@@ -85,17 +108,37 @@ val <M : ValidationMessage> Flow<List<M>>.valid: Flow<Boolean>
 
 /**
  * Convenience function to create a simple [ValidatingStore] without any handlers, etc.
+ *
+ * The created [Store] validates its model after every update automatically.
+ *
+ * @param initialData first current value of this [Store]
+ * @param validation [Validation] instance to use at the data on this [Store].
+ * @param metadataDefault default metadata to be used by the automatic validation (where no explicit values are given)
+ * @param id id of this [Store]. Ids of [SubStore]s will be concatenated.
+ */
+fun <D, T, M> storeOf(
+    initialData: D,
+    validation: Validation<D, T, M>,
+    metadataDefault: T,
+    id: String = Id.next()
+): ValidatingStore<D, T, M> =
+    ValidatingStore(initialData, validation, metadataDefault, validateAfterUpdate = true, id)
+
+/**
+ * Convenience function to create a simple [ValidatingStore] without any metadata and handlers.
+ *
  * The created [Store] validates its model after every update automatically.
  *
  * @param initialData first current value of this [Store]
  * @param validation [Validation] instance to use at the data on this [Store].
  * @param id id of this [Store]. Ids of [SubStore]s will be concatenated.
  */
-fun <D, T, M> storeOf(
+fun <D, M> storeOf(
     initialData: D,
-    validation: Validation<D, T, M>,
+    validation: Validation<D, Unit, M>,
     id: String = Id.next()
-): ValidatingStore<D, T, M> = ValidatingStore(initialData, validation, true, id)
+): ValidatingStore<D, Unit, M> =
+    ValidatingStore(initialData, validation, Unit, validateAfterUpdate = true, id)
 
 /**
  * Finds all corresponding [ValidationMessage]s to this [Store].

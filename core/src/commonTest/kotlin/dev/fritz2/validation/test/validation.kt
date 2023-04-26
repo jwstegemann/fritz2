@@ -25,7 +25,7 @@ data class Car(val name: String, val color: Color) {
                 if (nameInspector.data.isBlank())
                     add(Message(nameInspector.path, carNameIsBlank))
             }
-            addAll(Color.validator(inspector.map(colorLens)))
+            addAll(Color.validator(inspector.map(colorLens), Unit))
         }
     }
 }
@@ -128,14 +128,14 @@ class ValidationTests {
         val c3 = Car("car2", Color(256, 256, 256))
         val c4 = Car(" ", Color(256, -1, 120))
 
-        assertEquals(carNameIsBlank, Car.validator(c1).first().text)
-        assertEquals(".name", Car.validator(c1).first().path)
-        assertEquals(colorValuesAreTooLow, Car.validator.invoke(c2).first().text)
-        assertEquals(".color.r", Car.validator.invoke(c2).first().path)
-        assertEquals(".color.g", Car.validator.invoke(c2)[1].path)
-        assertEquals(".color.b", Car.validator.invoke(c2)[2].path)
-        assertEquals(colorValuesAreTooHigh, Car.validator(c3).first().text)
-        assertEquals(3, Car.validator(c4).size, "number of messages not right")
+        assertEquals(carNameIsBlank, Car.validator(c1, Unit).first().text)
+        assertEquals(".name", Car.validator(c1, Unit).first().path)
+        assertEquals(colorValuesAreTooLow, Car.validator.invoke(c2, Unit).first().text)
+        assertEquals(".color.r", Car.validator.invoke(c2, Unit).first().path)
+        assertEquals(".color.g", Car.validator.invoke(c2, Unit)[1].path)
+        assertEquals(".color.b", Car.validator.invoke(c2, Unit)[2].path)
+        assertEquals(colorValuesAreTooHigh, Car.validator(c3, Unit).first().text)
+        assertEquals(3, Car.validator(c4, Unit).size, "number of messages not right")
     }
 
     @Test
@@ -148,19 +148,19 @@ class ValidationTests {
         val colorWithTooHighG = Color(42, 256, 42)
         val colorWithTooHighB = Color(42, 42, 256)
 
-        assertEquals(colorValuesAreTooLow, Color.validator(colorWithTooLowR).first().text)
-        assertEquals(".r", Color.validator(colorWithTooLowR).first().path)
-        assertEquals(colorValuesAreTooLow, Color.validator(colorWithTooLowG).first().text)
-        assertEquals(".g", Color.validator(colorWithTooLowG).first().path)
-        assertEquals(colorValuesAreTooLow, Color.validator(colorWithTooLowB).first().text)
-        assertEquals(".b", Color.validator(colorWithTooLowB).first().path)
+        assertEquals(colorValuesAreTooLow, Color.validator(colorWithTooLowR, Unit).first().text)
+        assertEquals(".r", Color.validator(colorWithTooLowR, Unit).first().path)
+        assertEquals(colorValuesAreTooLow, Color.validator(colorWithTooLowG, Unit).first().text)
+        assertEquals(".g", Color.validator(colorWithTooLowG, Unit).first().path)
+        assertEquals(colorValuesAreTooLow, Color.validator(colorWithTooLowB, Unit).first().text)
+        assertEquals(".b", Color.validator(colorWithTooLowB, Unit).first().path)
 
-        assertEquals(colorValuesAreTooHigh, Color.validator(colorWithTooHighR).first().text)
-        assertEquals(".r", Color.validator(colorWithTooHighR).first().path)
-        assertEquals(colorValuesAreTooHigh, Color.validator(colorWithTooHighG).first().text)
-        assertEquals(".g", Color.validator(colorWithTooHighG).first().path)
-        assertEquals(colorValuesAreTooHigh, Color.validator(colorWithTooHighB).first().text)
-        assertEquals(".b", Color.validator(colorWithTooHighB).first().path)
+        assertEquals(colorValuesAreTooHigh, Color.validator(colorWithTooHighR, Unit).first().text)
+        assertEquals(".r", Color.validator(colorWithTooHighR, Unit).first().path)
+        assertEquals(colorValuesAreTooHigh, Color.validator(colorWithTooHighG, Unit).first().text)
+        assertEquals(".g", Color.validator(colorWithTooHighG, Unit).first().path)
+        assertEquals(colorValuesAreTooHigh, Color.validator(colorWithTooHighB, Unit).first().text)
+        assertEquals(".b", Color.validator(colorWithTooHighB, Unit).first().path)
     }
 
     @Test
