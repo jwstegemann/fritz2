@@ -172,4 +172,49 @@ class RoutingTests {
 
         assertEquals("abc 123", divElement().textContent, "expected second page")
     }
+
+    @Test
+    fun testHashChangeViaJSInRouter() = runTest {
+
+        window.location.hash = ""
+
+        val router = routerOf(mapOf("page" to "a"))
+        val divId = "div-${Id.next()}"
+
+        render {
+            router.data.render { route ->
+                when(route["page"]) {
+                    "a" -> div(id = divId) {
+                        +"a"
+                    }
+                    "b" -> div(id = divId) {
+                        +"b"
+                    }
+                    else -> div(id = divId) {
+                        +"404"
+                    }
+                }
+            }
+        }
+        fun divElement() = document.getElementById(divId) as HTMLDivElement
+
+        delay(250)
+        assertEquals("a", divElement().textContent, "expected default page")
+
+        window.location.hash = "#page=b"
+        delay(250)
+        assertEquals("b", divElement().textContent, "expected second page")
+
+        window.location.hash = "#page=awdfaw"
+        delay(250)
+        assertEquals("404", divElement().textContent, "expected 404 page")
+
+        window.location.hash = "#unknown=awdawd"
+        delay(250)
+        assertEquals("404", divElement().textContent, "expected 404 page")
+
+        window.location.hash = ""
+        delay(250)
+        assertEquals("a", divElement().textContent, "expected default page again")
+    }
 }
