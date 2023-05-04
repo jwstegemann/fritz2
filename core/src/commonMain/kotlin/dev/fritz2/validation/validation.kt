@@ -16,6 +16,48 @@ import kotlin.jvm.JvmInline
  * classes in the `commonMain` section of your Kotlin multiplatform project.
  * So you can write the validation logic once and use them on the *JS* and *JVM* side.
  *
+ * For example:
+ * ```kotlin
+ * data class Person(val name: String, val birthday: LocalDate) {
+ *     companion object {
+ *          // define validator inside of its corresponding domain type
+ *          val validate: Validator<Person, LocalDate, SomeMessage> = validation { inspector, today ->
+ *              inspector.map(Person.name()).let { nameInspector ->
+ *                  if(nameInspector.data.isBlank())
+ *                      add(SomeMessage(nameInspector.path, "Name must not be blank"))
+ *              }
+ *              inspector.map(Person.birthday()).let { birthdayInspector ->
+ *                  if(birthdayInspector.data > today!!)
+ *                      add(SomeMessage(birthdayInspector, path, "Birthday must not be in the future"))
+ *              }
+ *          }
+ *     }
+ * }
+ * ```
+ *
+ * You can also compose validators:
+ * ```kotlin
+ * data class Person(val name: String, val birthday: LocalDate) {
+ *      // take from example above!
+ * }
+ *
+ * data class User(val nickname: String, val person: Person) {
+ *      data class UserMetaData(val nicknameRepo: NicknameRepository, val today: LocalDate)
+ *
+ *      companion object {
+ *          val validate: Validator<User, UserMetaData, SomeMessage> = validation { inspector, meta ->
+ *              inspector.map(User.nickname()).let { nicknameInspector ->
+ *                  if(meta!!.nicknameRepo.exists(nicknameInspector.data))
+ *                      add(SomeMessage(nicknameInspector.path, "Nickname is already in use"))
+ *              }
+ *              // use validator of `Person` type by just calling the validator and passing the mapped inspector
+ *              // and of course the appropriate meta-data!
+ *              addAll(Person.validate(inspector.map(User.person()), meta!!.today))
+ *          }
+ *      }
+ * }
+ * ```
+ *
  * @param D data-model to validate
  * @param T metadata which perhaps is needed in validation process
  */
