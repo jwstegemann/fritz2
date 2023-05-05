@@ -66,6 +66,7 @@ open class ValidatingStore<D, T, M>(
 
     /**
      * Validates the given [data] using the given [metadata], updates the [messages] list and returns them.
+     * If no metadata is specified, [metadataDefault] is used.
      *
      * Use this method from inside your [Handler]s to publish
      * the new state of the validation result via the [messages] flow.
@@ -75,23 +76,8 @@ open class ValidatingStore<D, T, M>(
      * @return [List] of messages
      */
     @Suppress("MemberVisibilityCanBePrivate")
-    protected fun validate(data: D, metadata: T): List<M> =
+    protected fun validate(data: D, metadata: T = metadataDefault): List<M> =
         validation(data, metadata).also { validationMessages.value = it }
-
-    /**
-     * Validates the given [data] using the specified [metadataDefault], updates the [messages] list and returns them.
-     *
-     * Use this method from inside your [Handler]s to publish
-     * the new state of the validation result via the [messages] flow.
-     *
-     * Please note: This method is applicable to stores without metadata only
-     * (metadata of type `Unit`).
-     *
-     * @param data data to validate
-     * @return [List] of messages
-     */
-    @Suppress("MemberVisibilityCanBePrivate")
-    protected fun validate(data: D): List<M> = validate(data, metadataDefault)
 
     init {
         if (validateAfterUpdate) data.drop(1) handledBy { newValue ->
