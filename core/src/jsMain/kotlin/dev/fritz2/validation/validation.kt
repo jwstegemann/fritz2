@@ -60,7 +60,7 @@ open class ValidatingStore<D, T, M>(
     /**
      * Validates the given [data] by using the optional [metadata] to update the
      * [messages] list and returning them.
-     * Use this method from inside your [Handler]s to publish
+     * Use this method from inside your [dev.fritz2.core.Handler]s to publish
      * the new state of the validation result via the [messages] flow.
      *
      * @param data data to validate
@@ -99,12 +99,15 @@ fun <D, T, M> storeOf(
 
 /**
  * Finds all corresponding [ValidationMessage]s to this [Store].
+ *
+ * Be aware that the  filtering is based upon the correct usage of [Store.path]'s field. This can be reliably achieved
+ * by using [dev.fritz2.core.Inspector]s and their mappings for creating the correct path values.
  */
 fun <M: ValidationMessage> Store<*>.messages(): Flow<List<M>>? =
     when(this) {
         is ValidatingStore<*, *, *> -> {
             try {
-                this.messages.map { it.unsafeCast<List<M>>().filter { m -> m.path == this.path } }
+                this.messages.map { it.unsafeCast<List<M>>() }
             } catch (e: Exception) { null }
         }
         is SubStore<*, *> -> {
@@ -114,7 +117,7 @@ fun <M: ValidationMessage> Store<*>.messages(): Flow<List<M>>? =
             }
             if(store is ValidatingStore<*, *, *>) {
                 try {
-                    store.messages.map { it.unsafeCast<List<M>>().filter { m -> m.path == this.path } }
+                    store.messages.map { it.unsafeCast<List<M>>().filter { m -> m.path.startsWith(this.path) } }
                 } catch (e: Exception) { null }
             } else null
         }
