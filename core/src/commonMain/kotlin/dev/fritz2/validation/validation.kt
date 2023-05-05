@@ -5,16 +5,16 @@ import dev.fritz2.core.inspectorOf
 import kotlin.jvm.JvmInline
 
 /**
- * Encapsulates the logic for validating a given data-model and some optional metadata.
+ * Encapsulates the logic for validating a given data-model with metadata.
  *
- * The validation logic itself is expressed by some function that must be passed as [validate] parameter.
- * This function gets the actual model-data [D] and some optional metadata [T] in order to create a [List] of
+ * The validation logic itself is expressed by a function that must be passed as [validate] parameter.
+ * This function takes the actual model-data [D] as well as the metadata [T] in order to create a [List] of
  * validation messages [M]. This value class simply wraps the provided [validate] function in order to make it
  * invocable without any ceremony.
  *
- * It appears to be a good practise, to put the implementation of the passed [validate] function right next to your data
+ * It appears to be a good practice to put the implementation of the passed [validate] function right next to your data
  * classes in the `commonMain` section of your Kotlin multiplatform project.
- * So you can write the validation logic once and use them on the *JS* and *JVM* side.
+ * This way you can write the validation logic once and use them on the *JS* and *JVM* side.
  *
  * For example:
  * ```kotlin
@@ -27,7 +27,7 @@ import kotlin.jvm.JvmInline
  *                      add(SomeMessage(nameInspector.path, "Name must not be blank"))
  *              }
  *              inspector.map(Person.birthday()).let { birthdayInspector ->
- *                  if(birthdayInspector.data > today!!)
+ *                  if(birthdayInspector.data > today)
  *                      add(SomeMessage(birthdayInspector, path, "Birthday must not be in the future"))
  *              }
  *          }
@@ -47,12 +47,12 @@ import kotlin.jvm.JvmInline
  *      companion object {
  *          val validate: Validator<User, UserMetaData, SomeMessage> = validation { inspector, meta ->
  *              inspector.map(User.nickname()).let { nicknameInspector ->
- *                  if(meta!!.nicknameRepo.exists(nicknameInspector.data))
+ *                  if(meta.nicknameRepo.exists(nicknameInspector.data))
  *                      add(SomeMessage(nicknameInspector.path, "Nickname is already in use"))
  *              }
  *              // use validator of `Person` type by just calling the validator and passing the mapped inspector
  *              // and of course the appropriate meta-data!
- *              addAll(Person.validate(inspector.map(User.person()), meta!!.today))
+ *              addAll(Person.validate(inspector.map(User.person()), meta.today))
  *          }
  *      }
  * }
