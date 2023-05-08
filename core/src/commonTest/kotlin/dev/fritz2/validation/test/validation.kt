@@ -3,9 +3,11 @@
 package dev.fritz2.validation.test
 
 import dev.fritz2.core.Lens
+import dev.fritz2.core.inspectorOf
 import dev.fritz2.core.lensOf
 import dev.fritz2.validation.Validation
 import dev.fritz2.validation.ValidationMessage
+import dev.fritz2.validation.invoke
 import dev.fritz2.validation.validation
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -89,10 +91,10 @@ data class Person(
                 if (nameInspector.data.isBlank()) add(Message(nameInspector.path, "Name must not be blank!"))
             }
             inspector.map(birthdayLens).let { birthdayInspector ->
-                if (birthdayInspector.data > meta!!.today)
+                if (birthdayInspector.data > meta.today)
                     add(Message(birthdayInspector.path, "Birthday must not be in the future!"))
             }
-            addAll(Address.validate(inspector.map(addressLens), meta!!.knownCities))
+            addAll(Address.validate(inspector.map(addressLens), meta.knownCities))
         }
     }
 }
@@ -113,7 +115,7 @@ data class Address(
                 if (streetInspector.data.isBlank()) add(Message(streetInspector.path, "Street must not be blank!"))
             }
             inspector.map(cityLens).let { cityInspector ->
-                if (!cities!!.contains(cityInspector.data)) add(Message(cityInspector.path, "City does not exist!"))
+                if (!cities.contains(cityInspector.data)) add(Message(cityInspector.path, "City does not exist!"))
             }
         }
     }
@@ -186,5 +188,11 @@ class ValidationTests {
         assertEquals(".birthday", errors[1].path)
         assertEquals("City does not exist!", errors[2].text)
         assertEquals(".address.city", errors[2].path)
+    }
+
+    @Test
+    fun canOmitMetadataInCaseOfUnitType() {
+        assertEquals(colorValuesAreTooLow, Color.validator(Color(-1, 42 , 42)).first().text)
+        assertEquals(colorValuesAreTooLow, Color.validator(inspectorOf(Color(-1, 42 , 42))).first().text)
     }
 }
