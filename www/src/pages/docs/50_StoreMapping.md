@@ -308,11 +308,39 @@ val streetOfPerson = address + street
 
 // apply the combined lens to an example object:
 val person = Person(Address("Lerchenweg"))
-formattedBirthday.get(person) // -> "Lerchenweg"
-formattedBirthday.set("Rosenstraße") // Person(address = Address("Rosenstraße"))
+streetOfPerson.get(person) // -> "Lerchenweg"
+streetOfPerson.set("Rosenstraße") // Person(address = Address("Rosenstraße"))
 ```
 
-This feature is i.a. very useful for formatting values like you will learn about in the next section.
+Let us recap, how this example would work with automatic generated lenses:
+```kotlin
+@Lenses
+data class Address(val street: String) { companion object }
+
+@Lenses
+data class Person(val address: Address) { companion object }
+
+val streetOfPerson = Person.address() + Address.street()
+```
+
+This works, but the syntax is quite cumbersome; especially for deeper nested models!
+
+This is why our automatic `@Lenses`-annotation-processor has a dedicated support for deeper nested models as well and
+creates extension functions for all lenses, so you can *chain* the calls in a fluent way:
+
+```kotlin
+@Lenses
+data class Address(val street: String) { companion object }
+
+@Lenses
+data class Person(val address: Address) { companion object }
+
+val streetOfPerson = Person.address().street()
+```
+This fluent API looks much terser and cleaner compared to the canonical one above. Beware that under the hood nothing
+special happens! The generated code simply uses the `plus` operator the same way you can do so manually.
+
+Combining lenses is i.a. very useful for formatting values like you will learn about in the next section.
 
 ### Formatting Values
 
