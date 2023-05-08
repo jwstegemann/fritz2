@@ -312,7 +312,7 @@ streetOfPerson.get(person) // -> "Lerchenweg"
 streetOfPerson.set("Rosenstraße") // Person(address = Address("Rosenstraße"))
 ```
 
-Let us recap, how this example would work with automatic generated lenses:
+Let us recap, how this example would work with automatically generated lenses:
 ```kotlin
 @Lenses
 data class Address(val street: String) { companion object }
