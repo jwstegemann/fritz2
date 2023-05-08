@@ -9,11 +9,8 @@ import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.validate
-import com.squareup.kotlinpoet.FileSpec
-import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.MemberName
+import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.ksp.*
 import dev.fritz2.core.Lens
 import dev.fritz2.core.Lenses
@@ -117,6 +114,7 @@ class LensesProcessor(
         } else true
     }
 
+
     private fun generateLensesCode(
         packageName: String,
         classDeclaration: KSClassDeclaration,
@@ -156,6 +154,33 @@ class LensesProcessor(
                             attributeName,
                             attributeName
                         ).build()
+                )
+                val parentType = TypeVariableName("PARENT")
+                addFunction(
+                    FunSpec.builder(prop.simpleName.getShortName())
+                        .addTypeVariable(parentType)
+                        .receiver(
+                            Lens::class.asClassName().parameterizedBy(
+                                parentType,
+                                if (isGeneric) classDeclaration.toClassName()
+                                    .parameterizedBy(classDeclaration.typeParameters.map { it.toTypeVariableName() })
+                                else classDeclaration.toClassName()
+                            )
+                        )
+                        .returns(
+                            Lens::class.asClassName().parameterizedBy(
+                                parentType,
+                                prop.type.toTypeName(classDeclaration.typeParameters.toTypeParameterResolver())
+                            )
+                        ).addTypeVariables(classDeclaration.typeParameters.map { it.toTypeVariableName() })
+                        .addCode(
+                            "return this + %T.%L()",
+                            if (isGeneric) classDeclaration.toClassName()
+                                .parameterizedBy(classDeclaration.typeParameters.map { it.toTypeVariableName() })
+                            else classDeclaration.toClassName(),
+                            attributeName
+                        )
+                        .build()
                 )
             }
         }.build()
