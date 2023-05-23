@@ -187,7 +187,7 @@ abstract class PopUpPanel<C : HTMLElement>(
             opened handledBy {
                 if (it) {
                     if (fullWidth) {
-                        popperDiv.domNode.style.width = "${reference.domNode.clientWidth}px"
+                        popperDiv.domNode.style.minWidth = "${reference.domNode.clientWidth}px"
                     }
                     popperDiv.domNode.className = visibleClasses
                     this@PopUpPanel.waitForAnimation()
