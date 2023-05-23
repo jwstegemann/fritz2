@@ -28,8 +28,6 @@ abstract class PopUpPanel<C : HTMLElement>(
     companion object {
         private const val POPUP_HIDDEN = "fritz2-popup-hidden"
         private const val POPUP_VISIBLE = "fritz2-popup-visible"
-        private const val POPUP_HIDDEN_FULL = "fritz2-popup-hidden-full"
-        private const val POPUP_VISIBLE_FULL = "fritz2-popup-visible-full"
 
         /**
          * Use this class for adding the CSS attribute `position=relative` for a component, that uses [PopUpPanel].
@@ -67,10 +65,10 @@ abstract class PopUpPanel<C : HTMLElement>(
                 transform: rotate(45deg);
                 background: inherit;
             }""".trimIndent(),
-                    """.popper.$POPUP_VISIBLE_FULL .popper-arrow::before, .popper.$POPUP_VISIBLE .popper-arrow::before {
+                    """.popper-arrow::before, .popper.$POPUP_VISIBLE .popper-arrow::before {
                 visibility: visible;
             }""".trimIndent(),
-                    """.popper.$POPUP_HIDDEN_FULL .popper-arrow::before, .popper.$POPUP_HIDDEN .popper-arrow::before {
+                    """.popper-arrow::before, .popper.$POPUP_HIDDEN .popper-arrow::before {
                 visibility: hidden;
             }""".trimIndent(),
                     """.popper[data-popper-placement^='bottom'] .popper-arrow::before {
@@ -140,25 +138,16 @@ abstract class PopUpPanel<C : HTMLElement>(
                     """.$POPUP_HIDDEN {
                 visibility: hidden;
             }""".trimIndent(),
-                    """.$POPUP_VISIBLE_FULL {
-                width: 100%;
-                visibility: visible;
-                z-index: 30;
-            }""".trimIndent(),
-                    """.$POPUP_HIDDEN_FULL {
-                width: 100%;
-                visibility: hidden;
-            }""".trimIndent()
                 )
             )
         }
     }
 
-    private val visibleClasses = "popper ${if (fullWidth) POPUP_VISIBLE_FULL else POPUP_VISIBLE}"
-    private val hiddenClasses = "popper ${if (fullWidth) POPUP_HIDDEN_FULL else POPUP_HIDDEN}"
+    private val visibleClasses = "popper $POPUP_VISIBLE"
+    private val hiddenClasses = "popper $POPUP_HIDDEN"
 
     var placement: Placement = Placement.auto
-    var strategy: Strategy = Strategy.absolute
+    var strategy: Strategy = Strategy.fixed
 
     var flip: Boolean = true
     var skidding = 0
@@ -197,6 +186,9 @@ abstract class PopUpPanel<C : HTMLElement>(
             }
             opened handledBy {
                 if (it) {
+                    if (fullWidth) {
+                        popperDiv.domNode.style.width = "${reference.domNode.clientWidth}px"
+                    }
                     popperDiv.domNode.className = visibleClasses
                     this@PopUpPanel.waitForAnimation()
                     popper.update()
