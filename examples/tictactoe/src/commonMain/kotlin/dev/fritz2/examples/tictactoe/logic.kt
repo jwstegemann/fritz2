@@ -13,7 +13,7 @@ class Engine {
     companion object {
         private val endingValidator: Validation<Field, GameState, GameEndMessage> = validation { inspector, gameState ->
             if (inspector.data.any { it.isInWinningGroup }) {
-                add(GameEndMessage(inspector.path, "Player ${gameState?.player} has won!", "alert-success"))
+                add(GameEndMessage(inspector.path, "Player ${gameState.player} has won!", "alert-success"))
             } else if (GameState.isFull(inspector.data)) {
                 add(GameEndMessage(inspector.path, "This is a draw!", "alert-info"))
             }
