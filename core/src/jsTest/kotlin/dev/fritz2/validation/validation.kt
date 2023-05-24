@@ -1,6 +1,7 @@
 package dev.fritz2.validation
 
 import dev.fritz2.core.Id
+import dev.fritz2.core.lensOf
 import dev.fritz2.core.render
 import dev.fritz2.runTest
 import dev.fritz2.validation.test.*
@@ -8,6 +9,7 @@ import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLDivElement
+import org.w3c.dom.HTMLSpanElement
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -167,4 +169,72 @@ class ValidationJSTests {
         assertEquals(1, divMessagesB.childElementCount, "b-Field error message not present")
         assertEquals(".color.b", divMessagesB.textContent)
     }
+
 }
+
+data class Bar(val foo: String, val foobar: String) {
+    companion object {
+        val fooLens = lensOf("foo", Bar::foo) { p, v -> p.copy(foo = v) }
+        val foobarLens = lensOf("foobar", Bar::foobar) { p, v -> p.copy(foobar = v) }
+
+        val validate: Validation<Bar, Unit, Message> = validation { inspector ->
+            add(Message(inspector.map(fooLens).path, "foo ist falsch"))
+            add(Message(inspector.map(foobarLens).path, "foobar ist falsch"))
+        }
+    }
+}
+
+data class Foo(val foo: String, val foobar: String, val bar: Bar) {
+    companion object {
+        val fooLens = lensOf("foo", Foo::foo) { p, v -> p.copy(foo = v) }
+        val foobarLens = lensOf("foobar", Foo::foobar) { p, v -> p.copy(foobar = v) }
+        val barLens = lensOf("bar", Foo::bar) { p, v -> p.copy(bar = v) }
+
+        val validate: Validation<Foo, Unit, Message> = validation { inspector ->
+            add(Message(inspector.map(fooLens).path, "foo ist falsch"))
+            add(Message(inspector.map(foobarLens).path, "foobar ist falsch"))
+            addAll(Bar.validate(inspector.map(barLens)))
+        }
+    }
+}
+
+class MessageFilterTests {
+
+    @Test
+    fun testOverlappingFieldnamesDoNotMatchEachOthersPathes() = runTest {
+        val initial = Foo("", "", Bar("", ""))
+        val store = storeOf(initial, Foo.validate)
+        store.update(initial.copy(foo = "a"))
+        /*
+        Validation should result in messages with these pathes:
+        ```
+        .foo
+        .foobar
+        .bar.foo
+        .bar.foobar
+        ```
+        Messages of `foo` should not appear in mapped store of `foobar` -> so no overlapping!
+        */
+        val id = Id.next()
+
+        render {
+            span(id = id) {
+                // 1
+                store.map(Foo.fooLens).messages<Message>()?.map { it.size.toString() }?.renderText()
+                // 1
+                store.map(Foo.foobarLens).messages<Message>()?.map { it.size.toString() }?.renderText()
+                // 2
+                store.map(Foo.barLens).messages<Message>()?.map { it.size.toString() }?.renderText()
+                // 1
+                store.map(Foo.fooLens).messages<Message>()?.map { it.size.toString() }?.renderText()
+                // 1
+                store.map(Foo.fooLens).messages<Message>()?.map { it.size.toString() }?.renderText()
+            }
+        }
+
+        delay(100)
+        val span = document.getElementById(id) as HTMLSpanElement
+        assertEquals("11211", span.textContent)
+    }
+}
+

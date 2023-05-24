@@ -132,23 +132,32 @@ fun <D, M> storeOf(
  * Be aware that the  filtering is based upon the correct usage of [Store.path]'s field. This can be reliably achieved
  * by using [dev.fritz2.core.Inspector]s and their mappings for creating the correct path values.
  */
-fun <M: ValidationMessage> Store<*>.messages(): Flow<List<M>>? =
-    when(this) {
+fun <M : ValidationMessage> Store<*>.messages(): Flow<List<M>>? =
+    when (this) {
         is ValidatingStore<*, *, *> -> {
             try {
                 this.messages.map { it.unsafeCast<List<M>>() }
-            } catch (e: Exception) { null }
+            } catch (e: Exception) {
+                null
+            }
         }
+
         is SubStore<*, *> -> {
             var store: Store<*> = this
             while (store is SubStore<*, *>) {
                 store = store.parent
             }
-            if(store is ValidatingStore<*, *, *>) {
+            if (store is ValidatingStore<*, *, *>) {
                 try {
-                    store.messages.map { it.unsafeCast<List<M>>().filter { m -> m.path.startsWith(this.path) } }
-                } catch (e: Exception) { null }
+                    store.messages.map {
+                        it.unsafeCast<List<M>>()
+                            .filter { m -> m.path == this.path || m.path.startsWith("${this.path}.") }
+                    }
+                } catch (e: Exception) {
+                    null
+                }
             } else null
         }
+
         else -> null
     }
