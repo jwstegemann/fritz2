@@ -89,10 +89,10 @@ data class Person(
                 if (nameInspector.data.isBlank()) add(Message(nameInspector.path, "Name must not be blank!"))
             }
             inspector.map(birthdayLens).let { birthdayInspector ->
-                if (birthdayInspector.data > meta!!.today)
+                if (birthdayInspector.data > meta.today)
                     add(Message(birthdayInspector.path, "Birthday must not be in the future!"))
             }
-            addAll(Address.validate(inspector.map(addressLens), meta!!.knownCities))
+            addAll(Address.validate(inspector.map(addressLens), meta.knownCities))
         }
     }
 }
@@ -113,7 +113,7 @@ data class Address(
                 if (streetInspector.data.isBlank()) add(Message(streetInspector.path, "Street must not be blank!"))
             }
             inspector.map(cityLens).let { cityInspector ->
-                if (!cities!!.contains(cityInspector.data)) add(Message(cityInspector.path, "City does not exist!"))
+                if (!cities.contains(cityInspector.data)) add(Message(cityInspector.path, "City does not exist!"))
             }
         }
     }

@@ -193,7 +193,7 @@ data class Foo(val foo: String, val foobar: String, val bar: Bar) {
         val validate: Validation<Foo, Unit, Message> = validation { inspector ->
             add(Message(inspector.map(fooLens).path, "foo ist falsch"))
             add(Message(inspector.map(foobarLens).path, "foobar ist falsch"))
-            addAll(Bar.validate(inspector.map(barLens)))
+            addAll(Bar.validate(inspector.map(barLens), Unit))
         }
     }
 }
