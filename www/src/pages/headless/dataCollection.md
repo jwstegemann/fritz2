@@ -233,7 +233,7 @@ content.
 
 ### Summary / Sketch
 ```kotlin
-dataColection<T>() {
+dataCollection<T>() {
     val data: CollectionDataProperty<T>
     val sortBy: SimpleHandler<SortingOrder<T>?>
     val toggleSorting: SimpleHandler<Sorting<T>>
