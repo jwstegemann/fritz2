@@ -11,8 +11,8 @@ eleventyNavigation:
 ---
 ## Create a Project
 
-To use fritz2, set up a Kotlin multiplatform-project. To do so you can either
-* [clone our template from GitHub](https://github.com/jwstegemann/fritz2-template)
+To use fritz2, set up a Kotlin multiplatform-project using one of these options:
+* [Clone our template from GitHub](https://github.com/jwstegemann/fritz2-template)
 * If you want to use fritz2 together with [tailwindcss](https://tailwindcss.com/) for the styling, clone
   our [tailwind specific template](https://github.com/jwstegemann/fritz2-tailwind-template) from GitHub instead.
 * Check out the [examples](https://fritz2.dev/examples) and see how to use the fritz2 features

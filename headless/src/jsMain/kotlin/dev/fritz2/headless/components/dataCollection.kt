@@ -534,7 +534,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
  *
  * API-Sketch:
  * ```kotlin
- * dataColection<T>() {
+ * dataCollection<T>() {
  *     val data: CollectionDataProperty<T>
  *     val sortBy: SimpleHandler<SortingOrder<T>?>
  *     val toggleSorting: SimpleHandler<Sorting<T>>
@@ -584,7 +584,7 @@ fun <T, C : HTMLElement> RenderContext.dataCollection(
  *
  * API-Sketch:
  * ```kotlin
- * dataColection<T>() {
+ * dataCollection<T>() {
  *     val data: CollectionDataProperty<T>
  *     val sortBy: SimpleHandler<SortingOrder<T>?>
  *     val toggleSorting: SimpleHandler<Sorting<T>>
