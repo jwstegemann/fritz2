@@ -68,6 +68,22 @@ value class Validation<D, T, M>(private inline val validate: (Inspector<D>, T) -
 }
 
 /**
+ * Convenience execution function for [Validation] for the case, that the metadata is `Unit`.
+ * In those cases the metadata parameter can be omitted.
+ *
+ * @param inspector The [Inspector] of type [D] that should be used for the validation process
+ */
+operator fun <D, M> Validation<D, Unit, M>.invoke(inspector: Inspector<D>): List<M> = this(inspector, Unit)
+
+/**
+ * Convenience execution function for [Validation] for the case, that the metadata is `Unit`.
+ * In those cases the metadata parameter can be omitted.
+ *
+ * @param data The data of type [D] that should be used for the validation process
+ */
+operator fun <D, M> Validation<D, Unit, M>.invoke(data: D): List<M> = this(data, Unit)
+
+/**
  * Convenience function for creating a [Validation] instance accepting model- and metadata by working on a
  * [MutableList] receiver and using an [Inspector] for getting the right [Inspector.path] from sub-models
  * next to the [Inspector.data].

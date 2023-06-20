@@ -3,9 +3,11 @@
 package dev.fritz2.validation.test
 
 import dev.fritz2.core.Lens
+import dev.fritz2.core.inspectorOf
 import dev.fritz2.core.lensOf
 import dev.fritz2.validation.Validation
 import dev.fritz2.validation.ValidationMessage
+import dev.fritz2.validation.invoke
 import dev.fritz2.validation.validation
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -186,5 +188,11 @@ class ValidationTests {
         assertEquals(".birthday", errors[1].path)
         assertEquals("City does not exist!", errors[2].text)
         assertEquals(".address.city", errors[2].path)
+    }
+
+    @Test
+    fun canOmitMetadataInCaseOfUnitType() {
+        assertEquals(colorValuesAreTooLow, Color.validator(Color(-1, 42 , 42)).first().text)
+        assertEquals(colorValuesAreTooLow, Color.validator(inspectorOf(Color(-1, 42 , 42))).first().text)
     }
 }
