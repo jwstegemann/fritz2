@@ -9,10 +9,11 @@ class InspectorTests {
 
     val streetLens = lensOf(Address::street.name, Address::street) { p, v -> p.copy(street = v) }
 
-    data class Person(val name: String, val address: Address, val id: String = Id.next())
+    data class Person(val name: String, val address: Address, val telephone: String? = null, val id: String = Id.next())
 
     val nameLens = lensOf(Person::name.name, Person::name) { p, v -> p.copy(name = v) }
     val addressLens = lensOf(Person::address.name, Person::address) { p, v -> p.copy(address = v) }
+    val telephoneLens = lensOf(Person::telephone.name, Person::telephone) { p, v -> p.copy(telephone = v) }
 
     @Test
     fun testInspectorPaths() {
@@ -34,6 +35,21 @@ class InspectorTests {
         val streetInspector = addressInspector.map(streetLens)
         assertEquals(".address.street", streetInspector.path, "sub sub model id not correct")
         assertEquals(rootData.address.street, streetInspector.data, "sub sub model data not correct")
+    }
+
+    @Test
+    fun testMapNull() {
+        val personA = Person("Hans", Address("Musterstreet 3"), "0138584/943")
+        val inspectorA = inspectorOf(personA).map(telephoneLens).mapNull("")
+
+        assertEquals(".telephone", inspectorA.path)
+        assertEquals(personA.telephone, inspectorA.data)
+
+        val personB = Person("Peter", Address("Musterstreet 5"))
+        val inspectorB = inspectorOf(personB).map(telephoneLens).mapNull("no-num")
+
+        assertEquals(".telephone", inspectorB.path)
+        assertEquals("no-num", inspectorB.data)
     }
 
     @Test

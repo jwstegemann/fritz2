@@ -58,6 +58,17 @@ class SubInspector<P, T>(
 }
 
 /**
+ * Creates a new [Inspector] from a _nullable_ parent inspector that either contains the original value or a given
+ * [default] value if the original value was `null`.
+ *
+ * The resulting inspector behaves similarly to a `Store` created via `Store.mapNull`.
+ * This means that the resulting [Inspector.path] will be the same as if `mapNull`
+ * was called on an equivalent store of the same value.
+ */
+fun <D> Inspector<D?>.mapNull(default: D): Inspector<D> =
+    SubInspector(this, defaultLens("", default))
+
+/**
  * Creates a new [Inspector] containing the element for the given [element] and [idProvider]
  * from the original [Inspector]'s [List].
  *
@@ -84,17 +95,6 @@ fun <D, I> Inspector<List<D>>.inspectEach(idProvider: IdProvider<D, I>, action: 
  */
 fun <D> Inspector<List<D>>.mapByIndex(index: Int): Inspector<D> =
     SubInspector(this, lensForElement(index))
-
-/**
- * Creates a new [Inspector] from a _nullable_ parent inspector that either contains the original value or a given
- * [default] value if the original value was `null`.
- *
- * The resulting inspector behaves similarly to a `Store` created via `Store.mapNull`.
- * This means that the resulting [Inspector.path] will be the same as if `mapNull` was called on an equivalent Store of
- * the same value.
- */
-fun <D> Inspector<D?>.mapNull(default: D): Inspector<D> =
-    SubInspector(this, defaultLens("", default))
 
 /**
  * Performs the given [action] on each [Inspector].

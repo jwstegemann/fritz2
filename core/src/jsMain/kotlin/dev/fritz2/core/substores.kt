@@ -98,9 +98,10 @@ fun <P, T> Store<P?>.map(lens: Lens<P & Any, T>): Store<T> =
     map(lens.withNullParent())
 
 /**
- * on a [Store] of nullable data this creates a [Store] with a nullable parent and non-nullable value.
- * It can be called using a [Lens] on a non-nullable parent (that can be created by using the @[Lenses]-annotation),
- * but you have to provide a [default] value. When updating the value of the resulting [Store] to this [default] value,
+ * Creates a new [Store] from a _nullable_ parent store that either contains the original value or a given
+ * [default] value if the original value was `null`.
+ *
+ * When updating the value of the resulting [Store] to this [default] value,
  * null is used instead updating the parent. When this [Store]'s value would be null according to it's parent's
  * value, the [default] value will be used instead.
  *
