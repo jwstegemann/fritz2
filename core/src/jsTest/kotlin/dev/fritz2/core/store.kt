@@ -219,4 +219,19 @@ class StoreTests {
         assertEquals(intermediateException, errorHandlerResult, "exception in map not caught")
         checkUpdate("store not updating after intermediate exception")
     }
+
+    @Test
+    fun testMapNullResultsInSpecifiedDefaultValueWhenCalledOnNullContainingStore() {
+        val rootStore = storeOf<String?>(null)
+        val expected = "Foo"
+
+        val resultStore = rootStore.mapNull(expected)
+        val resultValue = resultStore.current
+
+        assertEquals(
+            expected,
+            resultValue,
+            "Data of the derived Store must equal the expected value."
+        )
+    }
 }
