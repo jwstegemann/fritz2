@@ -107,4 +107,4 @@ fun <P, T> Store<P?>.map(lens: Lens<P & Any, T>): Store<T> =
  * @param default value to translate null to and from
  */
 fun <T> Store<T?>.mapNull(default: T): Store<T> =
-    map(defaultLens(id, default))
+    map(defaultLens("", default))

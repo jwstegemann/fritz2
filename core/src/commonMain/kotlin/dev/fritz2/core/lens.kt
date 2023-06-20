@@ -175,6 +175,6 @@ fun <K, V> lensForElement(key: K): Lens<Map<K, V>, V> = object : Lens<Map<K, V>,
  */
 internal fun <T> defaultLens(id: String, default: T): Lens<T?, T> = object : Lens<T?, T> {
     override val id: String = id
-    override fun get(parent: T?): T = parent  ?: default
+    override fun get(parent: T?): T = parent ?: default
     override fun set(parent: T?, value: T): T?  = value.takeUnless { it == default }
 }
