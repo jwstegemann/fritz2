@@ -86,6 +86,17 @@ fun <D> Inspector<List<D>>.mapByIndex(index: Int): Inspector<D> =
     SubInspector(this, lensForElement(index))
 
 /**
+ * Creates a new [Inspector] from a _nullable_ parent inspector that either contains the original value or a given
+ * [default] value if the original value was `null`.
+ *
+ * The resulting inspector behaves similarly to a `Store` created via `Store.mapNull`.
+ * This means that the resulting [Inspector.path] will be the same as if `mapNull` was called on an equivalent Store of
+ * the same value.
+ */
+fun <D> Inspector<D?>.mapNull(default: D): Inspector<D> =
+    SubInspector(this, defaultLens("", default))
+
+/**
  * Performs the given [action] on each [Inspector].
  *
  * @param action function which gets applied to all [Inspector]s
