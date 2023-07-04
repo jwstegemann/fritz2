@@ -21,19 +21,23 @@ abstract class PopUpPanel<C : HTMLElement>(
     private val fullWidth: Boolean = true,
     private val reference: Tag<HTMLElement>?,
     private val ariaHasPopup: String,
-    private val popperDiv: HtmlTag<HTMLDivElement> = renderContext.div(POPUP_HIDDEN) {}, //never add other classes to popperDiv, they will be overridden
+    // Never add other classes to popperDiv as they will be overridden:
+    private val popperDiv: HtmlTag<HTMLDivElement> = renderContext.div(POPUP_HIDDEN_CLASSES) {},
     tag: Tag<C> = tagFactory(popperDiv, classes, id, scope) {}
 ) : Tag<C> by tag {
 
     companion object {
-        private const val POPUP_HIDDEN = "fritz2-popup-hidden"
-        private const val POPUP_VISIBLE = "fritz2-popup-visible"
+        private const val FRITZ2_POPUP_HIDDEN = "fritz2-popup-hidden"
+        private const val FRITZ2_POPUP_VISIBLE = "fritz2-popup-visible"
 
         /**
          * Use this class for adding the CSS attribute `position=relative` for a component, that uses [PopUpPanel].
          * Remember that the referenced tag for the popup will need this, so that the popup can align properly.
          */
         const val POPUP_RELATIVE = "fritz2-popup-relative"
+
+        private const val POPUP_VISIBLE_CLASSES = "popper $FRITZ2_POPUP_VISIBLE"
+        private const val POPUP_HIDDEN_CLASSES = "popper $FRITZ2_POPUP_HIDDEN"
 
         init {
             addGlobalStyles(
@@ -65,10 +69,10 @@ abstract class PopUpPanel<C : HTMLElement>(
                 transform: rotate(45deg);
                 background: inherit;
             }""".trimIndent(),
-                    """.popper-arrow::before, .popper.$POPUP_VISIBLE .popper-arrow::before {
+                    """.popper-arrow::before, .popper.$FRITZ2_POPUP_VISIBLE .popper-arrow::before {
                 visibility: visible;
             }""".trimIndent(),
-                    """.popper-arrow::before, .popper.$POPUP_HIDDEN .popper-arrow::before {
+                    """.popper-arrow::before, .popper.$FRITZ2_POPUP_HIDDEN .popper-arrow::before {
                 visibility: hidden;
             }""".trimIndent(),
                     """.popper[data-popper-placement^='bottom'] .popper-arrow::before {
@@ -131,20 +135,17 @@ abstract class PopUpPanel<C : HTMLElement>(
                     """.popper[data-popper-placement='right-end'] > .transform {
                 transform-origin: bottom left;
             }""".trimIndent(),
-                    """.$POPUP_VISIBLE {
+                    """.$FRITZ2_POPUP_VISIBLE {
                 visibility: visible;
                 z-index: 30;
             }""".trimIndent(),
-                    """.$POPUP_HIDDEN {
+                    """.$FRITZ2_POPUP_HIDDEN {
                 visibility: hidden;
             }""".trimIndent(),
                 )
             )
         }
     }
-
-    private val visibleClasses = "popper $POPUP_VISIBLE"
-    private val hiddenClasses = "popper $POPUP_HIDDEN"
 
     var placement: Placement = Placement.auto
     var strategy: Strategy = Strategy.fixed
@@ -173,7 +174,7 @@ abstract class PopUpPanel<C : HTMLElement>(
                 reference.domNode, popperDiv.domNode, PopperOptionsInit(
                     placement,
                     strategy,
-                    * modifiers.toTypedArray()
+                    *modifiers.toTypedArray()
                 )
             )
 
@@ -189,13 +190,13 @@ abstract class PopUpPanel<C : HTMLElement>(
                     if (fullWidth) {
                         popperDiv.domNode.style.minWidth = "${reference.domNode.clientWidth}px"
                     }
-                    popperDiv.domNode.className = visibleClasses
+                    popperDiv.domNode.className = POPUP_VISIBLE_CLASSES
                     this@PopUpPanel.waitForAnimation()
                     popper.update()
                     setFocus()
                 } else {
                     this@PopUpPanel.waitForAnimation()
-                    popperDiv.domNode.className = hiddenClasses
+                    popperDiv.domNode.className = POPUP_HIDDEN_CLASSES
                 }
             }
         }

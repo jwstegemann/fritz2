@@ -19,7 +19,7 @@ import org.w3c.dom.HTMLElement
  */
 
 class Tooltip<C : HTMLElement>(
-    val renderContext: Tag<HTMLElement>,
+    renderContext: Tag<HTMLElement>,
     tagFactory: TagFactory<Tag<C>>,
     classes: String?,
     id: String?,
