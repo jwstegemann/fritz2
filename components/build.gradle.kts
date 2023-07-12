@@ -4,10 +4,12 @@ plugins {
 
 kotlin {
     jvm()
-    js(BOTH).browser {
-        testTask {
-            useKarma {
-                useChromeHeadless()
+    js(IR) {
+        browser {
+            testTask {
+                useKarma {
+                    useChromeHeadless()
+                }
             }
         }
     }
