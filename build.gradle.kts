@@ -1,7 +1,7 @@
 plugins {
-    kotlin("multiplatform") version "1.7.20" apply false
-    kotlin("plugin.serialization") version "1.7.20" apply false
-    id("org.jetbrains.dokka") version "1.7.20"
+    kotlin("multiplatform") version "1.9.0" apply false
+    kotlin("plugin.serialization") version "1.9.0" apply false
+    id("org.jetbrains.dokka") version "1.8.10"
     id("maven-publish")
     signing
 }
@@ -15,17 +15,18 @@ plugins {
 // https://docs.gradle.org/current/userguide/platforms.html
 ext {
     // Dependencies
-    set("kotlinVersion", "1.7.20")
-    set("coroutinesVersion", "1.6.4")
-    set("kotlinpoetVersion", "1.12.0")
-    set("compileTestingVersion", "1.4.9")
-    set("stylisVersion", "4.0.2")
-    set("murmurhashVersion", "2.0.0")
-    set("logbackVersion", "1.2.11")
+    set("kotlinVersion", "1.9.0")
+    set("coroutinesVersion", "1.7.1")
+    set("kotlinpoetVersion", "1.14.2")
+    set("compileTestingVersion", "1.5.0")
+    set("stylisVersion", "4.3.0")
+    set("murmurhashVersion", "2.0.1")
+    set("logbackVersion", "1.4.7")
+
     set("ktorVersion", "1.6.8")
-    set("serializationVersion", "1.4.0")
-    set("kspVersion", "1.7.20-1.0.6")
-    set("autoServiceVersion", "1.0.1")
+    set("serializationVersion", "1.5.1")
+    set("kspVersion", "1.9.0-1.0.11")
+    set("autoServiceVersion", "1.1.1")
     set("junitJupiterParamsVersion", "5.8.2")
     set("assertJVersion", "3.23.1")
 }
@@ -39,7 +40,7 @@ allprojects {
 
 subprojects {
     group = "dev.fritz2"
-    version = "0.14.5"
+    version = "0.14.6"
 }
 
 tasks.dokkaHtmlMultiModule.configure {
