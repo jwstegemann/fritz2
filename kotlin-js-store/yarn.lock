@@ -1871,11 +1871,6 @@ multicast-dns@^7.2.5:
     dns-packet "^5.2.2"
     thunky "^1.0.2"
 
-murmurhash@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/murmurhash/-/murmurhash-2.0.0.tgz#556779daf7c39a0d2a3f5a9d080d84bf4833f9ee"
-  integrity sha512-Uo7ZHw+PLe2Q8/qbPIVYxAaoi+TYGZwu1a8ryeeASRXJLRSaLCblAGfjh02eu4+/9aUJBpkHXZv42AXmzOW2kw==
-
 murmurhash@2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/murmurhash/-/murmurhash-2.0.1.tgz#4097720e08cf978872194ad84ea5be2dec9b610f"
@@ -2526,11 +2521,6 @@ strip-json-comments@3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-3.1.1.tgz#31f1281b3832630434831c310c01cccda8cbe006"
   integrity sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==
-
-stylis@4.0.2:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/stylis/-/stylis-4.0.2.tgz#84247b15c20688604b7a77db02b7fc071a127194"
-  integrity sha512-2RR3o86K1CSrJjigElyNC9dSR7KyINLP68gauaBQn6j2zfJ/7gb0nD6FGXSCsklVM0V6fsoYA8qEXhhZGjkdww==
 
 stylis@4.3.0:
   version "4.3.0"

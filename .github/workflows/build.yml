@@ -3,27 +3,36 @@ name: build
 on:
   pull_request:
     branches:
-      - master
+      - release/0.14
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+
     - name: Set up JDK 12
       uses: actions/setup-java@v1
       with:
         java-version: 12
+
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+
     - name: Build with Gradle
       run: ./gradlew build
+
     - name: Archive test-results
       if: always()
       uses: actions/upload-artifact@v1.0.0
       with:
         name: Test-Results
         path: core/build/reports/tests/allTests
+
     - name: Archive server log
       if: always()
       uses: actions/upload-artifact@v1.0.0

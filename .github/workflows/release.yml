@@ -9,12 +9,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
       - name: Set up JDK 12
         uses: actions/setup-java@v1
         with:
           java-version: 12
+
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+
       - name: Publish with Gradle
         run: ./gradlew publish
         env: # Or as an environment variable
@@ -22,15 +25,3 @@ jobs:
           GPG_SIGNING_PASSPHRASE: ${{ secrets.GPG_SIGNING_PASSPHRASE }}
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-      - name: Generating API docs
-        run: ./gradlew dokkaHtmlMultiModule
-      - name: Updating Github Pages
-        if: success()
-        uses: crazy-max/ghaction-github-pages@v1.3.0
-        with:
-          repo: jwstegemann/fritz2-api 
-          target_branch: master
-          keep_history: false
-          build_dir: api
-        env:
-          GITHUB_PAT: ${{ secrets.FRITZ2_WEB_TOKEN }}
