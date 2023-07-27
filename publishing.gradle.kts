@@ -29,6 +29,16 @@ val javadocJar by tasks.creating(Jar::class) {
     from(tasks.named("dokkaHtml"))
 }
 
+/*-
+ * A Kotlin/MPP work-around for https://youtrack.jetbrains.com/issue/KT-46466.
+ *
+ * See also https://github.com/gradle/gradle/issues/17043.
+ */
+val signingTasks = tasks.withType<Sign>()
+tasks.withType<AbstractPublishToMaven>().configureEach {
+    dependsOn(signingTasks)
+}
+
 publishing {
     repositories {
         maven {
