@@ -1,7 +1,7 @@
 // publishing
 
 apply(plugin = "maven-publish")
-apply(plugin = "signing")
+//apply(plugin = "signing")
 apply(plugin = "org.jetbrains.dokka")
 
 
@@ -12,7 +12,7 @@ fun Project.publishing(action: PublishingExtension.() -> Unit) =
     configure(action)
 
 
-signing {
+/*signing {
     val signingKey: String = System.getenv("GPG_SIGNING_KEY").orEmpty()
     val signingPassphrase: String = System.getenv("GPG_SIGNING_PASSPHRASE").orEmpty()
 
@@ -20,7 +20,7 @@ signing {
         useInMemoryPgpKeys(signingKey, signingPassphrase)
         sign((extensions.getByName("publishing") as PublishingExtension).publications)
     }
-}
+}*/
 
 val javadocJar by tasks.creating(Jar::class) {
     group = JavaBasePlugin.DOCUMENTATION_GROUP
@@ -38,13 +38,14 @@ publishing {
             val snapshotUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
             val isRelease = System.getenv("GITHUB_EVENT_NAME").equals("release", true)
 
-            url = uri(if (isRelease && !version.toString().endsWith("SNAPSHOT")) releaseUrl else snapshotUrl)
+            //url = uri(if (isRelease && !version.toString().endsWith("SNAPSHOT")) releaseUrl else snapshotUrl)
+            url = uri("gcs://mvn-tryformation/releases")
             println("publish artifacts to: $url")
 
-            credentials {
+            /*credentials {
                 username = System.getenv("OSSRH_USERNAME")
                 password = System.getenv("OSSRH_PASSWORD")
-            }
+            }*/
         }
     }
 
