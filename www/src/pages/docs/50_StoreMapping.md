@@ -28,7 +28,7 @@ not only a function from `T -> R` (getter) but also from `R -> T` (setter) as a 
 ### Lenses
 
 There is a universal concept in computer science for such a functionality called *lens*. You might have a look at
-the [excellent documentation of lenses](https://arrow-kt.io/docs/optics/lens/) from the 
+the [excellent documentation on lenses](https://arrow-kt.io/learn/immutable-data/lens/) from the 
 [arrow-project](https://arrow-kt.io).
 
 fritz2 also offers the method `lensOf()` for a short-and-sweet-experience, which accepts a getter- and 
