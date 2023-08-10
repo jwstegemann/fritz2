@@ -18,58 +18,58 @@ test.describe('To open and close a listBox', () => {
     async function createLocators(page: Page): Promise<[Locator, Locator, Locator]> {
         const btn = page.locator("#starwars-button")
         const listBoxItems = page.locator("#starwars-items")
-        const popperDiv = listBoxItems.locator("xpath=..")
-        return [btn, popperDiv, listBoxItems]
+        const popupDiv = listBoxItems.locator("xpath=..")
+        return [btn, popupDiv, listBoxItems]
     }
 
-    async function assertListBoxIsOpen(btn: Locator, popperDiv: Locator, listBoxItems: Locator) {
-        await expect(popperDiv).toBeVisible();
+    async function assertListBoxIsOpen(btn: Locator, popupDiv: Locator, listBoxItems: Locator) {
+        await expect(popupDiv).toBeVisible();
         await expect(btn).toHaveAttribute("aria-expanded", "true")
     }
 
-    async function assertListBoxIsClosed(btn: Locator, popperDiv: Locator) {
-        await expect(popperDiv).toBeHidden();
+    async function assertListBoxIsClosed(btn: Locator, popupDiv: Locator) {
+        await expect(popupDiv).toBeHidden();
         await expect(btn).toHaveAttribute("aria-expanded", "false")
     }
 
     test('click twice on the listBoxButton', async ({page}) => {
-        const [btn, popperDiv, listBoxItems] = await createLocators(page)
+        const [btn, popupDiv, listBoxItems] = await createLocators(page)
 
         await btn.focus()
-        await assertListBoxIsClosed(btn, popperDiv)
+        await assertListBoxIsClosed(btn, popupDiv)
 
         await btn.click();
-        await assertListBoxIsOpen(btn, popperDiv, listBoxItems)
+        await assertListBoxIsOpen(btn, popupDiv, listBoxItems)
 
         await btn.click();
-        await assertListBoxIsClosed(btn, popperDiv)
+        await assertListBoxIsClosed(btn, popupDiv)
     });
 
     test('click on the listBoxButton first and then click outside of the listBoxItems', async ({page}) => {
-        const [btn, popperDiv, listBoxItems] = await createLocators(page)
+        const [btn, popupDiv, listBoxItems] = await createLocators(page)
 
         await btn.focus()
-        await assertListBoxIsClosed(btn, popperDiv)
+        await assertListBoxIsClosed(btn, popupDiv)
 
         await btn.click();
-        await assertListBoxIsOpen(btn, popperDiv, listBoxItems)
+        await assertListBoxIsOpen(btn, popupDiv, listBoxItems)
 
         await page.mouse.click(0, 0)
-        await assertListBoxIsClosed(btn, popperDiv)
+        await assertListBoxIsClosed(btn, popupDiv)
     });
 
     for (const key of ["Enter", "Space"]) {
         test(`focus the listBoxButton and press ${key} then press Escape`, async ({page}) => {
-            const [btn, popperDiv, listBoxItems] = await createLocators(page)
+            const [btn, popupDiv, listBoxItems] = await createLocators(page)
 
             await btn.focus()
-            await assertListBoxIsClosed(btn, popperDiv)
+            await assertListBoxIsClosed(btn, popupDiv)
 
             await page.press("#starwars-button", key)
-            await assertListBoxIsOpen(btn, popperDiv, listBoxItems)
+            await assertListBoxIsOpen(btn, popupDiv, listBoxItems)
 
             await page.press("#starwars-items", "Escape")
-            await assertListBoxIsClosed(btn, popperDiv)
+            await assertListBoxIsClosed(btn, popupDiv)
         });
     }
 
@@ -80,13 +80,13 @@ test.describe('To open and close a listBox', () => {
             await expect(page.locator("#" + itemId)).toHaveAttribute("data-listbox-selected", "false")
         }
 
-        const [btn, popperDiv, listBoxItems] = await createLocators(page)
+        const [btn, popupDiv, listBoxItems] = await createLocators(page)
 
         await btn.focus()
-        await assertListBoxIsClosed(btn, popperDiv)
+        await assertListBoxIsClosed(btn, popupDiv)
 
         await btn.click();
-        await assertListBoxIsOpen(btn, popperDiv, listBoxItems)
+        await assertListBoxIsOpen(btn, popupDiv, listBoxItems)
 
         const item4 = page.locator("#starwars-item-4")
         const item = await item4.boundingBox()

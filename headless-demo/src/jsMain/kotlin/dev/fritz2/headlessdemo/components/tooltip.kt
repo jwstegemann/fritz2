@@ -5,6 +5,7 @@ import dev.fritz2.core.RenderContext
 import dev.fritz2.core.placeholder
 import dev.fritz2.core.type
 import dev.fritz2.headless.components.tooltip
+import dev.fritz2.headless.foundation.utils.floatingui.utils.PlacementValues
 
 
 fun RenderContext.tooltipButton(idPrefix: String) {
@@ -19,6 +20,7 @@ fun RenderContext.tooltipButton(idPrefix: String) {
     ) {
         +"Some Button"
     }.tooltip("px-2 py-1 bg-slate-400 rounded text-sm text-white", id = "$idPrefix-tooltip") {
+        placement = PlacementValues.right
         arrow()
         +"Some more Information"
     }
@@ -37,6 +39,7 @@ fun RenderContext.tooltipInput(idPrefix: String) {
         placeholder("some input")
         type("text")
     }.tooltip("px-2 py-1 bg-slate-400 rounded text-sm text-white", id = "$idPrefix-tooltip") {
+        placement = PlacementValues.right
         arrow()
         +"Some more Information"
     }

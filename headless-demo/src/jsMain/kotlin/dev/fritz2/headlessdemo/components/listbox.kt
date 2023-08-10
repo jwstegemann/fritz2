@@ -4,7 +4,11 @@ import dev.fritz2.core.RenderContext
 import dev.fritz2.core.storeOf
 import dev.fritz2.core.transition
 import dev.fritz2.headless.components.listbox
-import dev.fritz2.headless.foundation.utils.popper.Placement
+import dev.fritz2.headless.foundation.utils.floatingui.core.middleware.flip
+import dev.fritz2.headless.foundation.utils.floatingui.core.middleware.offset
+import dev.fritz2.headless.foundation.utils.floatingui.obj
+import dev.fritz2.headless.foundation.utils.floatingui.utils.Placement
+import dev.fritz2.headless.foundation.utils.floatingui.utils.PlacementValues
 import dev.fritz2.headlessdemo.result
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -50,10 +54,11 @@ fun RenderContext.listboxDemo() {
                     | focus:outline-none""".trimMargin(),
                         tag = RenderContext::ul
             ) {
-                placement = Placement.bottomStart
-                distance = 5
+                placement = PlacementValues.bottomStart
+                addMiddleware(offset(5))
 
-                transition(opened,
+                transition(
+                    opened,
                     "transition duration-100 ease-out",
                     "opacity-0 scale-95",
                     "opacity-100 scale-100",

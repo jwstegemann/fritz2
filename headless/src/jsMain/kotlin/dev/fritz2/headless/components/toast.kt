@@ -96,7 +96,7 @@ class Toast<E : HTMLElement> internal constructor(tag: Tag<E>, private val toast
  *
  * API-Sketch:
  * ```kotlin
- * toastPosition() // use for each position that should be availble
+ * toastPosition() // use for each position that should be available
  * toast() { // use for each new toast
  *     toastCloseButton() { close ->
  *     }
