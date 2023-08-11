@@ -261,9 +261,11 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
     ) {
         if (!openState.isSet) openState(storeOf(false))
         addComponentStructureInfo("menuItems", this@menuItems.scope, this)
-        MenuItems(this, tag, classes, scope).run {
-            initialize()
-            render()
+        portalContainer(zIndex = PORTALLING_POPUP_ZINDEX) {
+            MenuItems(this, tag, classes, scope).run {
+                initialize()
+                render()
+            }
         }
     }
 

@@ -352,10 +352,12 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
     ) {
         addComponentStructureInfo("listboxItems", this@listboxItems.scope, this)
         if (!openState.isSet) openState(storeOf(false))
-        ListboxItems(this, tag, classes, scope).run {
-            size = PopUpPanelSize.Min
-            initialize()
-            render()
+        portalContainer(zIndex = PORTALLING_POPUP_ZINDEX) {
+            ListboxItems(this, tag, classes, scope).run {
+                size = PopUpPanelSize.Min
+                initialize()
+                render()
+            }
         }
     }
 

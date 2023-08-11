@@ -4,6 +4,7 @@ import dev.fritz2.core.Id
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.asElementList
 import dev.fritz2.core.render
+import dev.fritz2.headless.foundation.portalRoot
 import dev.fritz2.headless.getElementById
 import dev.fritz2.headless.model.TestModel
 import dev.fritz2.headless.model.listBoxEntries
@@ -61,6 +62,9 @@ class ListBoxTest {
                     attr("data-message", value.validationMessages.map { it.firstOrNull()?.message ?: "" })
                 }
             }
+
+            portalRoot()
+
         }
 
         delay(500)

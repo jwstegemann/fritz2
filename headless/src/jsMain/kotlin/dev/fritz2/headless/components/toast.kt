@@ -41,15 +41,15 @@ private object ToastStore : RootStore<List<ToastSlice>>(emptyList()) {
  *
  * @param name the mandatory name of the container. This ultimately defines the container's identity.
  */
-fun <E : HTMLElement> RenderContext.toastContainer(
+fun <E : HTMLElement> toastContainer(
     name: String,
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<E>>
-): Tag<E> {
-    addComponentStructureInfo("toast-container ($name)", this.scope, this)
-    return tag(this, classes, id, scope) {
+) {
+    PortalRenderContext.portalContainer(classes, id, scope, tag, PORTALLING_TOAST_ZINDEX) {
+        addComponentStructureInfo("toast-container ($name)", this.scope, this)
         attrIfNotSet(Aria.live, "polite")
         ToastStore.filteredByContainer(name).renderEach(into = this) { fragment ->
             fragment.content(this)
@@ -65,13 +65,12 @@ fun <E : HTMLElement> RenderContext.toastContainer(
  *
  * @param name the mandatory name of the container. This ultimately defines the container's identity.
  */
-fun RenderContext.toastContainer(
+fun toastContainer(
     name: String,
     classes: String? = null,
     id: String? = null,
-    scope: (ScopeContext.() -> Unit) = {},
-): Tag<HTMLUListElement> =
-    toastContainer(name, classes, id, scope, RenderContext::ul)
+    scope: ScopeContext.() -> Unit = {},
+) = toastContainer(name, classes, id, scope, RenderContext::ul)
 
 
 /**

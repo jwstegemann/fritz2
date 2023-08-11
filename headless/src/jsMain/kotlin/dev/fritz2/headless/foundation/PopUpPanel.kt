@@ -40,7 +40,8 @@ abstract class PopUpPanel<C : HTMLElement>(
     private val fullWidth: Boolean = true,
     private val reference: Tag<HTMLElement>?,
     private val ariaHasPopup: String,
-    private val popupDiv: HtmlTag<HTMLDivElement> = renderContext.div(POPUP_HIDDEN_CLASSES) {}, //never add other classes to popupDiv, they will be overridden
+    private val popupDiv: Tag<HTMLDivElement> = //never add other classes to popupDiv, they will be overridden
+        renderContext.div(POPUP_HIDDEN_CLASSES) {},
     tag: Tag<C> = tagFactory(popupDiv, classes, id, scope) {},
     private val config: ComputePositionConfig = obj {}
 ) : Tag<C> by tag, ComputePositionConfig by config {

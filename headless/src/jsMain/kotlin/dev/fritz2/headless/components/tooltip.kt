@@ -3,9 +3,11 @@ package dev.fritz2.headless.components
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.ScopeContext
 import dev.fritz2.core.Tag
+import dev.fritz2.core.render
 import dev.fritz2.headless.foundation.*
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
+import org.w3c.dom.Element
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 
@@ -20,21 +22,22 @@ import org.w3c.dom.HTMLElement
 
 class Tooltip<C : HTMLElement>(
     renderContext: Tag<HTMLElement>,
+    reference:Tag<HTMLElement>,
     tagFactory: TagFactory<Tag<C>>,
     classes: String?,
     id: String?,
     scope: ScopeContext.() -> Unit
 ) : PopUpPanel<C>(
-    renderContext.annex,
+    renderContext,
     tagFactory,
     classes,
     id,
     scope,
-    opened = renderContext.run {
+    opened = reference .run {
         merge(mouseenters.map { true }, mouseleaves.map { false })
     },
     fullWidth = false,
-    renderContext,
+    reference = reference,
     ariaHasPopup = Aria.HasPopup.dialog
 )
 
@@ -51,12 +54,14 @@ fun <C : HTMLElement> Tag<HTMLElement>.tooltip(
     tag: TagFactory<Tag<C>>,
     initialize: Tooltip<C>.() -> Unit
 ) {
-    return Tooltip(this, tag, classes, id, scope).apply {
-        addComponentStructureInfo("parent is tooltip", this@tooltip.scope, this)
-    }.run {
-        initialize()
-        render()
-        attr("role", Aria.Role.tooltip)
+    portalContainer(zIndex = PORTALLING_POPUP_ZINDEX) {
+        Tooltip(this, this@tooltip, tag, classes, id, scope).apply {
+            addComponentStructureInfo("parent is tooltip", this@tooltip.scope, this)
+        }.run {
+            initialize()
+            render()
+            attr("role", Aria.Role.tooltip)
+        }
     }
 }
 
