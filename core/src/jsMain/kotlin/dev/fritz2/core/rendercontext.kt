@@ -38,6 +38,52 @@ interface RenderContext : WithJob, WithScope {
     }
 
     /**
+     * Renders the data of a [Flow] only if the [predicate] is true.
+     *
+     * @receiver [Flow] containing the data
+     * @param predicate must be true for the value to be rendered
+     * @param otherwise (optional) rendering when the predicate is false
+     * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
+     * @param content [RenderContext] for rendering the data to the DOM
+     */
+    fun <V> Flow<V>.renderIf(
+        predicate: (V) -> Boolean,
+        into: Tag<HTMLElement>? = null,
+        otherwise: Tag<*>.(V) -> Unit = { },
+        content: Tag<*>.(V) -> Unit
+    ) {
+        render(into) {
+            if (predicate(it)) {
+                content(it)
+            } else {
+                otherwise(it)
+            }
+        }
+    }
+
+    /**
+     * Renders the non-null data of a [Flow].
+     *
+     * @receiver [Flow] containing the data
+     * @param otherwise (optional) rendering for null data
+     * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
+     * @param content [RenderContext] for rendering the data to the DOM
+     */
+    fun <V> Flow<V?>.renderIfNotNull(
+        into: Tag<HTMLElement>? = null,
+        otherwise: Tag<*>.() -> Unit = { },
+        content: Tag<*>.(V) -> Unit
+    ) {
+        render(into) {
+            if (it != null) {
+                content(it)
+            } else {
+                otherwise()
+            }
+        }
+    }
+
+    /**
      * Renders each element of a [Flow]s content.
      * Internally the [Patch]es are determined using Myer's diff-algorithm.
      * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
@@ -67,6 +113,32 @@ interface RenderContext : WithJob, WithScope {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Renders each element of a [Flow]s content, only if the list is not empty.
+     *
+     * @param idProvider function to identify a unique entity in the list
+     * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
+     * @param batch hide [into] while rendering patches. Useful to avoid flickering when you make many changes (like sorting)
+     * @param otherwise (optional) rendering when the list is empty
+     * @param content [RenderContext] for rendering the data to the DOM
+     */
+    fun <V> Flow<List<V>>.renderEachIfNotEmpty(
+        idProvider: IdProvider<V, *>? = null,
+        into: Tag<HTMLElement>? = null,
+        batch: Boolean = false,
+        otherwise: Tag<*>.() -> Unit = { },
+        content: RenderContext.(V) -> Tag<HTMLElement>
+    ) {
+        val data = this
+        data.renderIf(
+            predicate = { it.isNotEmpty() },
+            into = into,
+            otherwise = { otherwise() },
+        ) {
+            data.renderEach(idProvider, into, batch, content)
         }
     }
 
