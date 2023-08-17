@@ -1,0 +1,104 @@
+public final class dev/fritz2/core/CollectionLensGetException : java/lang/Exception {
+	public fun <init> ()V
+}
+
+public final class dev/fritz2/core/CollectionLensSetException : java/lang/Exception {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class dev/fritz2/core/Id {
+	public static final field INSTANCE Ldev/fritz2/core/Id;
+	public final fun next (I)Ljava/lang/String;
+	public static synthetic fun next$default (Ldev/fritz2/core/Id;IILjava/lang/Object;)Ljava/lang/String;
+}
+
+public abstract interface class dev/fritz2/core/Inspector {
+	public abstract fun getData ()Ljava/lang/Object;
+	public abstract fun getPath ()Ljava/lang/String;
+	public abstract fun map (Ldev/fritz2/core/Lens;)Ldev/fritz2/core/Inspector;
+}
+
+public final class dev/fritz2/core/Inspector$DefaultImpls {
+	public static fun map (Ldev/fritz2/core/Inspector;Ldev/fritz2/core/Lens;)Ldev/fritz2/core/Inspector;
+}
+
+public final class dev/fritz2/core/InspectorKt {
+	public static final fun inspectEach (Ldev/fritz2/core/Inspector;Lkotlin/jvm/functions/Function1;)V
+	public static final fun inspectEach (Ldev/fritz2/core/Inspector;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public static final fun inspectEach (Ldev/fritz2/core/Inspector;Lkotlin/jvm/functions/Function2;)V
+	public static final fun inspectorOf (Ljava/lang/Object;)Ldev/fritz2/core/Inspector;
+	public static final fun mapByElement (Ldev/fritz2/core/Inspector;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ldev/fritz2/core/Inspector;
+	public static final fun mapByIndex (Ldev/fritz2/core/Inspector;I)Ldev/fritz2/core/Inspector;
+	public static final fun mapByKey (Ldev/fritz2/core/Inspector;Ljava/lang/Object;)Ldev/fritz2/core/Inspector;
+	public static final fun mapNull (Ldev/fritz2/core/Inspector;Ljava/lang/Object;)Ldev/fritz2/core/Inspector;
+}
+
+public abstract interface class dev/fritz2/core/Lens {
+	public abstract fun apply (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun get (Ljava/lang/Object;)Ljava/lang/Object;
+	public abstract fun getId ()Ljava/lang/String;
+	public abstract fun plus (Ldev/fritz2/core/Lens;)Ldev/fritz2/core/Lens;
+	public abstract fun set (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public abstract fun withNullParent ()Ldev/fritz2/core/Lens;
+}
+
+public final class dev/fritz2/core/Lens$DefaultImpls {
+	public static fun apply (Ldev/fritz2/core/Lens;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun plus (Ldev/fritz2/core/Lens;Ldev/fritz2/core/Lens;)Ldev/fritz2/core/Lens;
+	public static fun withNullParent (Ldev/fritz2/core/Lens;)Ldev/fritz2/core/Lens;
+}
+
+public final class dev/fritz2/core/LensKt {
+	public static final fun lensForElement (I)Ldev/fritz2/core/Lens;
+	public static final fun lensForElement (Ljava/lang/Object;)Ldev/fritz2/core/Lens;
+	public static final fun lensForElement (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ldev/fritz2/core/Lens;
+	public static final fun lensOf (Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Ldev/fritz2/core/Lens;
+	public static final fun lensOf (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Ldev/fritz2/core/Lens;
+}
+
+public abstract interface annotation class dev/fritz2/core/Lenses : java/lang/annotation/Annotation {
+}
+
+public final class dev/fritz2/core/RootInspector : dev/fritz2/core/Inspector {
+	public fun <init> (Ljava/lang/Object;)V
+	public fun getData ()Ljava/lang/Object;
+	public fun getPath ()Ljava/lang/String;
+	public fun map (Ldev/fritz2/core/Lens;)Ldev/fritz2/core/Inspector;
+}
+
+public final class dev/fritz2/core/SubInspector : dev/fritz2/core/Inspector {
+	public fun <init> (Ldev/fritz2/core/Inspector;Ldev/fritz2/core/Lens;)V
+	public fun getData ()Ljava/lang/Object;
+	public final fun getParent ()Ldev/fritz2/core/Inspector;
+	public fun getPath ()Ljava/lang/String;
+	public fun map (Ldev/fritz2/core/Lens;)Ldev/fritz2/core/Inspector;
+}
+
+public final class dev/fritz2/validation/Validation {
+	public static final synthetic fun box-impl (Lkotlin/jvm/functions/Function2;)Ldev/fritz2/validation/Validation;
+	public static fun constructor-impl (Lkotlin/jvm/functions/Function2;)Lkotlin/jvm/functions/Function2;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Lkotlin/jvm/functions/Function2;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function2;)Z
+	public fun hashCode ()I
+	public static fun hashCode-impl (Lkotlin/jvm/functions/Function2;)I
+	public static final fun invoke-impl (Lkotlin/jvm/functions/Function2;Ldev/fritz2/core/Inspector;Ljava/lang/Object;)Ljava/util/List;
+	public static final fun invoke-impl (Lkotlin/jvm/functions/Function2;Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/List;
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Lkotlin/jvm/functions/Function2;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Lkotlin/jvm/functions/Function2;
+}
+
+public final class dev/fritz2/validation/ValidationKt {
+	public static final fun getValid (Ljava/util/List;)Z
+	public static final fun invoke-jzwCi54 (Lkotlin/jvm/functions/Function2;Ldev/fritz2/core/Inspector;)Ljava/util/List;
+	public static final fun invoke-jzwCi54 (Lkotlin/jvm/functions/Function2;Ljava/lang/Object;)Ljava/util/List;
+	public static final fun validation (Lkotlin/jvm/functions/Function2;)Lkotlin/jvm/functions/Function2;
+	public static final fun validation (Lkotlin/jvm/functions/Function3;)Lkotlin/jvm/functions/Function2;
+}
+
+public abstract interface class dev/fritz2/validation/ValidationMessage {
+	public abstract fun getPath ()Ljava/lang/String;
+	public abstract fun isError ()Z
+}
+

@@ -1,0 +1,39 @@
+public class dev/fritz2/headless/validation/ComponentValidationMessage : dev/fritz2/validation/ValidationMessage {
+	public fun <init> (Ljava/lang/String;Ldev/fritz2/headless/validation/Severity;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ldev/fritz2/headless/validation/Severity;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getDetails ()Ljava/lang/String;
+	public final fun getMessage ()Ljava/lang/String;
+	public fun getPath ()Ljava/lang/String;
+	public final fun getSeverity ()Ldev/fritz2/headless/validation/Severity;
+	public fun isError ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/fritz2/headless/validation/Severity : java/lang/Enum {
+	public static final field Error Ldev/fritz2/headless/validation/Severity;
+	public static final field Info Ldev/fritz2/headless/validation/Severity;
+	public static final field Success Ldev/fritz2/headless/validation/Severity;
+	public static final field Warning Ldev/fritz2/headless/validation/Severity;
+	public static fun valueOf (Ljava/lang/String;)Ldev/fritz2/headless/validation/Severity;
+	public static fun values ()[Ldev/fritz2/headless/validation/Severity;
+}
+
+public final class dev/fritz2/headless/validation/ValidationKt {
+	public static final fun errorMessage (Ldev/fritz2/core/Inspector;Ljava/lang/String;Ljava/lang/String;)Ldev/fritz2/headless/validation/ComponentValidationMessage;
+	public static final fun errorMessage (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ldev/fritz2/headless/validation/ComponentValidationMessage;
+	public static synthetic fun errorMessage$default (Ldev/fritz2/core/Inspector;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ldev/fritz2/headless/validation/ComponentValidationMessage;
+	public static synthetic fun errorMessage$default (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ldev/fritz2/headless/validation/ComponentValidationMessage;
+	public static final fun infoMessage (Ldev/fritz2/core/Inspector;Ljava/lang/String;Ljava/lang/String;)Ldev/fritz2/headless/validation/ComponentValidationMessage;
+	public static final fun infoMessage (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ldev/fritz2/headless/validation/ComponentValidationMessage;
+	public static synthetic fun infoMessage$default (Ldev/fritz2/core/Inspector;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ldev/fritz2/headless/validation/ComponentValidationMessage;
+	public static synthetic fun infoMessage$default (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ldev/fritz2/headless/validation/ComponentValidationMessage;
+	public static final fun successMessage (Ldev/fritz2/core/Inspector;Ljava/lang/String;Ljava/lang/String;)Ldev/fritz2/headless/validation/ComponentValidationMessage;
+	public static final fun successMessage (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ldev/fritz2/headless/validation/ComponentValidationMessage;
+	public static synthetic fun successMessage$default (Ldev/fritz2/core/Inspector;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ldev/fritz2/headless/validation/ComponentValidationMessage;
+	public static synthetic fun successMessage$default (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ldev/fritz2/headless/validation/ComponentValidationMessage;
+	public static final fun warningMessage (Ldev/fritz2/core/Inspector;Ljava/lang/String;Ljava/lang/String;)Ldev/fritz2/headless/validation/ComponentValidationMessage;
+	public static final fun warningMessage (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ldev/fritz2/headless/validation/ComponentValidationMessage;
+	public static synthetic fun warningMessage$default (Ldev/fritz2/core/Inspector;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ldev/fritz2/headless/validation/ComponentValidationMessage;
+	public static synthetic fun warningMessage$default (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ldev/fritz2/headless/validation/ComponentValidationMessage;
+}
+
