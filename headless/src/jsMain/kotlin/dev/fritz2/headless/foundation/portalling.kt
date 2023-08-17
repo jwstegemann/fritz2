@@ -121,7 +121,7 @@ fun <C : HTMLElement> Tag<HTMLElement>.portalContainer(
     PortalStack.add(
         PortalContainer(
             classes = classes,
-            id = "$portalId-portal",
+            id = portalId,
             scope = scope,
             tag = tag,
             reference = reference?.domNode,
