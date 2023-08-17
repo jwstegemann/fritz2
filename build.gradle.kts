@@ -15,6 +15,7 @@ extra.apply {
     set("kspVersion", "1.8.22-1.0.11")
     set("coroutinesVersion", "1.7.3")
     set("serializationVersion", "1.5.1")
+    set("dateTimeVersion", "0.4.0")
 
     // test-server
     set("ktorVersion", "2.3.3")
