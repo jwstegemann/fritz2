@@ -65,7 +65,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CB>>,
-        content: Tag<CB>.() -> Unit
+        content: Tag<CB>.() -> Unit,
     ): Tag<CB> {
         addComponentStructureInfo("menuButton", this@menuButton.scope, this)
         return tag(this, classes, "$componentId-button", scope) {
@@ -85,7 +85,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
     fun RenderContext.menuButton(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Tag<HTMLButtonElement>.() -> Unit
+        content: Tag<HTMLButtonElement>.() -> Unit,
     ) = menuButton(classes, scope, RenderContext::button, content).apply {
         attr("type", "button")
     }
@@ -94,7 +94,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
         val renderContext: RenderContext,
         tagFactory: TagFactory<Tag<CI>>,
         classes: String?,
-        scope: ScopeContext.() -> Unit
+        scope: ScopeContext.() -> Unit,
     ) : PopUpPanel<CI>(
         renderContext,
         tagFactory,
@@ -103,7 +103,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
         scope,
         this@Menu.opened,
         reference = button,
-        ariaHasPopup = Aria.HasPopup.menu
+        ariaHasPopup = Aria.HasPopup.menu,
     ) {
 
         private fun nextItem(currentIndex: Int, direction: Direction, items: List<MenuEntry>): Int =
@@ -111,7 +111,6 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
                 Direction.Next -> (items.drop(currentIndex + 1).indexOfFirst { !it.disabled } + currentIndex + 1)
                 Direction.Previous -> items.take(max(0, currentIndex)).indexOfLast { !it.disabled }
             }.let { if (it == -1) currentIndex else it }
-
 
         private fun firstItem(items: List<MenuEntry>) = items.indexOfFirst { !it.disabled }
         private fun lastItem(items: List<MenuEntry>) = items.indexOfLast { !it.disabled }
@@ -152,8 +151,11 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
                 keydowns
                     .mapNotNull { e -> if (e.key.length == 1) e.key.first().lowercaseChar() else null }
                     .mapNotNull { c ->
-                        if (c.isLetterOrDigit()) itemByCharacter(items, c)
-                        else null
+                        if (c.isLetterOrDigit()) {
+                            itemByCharacter(items, c)
+                        } else {
+                            null
+                        }
                     }
             } handledBy activeIndex.update
 
@@ -199,8 +201,9 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
                 mousedowns.mapNotNull { e ->
                     e.preventDefault()
                     e.stopImmediatePropagation()
-                    if (items.current[index].disabled) null
-                    else {
+                    if (items.current[index].disabled) {
+                        null
+                    } else {
                         index
                     }
                 } handledBy selections.update
@@ -219,7 +222,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CM>>,
-            initialize: MenuItem<CM>.() -> Unit
+            initialize: MenuItem<CM>.() -> Unit,
         ) {
             val index = numberOfItems++
             items.addItem(MenuEntry(false, null))
@@ -243,7 +246,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
         fun RenderContext.menuItem(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            initialize: MenuItem<HTMLButtonElement>.() -> Unit
+            initialize: MenuItem<HTMLButtonElement>.() -> Unit,
         ) = menuItem(classes, scope, RenderContext::button, initialize)
     }
 
@@ -257,7 +260,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CI>>,
-        initialize: MenuItems<CI>.() -> Unit
+        initialize: MenuItems<CI>.() -> Unit,
     ) {
         if (!openState.isSet) openState(storeOf(false))
         addComponentStructureInfo("menuItems", this@menuItems.scope, this)
@@ -276,7 +279,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
     fun RenderContext.menuItems(
         classes: String? = null,
         internalScope: (ScopeContext.() -> Unit) = {},
-        initialize: MenuItems<HTMLDivElement>.() -> Unit
+        initialize: MenuItems<HTMLDivElement>.() -> Unit,
     ) = menuItems(classes, internalScope, RenderContext::div, initialize)
 }
 
@@ -322,7 +325,7 @@ fun <C : HTMLElement> RenderContext.menu(
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
-    initialize: Menu<C>.() -> Unit
+    initialize: Menu<C>.() -> Unit,
 ): Tag<C> {
     addComponentStructureInfo("menu", this@menu.scope, this)
     return tag(this, classes(classes, "relative"), id, scope) {
@@ -374,5 +377,5 @@ fun RenderContext.menu(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: Menu<HTMLDivElement>.() -> Unit
+    initialize: Menu<HTMLDivElement>.() -> Unit,
 ): Tag<HTMLDivElement> = menu(classes, id, scope, RenderContext::div, initialize)

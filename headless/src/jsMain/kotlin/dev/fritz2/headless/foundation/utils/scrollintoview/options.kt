@@ -2,19 +2,19 @@ package dev.fritz2.headless.foundation.utils.scrollintoview
 
 enum class ScrollBehavior {
     auto,
-    smooth
+    smooth,
 }
 
 enum class ScrollMode(val parameter: String) {
     ifNeeded("if-needed"),
-    always("always")
+    always("always"),
 }
 
 enum class ScrollPosition {
     start,
     center,
     end,
-    nearest
+    nearest,
 }
 
 external interface ScrollIntoViewOptions {
@@ -39,7 +39,7 @@ fun ScrollIntoViewOptionsInit(
     behavior: ScrollBehavior? = null,
     mode: ScrollMode? = null,
     block: ScrollPosition? = null,
-    inline: ScrollPosition? = null
+    inline: ScrollPosition? = null,
 ): ScrollIntoViewOptions {
     val o = js("({})")
     if (behavior != null) o["behavior"] = behavior.name
@@ -53,5 +53,5 @@ internal val HeadlessScrollOptions = ScrollIntoViewOptionsInit(
     ScrollBehavior.smooth,
     ScrollMode.ifNeeded,
     ScrollPosition.nearest,
-    ScrollPosition.nearest
+    ScrollPosition.nearest,
 )

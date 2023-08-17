@@ -1,4 +1,5 @@
 @file:Suppress("unused")
+
 package dev.fritz2.core
 
 import kotlinx.coroutines.channels.awaitClose
@@ -17,84 +18,99 @@ import org.w3c.files.FileList
 fun <X : Event, T : EventTarget> T.subscribe(
     name: String,
     capture: Boolean = false,
-    init: Event.() -> Unit = {}
+    init: Event.() -> Unit = {},
 ): Listener<X, T> =
-    Listener(callbackFlow {
-        val listener: (Event) -> Unit = {
-            try {
-                it.init()
-                trySend(it.unsafeCast<X>())
-            } catch (e: Exception) {
-                console.error("Unexpected event type while listening for `$name` event", e)
+    Listener(
+        callbackFlow {
+            val listener: (Event) -> Unit = {
+                try {
+                    it.init()
+                    trySend(it.unsafeCast<X>())
+                } catch (e: Exception) {
+                    console.error("Unexpected event type while listening for `$name` event", e)
+                }
             }
-        }
-        this@subscribe.addEventListener(name, listener, capture)
+            this@subscribe.addEventListener(name, listener, capture)
 
-        awaitClose { this@subscribe.removeEventListener(name, listener, capture) }
-    }.filter { it.asDynamic().fritz2StopPropagation == undefined })
+            awaitClose { this@subscribe.removeEventListener(name, listener, capture) }
+        }.filter { it.asDynamic().fritz2StopPropagation == undefined },
+    )
 
 /**
  * Encapsulates the [Flow] of the [Event].
  */
-class Listener<X: Event, out T: EventTarget>(private val events: Flow<X>): Flow<X> by events {
+class Listener<X : Event, out T : EventTarget>(private val events: Flow<X>) : Flow<X> by events {
 
     constructor(listener: Listener<X, T>) : this(listener.events)
 
     /**
      * Calls [Event.preventDefault] on the [Event]-flow.
      */
-    fun preventDefault(): Listener<X, T> = Listener(this.events.map { it.preventDefault(); it })
+    fun preventDefault(): Listener<X, T> = Listener(
+        this.events.map {
+            it.preventDefault()
+            it
+        },
+    )
 
     /**
      * Calls [Event.stopImmediatePropagation] on the [Event]-flow.
      */
-    fun stopImmediatePropagation(): Listener<X, T> = Listener(this.events.map {
-        it.stopImmediatePropagation()
-        it.asDynamic().fritz2StopPropagation = true
-        it
-    })
+    fun stopImmediatePropagation(): Listener<X, T> = Listener(
+        this.events.map {
+            it.stopImmediatePropagation()
+            it.asDynamic().fritz2StopPropagation = true
+            it
+        },
+    )
 
     /**
      * Calls [Event.stopPropagation] on the [Event]-flow.
      */
-    fun stopPropagation(): Listener<X, T> = Listener(this.events.map {
-        it.stopPropagation()
-        it.asDynamic().fritz2StopPropagation = true
-        it
-    })
+    fun stopPropagation(): Listener<X, T> = Listener(
+        this.events.map {
+            it.stopPropagation()
+            it.asDynamic().fritz2StopPropagation = true
+            it
+        },
+    )
 
     /**
      * Calls [Event.composedPath] on the [Event]-flow.
      */
     fun composedPath(): Flow<Array<EventTarget>> = this.events.map { it.composedPath() }
-
 }
 
 /**
  * Calls [Event.preventDefault] on the [Event]-flow.
  */
-fun <E: Event> Flow<E>.preventDefault(): Flow<E> = this.map { it.preventDefault(); it }
+fun <E : Event> Flow<E>.preventDefault(): Flow<E> = this.map {
+    it.preventDefault()
+    it
+}
+
 /**
  * Calls [Event.stopImmediatePropagation] on the [Event]-flow.
  */
-fun <E: Event> Flow<E>.stopImmediatePropagation(): Flow<E> = this.map {
+fun <E : Event> Flow<E>.stopImmediatePropagation(): Flow<E> = this.map {
     it.stopImmediatePropagation()
     it.asDynamic().fritz2StopPropagation = true
     it
 }
+
 /**
  * Calls [Event.stopPropagation] on the [Event]-flow.
  */
-fun <E: Event> Flow<E>.stopPropagation(): Flow<E> = this.map {
+fun <E : Event> Flow<E>.stopPropagation(): Flow<E> = this.map {
     it.stopPropagation()
     it.asDynamic().fritz2StopPropagation = true
     it
 }
+
 /**
  * Calls [Event.composedPath] on the [Event]-flow.
  */
-fun <E: Event> Flow<E>.composedPath(): Flow<Array<EventTarget>> = this.map { it.composedPath() }
-
+fun <E : Event> Flow<E>.composedPath(): Flow<Array<EventTarget>> = this.map { it.composedPath() }
 
 /**
  * Extracts the [HTMLInputElement.value] from the [Event.target].

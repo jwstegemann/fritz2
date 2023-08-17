@@ -23,7 +23,7 @@ class Tooltip<C : HTMLElement>(
     tagFactory: TagFactory<Tag<C>>,
     classes: String?,
     id: String?,
-    scope: ScopeContext.() -> Unit
+    scope: ScopeContext.() -> Unit,
 ) : PopUpPanel<C>(
     renderContext.annex,
     tagFactory,
@@ -35,7 +35,7 @@ class Tooltip<C : HTMLElement>(
     },
     fullWidth = false,
     renderContext,
-    ariaHasPopup = Aria.HasPopup.dialog
+    ariaHasPopup = Aria.HasPopup.dialog,
 )
 
 /**
@@ -49,7 +49,7 @@ fun <C : HTMLElement> Tag<HTMLElement>.tooltip(
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
-    initialize: Tooltip<C>.() -> Unit
+    initialize: Tooltip<C>.() -> Unit,
 ) {
     return Tooltip(this, tag, classes, id, scope).apply {
         addComponentStructureInfo("parent is tooltip", this@tooltip.scope, this)
@@ -70,5 +70,5 @@ fun Tag<HTMLElement>.tooltip(
     classes: String? = null,
     id: String? = null,
     internalScope: (ScopeContext.() -> Unit) = {},
-    initialize: Tooltip<HTMLDivElement>.() -> Unit
+    initialize: Tooltip<HTMLDivElement>.() -> Unit,
 ) = tooltip(classes, id, internalScope, RenderContext::div, initialize)

@@ -29,7 +29,7 @@ object Myer {
         trace: List<CircularArray>,
         oldList: List<T>,
         newList: List<T>,
-        isSame: (a: T, b: T) -> Boolean
+        isSame: (a: T, b: T) -> Boolean,
     ) {
         var x = oldList.size
         var y = newList.size
@@ -70,11 +70,10 @@ object Myer {
                             lastPatch = Patch.Delete(prevX, 1)
                         }
                     }
-                    //nothing there to combine
+                    // nothing there to combine
                     else {
                         lastPatch = Patch.Delete(prevX, 1)
                     }
-
                 } else if (prevY < y) {
                     val element = newList[prevY]
                     val index = x
@@ -83,19 +82,22 @@ object Myer {
                     if (lastPatch != null) {
                         // combine adjacent inserts
                         if (lastPatch is Patch.Insert && lastPatch.index == index) {
-                            //turn oder of elements!
+                            // turn oder of elements!
                             lastPatch = Patch.InsertMany(listOf(element, lastPatch.element), lastPatch.index)
                         } else if (lastPatch is Patch.InsertMany && lastPatch.index == index) {
-                            //turn oder of elements!
-                            lastPatch = Patch.InsertMany(buildList {
-                                add(element)
-                                addAll((lastPatch as Patch.InsertMany<T>).elements)
-                            }, lastPatch.index)
+                            // turn oder of elements!
+                            lastPatch = Patch.InsertMany(
+                                buildList {
+                                    add(element)
+                                    addAll((lastPatch as Patch.InsertMany<T>).elements)
+                                },
+                                lastPatch.index,
+                            )
                         }
                         // combine directly following insert and delete of same element as move
                         else if (lastPatch is Patch.Delete && lastPatch.count == 1 && isSame(
                                 oldList[lastPatch.start],
-                                element
+                                element,
                             )
                         ) {
                             lastPatch = Patch.Move(lastPatch.start, index)
@@ -104,7 +106,7 @@ object Myer {
                             lastPatch = Patch.Insert(element, x)
                         }
                     }
-                    //nothing there to combine
+                    // nothing there to combine
                     else {
                         lastPatch = Patch.Insert(element, x)
                     }
@@ -121,11 +123,11 @@ object Myer {
     private inline fun <T> shortestEdit(
         oldList: List<T>,
         newList: List<T>,
-        isSame: (a: T, b: T) -> Boolean
+        isSame: (a: T, b: T) -> Boolean,
     ): List<CircularArray> {
         val max = oldList.size + newList.size
 
-        //init array
+        // init array
         val v = CircularArray(max)
         v.set(1, 0)
 
@@ -133,7 +135,7 @@ object Myer {
             outerLoop@ for (d in 0..max) {
                 add(v.copyOf())
                 for (k in -d..d step 2) {
-                    //walk right or down?
+                    // walk right or down?
                     var x = if ((k == -d) || (k != d && v.get(k - 1) < v.get(k + 1))) {
                         v.get(k + 1)
                     } else {
@@ -141,7 +143,7 @@ object Myer {
                     }
 
                     var y = x - k
-                    //walk diagonal is possible as far as possible
+                    // walk diagonal is possible as far as possible
                     while (x < oldList.size && y < newList.size && isSame(oldList[x], newList[y])) {
                         x += 1
                         y += 1
@@ -152,7 +154,6 @@ object Myer {
                 }
             }
         }
-
     }
 }
 

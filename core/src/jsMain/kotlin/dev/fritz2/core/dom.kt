@@ -44,4 +44,4 @@ class DomNodeList(private val base: NodeList) : AbstractList<Node>() {
  *
  * @see DomNodeList
  */
-fun NodeList.asElementList() = DomNodeList(this).mapNotNull { if(it is HTMLElement) it else null }
+fun NodeList.asElementList() = DomNodeList(this).mapNotNull { if (it is HTMLElement) it else null }

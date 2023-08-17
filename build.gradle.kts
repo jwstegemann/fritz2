@@ -3,6 +3,7 @@ plugins {
     kotlin("plugin.serialization") version "1.7.20" apply false
     id("com.google.devtools.ksp") version "1.7.20-1.0.6" apply false
     id("org.jetbrains.dokka") version "1.7.20"
+    id("com.diffplug.spotless") version "6.20.0" apply false
     id("maven-publish")
     signing
 }

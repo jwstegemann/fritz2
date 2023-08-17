@@ -54,7 +54,8 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
                             }
                         }
                     }
-                })
+                },
+            )
         }
         if (!value.isSet) {
             warnAboutMissingDatabinding("value", COMPONENT_NAME, componentId, domNode)
@@ -71,7 +72,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CL>>,
-        content: Tag<CL>.() -> Unit
+        content: Tag<CL>.() -> Unit,
     ): Tag<CL> {
         addComponentStructureInfo("radioGroupLabel", this@radioGroupLabel.scope, this)
         return tag(this, classes, "$componentId-label", scope, content).also { label = it }
@@ -86,7 +87,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
     fun RenderContext.radioGroupLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Tag<HTMLLabelElement>.() -> Unit
+        content: Tag<HTMLLabelElement>.() -> Unit,
     ) = radioGroupLabel(classes, scope, RenderContext::label, content)
 
     /**
@@ -99,14 +100,14 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CV>>,
-        initialize: ValidationMessages<CV>.() -> Unit
+        initialize: ValidationMessages<CV>.() -> Unit,
     ) {
         value.validationMessages.map { it.isNotEmpty() }.render { isNotEmpty ->
             if (isNotEmpty) {
                 addComponentStructureInfo(
                     "radioGroupValidationMessages",
                     this@radioGroupValidationMessages.scope,
-                    this
+                    this,
                 )
                 tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
                     validationMessages = this
@@ -125,13 +126,13 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
     fun RenderContext.radioGroupValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        initialize: ValidationMessages<HTMLDivElement>.() -> Unit
+        initialize: ValidationMessages<HTMLDivElement>.() -> Unit,
     ) = radioGroupValidationMessages(classes, scope, RenderContext::div, initialize)
 
     inner class RadioGroupOption<CO : HTMLElement>(
         tag: Tag<CO>,
         private val option: T,
-        val optionId: String
+        val optionId: String,
     ) : Tag<CO> by tag {
 
         val selected = value.data.map { it == option }
@@ -149,9 +150,12 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
                 attr(
                     Aria.describedby,
                     value.validationMessages.map { messages ->
-                        if (messages.isNotEmpty()) validationMessages?.id
-                        else descriptions.map { it.id }.joinToString(" ")
-                    }
+                        if (messages.isNotEmpty()) {
+                            validationMessages?.id
+                        } else {
+                            descriptions.map { it.id }.joinToString(" ")
+                        }
+                    },
                 )
             }
         }
@@ -166,7 +170,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CT>>,
-            content: Tag<CT>.() -> Unit
+            content: Tag<CT>.() -> Unit,
         ): Tag<CT> {
             addComponentStructureInfo("radioGroupOptionToggle", this@radioGroupOptionToggle.scope, this)
             return tag(this, classes, toggleId, scope) {
@@ -202,7 +206,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         fun RenderContext.radioGroupOptionToggle(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            content: Tag<HTMLDivElement>.() -> Unit
+            content: Tag<HTMLDivElement>.() -> Unit,
         ) = radioGroupOptionToggle(classes, scope, RenderContext::div, content)
 
         /**
@@ -215,7 +219,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CL>>,
-            content: Tag<CL>.() -> Unit
+            content: Tag<CL>.() -> Unit,
         ): Tag<CL> {
             addComponentStructureInfo("radioGroupOptionLabel", this@radioGroupOptionLabel.scope, this)
             return tag(this, classes, "$optionId-label", scope, content).also { label = it }
@@ -230,7 +234,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         fun RenderContext.radioGroupOptionLabel(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            content: Tag<HTMLLabelElement>.() -> Unit
+            content: Tag<HTMLLabelElement>.() -> Unit,
         ) = radioGroupOptionLabel(classes, scope, RenderContext::label) {
             content()
             `for`(toggleId)
@@ -246,7 +250,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CL>>,
-            content: Tag<CL>.() -> Unit
+            content: Tag<CL>.() -> Unit,
         ): Tag<CL> {
             addComponentStructureInfo("radioGroupOptionDescription", this@radioGroupOptionDescription.scope, this)
             return tag(
@@ -254,7 +258,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
                 classes,
                 "$optionId-description-${descriptions.size}",
                 scope,
-                content
+                content,
             ).also { descriptions.add(it) }
         }
 
@@ -267,7 +271,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         fun RenderContext.radioGroupOptionDescription(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            content: Tag<HTMLSpanElement>.() -> Unit
+            content: Tag<HTMLSpanElement>.() -> Unit,
         ) = radioGroupOptionDescription(classes, scope, RenderContext::span, content)
 
         init {
@@ -287,7 +291,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CO>>,
-        initialize: RadioGroupOption<CO>.() -> Unit
+        initialize: RadioGroupOption<CO>.() -> Unit,
     ): Tag<CO> {
         addComponentStructureInfo("radioGroupOption", this@radioGroupOption.scope, this)
         val optionId = "$componentId-${id ?: Id.next()}"
@@ -310,7 +314,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         classes: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        initialize: RadioGroupOption<HTMLDivElement>.() -> Unit
+        initialize: RadioGroupOption<HTMLDivElement>.() -> Unit,
     ): Tag<HTMLDivElement> = radioGroupOption(option, classes, id, scope, RenderContext::div, initialize)
 }
 
@@ -346,7 +350,7 @@ fun <C : HTMLElement, T> RenderContext.radioGroup(
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
-    initialize: RadioGroup<C, T>.() -> Unit
+    initialize: RadioGroup<C, T>.() -> Unit,
 ): Tag<C> {
     addComponentStructureInfo(RadioGroup.COMPONENT_NAME, this@radioGroup.scope, this)
     return tag(this, classes, id, scope) {
@@ -388,5 +392,5 @@ fun <T> RenderContext.radioGroup(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: RadioGroup<HTMLDivElement, T>.() -> Unit
+    initialize: RadioGroup<HTMLDivElement, T>.() -> Unit,
 ): Tag<HTMLDivElement> = radioGroup(classes, id, scope, RenderContext::div, initialize)

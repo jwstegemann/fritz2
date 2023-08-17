@@ -7,7 +7,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-
 class MiddlewareTests {
 
     @Test
@@ -42,5 +41,4 @@ class MiddlewareTests {
         assertTrue(body.contains(Regex("""test.+this is a test""")), "Test header not found")
         assertEquals(1, runMiddlewares)
     }
-
 }

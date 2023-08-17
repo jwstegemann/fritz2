@@ -41,7 +41,7 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CB>>,
-        content: Tag<CB>.() -> Unit
+        content: Tag<CB>.() -> Unit,
     ): Tag<CB> {
         addComponentStructureInfo("disclosureButton", this@disclosureButton.scope, this)
         return tag(this, classes, "$componentId-button", scope) {
@@ -62,7 +62,7 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
     fun RenderContext.disclosureButton(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Tag<HTMLButtonElement>.() -> Unit
+        content: Tag<HTMLButtonElement>.() -> Unit,
     ) = disclosureButton(classes, scope, RenderContext::button, content).apply {
         attr("type", "button")
     }
@@ -82,7 +82,7 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CC>>,
-            content: Tag<CC>.() -> Unit
+            content: Tag<CC>.() -> Unit,
         ): Tag<CC> {
             addComponentStructureInfo("disclosureCloseButton", this@disclosureCloseButton.scope, this)
             return tag(this, classes, "$componentId-close-button", scope) {
@@ -100,7 +100,7 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         fun RenderContext.disclosureCloseButton(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            content: Tag<HTMLButtonElement>.() -> Unit
+            content: Tag<HTMLButtonElement>.() -> Unit,
         ) = disclosureCloseButton(classes, scope, RenderContext::button, content).apply {
             attr("type", "button")
         }
@@ -116,7 +116,7 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CP>>,
-        initialize: DisclosurePanel<CP>.() -> Unit
+        initialize: DisclosurePanel<CP>.() -> Unit,
     ) {
         addComponentStructureInfo("disclosurePanel", this@disclosurePanel.scope, this)
         panel = {
@@ -138,7 +138,7 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
     fun RenderContext.disclosurePanel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        initialize: DisclosurePanel<HTMLDivElement>.() -> Unit
+        initialize: DisclosurePanel<HTMLDivElement>.() -> Unit,
     ) = disclosurePanel(classes, scope, RenderContext::div, initialize)
 }
 
@@ -169,7 +169,7 @@ fun <C : HTMLElement> RenderContext.disclosure(
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
-    initialize: Disclosure<C>.() -> Unit
+    initialize: Disclosure<C>.() -> Unit,
 ): Tag<C> {
     addComponentStructureInfo("disclosure", this@disclosure.scope, this)
     return tag(this, classes, id, scope) {
@@ -206,5 +206,5 @@ fun RenderContext.disclosure(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: Disclosure<HTMLDivElement>.() -> Unit
+    initialize: Disclosure<HTMLDivElement>.() -> Unit,
 ): Tag<HTMLDivElement> = disclosure(classes, id, scope, RenderContext::div, initialize)

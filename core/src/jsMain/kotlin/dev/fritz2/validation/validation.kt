@@ -2,13 +2,12 @@
 
 package dev.fritz2.validation
 
+import dev.fritz2.core.Handler
 import dev.fritz2.core.Id
 import dev.fritz2.core.RootStore
 import dev.fritz2.core.Store
 import dev.fritz2.core.SubStore
-import dev.fritz2.core.Handler
 import kotlinx.coroutines.flow.*
-
 
 /**
  * A [ValidatingStore] is a [Store] which also contains a [Validation] for its model and by default applies it
@@ -41,7 +40,7 @@ open class ValidatingStore<D, T, M>(
     private val validation: Validation<D, T, M>,
     private val metadataDefault: T,
     private val validateAfterUpdate: Boolean = true,
-    override val id: String = Id.next()
+    override val id: String = Id.next(),
 ) : RootStore<D>(initialData, id) {
 
     private val validationMessages: MutableStateFlow<List<M>> = MutableStateFlow(emptyList())
@@ -80,8 +79,10 @@ open class ValidatingStore<D, T, M>(
         validation(data, metadata).also { validationMessages.value = it }
 
     init {
-        if (validateAfterUpdate) data.drop(1) handledBy { newValue ->
-            validate(newValue, metadataDefault)
+        if (validateAfterUpdate) {
+            data.drop(1) handledBy { newValue ->
+                validate(newValue, metadataDefault)
+            }
         }
     }
 }
@@ -106,7 +107,7 @@ fun <D, T, M> storeOf(
     initialData: D,
     validation: Validation<D, T, M>,
     metadataDefault: T,
-    id: String = Id.next()
+    id: String = Id.next(),
 ): ValidatingStore<D, T, M> =
     ValidatingStore(initialData, validation, metadataDefault, validateAfterUpdate = true, id)
 
@@ -122,7 +123,7 @@ fun <D, T, M> storeOf(
 fun <D, M> storeOf(
     initialData: D,
     validation: Validation<D, Unit, M>,
-    id: String = Id.next()
+    id: String = Id.next(),
 ): ValidatingStore<D, Unit, M> =
     ValidatingStore(initialData, validation, Unit, validateAfterUpdate = true, id)
 
@@ -156,7 +157,9 @@ fun <M : ValidationMessage> Store<*>.messages(): Flow<List<M>>? =
                 } catch (e: Exception) {
                     null
                 }
-            } else null
+            } else {
+                null
+            }
         }
 
         else -> null

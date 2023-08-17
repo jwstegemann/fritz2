@@ -33,7 +33,7 @@ data class FocusOptions(
     val wrapAround: Boolean = false,
 
     /** Prevent scrolling the focusable elements into view */
-    val noScroll: Boolean = false
+    val noScroll: Boolean = false,
 )
 
 enum class FocusResult {
@@ -49,7 +49,7 @@ enum class FocusResult {
     /** When `Focus.WrapAround` is enabled, going from position `N` to `N-1` where `N` is the first index in the array, then we underflow. */
     Underflow,
 
-    NoDirection
+    NoDirection,
 }
 
 /**
@@ -65,7 +65,7 @@ internal val focusableSelector = """
               iframe:not([tabindex='-1']),
               [tabindex]:not([tabindex='-1']),
               [contentEditable=true]:not([tabindex='-1'])
-        """.trimIndent()
+""".trimIndent()
 
 fun getFocusableElements(container: HTMLElement? = document.body) =
     container?.querySelectorAll(focusableSelector)?.asElementList() ?: emptyList()
@@ -77,19 +77,29 @@ fun focusIn(container: HTMLElement, focusOptions: FocusOptions): FocusResult {
     val elements = getFocusableElements(container)
     val active = document.activeElement as HTMLElement
 
-    val direction = if (focusOptions.next || focusOptions.first) Direction.Next
-    else if (focusOptions.previous || focusOptions.last) Direction.Previous
-    else return FocusResult.NoDirection
+    val direction = if (focusOptions.next || focusOptions.first) {
+        Direction.Next
+    } else if (focusOptions.previous || focusOptions.last) {
+        Direction.Previous
+    } else {
+        return FocusResult.NoDirection
+    }
 
-    val startIndex = if (focusOptions.next) elements.indexOf(active) + 1
-    else if (focusOptions.previous) max(0, elements.indexOf(active)) - 1
-    else if (focusOptions.first) 0
-    else if (focusOptions.last) elements.size - 1
-    else return FocusResult.Error
+    val startIndex = if (focusOptions.next) {
+        elements.indexOf(active) + 1
+    } else if (focusOptions.previous) {
+        max(0, elements.indexOf(active)) - 1
+    } else if (focusOptions.first) {
+        0
+    } else if (focusOptions.last) {
+        elements.size - 1
+    } else {
+        return FocusResult.Error
+    }
 
     // TODO: Check if this exist in Kotlin.js already -> seems that not!
     //  There is no overloaded ``focus`` method with a parameter on ``HTMLElement``!
-    //val focusOptions = focus.noScroll ? { preventScroll: true } : {}
+    // val focusOptions = focus.noScroll ? { preventScroll: true } : {}
 
     var offset = 0
     val total = elements.size
@@ -112,7 +122,6 @@ fun focusIn(container: HTMLElement, focusOptions: FocusOptions): FocusResult {
 
         // Try the next one in line
         offset += direction.value
-
     } while (next != document.activeElement)
 
     // This is a little weird, but let me try and explain: There are a few scenario's
@@ -180,7 +189,7 @@ enum class InitialFocus(val focus: Boolean) {
      * related to the functionality, like for modal dialogs. The warning will help to detect missing functionality
      * on the user interface side.
      */
-    InsistToSet(true)
+    InsistToSet(true),
 }
 
 /**
@@ -238,7 +247,7 @@ private fun Tag<HTMLElement>.setInitialFocusOnDemandFromMountpoint(setInitialFoc
 fun Tag<HTMLElement>.trapFocusWhenever(
     condition: Flow<Boolean>,
     restoreFocus: Boolean = true,
-    setInitialFocus: InitialFocus = TryToSet
+    setInitialFocus: InitialFocus = TryToSet,
 ) {
     val sharedCondition = condition.shareIn(MainScope() + job, SharingStarted.Eagerly, 1)
     var focusedElementBeforeTrap: Element? = null
@@ -253,11 +262,11 @@ fun Tag<HTMLElement>.trapFocusWhenever(
     trapFocusOn(
         sharedCondition.flatMapLatest { isActive ->
             keydowns.filter { isActive && setOf(Keys.Tab, Keys.Shift + Keys.Tab).contains(shortcutOf(it)) }
-        }
+        },
     )
     restoreFocusOnDemandFromWhenever(
         sharedCondition.filter { it }.map { focusedElementBeforeTrap }
-            .combine(sharedCondition.map { !it && restoreFocus }, ::Pair)
+            .combine(sharedCondition.map { !it && restoreFocus }, ::Pair),
     )
 }
 
@@ -281,8 +290,11 @@ private fun Tag<HTMLElement>.trapFocusOn(tabEvents: Flow<KeyboardEvent>) {
         event.stopImmediatePropagation()
         focusIn(
             domNode,
-            if (shortcutOf(event).shift) FocusOptions(previous = true, wrapAround = true)
-            else FocusOptions(next = true, wrapAround = true)
+            if (shortcutOf(event).shift) {
+                FocusOptions(previous = true, wrapAround = true)
+            } else {
+                FocusOptions(next = true, wrapAround = true)
+            },
         )
     }
 }
@@ -318,4 +330,3 @@ suspend fun Tag<HTMLElement>.setFocus(maxRetries: Int = 10) {
         if (document.activeElement == domNode) break
     }
 }
-

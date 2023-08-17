@@ -39,7 +39,7 @@ class DatabindingProperty<T> : Property<DatabindingProperty.DataBinding<T>>() {
         val id: String? = null,
         val data: Flow<T>,
         val handler: ((Flow<T>) -> Unit)? = null,
-        val messages: Flow<List<ComponentValidationMessage>>? = null
+        val messages: Flow<List<ComponentValidationMessage>>? = null,
     )
 
     val id: String?
@@ -57,9 +57,9 @@ class DatabindingProperty<T> : Property<DatabindingProperty.DataBinding<T>>() {
         id: String? = null,
         data: Flow<T>,
         messages: Flow<List<ComponentValidationMessage>>? = null,
-        handler: ((Flow<T>) -> Unit)? = null
+        handler: ((Flow<T>) -> Unit)? = null,
     ) {
-        //FIXME: if (data is SharedFlow<T>) data else data.shareIn(MainScope() + job, SharingStarted.Lazily)
+        // FIXME: if (data is SharedFlow<T>) data else data.shareIn(MainScope() + job, SharingStarted.Lazily)
         value = DataBinding(id, data, handler, messages)
     }
 
@@ -86,6 +86,6 @@ internal fun warnAboutMissingDatabinding(
             append("Initializing the property with emptyFlow() instead. ")
             append("Consider setting the data binding as the component might not work as expected otherwise.")
         },
-        domNode
+        domNode,
     )
 }

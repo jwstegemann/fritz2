@@ -43,11 +43,13 @@ abstract class OpenClose {
 
     val toggle by lazy {
         SimpleHandler<Unit> { data, _ ->
-            openState.handler?.invoke(openState.data.flatMapLatest { state ->
-                data.map {
-                    !state
-                }
-            })
+            openState.handler?.invoke(
+                openState.data.flatMapLatest { state ->
+                    data.map {
+                        !state
+                    }
+                },
+            )
         }
     }
 
@@ -57,15 +59,17 @@ abstract class OpenClose {
      * `button` element behave natively.
      */
     protected fun Tag<*>.toggleOnClicksEnterAndSpace() {
-        openState.handler?.invoke(openState.data.flatMapLatest { state ->
-            merge(
-                clicks,
-                keydowns.filter { setOf(Keys.Space, Keys.Enter).contains(shortcutOf(it)) }
-            ).map {
-                it.preventDefault()
-                !state
-            }
-        })
+        openState.handler?.invoke(
+            openState.data.flatMapLatest { state ->
+                merge(
+                    clicks,
+                    keydowns.filter { setOf(Keys.Space, Keys.Enter).contains(shortcutOf(it)) },
+                ).map {
+                    it.preventDefault()
+                    !state
+                }
+            },
+        )
     }
 
     /**
@@ -89,5 +93,4 @@ abstract class OpenClose {
             }
         } handledBy close
     }
-
 }

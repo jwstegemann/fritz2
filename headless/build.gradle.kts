@@ -1,5 +1,6 @@
 plugins {
     kotlin("multiplatform")
+    id("com.diffplug.spotless")
 }
 
 kotlin {
@@ -53,6 +54,20 @@ kotlin {
                 implementation(kotlin("test-js"))
             }
         }
+    }
+}
+
+spotless {
+    kotlin {
+        target("src/*/kotlin/**/*.kt")
+        ktlint()
+            .editorConfigOverride(
+                mapOf(
+                    "ktlint_standard_filename" to "disabled",
+                    "ktlint_standard_no-wildcard-imports" to "disabled",
+                    "ktlint_standard_enum-entry-name-case" to "disabled",
+                ),
+            )
     }
 }
 

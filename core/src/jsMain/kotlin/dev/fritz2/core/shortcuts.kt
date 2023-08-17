@@ -67,7 +67,7 @@ interface ModifierShortcut {
         ctrl,
         alt,
         shift,
-        meta
+        meta,
     )
 }
 
@@ -140,7 +140,7 @@ data class Shortcut(
     override val ctrl: Boolean = false,
     override val alt: Boolean = false,
     override val shift: Boolean = false,
-    override val meta: Boolean = false
+    override val meta: Boolean = false,
 ) : ModifierShortcut {
     constructor(event: KeyboardEvent) : this(event.key, event.ctrlKey, event.altKey, event.shiftKey, event.metaKey)
 
@@ -159,7 +159,7 @@ data class Shortcut(
         ctrl = ctrl || other.ctrl,
         alt = alt || other.alt,
         shift = shift || other.shift,
-        meta = meta || other.meta
+        meta = meta || other.meta,
     )
 }
 
@@ -793,6 +793,6 @@ object Keys {
         "ZenkakuHankaku",
         "ZoomIn",
         "ZoomOut",
-        "ZoomToggle"
+        "ZoomToggle",
     )
 }

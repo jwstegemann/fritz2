@@ -1,6 +1,5 @@
 package dev.fritz2.headless.components
 
-
 import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.*
 import kotlinx.coroutines.flow.map
@@ -36,9 +35,12 @@ abstract class Textfield<C : HTMLElement>(tag: Tag<C>, id: String?, private val 
             attr(
                 Aria.describedby,
                 value.validationMessages.map { messages ->
-                    if (messages.isNotEmpty()) validationMessages?.id
-                    else descriptions.map { it.id }.joinToString(" ")
-                }
+                    if (messages.isNotEmpty()) {
+                        validationMessages?.id
+                    } else {
+                        descriptions.map { it.id }.joinToString(" ")
+                    }
+                },
             )
         }
         if (!value.isSet) {
@@ -50,7 +52,7 @@ abstract class Textfield<C : HTMLElement>(tag: Tag<C>, id: String?, private val 
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CL>>,
-        content: Tag<CL>.() -> Unit
+        content: Tag<CL>.() -> Unit,
     ): Tag<CL> {
         addComponentStructureInfo("textfieldLabel", this@textfieldLabel.scope, this)
         return tag(this, classes, "$componentId-label", scope, content).also { label = it }
@@ -59,7 +61,7 @@ abstract class Textfield<C : HTMLElement>(tag: Tag<C>, id: String?, private val 
     protected fun RenderContext.textfieldLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Tag<HTMLLabelElement>.() -> Unit
+        content: Tag<HTMLLabelElement>.() -> Unit,
     ) = textfieldLabel(classes, scope, RenderContext::label, content).apply {
         `for`(fieldId)
     }
@@ -68,7 +70,7 @@ abstract class Textfield<C : HTMLElement>(tag: Tag<C>, id: String?, private val 
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CD>>,
-        content: Tag<CD>.() -> Unit
+        content: Tag<CD>.() -> Unit,
     ): Tag<CD> {
         addComponentStructureInfo("textfieldDescription", this@textfieldDescription.scope, this)
         return tag(
@@ -76,28 +78,28 @@ abstract class Textfield<C : HTMLElement>(tag: Tag<C>, id: String?, private val 
             classes,
             "$componentId-description-${descriptions.size}",
             scope,
-            content
+            content,
         ).also { descriptions.add(it) }
     }
 
     protected fun RenderContext.textfieldDescription(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Tag<HTMLParagraphElement>.() -> Unit
+        content: Tag<HTMLParagraphElement>.() -> Unit,
     ) = textfieldDescription(classes, scope, RenderContext::p, content)
 
     protected fun <CV : HTMLElement> RenderContext.textfieldValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CV>>,
-        initialize: ValidationMessages<CV>.() -> Unit
+        initialize: ValidationMessages<CV>.() -> Unit,
     ) {
         value.validationMessages.map { it.isNotEmpty() }.render { isNotEmpty ->
             if (isNotEmpty) {
                 addComponentStructureInfo(
                     "textfieldValidationMessages",
                     this@textfieldValidationMessages.scope,
-                    this
+                    this,
                 )
                 tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
                     validationMessages = this
@@ -110,7 +112,7 @@ abstract class Textfield<C : HTMLElement>(tag: Tag<C>, id: String?, private val 
     protected fun RenderContext.textfieldValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        initialize: ValidationMessages<HTMLDivElement>.() -> Unit
+        initialize: ValidationMessages<HTMLDivElement>.() -> Unit,
     ) = textfieldValidationMessages(classes, scope, RenderContext::div, initialize)
 }
 
@@ -132,7 +134,7 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
     fun RenderContext.inputTextfield(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: HtmlTag<HTMLInputElement>.() -> Unit
+        content: HtmlTag<HTMLInputElement>.() -> Unit,
     ): Tag<HTMLInputElement> {
         addComponentStructureInfo("inputTextfield", this@inputTextfield.scope, this)
         return input(classes, id = fieldId, scope = scope, content).apply {
@@ -152,7 +154,7 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CL>>,
-        content: Tag<CL>.() -> Unit
+        content: Tag<CL>.() -> Unit,
     ) = textfieldLabel(classes, scope, tag, content)
 
     /**
@@ -164,7 +166,7 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
     fun RenderContext.inputLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Tag<HTMLLabelElement>.() -> Unit
+        content: Tag<HTMLLabelElement>.() -> Unit,
     ) = textfieldLabel(classes, scope, content)
 
     /**
@@ -177,7 +179,7 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CD>>,
-        content: Tag<CD>.() -> Unit
+        content: Tag<CD>.() -> Unit,
     ) = textfieldDescription(classes, scope, tag, content)
 
     /**
@@ -189,7 +191,7 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
     fun RenderContext.inputDescription(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Tag<HTMLParagraphElement>.() -> Unit
+        content: Tag<HTMLParagraphElement>.() -> Unit,
     ) = textfieldDescription(classes, scope, content)
 
     /**
@@ -202,7 +204,7 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CV>>,
-        initialize: ValidationMessages<CV>.() -> Unit
+        initialize: ValidationMessages<CV>.() -> Unit,
     ) = textfieldValidationMessages(classes, scope, tag, initialize)
 
     /**
@@ -214,7 +216,7 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
     fun RenderContext.inputValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        initialize: ValidationMessages<HTMLDivElement>.() -> Unit
+        initialize: ValidationMessages<HTMLDivElement>.() -> Unit,
     ) = textfieldValidationMessages(classes, scope, initialize)
 }
 
@@ -242,7 +244,7 @@ fun <C : HTMLElement> RenderContext.inputField(
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
-    initialize: InputField<C>.() -> Unit
+    initialize: InputField<C>.() -> Unit,
 ): Tag<C> {
     addComponentStructureInfo(InputField.COMPONENT_NAME, this@inputField.scope, this)
     return tag(this, classes, id, scope) {
@@ -276,7 +278,7 @@ fun RenderContext.inputField(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: InputField<HTMLDivElement>.() -> Unit
+    initialize: InputField<HTMLDivElement>.() -> Unit,
 ): Tag<HTMLDivElement> = inputField(classes, id, scope, RenderContext::div, initialize)
 
 /**
@@ -297,7 +299,7 @@ class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
     fun RenderContext.textareaTextfield(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: HtmlTag<HTMLTextAreaElement>.() -> Unit
+        content: HtmlTag<HTMLTextAreaElement>.() -> Unit,
     ): Tag<HTMLTextAreaElement> {
         addComponentStructureInfo("textareaTextfield", this@textareaTextfield.scope, this)
         return textarea(classes, id = fieldId, scope = scope, content).apply {
@@ -317,7 +319,7 @@ class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CL>>,
-        content: Tag<CL>.() -> Unit
+        content: Tag<CL>.() -> Unit,
     ) = textfieldLabel(classes, scope, tag, content)
 
     /**
@@ -329,7 +331,7 @@ class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
     fun RenderContext.textareaLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Tag<HTMLLabelElement>.() -> Unit
+        content: Tag<HTMLLabelElement>.() -> Unit,
     ) = textfieldLabel(classes, scope, content)
 
     /**
@@ -342,7 +344,7 @@ class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CD>>,
-        content: Tag<CD>.() -> Unit
+        content: Tag<CD>.() -> Unit,
     ) = textfieldDescription(classes, scope, tag, content)
 
     /**
@@ -354,7 +356,7 @@ class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
     fun RenderContext.textareaDescription(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Tag<HTMLParagraphElement>.() -> Unit
+        content: Tag<HTMLParagraphElement>.() -> Unit,
     ) = textfieldDescription(classes, scope, content)
 
     /**
@@ -367,7 +369,7 @@ class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CV>>,
-        initialize: ValidationMessages<CV>.() -> Unit
+        initialize: ValidationMessages<CV>.() -> Unit,
     ) = textfieldValidationMessages(classes, scope, tag, initialize)
 
     /**
@@ -379,7 +381,7 @@ class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
     fun RenderContext.textareaValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        initialize: ValidationMessages<HTMLDivElement>.() -> Unit
+        initialize: ValidationMessages<HTMLDivElement>.() -> Unit,
     ) = textfieldValidationMessages(classes, scope, initialize)
 }
 
@@ -407,7 +409,7 @@ fun <C : HTMLElement> RenderContext.textArea(
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
-    initialize: TextArea<C>.() -> Unit
+    initialize: TextArea<C>.() -> Unit,
 ): Tag<C> {
     addComponentStructureInfo(TextArea.COMPONENT_NAME, this@textArea.scope, this)
     return tag(this, classes, id, scope) {
@@ -441,5 +443,5 @@ fun RenderContext.textArea(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: TextArea<HTMLDivElement>.() -> Unit
+    initialize: TextArea<HTMLDivElement>.() -> Unit,
 ): Tag<HTMLDivElement> = textArea(classes, id, scope, RenderContext::div, initialize)

@@ -22,7 +22,6 @@ class RenderContextTests {
 
     @Test
     fun testShortRenderFunction() = runTest {
-
         val store = storeOf(true)
 
         val divId = Id.next()
@@ -131,7 +130,6 @@ class RenderContextTests {
         assertEquals("2", getSpanText(idHash))
     }
 
-
     @Test
     fun renderEachWithInsertingItemsSoThatTheSameInsertPatchMightBeCreatedWillStillRenderInsertedItemsInExpectedPosition() =
         runTest {
@@ -172,7 +170,6 @@ class RenderContextTests {
             delay(50)
             assertEquals("11123", joinLiTextNodes())
         }
-
 
     @Test
     fun renderEachWithInsertingItemsSoThatTheSameInsertMayPatchMightBeCreatedWillStillRenderInsertedItemsInExpectedPosition() =
@@ -218,7 +215,6 @@ class RenderContextTests {
 
     @Test
     fun renderEachWithDeletingItemsSoThatTheSameDeletePatchIsCreatedWillStillRemoveDeletedItemsFromDom() = runTest {
-
         data class Item(val id: Int)
 
         val storedItems = storeOf((1..3).map { Item(it) })
@@ -270,7 +266,6 @@ class RenderContextTests {
                     addAll(state.drop(2))
                 }
             }
-
 
             render {
                 ul(id = idList) {

@@ -1,6 +1,5 @@
 package dev.fritz2.headless.foundation.utils.popper
 
-
 enum class Placement(val parameter: String) {
     auto("auto"),
     autoStart("auto-start"),
@@ -16,7 +15,7 @@ enum class Placement(val parameter: String) {
     rightEnd("right-end"),
     left("left"),
     leftStart("left-start"),
-    leftEnd("left-end")
+    leftEnd("left-end"),
 }
 
 enum class Strategy {
@@ -40,7 +39,7 @@ external interface PopperOptions {
 fun PopperOptionsInit(
     placement: Placement,
     strategy: Strategy? = null,
-    vararg modifiers: Modifier<*>
+    vararg modifiers: Modifier<*>,
 ): PopperOptions {
     val o = js("({})")
     o["placement"] = placement.parameter

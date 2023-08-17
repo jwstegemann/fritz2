@@ -46,7 +46,7 @@ class HookTests {
 
     class ValueAsAttribute : Hook<Tag<HTMLDivElement>, Tag<HTMLSpanElement>, Unit>() {
         operator fun invoke(value: String) = apply {
-            this.value = {_, alsoExpr ->
+            this.value = { _, alsoExpr ->
                 span {
                     attr("data-value", value)
                 }.apply { alsoExpr?.let { it() } }
@@ -103,14 +103,14 @@ class HookTests {
             results.map {
                 val span = it as HTMLSpanElement
                 span.getAttribute("data-value")
-            }
+            },
         )
         assertContentEquals(
             expected,
             results.map {
                 val span = it as HTMLSpanElement
                 span.getAttribute("data-also")
-            }
+            },
         )
     }
 
@@ -158,7 +158,7 @@ class HookTests {
             classes: String?,
             id: String?,
             data: String,
-            payload: String
+            payload: String,
         ): Tag<HTMLDivElement> = div(classes, id) {
             attr("data-value-payload", "$data-$payload")
         }

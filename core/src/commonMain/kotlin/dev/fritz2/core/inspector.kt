@@ -25,7 +25,6 @@ interface Inspector<D> {
     fun <X> map(lens: Lens<D, X>): Inspector<X> = SubInspector(this, lens)
 }
 
-
 /**
  * [RootInspector] is the starting point for getting your [data] and corresponding [path]s from your
  * deep nested model structure. Get this by calling the factory method [inspectorOf].
@@ -33,7 +32,7 @@ interface Inspector<D> {
  * [Inspector] is useful in validation process to know which model attribute is not valid.
  */
 class RootInspector<T>(
-    override val data: T
+    override val data: T,
 ) : Inspector<T> {
     override val path: String = ""
 }
@@ -43,7 +42,7 @@ class RootInspector<T>(
  */
 class SubInspector<P, T>(
     val parent: Inspector<P>,
-    private val lens: Lens<P, T>
+    private val lens: Lens<P, T>,
 ) : Inspector<T> {
 
     /**
@@ -119,5 +118,5 @@ fun <K, V> Inspector<Map<K, V>>.mapByKey(key: K): Inspector<V> =
  * @param action function which gets applied to all [Inspector]s
  */
 fun <K, V> Inspector<Map<K, V>>.inspectEach(action: (K, Inspector<V>) -> Unit) {
-    this.data.onEach { (k , _) -> action(k, mapByKey(k)) }
+    this.data.onEach { (k, _) -> action(k, mapByKey(k)) }
 }

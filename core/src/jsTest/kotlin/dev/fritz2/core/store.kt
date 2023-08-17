@@ -11,12 +11,10 @@ import org.w3c.dom.HTMLDivElement
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-
 class StoreTests {
 
     @Test
     fun testStoreHandleAndOfferHandler() = runTest {
-        
         val id1 = Id.next()
         val id2 = Id.next()
         val buttonId = Id.next()
@@ -67,7 +65,6 @@ class StoreTests {
 
     @Test
     fun testStoreHandleAndOfferHandleAndOfferHandler() = runTest {
-        
         val id1 = Id.next()
         val id2 = Id.next()
         val id3 = Id.next()
@@ -136,7 +133,6 @@ class StoreTests {
 
     @Test
     fun testErrorHandling() = runTest {
-        
         val valueId = Id.next()
         fun getValue() = document.getElementById(valueId)?.textContent
 
@@ -168,7 +164,6 @@ class StoreTests {
             val emittingTestHandlerWithActionThrowingException = handleAndEmit<Int, Unit> { _, _ ->
                 throw Exception(exceptionEmittingHandlerValue)
             }
-
         }
 
         render {
@@ -231,7 +226,7 @@ class StoreTests {
         assertEquals(
             expected,
             resultValue,
-            "Data of the derived Store must equal the expected value."
+            "Data of the derived Store must equal the expected value.",
         )
     }
 }

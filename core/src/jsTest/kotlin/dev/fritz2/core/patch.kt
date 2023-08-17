@@ -29,7 +29,6 @@ class PatchTests {
         val insertBtnId = "btn-insert" + Id.next()
         val deleteBtnId = "btn-delete" + Id.next()
 
-        
         val store = TestListStore()
 
         render {
@@ -75,8 +74,8 @@ class PatchTests {
             Entity("1", "a"),
             Entity("2", "b"),
             Entity("3", "c"),
-            Entity("4", "d")
-        )
+            Entity("4", "d"),
+        ),
     ) {
         val append = handle { model -> model + Entity("5", "e") }
         val change = handle { model -> listOf(model.first(), Entity("2", "x")) + model.takeLast(3) }
@@ -92,7 +91,6 @@ class PatchTests {
         val insertBtnId = "btn-insert" + Id.next()
         val deleteBtnId = "btn-delete" + Id.next()
 
-        
         val store = TestEntityListStore()
 
         render {
@@ -129,7 +127,6 @@ class PatchTests {
         assertEquals("yabde", listContent(listId), "list incorrect after delete")
     }
 
-
     @Test
     fun testEachEntityStore() = runTest {
         val listId = "list" + Id.next()
@@ -138,7 +135,6 @@ class PatchTests {
         val insertBtnId = "btn-insert" + Id.next()
         val deleteBtnId = "btn-delete" + Id.next()
 
-        
         val store = TestEntityListStore()
 
         render {
@@ -174,6 +170,5 @@ class PatchTests {
         clickButton(deleteBtnId)
         delay(100)
         assertEquals("yaxde", listContent(listId), "list incorrect after delete")
-
     }
 }

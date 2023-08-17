@@ -17,7 +17,6 @@ class ValidationJSTests {
 
     @Test
     fun testValidation() = runTest {
-
         val carName = "ok"
         val c1 = Car("car1", Color(-1, -1, -1))
         val c2 = Car("car2", Color(256, 256, 256))
@@ -59,7 +58,7 @@ class ValidationJSTests {
         assertEquals(
             colorValuesAreTooLow,
             divMessages.firstElementChild?.textContent,
-            "c1: there is not a expected message"
+            "c1: there is not a expected message",
         )
 
         store.update(c2)
@@ -70,7 +69,7 @@ class ValidationJSTests {
         assertEquals(
             colorValuesAreTooHigh,
             divMessages.firstElementChild?.textContent,
-            "c2: there is not expected message"
+            "c2: there is not expected message",
         )
 
         store.update(c3)
@@ -82,7 +81,6 @@ class ValidationJSTests {
 
     @Test
     fun testSubStoreValidation() = runTest {
-
         val store: ValidatingStore<Car, Unit, Message> =
             storeOf(Car("car", Color(120, 120, 120)), Car.validator)
         val colorStore = store.map(Car.colorLens)
@@ -157,7 +155,7 @@ class ValidationJSTests {
         assertEquals(
             colorValuesAreTooLow,
             divMessagesIntermediateLevel.firstElementChild?.textContent,
-            "c1: there is not a expected message"
+            "c1: there is not a expected message",
         )
         assertEquals("true", divPathIntermediateLevel.textContent, "paths start not all with .color")
 
@@ -169,7 +167,6 @@ class ValidationJSTests {
         assertEquals(1, divMessagesB.childElementCount, "b-Field error message not present")
         assertEquals(".color.b", divMessagesB.textContent)
     }
-
 }
 
 data class Bar(val foo: String, val foobar: String) {
@@ -214,7 +211,7 @@ class MessageFilterTests {
         .bar.foobar
         ```
         Messages of `foo` should not appear in mapped store of `foobar` -> so no overlapping!
-        */
+         */
         val id = Id.next()
 
         render {
@@ -237,4 +234,3 @@ class MessageFilterTests {
         assertEquals("11211", span.textContent)
     }
 }
-

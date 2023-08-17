@@ -2,7 +2,6 @@ package dev.fritz2.headless.components
 
 import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.*
-import kotlinx.browser.document
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
@@ -60,7 +59,8 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
                 this.map { nextIndex ->
                     if (disabledTabs.all { it }) -1 else handler(currentIndex, nextIndex, disabledTabs)
                 }
-            })
+            },
+        )
 
     private fun <T> withActiveUpdates(decorated: (Int, T, List<Boolean>) -> Int): (Int, T, List<Boolean>) -> Int =
         { currentIndex, payload, disabledTabs ->
@@ -68,8 +68,11 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
         }
 
     private fun nextByClick(currentIndex: Int, nextIndex: Int, disabledTabs: List<Boolean>) =
-        if (disabledTabs[nextIndex]) currentIndex
-        else nextIndex
+        if (disabledTabs[nextIndex]) {
+            currentIndex
+        } else {
+            nextIndex
+        }
 
     private fun nextByKeys(currentIndex: Int, direction: Direction, disabledTabs: List<Boolean>) =
         generateSequence {
@@ -81,7 +84,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
                 when (direction) {
                     Direction.Next -> currentIndex + 1
                     Direction.Previous -> disabledTabs.size - currentIndex
-                }
+                },
             ).take(disabledTabs.size + 1)
             .firstOrNull { !it.value }?.index ?: -1
 
@@ -152,7 +155,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
 
         inner class Tab<CT : HTMLElement>(
             tag: Tag<CT>,
-            val index: Int
+            val index: Int,
         ) : Tag<CT> by tag {
 
             // no value should appear when list is still empty
@@ -180,7 +183,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CT>>,
-            initialize: Tab<CT>.() -> Unit
+            initialize: Tab<CT>.() -> Unit,
         ): Tag<CT> {
             addComponentStructureInfo("tab", this@tab.scope, this)
             return tag(this, classes, tabId(nextIndex), scope) {
@@ -201,7 +204,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
         fun RenderContext.tab(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            initialize: Tab<HTMLButtonElement>.() -> Unit
+            initialize: Tab<HTMLButtonElement>.() -> Unit,
         ) = tab(classes, scope, RenderContext::button, initialize)
     }
 
@@ -215,7 +218,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CL>>,
-        initialize: TabList<CL>.() -> Unit
+        initialize: TabList<CL>.() -> Unit,
     ): Tag<CL> {
         addComponentStructureInfo("tabList", this@tabList.scope, this)
         return tag(this, classes, "$componentId-tab-list", scope) {
@@ -235,12 +238,11 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
     fun RenderContext.tabList(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        initialize: TabList<HTMLDivElement>.() -> Unit
+        initialize: TabList<HTMLDivElement>.() -> Unit,
     ): Tag<HTMLDivElement> = tabList(classes, scope, RenderContext::div, initialize)
 
-
     inner class TabPanels<CP : HTMLElement>(
-        tag: Tag<CP>
+        tag: Tag<CP>,
     ) : Tag<CP> by tag {
 
         private var panels = mutableListOf<RenderContext.() -> Tag<HTMLElement>>()
@@ -266,7 +268,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CT>>,
-            content: Tag<CT>.() -> Unit
+            content: Tag<CT>.() -> Unit,
         ) {
             val currentIndex = nextIndex
             panels.add {
@@ -289,7 +291,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
         fun RenderContext.panel(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            content: Tag<HTMLDivElement>.() -> Unit
+            content: Tag<HTMLDivElement>.() -> Unit,
         ) = panel(classes, scope, RenderContext::div, content)
     }
 
@@ -303,7 +305,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CP>>,
-        initialize: TabPanels<CP>.() -> Unit
+        initialize: TabPanels<CP>.() -> Unit,
     ): Tag<CP> {
         addComponentStructureInfo("tabPanels", this@tabPanels.scope, this)
         return tag(this, classes, "$componentId-tab-panels", scope) {
@@ -323,7 +325,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
     fun RenderContext.tabPanels(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        initialize: TabPanels<HTMLDivElement>.() -> Unit
+        initialize: TabPanels<HTMLDivElement>.() -> Unit,
     ): Tag<HTMLDivElement> = tabPanels(classes, scope, RenderContext::div, initialize)
 }
 
@@ -362,7 +364,7 @@ fun <C : HTMLElement> RenderContext.tabGroup(
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
-    initialize: TabGroup<C>.() -> Unit
+    initialize: TabGroup<C>.() -> Unit,
 ): Tag<C> {
     addComponentStructureInfo("tabGroup", this@tabGroup.scope, this)
     return tag(this, classes, id, scope) {
@@ -407,5 +409,5 @@ fun RenderContext.tabGroup(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: TabGroup<HTMLDivElement>.() -> Unit
+    initialize: TabGroup<HTMLDivElement>.() -> Unit,
 ): Tag<HTMLDivElement> = tabGroup(classes, id, scope, RenderContext::div, initialize)

@@ -10,7 +10,7 @@ import org.w3c.dom.events.Event
  * Prints [Exception] to error-[console] by ignoring [CollectionLensGetException].
  */
 internal fun printErrorIgnoreLensException(cause: Throwable) {
-    when(cause) {
+    when (cause) {
         is CollectionLensGetException -> {}
         else -> console.error(cause)
     }
@@ -50,7 +50,6 @@ interface WithJob {
     infix fun <A> Flow<A>.handledBy(execute: suspend (A) -> Unit) =
         this.onEach { execute(it) }.catch { errorHandler(it) }.launchIn(MainScope() + job)
 
-
     /**
      * Connects [Event]s to a [Handler].
      *
@@ -80,7 +79,6 @@ interface WithJob {
      * Calls this handler exactly once.
      */
     operator fun Handler<Unit>.invoke() = this.process(flowOnceOf(Unit), job)
-
 }
 
 /**

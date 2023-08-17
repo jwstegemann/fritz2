@@ -21,4 +21,3 @@ fun <O> ModifierInit(name: String, enabled: Boolean = true, options: O? = null):
     if (options != null) o["options"] = options
     return o
 }
-

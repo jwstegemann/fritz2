@@ -31,7 +31,7 @@ class LensesTests {
         assertEquals(
             "${Tree::size.name}.${Size::height.name}",
             formattedSizeLens.id,
-            "id on formattedSizeLens did not work"
+            "id on formattedSizeLens did not work",
         )
         assertEquals(formattedSizeLens.set(p, "55.12").size.height, 55.12, "set on formattedSizeLens did not work")
     }
@@ -94,5 +94,4 @@ class LensesTests {
         assertEquals(newValue, notNullLens.set(addressWithCo, newValue)?.street, "not null lens does set value on non null parent")
         assertFailsWith(NullPointerException::class, "not null lens does not throw exception when set on null parent") { notNullLens.set(null, newValue)?.street }
     }
-
 }

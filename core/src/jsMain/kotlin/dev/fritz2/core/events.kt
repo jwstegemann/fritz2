@@ -425,8 +425,6 @@ interface WithEvents<out T : EventTarget> {
      */
     val wheels get() = subscribe<WheelEvent>("wheel")
 
-
-
     /**
      * occurs when the loading of a media is aborted
      */

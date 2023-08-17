@@ -20,7 +20,7 @@ enum class HttpStatusCode(val code: Int, val description: String) {
     TooManyRequests(429, "Too Many Requests"),
     InternalServerError(500, "Internal Server Error"),
     NotImplemented(501, "Not Implemented"),
-    ServiceUnavailable(503, "Service Unavailable");
+    ServiceUnavailable(503, "Service Unavailable"),
 }
 
 class RemoteTests {
@@ -36,23 +36,21 @@ class RemoteTests {
         assertTrue(remote.body("").put("put").ok)
     }
 
-
     @Test
     fun testBasicAuth() = runTest {
         val remote = testHttpServer(testEndpoint)
         val user = "test"
         val password = "password"
         assertTrue(remote.basicAuth(user, password).get("basicAuth").ok)
-        val resp = remote.basicAuth(user, password+"w").get("basicAuth")
+        val resp = remote.basicAuth(user, password + "w").get("basicAuth")
         assertFalse(resp.ok)
         assertEquals(401, resp.status)
     }
 
-
     @Test
     fun testErrorStatusCodes() = runTest {
         val remote = testHttpServer(testEndpoint)
-        for(statusCode in HttpStatusCode.values()) {
+        for (statusCode in HttpStatusCode.values()) {
             assertEquals(statusCode.code, remote.get("status/${statusCode.code}").status)
         }
     }
@@ -113,11 +111,10 @@ class RemoteTests {
     @Test
     fun testFailureWithBody() = runTest {
         val remote = testHttpServer("failure")
-        for(statusCode in HttpStatusCode.values()) {
+        for (statusCode in HttpStatusCode.values()) {
             val response = remote.get("${statusCode.code}")
             assertEquals(statusCode.code, response.status)
             assertEquals(statusCode.description, response.body())
         }
     }
-
 }

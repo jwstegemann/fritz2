@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
+    id("com.diffplug.spotless")
 }
 
 kotlin {
@@ -59,6 +60,19 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${rootProject.extra["serializationVersion"]}")
             }
         }
+    }
+}
+
+spotless {
+    kotlin {
+        target("src/*/kotlin/**/*.kt")
+        ktlint()
+            .editorConfigOverride(
+                mapOf(
+                    "ktlint_standard_filename" to "disabled",
+                    "ktlint_standard_no-wildcard-imports" to "disabled",
+                ),
+            )
     }
 }
 

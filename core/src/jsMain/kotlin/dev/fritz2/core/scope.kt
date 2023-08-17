@@ -87,7 +87,7 @@ value class Scope(private val entries: HashMap<Key<*>, Any> = hashMapOf()) {
         /**
          * Creates a [Scope.Key] for using it in [Scope].
          */
-        inline fun <reified T: Any> keyOf(name: String? = null): Key<T> =
+        inline fun <reified T : Any> keyOf(name: String? = null): Key<T> =
             Key(name ?: T::class.simpleName ?: "unknown")
     }
 
@@ -99,19 +99,19 @@ value class Scope(private val entries: HashMap<Key<*>, Any> = hashMapOf()) {
     /**
      * Key for setting and receiving entries in the [Scope]
      */
-    open class Key<T: Any>(val name: String) {
+    open class Key<T : Any>(val name: String) {
         override fun toString(): String = name
     }
 
     /**
      * Sets a new key-value-pair to the [Scope].
      */
-    internal operator fun <T: Any> set(key: Key<T>, value: T) { entries[key] = value }
+    internal operator fun <T : Any> set(key: Key<T>, value: T) { entries[key] = value }
 
     /**
      * Receives a key-value-par from the [Scope].
      */
-    operator fun <T: Any> get(key: Key<T>): T? = entries[key]?.unsafeCast<T>()
+    operator fun <T : Any> get(key: Key<T>): T? = entries[key]?.unsafeCast<T>()
 
     /**
      * Returns all containing [Key]s from the [Scope].
@@ -126,14 +126,14 @@ value class Scope(private val entries: HashMap<Key<*>, Any> = hashMapOf()) {
     /**
      * Checks if the [Scope] contains the given key.
      */
-    fun <T: Any> contains(key: Key<T>) = entries.contains(key)
+    fun <T : Any> contains(key: Key<T>) = entries.contains(key)
 
     /**
      * Removes the specified key and its corresponding value from the [Scope].
      *
      * @return the previous value associated with the key, or null if the key was not present in the [Scope].
      */
-    fun <T: Any> remove(key: Key<T>) = entries.remove(key)
+    fun <T : Any> remove(key: Key<T>) = entries.remove(key)
 
     /**
      * Formats the [Scope] to a valid JSON string for printing or using it inside Javascript.
@@ -190,7 +190,7 @@ class ScopeContext(private var current: Scope) {
     /**
      * Sets a new key-value-pair to the [Scope].
      */
-    fun <T: Any> set(key: Key<T>, value: T) {
+    fun <T : Any> set(key: Key<T>, value: T) {
         current = Scope(current)
         current[key] = value
     }

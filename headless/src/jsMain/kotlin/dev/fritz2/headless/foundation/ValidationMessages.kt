@@ -7,7 +7,7 @@ import org.w3c.dom.HTMLElement
 
 class ValidationMessages<CL : HTMLElement>(
     val msgs: Flow<List<ComponentValidationMessage>>,
-    tag: Tag<CL>
+    tag: Tag<CL>,
 ) : Tag<CL> by tag {
     companion object {
         const val ID_SUFFIX = "validation-messages"

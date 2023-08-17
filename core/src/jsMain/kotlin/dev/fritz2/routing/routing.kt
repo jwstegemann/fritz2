@@ -192,7 +192,9 @@ open class MapRoute(override val default: Map<String, String> = emptyMap()) :
             val key = param.substring(0, equalsPos)
             val value = decodeURIComponent(param.substring(equalsPos + 1))
             key to value
-        } else param to "true"
+        } else {
+            param to "true"
+        }
     }
 }
 

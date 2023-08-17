@@ -61,5 +61,4 @@ class AttributeHookTest {
         assertEquals("true", input.getAttribute("readonly"))
         assertEquals("true", input.getAttribute("required"))
     }
-
 }

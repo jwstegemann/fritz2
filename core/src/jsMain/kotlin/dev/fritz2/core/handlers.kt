@@ -54,7 +54,7 @@ value class SimpleHandler<A>(override inline val process: (Flow<A>, Job) -> Unit
  */
 class EmittingHandler<A, E>(
     inline val collectWithChannel: (Flow<A>, FlowCollector<E>, Job) -> Unit,
-    private val flow: MutableSharedFlow<E> = MutableSharedFlow()
+    private val flow: MutableSharedFlow<E> = MutableSharedFlow(),
 ) : Handler<A>, Flow<E> by flow {
 
     override val process: (Flow<A>, Job) -> Unit = { upstream, job ->
