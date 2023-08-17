@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.scan
 import kotlinx.dom.clear
 import org.w3c.dom.*
+import kotlin.reflect.KClass
 
 /**
  * Context for rendering static and dynamical content
@@ -42,21 +43,17 @@ interface RenderContext : WithJob, WithScope {
      *
      * @receiver [Flow] containing the data
      * @param predicate must be true for the value to be rendered
-     * @param otherwise (optional) rendering when the predicate is false
      * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
      * @param content [RenderContext] for rendering the data to the DOM
      */
     fun <V> Flow<V>.renderIf(
         predicate: (V) -> Boolean,
         into: Tag<HTMLElement>? = null,
-        otherwise: Tag<*>.(V) -> Unit = { },
         content: Tag<*>.(V) -> Unit
     ) {
         render(into) {
             if (predicate(it)) {
                 content(it)
-            } else {
-                otherwise(it)
             }
         }
     }
@@ -65,20 +62,37 @@ interface RenderContext : WithJob, WithScope {
      * Renders the non-null data of a [Flow].
      *
      * @receiver [Flow] containing the data
-     * @param otherwise (optional) rendering for null data
      * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
      * @param content [RenderContext] for rendering the data to the DOM
      */
-    fun <V> Flow<V?>.renderIfNotNull(
+    fun <V> Flow<V?>.renderNotNull(
         into: Tag<HTMLElement>? = null,
-        otherwise: Tag<*>.() -> Unit = { },
         content: Tag<*>.(V) -> Unit
     ) {
         render(into) {
             if (it != null) {
                 content(it)
-            } else {
-                otherwise()
+            }
+        }
+    }
+
+    /**
+     * Renders the data of a [Flow] of type [W].
+     *
+     * @receiver [Flow] containing the data
+     * @param klass reference to the type we want to check
+     * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
+     * @param content [RenderContext] for rendering the data to the DOM
+     */
+    @Suppress("UNCHECKED_CAST")
+    fun <W: Any> Flow<*>.renderIs(
+        klass: KClass<W>,
+        into: Tag<HTMLElement>? = null,
+        content: Tag<*>.(W) -> Unit
+    ) {
+        render(into) {
+            if (klass.isInstance(it)) {
+                content(it as W)
             }
         }
     }
@@ -113,32 +127,6 @@ interface RenderContext : WithJob, WithScope {
                     }
                 }
             }
-        }
-    }
-
-    /**
-     * Renders each element of a [Flow]s content, only if the list is not empty.
-     *
-     * @param idProvider function to identify a unique entity in the list
-     * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
-     * @param batch hide [into] while rendering patches. Useful to avoid flickering when you make many changes (like sorting)
-     * @param otherwise (optional) rendering when the list is empty
-     * @param content [RenderContext] for rendering the data to the DOM
-     */
-    fun <V> Flow<List<V>>.renderEachIfNotEmpty(
-        idProvider: IdProvider<V, *>? = null,
-        into: Tag<HTMLElement>? = null,
-        batch: Boolean = false,
-        otherwise: Tag<*>.() -> Unit = { },
-        content: RenderContext.(V) -> Tag<HTMLElement>
-    ) {
-        val data = this
-        data.renderIf(
-            predicate = { it.isNotEmpty() },
-            into = into,
-            otherwise = { otherwise() },
-        ) {
-            data.renderEach(idProvider, into, batch, content)
         }
     }
 
