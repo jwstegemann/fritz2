@@ -4,14 +4,16 @@ plugins {
 
 kotlin {
     jvm()
-    js(BOTH).browser {
-        testTask {
-            useKarma {
+    js(IR) {
+        browser {
+            testTask {
+                useKarma {
 //                useSafari()
 //                useFirefox()
 //                useChrome()
                 useChromeHeadless()
 //                usePhantomJS()
+                }
             }
         }
         // just to have a place to copy it from...

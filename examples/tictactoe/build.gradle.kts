@@ -12,7 +12,9 @@ kotlin {
     js(IR) {
         browser {
             webpackTask {
-                cssSupport.enabled = true
+                cssSupport {
+                    enabled.set(true)
+                }
             }
         }
     }.binaries.executable()
