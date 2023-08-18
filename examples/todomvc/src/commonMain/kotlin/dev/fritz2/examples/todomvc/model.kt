@@ -7,7 +7,7 @@ import dev.fritz2.core.Lenses
 data class ToDo(
     val id: String = Id.next(),
     val text: String,
-    val completed: Boolean = false
+    val completed: Boolean = false,
 ) {
     companion object {
         fun deserialize(source: String): ToDo {

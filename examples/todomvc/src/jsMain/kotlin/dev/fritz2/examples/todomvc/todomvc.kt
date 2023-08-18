@@ -12,7 +12,7 @@ data class Filter(val text: String, val function: (List<ToDo>) -> List<ToDo>)
 val filters = mapOf(
     "all" to Filter("All") { it },
     "active" to Filter("Active") { toDos -> toDos.filter { !it.completed } },
-    "completed" to Filter("Completed") { toDos -> toDos.filter { it.completed } }
+    "completed" to Filter("Completed") { toDos -> toDos.filter { it.completed } },
 )
 
 const val persistencePrefix = "todos"
@@ -35,16 +35,20 @@ object ToDoListStore : RootStore<List<ToDo>>(emptyList(), id = persistencePrefix
 
     val save = handle<ToDo> { toDos, new ->
         if (new.text.isNotBlank()) {
-            localStorage.setItem("${persistencePrefix}.${new.id}", ToDo.serialize(new))
+            localStorage.setItem("$persistencePrefix.${new.id}", ToDo.serialize(new))
             var inList = false
             val updatedList = toDos.map {
                 if (it.id == new.id) {
                     inList = true
                     new
-                } else it
+                } else {
+                    it
+                }
             }
             if (inList) updatedList else toDos + new
-        } else delete(toDos, new.id)
+        } else {
+            delete(toDos, new.id)
+        }
     }
 
     val remove = handle<String> { toDos, id ->
@@ -52,7 +56,7 @@ object ToDoListStore : RootStore<List<ToDo>>(emptyList(), id = persistencePrefix
     }
 
     private fun delete(entities: List<ToDo>, id: String): List<ToDo> {
-        localStorage.removeItem("${persistencePrefix}.$id")
+        localStorage.removeItem("$persistencePrefix.$id")
         return entities.filterNot { it.id == id }
     }
 
@@ -61,12 +65,12 @@ object ToDoListStore : RootStore<List<ToDo>>(emptyList(), id = persistencePrefix
             if (it.completed != toggle) it.copy(completed = toggle) else null
         }
 
-        val updated = (toDos + toUpdate).groupBy{ it.id }
+        val updated = (toDos + toUpdate).groupBy { it.id }
             .filterValues { it.size > 1 }.mapValues { (id, entities) ->
                 val entity = entities.last()
                 localStorage.setItem(
-                    "${persistencePrefix}.$id",
-                    ToDo.serialize(entity)
+                    "$persistencePrefix.$id",
+                    ToDo.serialize(entity),
                 )
                 entity
             }
@@ -77,7 +81,7 @@ object ToDoListStore : RootStore<List<ToDo>>(emptyList(), id = persistencePrefix
     val clearCompleted = handle { toDos ->
         toDos.partition(ToDo::completed).let { (completed, active) ->
             completed.map(ToDo::id).forEach {
-                localStorage.removeItem("${persistencePrefix}.$it")
+                localStorage.removeItem("$persistencePrefix.$it")
             }
             active
         }
@@ -105,7 +109,6 @@ fun RenderContext.filter(text: String, route: String) {
 @ExperimentalStdlibApi
 @ExperimentalCoroutinesApi
 fun main() {
-
     fun RenderContext.inputHeader() {
         header {
             h1 { +"todos" }
@@ -113,7 +116,10 @@ fun main() {
                 placeholder("What needs to be done?")
                 autofocus(true)
 
-                changes.values().map { domNode.value = ""; ToDo(text = it.trim()) } handledBy ToDoListStore.save
+                changes.values().map {
+                    domNode.value = ""
+                    ToDo(text = it.trim())
+                } handledBy ToDoListStore.save
             }
         }
     }
@@ -143,12 +149,14 @@ fun main() {
 
                     li {
                         attr("data-id", toDoStore.id)
-                        classMap(toDoStore.data.combine(editingStore.data) { toDo, isEditing ->
-                            mapOf(
-                                "completed" to toDo.completed,
-                                "editing" to isEditing
-                            )
-                        })
+                        classMap(
+                            toDoStore.data.combine(editingStore.data) { toDo, isEditing ->
+                                mapOf(
+                                    "completed" to toDo.completed,
+                                    "editing" to isEditing,
+                                )
+                            },
+                        )
                         div("view") {
                             input("toggle") {
                                 type("checkbox")
@@ -177,7 +185,7 @@ fun main() {
                             }
                             merge(
                                 blurs.map { false },
-                                keyups.filter { shortcutOf(it) == Keys.Enter }.map { false }
+                                keyups.filter { shortcutOf(it) == Keys.Enter }.map { false },
                             ) handledBy editingStore.update
                         }
                     }

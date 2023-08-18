@@ -18,83 +18,92 @@ val pages: Map<String, Page> = mapOf(
     "checkboxGroup" to DemoPage(
         "Headless Checkboxgroup",
         """Checkbox groups give you the same functionality as native HTML checkbox inputs, without any of the styling. 
-            |They're perfect for building out custom UIs for multi selection.""".trimMargin(),
-        RenderContext::checkboxGroupDemo
+            |They're perfect for building out custom UIs for multi selection.
+        """.trimMargin(),
+        RenderContext::checkboxGroupDemo,
     ),
     "dataCollection" to DemoPage(
         "Headless DataCollection",
         """A collection handles sorting, filtering of and selecting item form a collection.""".trimMargin(),
-        RenderContext::collectionDemo
+        RenderContext::collectionDemo,
     ),
     "disclosure" to DemoPage(
         "Headless Disclosure",
         """A simple, accessible foundation for building custom UIs that show and hide content, like togglable
-            | accordion panels.""".trimMargin(),
-        RenderContext::disclosureDemo
+            | accordion panels.
+        """.trimMargin(),
+        RenderContext::disclosureDemo,
     ),
     "inputfield" to DemoPage(
         "Headless Input",
         "Easily create accessible, fully customizable single line text inputs.",
-        RenderContext::inputFieldDemo
+        RenderContext::inputFieldDemo,
     ),
     "listbox" to DemoPage(
         "Headless Listbox",
         """Listboxes are a great foundation for building custom, accessible select menus for your app, 
-            |complete with robust support for keyboard navigation.""".trimMargin(),
-        RenderContext::listboxDemo
+            |complete with robust support for keyboard navigation.
+        """.trimMargin(),
+        RenderContext::listboxDemo,
     ),
     "menu" to DemoPage(
         "Headless Menu",
         """Menus offer an easy way to build custom, accessible dropdown components with robust support for keyboard
-            | navigation.""".trimMargin(),
-        RenderContext::menuDemo
+            | navigation.
+        """.trimMargin(),
+        RenderContext::menuDemo,
     ),
     "modal" to DemoPage(
         "Headless Modal",
         """Menus offer an easy way to build custom, accessible dropdown components with robust support for keyboard
-            | navigation.""".trimMargin(),
-        RenderContext::modalDemo
+            | navigation.
+        """.trimMargin(),
+        RenderContext::modalDemo,
     ),
     "popover" to DemoPage(
         "Headless Popover",
         """Popovers are perfect for floating panels with arbitrary content like navigation menus, mobile menus and
-            | flyout menus.""".trimMargin(),
-        RenderContext::popOverDemo
+            | flyout menus.
+        """.trimMargin(),
+        RenderContext::popOverDemo,
     ),
     "radioGroup" to DemoPage(
         "Headless Radiogroup",
         """Radio Groups give you the same functionality as native HTML radio inputs, without any of the styling. 
-            |They're perfect for building out custom UIs for single selection.""".trimMargin(),
-        RenderContext::radioGroupDemo
+            |They're perfect for building out custom UIs for single selection.
+        """.trimMargin(),
+        RenderContext::radioGroupDemo,
     ),
     "switch" to DemoPage(
         "Headless Switch",
         """Switches are a pleasant interface for toggling a value between two states, and offer the same 
-            |semantics and keyboard navigation as native checkbox elements.""".trimMargin(),
-        RenderContext::switchDemo
+            |semantics and keyboard navigation as native checkbox elements.
+        """.trimMargin(),
+        RenderContext::switchDemo,
     ),
     "tabGroup" to DemoPage(
         "Headless Tabs",
         """Easily create accessible, fully customizable tab interfaces, with robust focus management and keyboard
-            | navigation support.""".trimMargin(),
-        RenderContext::tabsDemo
+            | navigation support.
+        """.trimMargin(),
+        RenderContext::tabsDemo,
     ),
     "textarea" to DemoPage(
         "Headless Textarea",
         "Easily create accessible, fully customizable multi-line text inputs.",
-        RenderContext::textAreaDemo
+        RenderContext::textAreaDemo,
     ),
     "tooltip" to DemoPage(
         "Headless Tooltip",
-        """Some information that is displayed, whenever you hover a target element using your pointer device.""".trimMargin(),
-        RenderContext::tooltipDemo
+        "Some information that is displayed, whenever you hover a target element using your pointer device.",
+        RenderContext::tooltipDemo,
     ),
     "toast" to DemoPage(
         "Headless Toast",
-        """Display notification-like content in arbitrary positions on the screen.""".trimMargin(),
-        RenderContext::toastDemo
+        "Display notification-like content in arbitrary positions on the screen.",
+        RenderContext::toastDemo,
     ),
-    "focus" to TestDrive(RenderContext::testTrapFocus)
+    "focus" to TestDrive(RenderContext::testTrapFocus),
 )
 
 fun RenderContext.overview() {
@@ -108,7 +117,8 @@ fun RenderContext.overview() {
                 a(
                     """-m-3 p-3 pr-5 flex items-start rounded-lg hover:bg-gray-50 hover:ring-2 hover:ring-white 
                     | ring-offset-2 ring-offset-primary-600 hover:outline-none shadow-lg rounded-lg bg-white 
-                    | opacity-80 hover:opacity-100 transition ease-in-out duration-150""".trimMargin()
+                    | opacity-80 hover:opacity-100 transition ease-in-out duration-150
+                    """.trimMargin(),
                 ) {
                     href("#")
                     icon("flex-shrink-0 h-6 w-6 text-primary-800", content = HeroIcons.support)
@@ -122,11 +132,9 @@ fun RenderContext.overview() {
             }
         }
     }
-
 }
 
 fun main() {
-
     val router = routerOf("")
 
     render {

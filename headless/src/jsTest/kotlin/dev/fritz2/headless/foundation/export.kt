@@ -14,7 +14,6 @@ class ExporterTest {
 
     @Test
     fun testExporter() = runTest {
-
         val id = Id.next()
         val inputId = Id.next()
 
@@ -23,7 +22,7 @@ class ExporterTest {
                 export(
                     input(id = inputId) {
                         type("text")
-                    }
+                    },
                 )
             }
         }

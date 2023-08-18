@@ -1,7 +1,8 @@
+@file:Suppress("MaxLineLength")
+
 package dev.fritz2.headlessdemo
 
 import dev.fritz2.core.Id
-
 import dev.fritz2.core.Lenses
 
 @Lenses
@@ -13,7 +14,7 @@ data class Person(
     val mobile: String = "",
     val phone: String = "",
     val portraitUrl: String = "",
-    val address: Address = Address()
+    val address: Address = Address(),
 ) {
     companion object
 }
@@ -28,6 +29,7 @@ data class Address(
     companion object
 }
 
+@Suppress("LargeClass")
 object FakePersons {
     operator fun invoke(size: Int = 50) = ONETHOUSAND_FAKE_PERSONS
         .split('\n')
@@ -46,7 +48,7 @@ object FakePersons {
                         houseNumber = this[6],
                         postalCode = this[7],
                         city = this[8],
-                    )
+                    ),
                 )
             }
         }
@@ -1064,5 +1066,5 @@ object FakePersons {
         Univ.Prof. Horst-Dieter Schomber B.Eng.;1973-05-17;woldemarmeister@hoevel.com;06854 668431;07731104301;Vadim-Naser-Gasse;8/6;09960;Büsingen am Hochrhein
         Gretel Pölitz;2018-05-23;carolinalbers@yahoo.de;+49 (0) 7328 160616;(05219) 937447;Eberthplatz;4/7;29240;Wittenberg
         Prof. Julia Bohnbach B.Eng.;1985-05-26;ubeckmann@aol.de;(03527) 00164;+49(0)6329353719;Sauerstraße;7;56157;Paderborn
-        """.trimIndent()
+    """.trimIndent()
 }

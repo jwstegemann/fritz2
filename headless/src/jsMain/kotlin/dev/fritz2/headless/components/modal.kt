@@ -34,7 +34,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
 
     inner class ModalPanel<C : HTMLElement>(
         tag: Tag<C>,
-        private val explicitId: String? = null
+        private val explicitId: String? = null,
     ) : Tag<C> by tag {
         val componentId: String by lazy { explicitId ?: Id.next() }
 
@@ -59,7 +59,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CO>>,
-            content: Tag<CO>.() -> Unit
+            content: Tag<CO>.() -> Unit,
         ): Tag<CO> {
             addComponentStructureInfo("modalOverlay", this@modalOverlay.scope, this)
             return tag(this, classes, "$componentId-overlay", scope) {
@@ -77,7 +77,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
         fun RenderContext.modalOverlay(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            content: Tag<HTMLDivElement>.() -> Unit
+            content: Tag<HTMLDivElement>.() -> Unit,
         ) = modalOverlay(classes, scope, RenderContext::div, content)
 
         /**
@@ -90,7 +90,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CT>>,
-            content: Tag<CT>.() -> Unit
+            content: Tag<CT>.() -> Unit,
         ): Tag<CT> {
             addComponentStructureInfo("modalTitle", this@modalTitle.scope, this)
             return tag(this, classes, "$componentId-title", scope, content).also { title = it }
@@ -105,7 +105,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
         fun RenderContext.modalTitle(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            content: Tag<HTMLHeadingElement>.() -> Unit
+            content: Tag<HTMLHeadingElement>.() -> Unit,
         ) = modalTitle(classes, scope, RenderContext::h2, content)
 
         /**
@@ -118,7 +118,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CD>>,
-            content: Tag<CD>.() -> Unit
+            content: Tag<CD>.() -> Unit,
         ): Tag<CD> {
             addComponentStructureInfo("modalDescription", this@modalDescription.scope, this)
             return tag(
@@ -126,7 +126,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
                 classes,
                 "$componentId-description-${descriptions.size}",
                 scope,
-                content
+                content,
             ).also { descriptions.add(it) }
         }
 
@@ -139,7 +139,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
         fun RenderContext.modalDescription(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            content: Tag<HTMLParagraphElement>.() -> Unit
+            content: Tag<HTMLParagraphElement>.() -> Unit,
         ) = modalDescription(classes, scope, RenderContext::p, content)
     }
 
@@ -154,7 +154,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
         id: String? = null,
         internalScope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<C>>,
-        initialize: ModalPanel<C>.() -> Unit
+        initialize: ModalPanel<C>.() -> Unit,
     ) {
         panel = {
             tag(this, classes, null, internalScope) {
@@ -177,7 +177,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
         classes: String? = null,
         id: String? = null,
         internalScope: (ScopeContext.() -> Unit) = {},
-        initialize: ModalPanel<HTMLDivElement>.() -> Unit
+        initialize: ModalPanel<HTMLDivElement>.() -> Unit,
     ) = modalPanel(classes, id, internalScope, RenderContext::div, initialize)
 }
 
@@ -209,7 +209,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
  * For more information refer to the [official documentation](https://www.fritz2.dev/headless/modal/#modal)
  */
 fun RenderContext.modal(
-    initialize: Modal.() -> Unit
+    initialize: Modal.() -> Unit,
 ) = Modal(this).run {
     initialize(this)
     render()

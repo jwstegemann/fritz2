@@ -7,7 +7,7 @@ kotlin {
     jvm()
     js(BOTH).browser {
         testTask {
-            //running test-server in background
+            // running test-server in background
             dependsOn(":test-server:start")
             // see "karma.config.d" folder for customizing karma
         }
@@ -25,7 +25,7 @@ kotlin {
                 }
             }
         }
-        */
+         */
     }
     sourceSets {
         all {

@@ -69,7 +69,6 @@ object CRUDRepo {
 }
 
 fun Application.module() {
-
     install(CallLogging) {
         level = Level.INFO
     }
@@ -85,11 +84,9 @@ fun Application.module() {
         }
     }
 
-
     install(WebSockets)
 
     routing {
-
         get("/") {
             call.respondText("Test Server is running...", contentType = ContentType.Text.Plain)
         }
@@ -168,8 +165,11 @@ fun Application.module() {
         route("authenticated") {
             get("/get") {
                 val isValid = call.request.headers["authtoken"] != "123456789"
-                if (isValid) call.respond(HttpStatusCode.Unauthorized)
-                else call.respondText("GET")
+                if (isValid) {
+                    call.respond(HttpStatusCode.Unauthorized)
+                } else {
+                    call.respondText("GET")
+                }
             }
         }
 

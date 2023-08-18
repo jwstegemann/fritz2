@@ -21,7 +21,7 @@ import kotlin.test.assertTrue
 class DataBindingPropertyTest {
 
     private val validation = validation<Boolean, ComponentValidationMessage> {
-        if(it.data) add(errorMessage(it.path, "error"))
+        if (it.data) add(errorMessage(it.path, "error"))
     }
 
     @Test
@@ -32,7 +32,6 @@ class DataBindingPropertyTest {
         val prop = DatabindingProperty<String>()
         val state = MutableStateFlow("a")
         prop(id, state)
-
 
         render {
             div(id = prop.id) {
@@ -69,7 +68,6 @@ class DataBindingPropertyTest {
         val state = storeOf(false, validation, id)
         val prop = DatabindingProperty<Boolean>()
         prop(state)
-
 
         render {
             div(id = prop.id) {

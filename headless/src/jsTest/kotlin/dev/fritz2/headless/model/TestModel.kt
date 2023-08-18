@@ -10,7 +10,7 @@ val listBoxEntries = listOf("a", "b", "c", "d", "e", "f", "g")
 
 data class TestModel(
     val switch: Boolean = false,
-    val listBox: String = listBoxEntries.first()
+    val listBox: String = listBoxEntries.first(),
 ) {
     companion object {
         val switch: Lens<TestModel, Boolean> = lensOf("switch", TestModel::switch) { m, n -> m.copy(switch = n) }
@@ -18,9 +18,9 @@ data class TestModel(
 
         val validation = validation<TestModel, ComponentValidationMessage> { insp ->
             val switch = insp.map(TestModel.switch)
-            if(switch.data) add(switch.errorMessage("error"))
+            if (switch.data) add(switch.errorMessage("error"))
             val listBox = insp.map(TestModel.listBox)
-            if(listBox.data == listBoxEntries.last()) add(listBox.errorMessage("error"))
+            if (listBox.data == listBoxEntries.last()) add(listBox.errorMessage("error"))
         }
     }
 }

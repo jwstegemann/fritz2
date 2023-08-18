@@ -12,7 +12,7 @@ class LensesTests {
     private val heightLens = lensOf(Size::height.name, Size::height) { p, v -> p.copy(height = v) }
     private val ageLens = lensOf(Tree::age.name, Tree::age) { p, v -> p.copy(age = v) }
     private val sizeLens = lensOf(Tree::size.name, Tree::size) { p, v -> p.copy(size = v) }
-    private val tagLens = lensOf(Tree::tags.name, Tree::tags) { p, v -> p.copy(tags = v) }
+    // private val tagLens = lensOf(Tree::tags.name, Tree::tags) { p, v -> p.copy(tags = v) }
 
     @Test
     fun testFormatLens() {
@@ -31,7 +31,7 @@ class LensesTests {
         assertEquals(
             "${Tree::size.name}.${Size::height.name}",
             formattedSizeLens.id,
-            "id on formattedSizeLens did not work"
+            "id on formattedSizeLens did not work",
         )
         assertEquals(formattedSizeLens.set(p, "55.12").size.height, 55.12, "set on formattedSizeLens did not work")
     }
@@ -89,10 +89,17 @@ class LensesTests {
         val notNullLens: Lens<PostalAddress?, String> = streetLens.withNullParent()
 
         assertEquals(someStreet, notNullLens.get(addressWithCo), "not null lens does get value on non null parent")
-        assertFailsWith(NullPointerException::class, "not null lens does not throw exception when get on null parent") { notNullLens.get(null) }
+        assertFailsWith(NullPointerException::class, "not null lens does not throw exception when get on null parent") {
+            notNullLens.get(null)
+        }
 
-        assertEquals(newValue, notNullLens.set(addressWithCo, newValue)?.street, "not null lens does set value on non null parent")
-        assertFailsWith(NullPointerException::class, "not null lens does not throw exception when set on null parent") { notNullLens.set(null, newValue)?.street }
+        assertEquals(
+            newValue,
+            notNullLens.set(addressWithCo, newValue)?.street,
+            "not null lens does set value on non null parent"
+        )
+        assertFailsWith(NullPointerException::class, "not null lens does not throw exception when set on null parent") {
+            notNullLens.set(null, newValue)?.street
+        }
     }
-
 }

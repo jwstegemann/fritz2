@@ -71,7 +71,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CB>>,
-        content: Tag<CB>.() -> Unit
+        content: Tag<CB>.() -> Unit,
     ): Tag<CB> {
         addComponentStructureInfo("listboxButton", this@listboxButton.scope, this)
         return tag(this, classes, "$componentId-button", scope) {
@@ -91,7 +91,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
     fun RenderContext.listboxButton(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Tag<HTMLButtonElement>.() -> Unit
+        content: Tag<HTMLButtonElement>.() -> Unit,
     ) = listboxButton(classes, scope, RenderContext::button, content).apply {
         attr("type", "button")
     }
@@ -106,7 +106,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CL>>,
-        content: Tag<CL>.() -> Unit
+        content: Tag<CL>.() -> Unit,
     ): Tag<CL> {
         addComponentStructureInfo("listboxLabel", this@listboxLabel.scope, this)
         return tag(this, classes, "$componentId-label", scope, content).also { label = it }
@@ -121,7 +121,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
     fun RenderContext.listboxLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Tag<HTMLLabelElement>.() -> Unit
+        content: Tag<HTMLLabelElement>.() -> Unit,
     ) = listboxLabel(classes, scope, RenderContext::label, content)
 
     /**
@@ -134,14 +134,14 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CV>>,
-        initialize: ValidationMessages<CV>.() -> Unit
+        initialize: ValidationMessages<CV>.() -> Unit,
     ) {
         value.validationMessages.map { it.isNotEmpty() }.render { isNotEmpty ->
             if (isNotEmpty) {
                 addComponentStructureInfo(
                     "listboxValidationMessages",
                     this@listboxValidationMessages.scope,
-                    this
+                    this,
                 )
                 tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
                     validationMessages = this
@@ -160,14 +160,14 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
     fun RenderContext.listboxValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        initialize: ValidationMessages<HTMLDivElement>.() -> Unit
+        initialize: ValidationMessages<HTMLDivElement>.() -> Unit,
     ) = listboxValidationMessages(classes, scope, RenderContext::div, initialize)
 
     inner class ListboxItems<CI : HTMLElement>(
         val renderContext: RenderContext,
         tagFactory: TagFactory<Tag<CI>>,
         classes: String?,
-        scope: ScopeContext.() -> Unit
+        scope: ScopeContext.() -> Unit,
     ) : PopUpPanel<CI>(
         renderContext,
         tagFactory,
@@ -176,7 +176,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         scope,
         this@Listbox.opened,
         reference = button,
-        ariaHasPopup = Aria.HasPopup.listbox
+        ariaHasPopup = Aria.HasPopup.listbox,
     ) {
 
         private fun nextItem(currentIndex: Int, direction: Direction, entries: List<ListboxEntry<T>>): Int =
@@ -184,7 +184,6 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
                 Direction.Next -> (entries.drop(currentIndex + 1).indexOfFirst { !it.disabled } + currentIndex + 1)
                 Direction.Previous -> entries.take(max(0, currentIndex)).indexOfLast { !it.disabled }
             }.let { if (it == -1) currentIndex else it }
-
 
         private fun firstItem(entries: List<ListboxEntry<T>>) = entries.indexOfFirst { !it.disabled }
         private fun lastItem(entries: List<ListboxEntry<T>>) = entries.indexOfLast { !it.disabled }
@@ -230,11 +229,16 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
                         event.preventDefault()
                         event.stopImmediatePropagation()
                         event.key.first().lowercaseChar()
-                    } else null
+                    } else {
+                        null
+                    }
                 }
                     .mapNotNull { c ->
-                        if (c.isLetterOrDigit()) itemByCharacter(entries, c)
-                        else null
+                        if (c.isLetterOrDigit()) {
+                            itemByCharacter(entries, c)
+                        } else {
+                            null
+                        }
                     }
             } handledBy activeIndex.update
 
@@ -251,7 +255,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
                             entries[currentIndex].value
                         }
                     }
-                }
+                },
             )
 
             opened.filter { it }.flatMapLatest {
@@ -288,10 +292,14 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
                         e.preventDefault()
                         e.stopImmediatePropagation()
                         entries.current[index].let {
-                            if (it.disabled) null
-                            else it.value
+                            if (it.disabled) {
+                                null
+                            } else {
+                                it.value
+                            }
                         }
-                    })
+                    },
+                )
 
                 value.data.map {} handledBy close
             }
@@ -308,7 +316,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CM>>,
-            initialize: ListboxItem<CM>.() -> Unit
+            initialize: ListboxItem<CM>.() -> Unit,
         ) {
             val index = numberOfItems++
 
@@ -334,7 +342,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             entry: T,
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            initialize: ListboxItem<HTMLButtonElement>.() -> Unit
+            initialize: ListboxItem<HTMLButtonElement>.() -> Unit,
         ) = listboxItem(entry, classes, scope, RenderContext::button, initialize)
     }
 
@@ -348,7 +356,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CI>>,
-        initialize: ListboxItems<CI>.() -> Unit
+        initialize: ListboxItems<CI>.() -> Unit,
     ) {
         addComponentStructureInfo("listboxItems", this@listboxItems.scope, this)
         if (!openState.isSet) openState(storeOf(false))
@@ -367,7 +375,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
     fun RenderContext.listboxItems(
         classes: String? = null,
         internalScope: (ScopeContext.() -> Unit) = {},
-        initialize: ListboxItems<HTMLDivElement>.() -> Unit
+        initialize: ListboxItems<HTMLDivElement>.() -> Unit,
     ) = listboxItems(classes, internalScope, RenderContext::div, initialize)
 }
 
@@ -418,7 +426,7 @@ fun <T, C : HTMLElement> RenderContext.listbox(
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
-    initialize: Listbox<T, C>.() -> Unit
+    initialize: Listbox<T, C>.() -> Unit,
 ): Tag<C> {
     addComponentStructureInfo(Listbox.COMPONENT_NAME, this@listbox.scope, this)
     return tag(this, classes(classes, "relative"), id, scope) {
@@ -475,5 +483,5 @@ fun <T> RenderContext.listbox(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: Listbox<T, HTMLDivElement>.() -> Unit
+    initialize: Listbox<T, HTMLDivElement>.() -> Unit,
 ): Tag<HTMLDivElement> = listbox(classes, id, scope, RenderContext::div, initialize)

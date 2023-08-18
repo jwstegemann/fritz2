@@ -1,0 +1,17 @@
+complexity:
+  LongMethod:
+    active: false
+
+formatting:
+  Filename:
+    active: false
+  NoWildcardImports:
+    active: false
+
+naming:
+  MatchingDeclarationName:
+    active: false
+
+style:
+  WildcardImport:
+    active: false

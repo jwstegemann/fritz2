@@ -31,17 +31,19 @@ abstract class Authentication<P> : Middleware {
     private var state: CompletableDeferred<P>? = null
 
     final override suspend fun enrichRequest(request: Request): Request =
-            addAuthentication(request, state?.await() ?: principalStore.value)
+        addAuthentication(request, state?.await() ?: principalStore.value)
 
     final override suspend fun handleResponse(response: Response): Response =
         if (statusCodesEnforcingAuthentication.contains(response.status)) {
             mutex.withLock {
-                if(state == null || !state!!.isActive) {
+                if (state == null || !state!!.isActive) {
                     start()
                 }
             }
             response.request.execute()
-        } else response
+        } else {
+            response
+        }
 
     /**
      * List of HTTP-Status-Codes forcing an authentication.

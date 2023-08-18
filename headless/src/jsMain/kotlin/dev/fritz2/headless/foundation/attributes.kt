@@ -14,7 +14,7 @@ import org.w3c.dom.Element
  */
 class AttributeHook<C : Tag<*>, T>(
     private val valueSetter: C.(T) -> Unit,
-    private val flowOfValueSetter: C.(Flow<T>) -> Unit
+    private val flowOfValueSetter: C.(Flow<T>) -> Unit,
 ) : Hook<C, Unit, Unit>() {
 
     operator fun invoke(value: T?) {
@@ -37,12 +37,15 @@ class AttributeHook<C : Tag<*>, T>(
 class BooleanAttributeHook<C : Tag<*>>(
     private val valueSetter: C.(Boolean, String) -> Unit,
     private val flowOfValueSetter: C.(Flow<Boolean>, String) -> Unit,
-    private val trueValue: String = ""
+    private val trueValue: String = "",
 ) : Hook<C, Unit, Unit>() {
 
     operator fun invoke(value: Boolean?) {
         this.value = value?.let { v ->
-            { _, _ -> valueSetter(v, trueValue) }
+            {
+                    _, _ ->
+                valueSetter(v, trueValue)
+            }
         }
     }
 

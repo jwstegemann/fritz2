@@ -11,7 +11,6 @@ class DomNodeListTests {
 
     @Test
     fun testAsElementListDropsNoneHtmlTags() = runTest {
-        
         render {
             div(id = "root") {
                 +"Some Textnode" // should be dropped
@@ -33,7 +32,6 @@ class DomNodeListTests {
 
     @Test
     fun testAccessingInvalidIndexThrowsIndexOutOfBoundsException() = runTest {
-        
         render {
             div(id = "root") {
                 p(id = "child") { }

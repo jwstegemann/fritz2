@@ -15,7 +15,6 @@ class HistoryTests {
 
     @Test
     fun testSyncedHistory() = runTest {
-        
         val valueId = "value-${Id.next()}"
         val historyId = "history-${Id.next()}"
         val availableId = "available-${Id.next()}"
@@ -80,7 +79,6 @@ class HistoryTests {
 
     @Test
     fun testHistoryLongerMax() = runTest {
-        
         val valueId = "value-${Id.next()}"
         val historyId = "history-${Id.next()}"
         val values = listOf("A", "B", "C", "D", "E", "F", "G")
@@ -92,7 +90,6 @@ class HistoryTests {
 
         val store = object : RootStore<String>("") {
             val hist = history(histLength)
-
         }
 
         render {
@@ -115,7 +112,6 @@ class HistoryTests {
         assertEquals(values.last(), getValue())
         assertEquals(values.takeLast(histLength + 1).drop(1).joinToString(), getHistory())
     }
-
 
     @Test
     fun testMaxCapacityError() = runTest {

@@ -38,7 +38,9 @@ class HookTests {
         }
         delay(100)
 
-        val result: HTMLSpanElement? = document.getElementById(divId)?.let { (it as HTMLDivElement).firstChild as HTMLSpanElement }
+        val result: HTMLSpanElement? = document.getElementById(
+            divId
+        )?.let { (it as HTMLDivElement).firstChild as HTMLSpanElement }
         assertNotNull(result)
         assertEquals("hook-payload", result.getAttribute("data-value-payload"))
         assertEquals("ok", result.getAttribute("data-also"))
@@ -46,7 +48,7 @@ class HookTests {
 
     class ValueAsAttribute : Hook<Tag<HTMLDivElement>, Tag<HTMLSpanElement>, Unit>() {
         operator fun invoke(value: String) = apply {
-            this.value = {_, alsoExpr ->
+            this.value = { _, alsoExpr ->
                 span {
                     attr("data-value", value)
                 }.apply { alsoExpr?.let { it() } }
@@ -70,7 +72,9 @@ class HookTests {
         }
         delay(100)
 
-        val result: HTMLSpanElement? = document.getElementById(divId)?.let { (it as HTMLDivElement).firstChild as HTMLSpanElement }
+        val result: HTMLSpanElement? = document.getElementById(
+            divId
+        )?.let { (it as HTMLDivElement).firstChild as HTMLSpanElement }
         assertNotNull(result)
         assertEquals("hook", result.getAttribute("data-value"))
         assertEquals("ok", result.getAttribute("data-also"))
@@ -103,14 +107,14 @@ class HookTests {
             results.map {
                 val span = it as HTMLSpanElement
                 span.getAttribute("data-value")
-            }
+            },
         )
         assertContentEquals(
             expected,
             results.map {
                 val span = it as HTMLSpanElement
                 span.getAttribute("data-also")
-            }
+            },
         )
     }
 
@@ -158,7 +162,7 @@ class HookTests {
             classes: String?,
             id: String?,
             data: String,
-            payload: String
+            payload: String,
         ): Tag<HTMLDivElement> = div(classes, id) {
             attr("data-value-payload", "$data-$payload")
         }

@@ -6,7 +6,6 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLDivElement
 
-
 object PersonStore : RootStore<Person>(Person(), id = "person") {
     val save = handleAndEmit<Person> { p ->
         emit(p)
@@ -20,7 +19,7 @@ object PersonListStore : RootStore<List<Person>>(emptyList(), id = "list") {
     }
 
     init {
-        //connect the two stores
+        // connect the two stores
         PersonStore.save handledBy add
     }
 }
@@ -99,9 +98,8 @@ fun RenderContext.table() {
                     tbody {
                         PersonListStore.data.renderEach { person ->
                             val fullAddress = "${person.address.street} ${person.address.number}, " +
-                                    "${person.address.postalCode} ${person.address.city}"
+                                "${person.address.postalCode} ${person.address.city}"
                             val selectedActivities = person.activities.filter { it.like }.joinToString { it.name }
-
 
                             tr {
                                 td { +person.name }
@@ -122,7 +120,7 @@ fun RenderContext.formGroup(
     label: String,
     subStore: Store<String>,
     inputType: String = "text",
-    extraClass: String = ""
+    extraClass: String = "",
 ) {
     div("form-group $extraClass") {
         label {
@@ -144,7 +142,6 @@ fun RenderContext.activityCheckbox(activity: Store<Activity>): HtmlTag<HTMLDivEl
     val activityName = activity.map(Activity.name())
     val activityLike = activity.map(Activity.like())
 
-
     return div("form-check form-check-inline") {
         input("form-check-input", id = activity.id) {
             type("checkbox")
@@ -162,7 +159,6 @@ fun RenderContext.activityCheckbox(activity: Store<Activity>): HtmlTag<HTMLDivEl
 @ExperimentalCoroutinesApi
 @FlowPreview
 fun main() {
-
     render("#target") {
         section {
             div("row") {

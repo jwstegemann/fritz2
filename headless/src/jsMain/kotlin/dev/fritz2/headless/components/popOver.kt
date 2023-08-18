@@ -36,7 +36,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CB>>,
-        content: Tag<CB>.() -> Unit
+        content: Tag<CB>.() -> Unit,
     ): Tag<CB> {
         addComponentStructureInfo("popOverButton", this@popOverButton.scope, this)
         return tag(this, classes, "$componentId-button", scope) {
@@ -56,7 +56,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
     fun RenderContext.popOverButton(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Tag<HTMLButtonElement>.() -> Unit
+        content: Tag<HTMLButtonElement>.() -> Unit,
     ) = popOverButton(classes, scope, RenderContext::button, content).apply {
         attr("type", "button")
     }
@@ -65,7 +65,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
         val renderContext: RenderContext,
         tagFactory: TagFactory<Tag<C>>,
         classes: String?,
-        scope: ScopeContext.() -> Unit
+        scope: ScopeContext.() -> Unit,
     ) : PopUpPanel<C>(
         renderContext,
         tagFactory,
@@ -74,7 +74,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
         scope,
         this@PopOver.opened,
         reference = button,
-        ariaHasPopup = Aria.HasPopup.dialog
+        ariaHasPopup = Aria.HasPopup.dialog,
     )
 
     /**
@@ -87,7 +87,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CP>>,
-        initialize: PopOverPanel<CP>.() -> Unit
+        initialize: PopOverPanel<CP>.() -> Unit,
     ) {
         addComponentStructureInfo("popOverPanel", this@popOverPanel.scope, this)
         PopOverPanel(this, tag, classes, scope).run {
@@ -107,7 +107,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
     fun RenderContext.popOverPanel(
         classes: String? = null,
         internalScope: (ScopeContext.() -> Unit) = {},
-        initialize: PopOverPanel<HTMLDivElement>.() -> Unit
+        initialize: PopOverPanel<HTMLDivElement>.() -> Unit,
     ) = popOverPanel(classes, internalScope, RenderContext::div, initialize)
 }
 
@@ -143,7 +143,7 @@ fun <C : HTMLElement> RenderContext.popOver(
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
-    initialize: PopOver<C>.() -> Unit
+    initialize: PopOver<C>.() -> Unit,
 ): Tag<C> {
     addComponentStructureInfo("popOver", this@popOver.scope, this)
     return tag(this, classes(classes, PopUpPanel.POPUP_RELATIVE), id, scope) {
@@ -185,5 +185,5 @@ fun RenderContext.popOver(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: PopOver<HTMLDivElement>.() -> Unit
+    initialize: PopOver<HTMLDivElement>.() -> Unit,
 ): Tag<HTMLDivElement> = popOver(classes, id, scope, RenderContext::div, initialize)

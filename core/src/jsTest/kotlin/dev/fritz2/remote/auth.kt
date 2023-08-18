@@ -27,7 +27,6 @@ abstract class TestAuthenticationMiddleware : Authentication<Principal>() {
         countAddAuthentication++
         return principal?.token?.let { request.header("authtoken", it) } ?: request
     }
-
 }
 
 class AuthenticatedRemoteTests {
@@ -58,7 +57,7 @@ class AuthenticatedRemoteTests {
         val simple = object : TestAuthenticationMiddleware() {
 
             var countAuthenticate = 0
-            
+
             override fun authenticate() {
                 countAuthenticate++
                 window.setTimeout({
@@ -70,9 +69,11 @@ class AuthenticatedRemoteTests {
 
         buildList {
             repeat(4) {
-                add(MainScope().launch {
-                    assertEquals("GET", remote.get("get").body())
-                })
+                add(
+                    MainScope().launch {
+                        assertEquals("GET", remote.get("get").body())
+                    },
+                )
             }
         }.joinAll()
         assertEquals(1, simple.countAuthenticate)
@@ -97,9 +98,11 @@ class AuthenticatedRemoteTests {
 
         buildList {
             repeat(4) {
-                add(MainScope().launch {
-                    assertEquals("GET", remote.get("get").body())
-                })
+                add(
+                    MainScope().launch {
+                        assertEquals("GET", remote.get("get").body())
+                    },
+                )
             }
         }.joinAll()
         assertEquals(4, simple.countAddAuthentication)

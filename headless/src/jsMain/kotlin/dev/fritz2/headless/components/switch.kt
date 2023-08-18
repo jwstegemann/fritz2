@@ -20,7 +20,7 @@ import org.w3c.dom.*
 abstract class AbstractSwitch<C : HTMLElement>(
     tag: Tag<C>,
     private val explicitId: String?,
-    private val componentName: String
+    private val componentName: String,
 ) :
     Tag<C> by tag {
 
@@ -46,7 +46,8 @@ abstract class AbstractSwitch<C : HTMLElement>(
                     it.preventDefault()
                     !state
                 }
-            })
+            },
+        )
     }
 
     /**
@@ -59,14 +60,14 @@ abstract class AbstractSwitch<C : HTMLElement>(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CV>>,
-        initialize: ValidationMessages<CV>.() -> Unit
+        initialize: ValidationMessages<CV>.() -> Unit,
     ) {
         value.validationMessages.map { it.isNotEmpty() }.render { isNotEmpty ->
             if (isNotEmpty) {
                 addComponentStructureInfo(
                     "switchValidationMessages",
                     this@switchValidationMessages.scope,
-                    this
+                    this,
                 )
                 tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
                     validationMessages = this
@@ -85,7 +86,7 @@ abstract class AbstractSwitch<C : HTMLElement>(
     fun RenderContext.switchValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        initialize: ValidationMessages<HTMLDivElement>.() -> Unit
+        initialize: ValidationMessages<HTMLDivElement>.() -> Unit,
     ) = switchValidationMessages(classes, scope, RenderContext::div, initialize)
 }
 
@@ -117,9 +118,12 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
             attr(
                 Aria.describedby,
                 value.validationMessages.map { messages ->
-                    if (messages.isNotEmpty()) validationMessages?.id
-                    else descriptions.map { it.id }.joinToString(" ")
-                }
+                    if (messages.isNotEmpty()) {
+                        validationMessages?.id
+                    } else {
+                        descriptions.map { it.id }.joinToString(" ")
+                    }
+                },
             )
         }
         if (!value.isSet) {
@@ -137,7 +141,7 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CT>>,
-        content: Tag<CT>.() -> Unit
+        content: Tag<CT>.() -> Unit,
     ): Tag<CT> {
         addComponentStructureInfo("switchToggle", this@switchToggle.scope, this)
         return tag(this, classes, toggleId, scope) {
@@ -155,7 +159,7 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
     fun RenderContext.switchToggle(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Tag<HTMLButtonElement>.() -> Unit
+        content: Tag<HTMLButtonElement>.() -> Unit,
     ) = switchToggle(classes, scope, RenderContext::button, content).apply {
         attr("type", "button")
     }
@@ -170,7 +174,7 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CL>>,
-        content: Tag<CL>.() -> Unit
+        content: Tag<CL>.() -> Unit,
     ): Tag<CL> {
         addComponentStructureInfo("switchLabel", this@switchLabel.scope, this)
         return tag(this, classes, "$componentId-label", scope, content).apply {
@@ -187,7 +191,7 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
     fun RenderContext.switchLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Tag<HTMLLabelElement>.() -> Unit
+        content: Tag<HTMLLabelElement>.() -> Unit,
     ) = switchLabel(classes, scope, RenderContext::label) {
         content()
         `for`(toggleId)
@@ -203,7 +207,7 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CL>>,
-        content: Tag<CL>.() -> Unit
+        content: Tag<CL>.() -> Unit,
     ): Tag<CL> {
         addComponentStructureInfo("switchDescription", this@switchDescription.scope, this)
         return tag(
@@ -211,7 +215,7 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
             classes,
             "$componentId-description-${descriptions.size}",
             scope,
-            content
+            content,
         ).also { descriptions.add(it) }
     }
 
@@ -224,9 +228,8 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
     fun RenderContext.switchDescription(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Tag<HTMLSpanElement>.() -> Unit
+        content: Tag<HTMLSpanElement>.() -> Unit,
     ) = switchDescription(classes, scope, RenderContext::span, content)
-
 }
 
 /**
@@ -254,7 +257,7 @@ fun <C : HTMLElement> RenderContext.switchWithLabel(
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
-    initialize: SwitchWithLabel<C>.() -> Unit
+    initialize: SwitchWithLabel<C>.() -> Unit,
 ): Tag<C> {
     addComponentStructureInfo(SwitchWithLabel.COMPONENT_NAME, this@switchWithLabel.scope, this)
     return tag(this, classes, id, scope) {
@@ -289,7 +292,7 @@ fun RenderContext.switchWithLabel(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: SwitchWithLabel<HTMLDivElement>.() -> Unit
+    initialize: SwitchWithLabel<HTMLDivElement>.() -> Unit,
 ): Tag<HTMLDivElement> = switchWithLabel(classes, id, scope, RenderContext::div, initialize)
 
 /**
@@ -314,7 +317,7 @@ class Switch<C : HTMLElement>(tag: Tag<C>, explicitId: String?) :
             Aria.describedby,
             value.validationMessages.map { messages ->
                 if (messages.isNotEmpty()) validationMessages?.id else null
-            }
+            },
         )
         if (!value.isSet) {
             warnAboutMissingDatabinding("value", COMPONENT_NAME, componentId, domNode)
@@ -344,7 +347,7 @@ fun <C : HTMLElement> RenderContext.switch(
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
-    initialize: Switch<C>.() -> Unit
+    initialize: Switch<C>.() -> Unit,
 ): Tag<C> {
     addComponentStructureInfo(Switch.COMPONENT_NAME, this@switch.scope, this)
     return tag(this, classes, id, scope) {
@@ -376,6 +379,6 @@ fun RenderContext.switch(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: Switch<HTMLButtonElement>.() -> Unit
+    initialize: Switch<HTMLButtonElement>.() -> Unit,
 ): Tag<HTMLButtonElement> = switch(classes, id, scope, RenderContext::button, initialize)
     .apply { attr("type", "button") }

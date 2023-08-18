@@ -14,13 +14,13 @@ fun RenderContext.toastDemo() {
         toastContainer(
             toastContainerDefault,
             "absolute top-5 right-5 z-10 flex flex-col gap-2 items-start",
-            id = toastContainerDefault
+            id = toastContainerDefault,
         )
 
         toastContainer(
             containerImportant,
             "absolute top-5 left-1/2 -translate-x-1/2 z-10 flex flex-col gap-2 items-center",
-            id = containerImportant
+            id = containerImportant,
         )
     }
 
@@ -28,7 +28,7 @@ fun RenderContext.toastDemo() {
         """absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
             | flex flex-col gap-6
             | bg-white rounded p-4
-        """.trimMargin()
+        """.trimMargin(),
     ) {
         p {
             +"Press a button below to create a new toast:"
@@ -40,8 +40,9 @@ fun RenderContext.toastDemo() {
                     | border border-transparent
                     | text-sm font-sans text-white
                     | bg-primary-400 hover:bg-primary-900
-                    | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin(),
-                id = "btn-toast-default"
+                    | focus:outline-none focus:ring-4 focus:ring-primary-600
+                """.trimMargin(),
+                id = "btn-toast-default",
             ) {
                 +"Default"
 
@@ -59,8 +60,9 @@ fun RenderContext.toastDemo() {
                     | border border-transparent
                     | text-sm font-sans text-white
                     | bg-primary-400 hover:bg-primary-900
-                    | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin(),
-                id = "btn-toast-important"
+                    | focus:outline-none focus:ring-4 focus:ring-primary-600
+                """.trimMargin(),
+                id = "btn-toast-important",
             ) {
                 +"Important"
 
@@ -82,7 +84,6 @@ fun RenderContext.toastDemo() {
     }
 }
 
-
 private var toastCount = 0
 private fun nextToastId() = "toast-${toastCount++}"
 
@@ -96,7 +97,7 @@ private fun showToast(container: String, initialize: Tag<HTMLLIElement>.() -> Un
             | border border-transparent
             | text-sm font-sans
         """.trimMargin(),
-        nextToastId()
+        nextToastId(),
     ) {
         initialize()
 
@@ -117,7 +118,7 @@ private fun showToast(container: String, initialize: Tag<HTMLLIElement>.() -> Un
         button {
             icon(
                 classes = "w-4 h-4 text-primary-900",
-                content = HeroIcons.x
+                content = HeroIcons.x,
             )
             clicks handledBy close
         }

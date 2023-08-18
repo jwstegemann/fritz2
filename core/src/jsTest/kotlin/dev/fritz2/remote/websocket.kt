@@ -86,7 +86,6 @@ class WebSocketTests {
         session.send("bye")
         delay(200)
 
-
         assertFailsWith(SendException::class) {
             session.send("must fail")
         }
@@ -111,7 +110,6 @@ class WebSocketTests {
             assertEquals(data, array, "binary data is not matched")
         }
 
-
         session.close(reason = "test done")
 
         delay(200)
@@ -133,7 +131,6 @@ class WebSocketTests {
                 assertEquals("Hello World", reader.result, "blob data is not matched")
             }
         }
-
 
         session.close(reason = "test done")
 
@@ -165,7 +162,6 @@ class WebSocketTests {
 
     @Test
     fun testSyncWith() = runTest {
-        
         val defaultPerson = SocketPerson("", 0)
         val startPerson = SocketPerson("Heinz", 18)
         val changedAge = 99
@@ -190,7 +186,6 @@ class WebSocketTests {
         val ageSubStore = entityStore.map(ageLens)
         val idId = "id-${Id.next()}"
         val idSubStore = entityStore.map(idLens)
-
 
         render {
             div {
@@ -218,5 +213,4 @@ class WebSocketTests {
         val nameAfterUpdate = document.getElementById(nameId)?.textContent
         assertEquals(testName, nameAfterUpdate, "wrong name after server update")
     }
-
 }

@@ -16,8 +16,9 @@ fun RenderContext.btn(id: String? = null, init: Tag<HTMLButtonElement>.() -> Uni
     | border border-transparent
     | text-sm text-white
     | hover:bg-primary-900
-    | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin(),
-    id = id ?: Id.next()
+    | focus:outline-none focus:ring-4 focus:ring-primary-600
+    """.trimMargin(),
+    id = id ?: Id.next(),
 ) {
     init()
 }
@@ -68,7 +69,7 @@ fun RenderContext.testTrapFocus() {
                     """z-10 max-w-sm lg:max-w-3xl my-4 p-7 flex flex-col gap-4
                     | bg-white overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5
                     | focus:outline-none
-                """.trimMargin()
+                    """.trimMargin(),
                 ) {
                     transition(
                         "transition ease-out duration-200",
@@ -76,7 +77,7 @@ fun RenderContext.testTrapFocus() {
                         "opacity-100 translate-y-0",
                         "transition ease-in duration-150",
                         "opacity-100 translate-y-0",
-                        "opacity-0 translate-y-1"
+                        "opacity-0 translate-y-1",
                     )
                     trapFocusInMountpoint()
                     h1("text-left text-gray-800 font-medium text-lg") {
@@ -87,8 +88,9 @@ fun RenderContext.testTrapFocus() {
                             """flex items-center p-2 m-1 
                             | transition duration-150 ease-in-out rounded-lg 
                             | hover:bg-primary-200 
-                            | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin(),
-                            id = "$testId-Tab-Item-$it"
+                            | focus:outline-none focus:ring-4 focus:ring-primary-600
+                            """.trimMargin(),
+                            id = "$testId-Tab-Item-$it",
                         ) {
                             attr("tabindex", "0")
                             +"Tab-Item-$it"
@@ -110,7 +112,8 @@ fun RenderContext.testTrapFocus() {
         result {
             span {
                 +"""The focus-traps must return the focus to the initial focused element, after closing the 
-                    |reactively rendered container.""".trimMargin()
+                    |reactively rendered container.
+                """.trimMargin()
             }
             ul("list-disc list-inside") {
                 li {
@@ -138,7 +141,6 @@ fun RenderContext.testTrapFocus() {
                 }
             }
         }
-
     }
 
     example("Focus-Trap activated on some conditional flow") {
@@ -158,18 +160,20 @@ fun RenderContext.testTrapFocus() {
             """z-10 max-w-sm lg:max-w-3xl my-4 p-7 flex flex-col gap-4
                     | overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5
                     | focus:outline-none
-                """.trimMargin()
+            """.trimMargin(),
         ) {
-            className(toggle.data.map {
-                if (it) "bg-white" else ""
-            })
+            className(
+                toggle.data.map {
+                    if (it) "bg-white" else ""
+                },
+            )
             transition(
                 "transition ease-out duration-200",
                 "opacity-0 translate-y-1",
                 "opacity-100 translate-y-0",
                 "transition ease-in duration-150",
                 "opacity-100 translate-y-0",
-                "opacity-0 translate-y-1"
+                "opacity-0 translate-y-1",
             )
             trapFocusWhenever(toggle.data)
             h1("text-left text-gray-800 font-medium text-lg") {
@@ -182,8 +186,9 @@ fun RenderContext.testTrapFocus() {
                         """flex items-center p-2 m-1 
                             | transition duration-150 ease-in-out rounded-lg 
                             | hover:bg-primary-200 
-                            | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin(),
-                        id = "$testId-Tab-Item-$index"
+                            | focus:outline-none focus:ring-4 focus:ring-primary-600
+                        """.trimMargin(),
+                        id = "$testId-Tab-Item-$index",
                     ) {
                         attr("tabindex", "0")
                         +"Tab-Item-$index"
@@ -204,7 +209,8 @@ fun RenderContext.testTrapFocus() {
         result {
             span {
                 +"""The focus-traps must return the focus to the initial focused element, deactivating the trap by  
-                    |changing the """.trimMargin()
+                    |changing the 
+                """.trimMargin()
                 code { +"Flow<Boolean>" }
                 +" to "
                 code { +"false" }
@@ -239,16 +245,13 @@ fun RenderContext.testTrapFocus() {
                 }
             }
         }
-
     }
 
     example("Nested Traps - Mountpoint with Conditional inside") {
-
         val toggle = storeOf(false)
         val disabled = storeOf(false)
 
         div("flex flex-col gap-2") {
-
             btn("Open-Below") {
                 +"Open Focus-Trap Container Below"
                 disabled(disabled.data)
@@ -261,7 +264,7 @@ fun RenderContext.testTrapFocus() {
                         """z-10 max-w-sm lg:max-w-3xl my-4 p-7 flex flex-col gap-4
                 | bg-white overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5
                 | focus:outline-none
-                """.trimMargin()
+                        """.trimMargin(),
                     ) {
                         transition(
                             "transition ease-out duration-200",
@@ -269,7 +272,7 @@ fun RenderContext.testTrapFocus() {
                             "opacity-100 translate-y-0",
                             "transition ease-in duration-150",
                             "opacity-100 translate-y-0",
-                            "opacity-0 translate-y-1"
+                            "opacity-0 translate-y-1",
                         )
                         trapFocusInMountpoint()
                         disabled.update(true)
@@ -286,9 +289,15 @@ fun RenderContext.testTrapFocus() {
                             }
 
                             div("flex flex-col gap-2") {
-                                className(innerToggle.data.map {
-                                    if (it) "border rounded-md shadow-lg ring-1 ring-black ring-opacity-5 p-2" else ""
-                                })
+                                className(
+                                    innerToggle.data.map {
+                                        if (it) {
+                                            "border rounded-md shadow-lg ring-1 ring-black ring-opacity-5 p-2"
+                                        } else {
+                                            ""
+                                        }
+                                    },
+                                )
                                 trapFocusWhenever(innerToggle.data)
 
                                 (1..3).forEach {
@@ -296,8 +305,9 @@ fun RenderContext.testTrapFocus() {
                                         """flex items-center p-2 m-1 
                                     | transition duration-150 ease-in-out rounded-lg 
                                     | hover:bg-primary-200 
-                                    | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin(),
-                                        id = "Tab-Item-$it"
+                                    | focus:outline-none focus:ring-4 focus:ring-primary-600
+                                        """.trimMargin(),
+                                        id = "Tab-Item-$it",
                                     ) {
                                         attr("tabindex", "0")
                                         +"Tab-Item-$it"
@@ -312,7 +322,6 @@ fun RenderContext.testTrapFocus() {
                                         }
                                     }
                                 }
-
                             }
                         }
 
@@ -338,7 +347,7 @@ fun RenderContext.testTrapFocus() {
             span {
                 +"""
                 | The focus-traps must return the focus to the initial focused element, after closing / deactivating.
-            """.trimMargin()
+                """.trimMargin()
             }
             ul("list-disc list-inside") {
                 li {
@@ -390,6 +399,4 @@ fun RenderContext.testTrapFocus() {
             }
         }
     }
-
-
 }

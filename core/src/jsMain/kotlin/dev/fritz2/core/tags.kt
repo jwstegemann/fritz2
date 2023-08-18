@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 package dev.fritz2.core
 
 import kotlinx.browser.document
@@ -49,8 +51,11 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, WithEvents<E> {
      * @param value to use
      */
     fun attr(name: String, value: String?) {
-        if (value != null) domNode.setAttribute(name, value)
-        else domNode.removeAttribute(name)
+        if (value != null) {
+            domNode.setAttribute(name, value)
+        } else {
+            domNode.removeAttribute(name)
+        }
     }
 
     /**
@@ -101,8 +106,11 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, WithEvents<E> {
      * @param trueValue value to use if attribute is set (default "")
      */
     fun attr(name: String, value: Boolean, trueValue: String = "") {
-        if (value) domNode.setAttribute(name, trueValue)
-        else domNode.removeAttribute(name)
+        if (value) {
+            domNode.setAttribute(name, trueValue)
+        } else {
+            domNode.removeAttribute(name)
+        }
     }
 
     /**
@@ -113,8 +121,11 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, WithEvents<E> {
      * @param trueValue value to use if attribute is set (default "")
      */
     fun attr(name: String, value: Boolean?, trueValue: String = "") {
-        if (value != null && value) domNode.setAttribute(name, trueValue)
-        else domNode.removeAttribute(name)
+        if (value != null && value) {
+            domNode.setAttribute(name, trueValue)
+        } else {
+            domNode.removeAttribute(name)
+        }
     }
 
     /**

@@ -15,19 +15,20 @@ import org.w3c.files.Blob
  * @property message error message
  */
 class SendException(message: String) : Exception(message)
+
 /**
  * [Exception] for handling errors with closing
  *
  * @property message error message
  */
 class CloseException(message: String, throwable: Throwable) : Exception(message, throwable)
+
 /**
  * [Exception] for handling errors with connecting
  *
  * @property message error message
  */
 class ConnectionException(message: String, throwable: Throwable) : Exception(message, throwable)
-
 
 /**
  * creates a new [Socket] for bidirectional communication with the server.
@@ -47,7 +48,7 @@ fun websocket(url: String, vararg protocols: String): Socket = Socket(url, proto
  */
 open class Socket(
     private val baseUrl: String = "",
-    private val protocols: Array<out String> = emptyArray()
+    private val protocols: Array<out String> = emptyArray(),
 ) {
 
     /**
@@ -57,7 +58,8 @@ open class Socket(
      * @return new [Socket]
      */
     fun append(subUrl: String) = Socket(
-        "${baseUrl.trimEnd('/')}/${subUrl.trimStart('/')}", protocols
+        "${baseUrl.trimEnd('/')}/${subUrl.trimStart('/')}",
+        protocols,
     )
 
     /**
@@ -242,7 +244,8 @@ open class Session(private val webSocket: WebSocket) {
     private suspend fun doWhenOpen(run: (WebSocket) -> Unit) {
         when (webSocket.readyState) {
             WebSocket.CONNECTING -> {
-                delay(50); doWhenOpen(run)
+                delay(50)
+                doWhenOpen(run)
             }
             WebSocket.OPEN -> run(webSocket)
             WebSocket.CLOSING -> throw SendException("session is closing")
@@ -268,11 +271,13 @@ open class Session(private val webSocket: WebSocket) {
  */
 val Session.isConnecting: Flow<Boolean>
     get() = state.map { it is SessionState.Connecting }
+
 /**
  * gives a [Flow] of [Boolean] when [SessionState] is [SessionState.Open]
  */
 val Session.isOpen: Flow<Boolean>
     get() = state.map { it is SessionState.Open }
+
 /**
  * gives a [Flow] of [Boolean] when [SessionState] is [SessionState.Closed]
  */
@@ -284,6 +289,7 @@ val Session.isClosed: Flow<Boolean>
  */
 val Session.opens: Flow<Event>
     get() = state.mapNotNull { (it as? SessionState.Open)?.event }
+
 /**
  * gives a [Flow] of [CloseEvent] when [Session] closes
  */
@@ -295,16 +301,19 @@ val Session.closes: Flow<CloseEvent>
  */
 val Flow<MessageEvent>.data: Flow<Any?>
     get() = this.map { it.data }
+
 /**
  * gives the [MessageEvent.data] as [Flow] of [String]
  */
 val Flow<MessageEvent>.body: Flow<String>
     get() = this.map { it.data.unsafeCast<String>() }
+
 /**
  * gives the [MessageEvent.data] as [Flow] of [Blob]
  */
 val Flow<MessageEvent>.blob: Flow<Blob>
     get() = this.map { it.data.unsafeCast<Blob>() }
+
 /**
  * gives the [MessageEvent.data] as [Flow] of [ArrayBuffer]
  */

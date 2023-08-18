@@ -8,7 +8,6 @@ import dev.fritz2.headless.foundation.Aria
 import kotlinx.coroutines.flow.map
 
 fun RenderContext.switchDemo() {
-
     val switchState = storeOf(false, id = "switch")
     val switchWithLabelState = storeOf(true, id = "switchWithLabel")
 
@@ -18,7 +17,8 @@ fun RenderContext.switchDemo() {
                 | cursor-pointer rounded-full
                 | border-2 border-transparent ring-1 ring-primary-400
                 | transition-colors ease-in-out duration-200 
-                | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin()
+                | focus:outline-none focus:ring-4 focus:ring-primary-600
+            """.trimMargin(),
         ) {
             value(switchState)
             className(enabled.map { if (it) "bg-primary-700" else "bg-primary-200" })
@@ -27,7 +27,8 @@ fun RenderContext.switchDemo() {
                 """inline-block h-5 w-5 
                     | rounded-full bg-white shadow pointer-events-none 
                     | ring-0 
-                    | transform transition ease-in-out duration-200""".trimMargin()
+                    | transform transition ease-in-out duration-200
+                """.trimMargin(),
             ) {
                 className(enabled.map { if (it) "translate-x-5" else "translate-x-0" })
                 attr(Aria.hidden, "true")
@@ -49,7 +50,8 @@ fun RenderContext.switchDemo() {
                 | cursor-pointer rounded-full
                 | border-2 border-transparent ring-1 ring-primary-400  
                 | transition-colors ease-in-out duration-200 
-                | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin()
+                | focus:outline-none focus:ring-4 focus:ring-primary-600
+                """.trimMargin(),
             ) {
                 className(enabled.map { if (it) "bg-primary-700" else "bg-primary-300" })
                 span("sr-only") { +"Use setting" }
@@ -57,7 +59,8 @@ fun RenderContext.switchDemo() {
                     """inline-block h-5 w-5 
                     | rounded-full bg-white shadow pointer-events-none 
                     | ring-0 
-                    | transform transition ease-in-out duration-200""".trimMargin()
+                    | transform transition ease-in-out duration-200
+                    """.trimMargin(),
                 ) {
                     className(enabled.map { if (it) "translate-x-5" else "translate-x-0" })
                     attr(Aria.hidden, "true")

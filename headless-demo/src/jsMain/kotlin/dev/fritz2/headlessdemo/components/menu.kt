@@ -9,7 +9,6 @@ import dev.fritz2.headlessdemo.result
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 
-
 fun RenderContext.menuDemo() {
     data class MenuEntry(val label: String, val icon: String, val disabled: Boolean = false)
 
@@ -20,7 +19,7 @@ fun RenderContext.menuDemo() {
         MenuEntry("Delete", HeroIcons.trash),
         MenuEntry("Edit", HeroIcons.pencil),
         MenuEntry("Copy", HeroIcons.clipboard_copy, true),
-        MenuEntry("Encrypt", HeroIcons.key)
+        MenuEntry("Encrypt", HeroIcons.key),
     )
 
     val action = storeOf("", id = "selectedAction")
@@ -35,7 +34,8 @@ fun RenderContext.menuDemo() {
                             | border border-transparent 
                             | text-sm font-sans text-white 
                             | hover:bg-primary-900 
-                            | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin()
+                            | focus:outline-none focus:ring-4 focus:ring-primary-600
+                        """.trimMargin(),
                     ) {
                         className(opened.map { if (it) "bg-primary-900" else "bg-primary-800" })
                         opened.map { if (it) "Close Menu" else "Open Menu" }.renderText()
@@ -47,7 +47,8 @@ fun RenderContext.menuDemo() {
                     """w-56 max-h-56 overflow-y-auto origin-top-left
                         | bg-white rounded shadow-md divide-y divide-gray-100
                         | border-white border-2  
-                        | focus:outline-none""".trimMargin()
+                        | focus:outline-none
+                    """.trimMargin(),
                 ) {
                     placement = Placement.bottomStart
                     distance = 5
@@ -59,22 +60,25 @@ fun RenderContext.menuDemo() {
                         "opacity-100 scale-100",
                         "transition-all duration-100 ease-ease-out",
                         "opacity-100 scale-100",
-                        "opacity-0 scale-95"
+                        "opacity-0 scale-95",
                     )
 
                     entries.forEach { entry ->
                         menuItem(
                             """group flex items-center w-full px-2 py-2
                                 | disabled:opacity-50
-                                | text-sm""".trimMargin()
+                                | text-sm
+                            """.trimMargin(),
                         ) {
-                            className(active.combine(disabled) { a, d ->
-                                if (a && !d) {
-                                    "bg-primary-600 text-white"
-                                } else {
-                                    if (d) "text-slate-400" else "text-primary-800"
-                                }
-                            })
+                            className(
+                                active.combine(disabled) { a, d ->
+                                    if (a && !d) {
+                                        "bg-primary-600 text-white"
+                                    } else {
+                                        if (d) "text-slate-400" else "text-primary-800"
+                                    }
+                                },
+                            )
                             icon("w-4 h-4 mr-2", content = entry.icon)
                             +entry.label
                             if (entry.disabled) disable(true)
@@ -88,7 +92,6 @@ fun RenderContext.menuDemo() {
                 }
             }
         }
-
 
         result {
             span("font-medium") { +"Execute Action: " }

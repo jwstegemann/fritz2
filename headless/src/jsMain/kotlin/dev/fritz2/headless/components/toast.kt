@@ -8,11 +8,10 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.*
 
-
 private data class ToastSlice(
     val id: String,
     val containerName: String,
-    val content: RenderContext.() -> Tag<HTMLElement>
+    val content: RenderContext.() -> Tag<HTMLElement>,
 )
 
 private object ToastStore : RootStore<List<ToastSlice>>(emptyList()) {
@@ -32,7 +31,6 @@ private object ToastStore : RootStore<List<ToastSlice>>(emptyList()) {
     }
 }
 
-
 /**
  * Factory function to create a [toastContainer].
  *
@@ -46,7 +44,7 @@ fun <E : HTMLElement> RenderContext.toastContainer(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    tag: TagFactory<Tag<E>>
+    tag: TagFactory<Tag<E>>,
 ): Tag<E> {
     addComponentStructureInfo("toast-container ($name)", this.scope, this)
     return tag(this, classes, id, scope) {
@@ -72,7 +70,6 @@ fun RenderContext.toastContainer(
     scope: (ScopeContext.() -> Unit) = {},
 ): Tag<HTMLUListElement> =
     toastContainer(name, classes, id, scope, RenderContext::ul)
-
 
 /**
  * This class provides the building blocks to implement a toast.
@@ -115,7 +112,7 @@ fun <E : HTMLElement> toast(
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<E>>,
-    initialize: Toast<E>.() -> Unit
+    initialize: Toast<E>.() -> Unit,
 ) {
     val toastId = Id.next()
     val toast = ToastSlice(toastId, containerName) {
@@ -165,6 +162,6 @@ fun toast(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: Toast<HTMLLIElement>.() -> Unit
+    initialize: Toast<HTMLLIElement>.() -> Unit,
 ): Unit =
     toast(containerName, duration, classes, id, scope, RenderContext::li, initialize)

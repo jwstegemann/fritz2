@@ -10,10 +10,10 @@ import kotlinx.coroutines.flow.map
  */
 class SubStore<P, D>(
     val parent: Store<P>,
-    private val lens: Lens<P, D>
+    private val lens: Lens<P, D>,
 ) : Store<D> {
 
-    //TODO: investigate, if you can use Job from parent instead
+    // TODO: investigate, if you can use Job from parent instead
     /**
      * [Job] used as parent job on all coroutines started in [Handler]s in the scope of this [Store]
      */
@@ -58,7 +58,6 @@ class SubStore<P, D>(
     override fun errorHandler(cause: Throwable) {
         parent.errorHandler(cause)
     }
-
 }
 
 /**

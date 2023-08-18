@@ -16,7 +16,7 @@ typealias DomLifecycleHandler = suspend (WithDomNode<Element>, Any?) -> Unit
 internal class DomLifecycleListener(
     val target: WithDomNode<Element>,
     val payload: Any? = null,
-    val handler: DomLifecycleHandler
+    val handler: DomLifecycleHandler,
 )
 
 /**
@@ -198,7 +198,10 @@ internal fun <V> RenderContext.mountPatches(
 
     val mountPoints = mutableMapOf<Node, MountPointImpl>()
 
-    mountSimple(target.job, createPatches(upstream.onEach { if (batch) target.inlineStyle("visibility: hidden;") }, mountPoints)) { patches ->
+    mountSimple(
+        target.job,
+        createPatches(upstream.onEach { if (batch) target.inlineStyle("visibility: hidden;") }, mountPoints)
+    ) { patches ->
         patches.forEach { patch ->
             when (patch) {
                 is Patch.Insert -> insert(target.domNode, mountPoints, patch.element, patch.index)
@@ -215,7 +218,6 @@ internal fun <V> RenderContext.mountPatches(
     }
 }
 
-
 /**
  * Inserts or appends elements to the DOM.
  *
@@ -224,9 +226,12 @@ internal fun <V> RenderContext.mountPatches(
  * @param index place to insert or append
  */
 private fun insertOrAppend(target: Node, child: Node, index: Int) {
-    if (index == target.childNodes.length) target.appendChild(child)
-    else target.childNodes.item(index)?.let {
-        target.insertBefore(child, it)
+    if (index == target.childNodes.length) {
+        target.appendChild(child)
+    } else {
+        target.childNodes.item(index)?.let {
+            target.insertBefore(child, it)
+        }
     }
 }
 
@@ -237,7 +242,12 @@ private fun insertOrAppend(target: Node, child: Node, index: Int) {
  * @param element from type [WithDomNode]
  * @param index place to insert or append
  */
-private suspend inline fun insert(target: Node, mountPoints: MutableMap<Node, MountPointImpl>, element: WithDomNode<*>, index: Int) {
+private suspend inline fun insert(
+    target: Node,
+    mountPoints: MutableMap<Node, MountPointImpl>,
+    element: WithDomNode<*>,
+    index: Int
+) {
     insertOrAppend(target, element.domNode, index)
     mountPoints[element.domNode]?.runAfterMounts()
 }
@@ -249,7 +259,12 @@ private suspend inline fun insert(target: Node, mountPoints: MutableMap<Node, Mo
  * @param elements [List] of [WithDomNode]s elements to insert
  * @param index place to insert or append
  */
-private suspend inline fun insertMany(target: Node, mountPoints: MutableMap<Node, MountPointImpl>, elements: List<WithDomNode<*>>, index: Int) {
+private suspend inline fun insertMany(
+    target: Node,
+    mountPoints: MutableMap<Node, MountPointImpl>,
+    elements: List<WithDomNode<*>>,
+    index: Int
+) {
     val f = document.createDocumentFragment()
     for (child in elements) {
         f.append(child.domNode)
@@ -265,7 +280,13 @@ private suspend inline fun insertMany(target: Node, mountPoints: MutableMap<Node
  * @param start position for deleting
  * @param count of elements to delete
  */
- private suspend inline fun delete(target: Node, mountPoints: MutableMap<Node, MountPointImpl>, start: Int, count: Int, parentJob: Job) {
+private suspend inline fun delete(
+    target: Node,
+    mountPoints: MutableMap<Node, MountPointImpl>,
+    start: Int,
+    count: Int,
+    parentJob: Job
+) {
     var itemToDelete = target.childNodes.item(start)
     repeat(count) {
         itemToDelete?.let {
@@ -292,4 +313,3 @@ private fun move(target: Node, from: Int, to: Int) {
     val itemToMove = target.childNodes.item(from)
     if (itemToMove != null) insertOrAppend(target, itemToMove, to)
 }
-

@@ -23,17 +23,16 @@ fun <T> runTest(block: suspend WithJob.() -> T): dynamic = MainScope().promise {
     delay(50)
 }
 
+inline fun <reified E : Element> getElementById(id: String) = document.getElementById(id) as E
 
-inline fun <reified E: Element> getElementById(id: String) = document.getElementById(id) as E
-
-suspend fun <E: EventTarget> E.keyDown(vararg shortcuts: Shortcut) {
-    for(shortcut in shortcuts) {
+suspend fun <E : EventTarget> E.keyDown(vararg shortcuts: Shortcut) {
+    for (shortcut in shortcuts) {
         this.dispatchEvent(KeyboardEvent("keydown", KeyboardEventInit(shortcut.key, shortcut.key)))
         delay(10)
     }
 }
 
-fun <E: EventTarget> E.click(x: Int, y: Int) {
+fun <E : EventTarget> E.click(x: Int, y: Int) {
     this.dispatchEvent(PointerEvent("click", PointerEventInit(clientX = x, clientY = y)))
 }
 

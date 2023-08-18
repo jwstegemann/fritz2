@@ -37,7 +37,6 @@ interface Lens<P, T> {
      */
     suspend fun apply(parent: P, mapper: suspend (T) -> T): P = set(parent, mapper(get(parent)))
 
-
     /**
      * appends to [Lens]es so that the resulting [Lens] points from the parent of the [Lens] this is called on to the target of [other]
      *
@@ -57,11 +56,17 @@ interface Lens<P, T> {
     fun withNullParent(): Lens<P?, T> = object : Lens<P?, T> {
         override val id: String = this@Lens.id
         override fun get(parent: P?): T =
-            if (parent != null) this@Lens.get(parent)
-            else throw NullPointerException("get called with null parent on not-nullable lens@$id")
+            if (parent != null) {
+                this@Lens.get(parent)
+            } else {
+                throw NullPointerException("get called with null parent on not-nullable lens@$id")
+            }
         override fun set(parent: P?, value: T): P? =
-            if (parent != null) this@Lens.set(parent, value)
-            else throw NullPointerException("set called with null parent on not-nullable lens@$id")
+            if (parent != null) {
+                this@Lens.set(parent, value)
+            } else {
+                throw NullPointerException("set called with null parent on not-nullable lens@$id")
+            }
     }
 }
 
@@ -126,10 +131,17 @@ fun <T, I> lensForElement(element: T, idProvider: IdProvider<T, I>): Lens<List<T
             if (idProvider(item) == idProvider(element)) {
                 count++
                 add(value)
-            } else add(item)
+            } else {
+                add(item)
+            }
         }
-        if (count == 0) throw CollectionLensSetException("no item found with id='${idProvider(element)}'")
-        else if (count > 1) throw CollectionLensSetException("$count ambiguous items found with id='${idProvider(element)}'")
+        if (count == 0) {
+            throw CollectionLensSetException("no item found with id='${idProvider(element)}'")
+        } else if (count > 1) {
+            throw CollectionLensSetException(
+                "$count ambiguous items found with id='${idProvider(element)}'"
+            )
+        }
     }
 }
 
@@ -145,9 +157,11 @@ fun <T> lensForElement(index: Int): Lens<List<T>, T> = object : Lens<List<T>, T>
         parent.getOrNull(index) ?: throw CollectionLensGetException()
 
     override fun set(parent: List<T>, value: T): List<T> =
-        if (index < 0 || index >= parent.size) throw CollectionLensSetException("no item found with index='$index'")
-        else parent.mapIndexed { i, it -> if (i == index) value else it }
-
+        if (index < 0 || index >= parent.size) {
+            throw CollectionLensSetException("no item found with index='$index'")
+        } else {
+            parent.mapIndexed { i, x -> if (i == index) value else x }
+        }
 }
 
 /**
@@ -162,8 +176,11 @@ fun <K, V> lensForElement(key: K): Lens<Map<K, V>, V> = object : Lens<Map<K, V>,
         parent[key] ?: throw CollectionLensGetException()
 
     override fun set(parent: Map<K, V>, value: V): Map<K, V> =
-        if (parent.containsKey(key)) parent + (key to value)
-        else throw CollectionLensSetException("no item found with key='$key'")
+        if (parent.containsKey(key)) {
+            parent + (key to value)
+        } else {
+            throw CollectionLensSetException("no item found with key='$key'")
+        }
 }
 
 /**
@@ -176,5 +193,5 @@ fun <K, V> lensForElement(key: K): Lens<Map<K, V>, V> = object : Lens<Map<K, V>,
 internal fun <T> defaultLens(id: String, default: T): Lens<T?, T> = object : Lens<T?, T> {
     override val id: String = id
     override fun get(parent: T?): T = parent ?: default
-    override fun set(parent: T?, value: T): T?  = value.takeUnless { it == default }
+    override fun set(parent: T?, value: T): T? = value.takeUnless { it == default }
 }

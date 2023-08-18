@@ -12,12 +12,10 @@ import org.w3c.dom.HTMLDivElement
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-
 class RoutingTests {
 
     @Test
-    fun  testStringRouter() = runTest {
-        
+    fun testStringRouter() = runTest {
         window.location.hash = ""
 
         val defaultRoute = ""
@@ -58,7 +56,6 @@ class RoutingTests {
 
     @Test
     fun testMapRouter() = runTest {
-        
         window.location.hash = ""
 
         val pageKey = "page"
@@ -111,7 +108,6 @@ class RoutingTests {
 
     @Test
     fun testMapRouterFailing() = runTest {
-        
         window.location.hash = ""
 
         val router = routerOf(mapOf("test" to "123"))
@@ -133,7 +129,6 @@ class RoutingTests {
 
     @Test
     fun testMapRouterHandler() = runTest {
-        
         window.location.hash = ""
 
         val router = routerOf(mapOf("page" to "123", "extra" to "abc"))
@@ -149,7 +144,7 @@ class RoutingTests {
                 clicks.map { "abc" } handledBy navTo
             }
             router.data.render { route ->
-                when(route["page"]) {
+                when (route["page"]) {
                     "123" -> div(id = divId) {
                         +"123 "
                         +(route["extra"] ?: "")
@@ -175,7 +170,6 @@ class RoutingTests {
 
     @Test
     fun testHashChangeViaJSInRouter() = runTest {
-
         window.location.hash = ""
 
         val router = routerOf(mapOf("page" to "a"))
@@ -183,7 +177,7 @@ class RoutingTests {
 
         render {
             router.data.render { route ->
-                when(route["page"]) {
+                when (route["page"]) {
                     "a" -> div(id = divId) {
                         +"a"
                     }

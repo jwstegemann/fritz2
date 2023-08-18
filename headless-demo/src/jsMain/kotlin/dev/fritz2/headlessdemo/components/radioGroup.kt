@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLFieldSetElement
 
-
 fun RenderContext.radioGroupDemo() {
     data class Plan(val name: String, val ram: String, val cpus: String, val disk: String, val price: String)
 
@@ -30,21 +29,29 @@ fun RenderContext.radioGroupDemo() {
             div("space-y-1") {
                 plans.forEach { option ->
                     radioGroupOption(option, "first:rounded-t-md last:rounded-b-md", option.name) {
-                        className(selected.map {
-                            if (it) "bg-primary-700 hover:none text-white"
-                            else "bg-primary-100 hover:bg-primary-200 text-primary-800"
-                        })
+                        className(
+                            selected.map {
+                                if (it) {
+                                    "bg-primary-700 hover:none text-white"
+                                } else {
+                                    "bg-primary-100 hover:bg-primary-200 text-primary-800"
+                                }
+                            },
+                        )
 
                         radioGroupOptionToggle(
                             """grid grid-rows-2 grid-cols-[auto_1fr_auto] gap-1 py-4 pl-3 pr-5 
                                 | text-base font-sans rounded-md cursor-pointer
-                                | focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600""".trimMargin()
+                                | focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600
+                            """.trimMargin(),
                         ) {
                             div("row-span-2 pr-2") {
                                 div("flex items-center justify-center w-6 h-6 rounded-full") {
-                                    className(selected.map {
-                                        if(it) "bg-primary-800" else "bg-white"
-                                    })
+                                    className(
+                                        selected.map {
+                                            if (it) "bg-primary-800" else "bg-white"
+                                        },
+                                    )
                                     span("h-3 w-3 bg-white rounded-full") {}
                                 }
                             }
@@ -68,7 +75,7 @@ fun RenderContext.radioGroupDemo() {
 
         div(
             "bg-primary-100 mt-4 p-2.5 rounded ring-2 ring-primary-500 text-sm text-primary-800 shadow-sm",
-            id = "result"
+            id = "result",
         ) {
             span("font-medium") { +"Selected: " }
             span { choice.data.filterNotNull().map { "${it.name} ${it.cpus} ${it.ram} ${it.price}/mo" }.renderText() }
