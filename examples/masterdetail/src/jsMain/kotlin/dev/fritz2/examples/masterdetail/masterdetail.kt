@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package dev.fritz2.examples.masterdetail
 
 import dev.fritz2.core.*
@@ -13,7 +15,7 @@ import org.w3c.dom.get
 
 val numberFormat = lensOf(Int::toString, String::toInt)
 
-const val personPrefix = "dev.fritz2.examples.masterdetail.person"
+const val PERSON_PREFIX = "dev.fritz2.examples.masterdetail.person"
 
 object MasterStore : RootStore<List<Person>>(emptyList()) {
 
@@ -21,7 +23,7 @@ object MasterStore : RootStore<List<Person>>(emptyList()) {
         buildList {
             for (index in 0 until window.localStorage.length) {
                 val key = window.localStorage.key(index)
-                if (key != null && key.startsWith(personPrefix)) {
+                if (key != null && key.startsWith(PERSON_PREFIX)) {
                     add(Person.deserialize(window.localStorage[key]!!))
                 }
             }
@@ -29,7 +31,7 @@ object MasterStore : RootStore<List<Person>>(emptyList()) {
     }
 
     val delete = handle<String> { persons, id ->
-        window.localStorage.removeItem("$personPrefix.$id")
+        window.localStorage.removeItem("$PERSON_PREFIX.$id")
         persons.filterNot { it.id == id }
     }
 
@@ -46,23 +48,23 @@ object DetailStore : RootStore<Person>(Person()) {
     val load = handle<String> { _, id ->
         history.clear()
         Person.deserialize(
-            window.localStorage["$personPrefix.$id"]
+            window.localStorage["$PERSON_PREFIX.$id"]
                 ?: throw NoSuchElementException("person with id ($id) does not exist"),
         )
     }
 
     val addOrUpdate = handle { person ->
-        running.track() {
+        running.track {
             delay(1500)
             person.copy(saved = true).also { dirtyPerson ->
-                window.localStorage.setItem("$personPrefix.${dirtyPerson.id}", Person.serialize(dirtyPerson))
+                window.localStorage.setItem("$PERSON_PREFIX.${dirtyPerson.id}", Person.serialize(dirtyPerson))
             }.also { MasterStore.query() }
         }
     }
 
     val delete = handle { person ->
         history.clear()
-        window.localStorage.removeItem("$personPrefix.${person.id}")
+        window.localStorage.removeItem("$PERSON_PREFIX.${person.id}")
             .also { MasterStore.query() }
         Person()
     }

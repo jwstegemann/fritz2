@@ -1,3 +1,5 @@
+@file:Suppress("MaxLineLength")
+
 package dev.fritz2.headlessdemo
 
 import dev.fritz2.core.Id
@@ -27,6 +29,7 @@ data class Address(
     companion object
 }
 
+@Suppress("LargeClass")
 object FakePersons {
     operator fun invoke(size: Int = 50) = ONETHOUSAND_FAKE_PERSONS
         .split('\n')

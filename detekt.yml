@@ -1,3 +1,7 @@
+complexity:
+  LongMethod:
+    active: false
+
 formatting:
   Filename:
     active: false

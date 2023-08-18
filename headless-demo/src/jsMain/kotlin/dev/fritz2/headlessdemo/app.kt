@@ -95,12 +95,12 @@ val pages: Map<String, Page> = mapOf(
     ),
     "tooltip" to DemoPage(
         "Headless Tooltip",
-        """Some information that is displayed, whenever you hover a target element using your pointer device.""".trimMargin(),
+        "Some information that is displayed, whenever you hover a target element using your pointer device.",
         RenderContext::tooltipDemo,
     ),
     "toast" to DemoPage(
         "Headless Toast",
-        """Display notification-like content in arbitrary positions on the screen.""".trimMargin(),
+        "Display notification-like content in arbitrary positions on the screen.",
         RenderContext::toastDemo,
     ),
     "focus" to TestDrive(RenderContext::testTrapFocus),

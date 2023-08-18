@@ -291,7 +291,11 @@ fun RenderContext.testTrapFocus() {
                             div("flex flex-col gap-2") {
                                 className(
                                     innerToggle.data.map {
-                                        if (it) "border rounded-md shadow-lg ring-1 ring-black ring-opacity-5 p-2" else ""
+                                        if (it) {
+                                            "border rounded-md shadow-lg ring-1 ring-black ring-opacity-5 p-2"
+                                        } else {
+                                            ""
+                                        }
                                     },
                                 )
                                 trapFocusWhenever(innerToggle.data)

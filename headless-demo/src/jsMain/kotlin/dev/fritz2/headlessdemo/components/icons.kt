@@ -1,3 +1,5 @@
+@file:Suppress("MaxLineLength")
+
 package dev.fritz2.headlessdemo.components
 
 import dev.fritz2.core.RenderContext
@@ -23,6 +25,7 @@ fun RenderContext.icon(classes: String? = null, id: String? = null, content: Str
  * Icon definitions from the fantastic [heroicons](https://heroicons.com)
  * License: https://github.com/tailwindlabs/heroicons/blob/master/LICENSE
  */
+@Suppress("LargeClass")
 object HeroIcons {
     val academic_cap = """
     <path d="M12 14L21 9L12 4L3 9L12 14Z"/>
