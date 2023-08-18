@@ -1,11 +1,9 @@
 package dev.fritz2.headlessdemo.components
 
-
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.placeholder
 import dev.fritz2.core.type
 import dev.fritz2.headless.components.tooltip
-
 
 fun RenderContext.tooltipButton(idPrefix: String) {
     button(
@@ -14,8 +12,9 @@ fun RenderContext.tooltipButton(idPrefix: String) {
             | border border-transparent 
             | text-sm text-white 
             | hover:bg-primary-900 
-            | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin(),
-        id = "$idPrefix-reference"
+            | focus:outline-none focus:ring-4 focus:ring-primary-600
+        """.trimMargin(),
+        id = "$idPrefix-reference",
     ) {
         +"Some Button"
     }.tooltip("px-2 py-1 bg-slate-400 rounded text-sm text-white", id = "$idPrefix-tooltip") {
@@ -31,8 +30,9 @@ fun RenderContext.tooltipInput(idPrefix: String) {
             | border border-primary-600
             | font-sans text-sm text-primary-800 placeholder:text-slate-400 
             | hover:border-primary-800 
-            | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800""".trimMargin(),
-        id = "$idPrefix-reference"
+            | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800
+        """.trimMargin(),
+        id = "$idPrefix-reference",
     ) {
         placeholder("some input")
         type("text")

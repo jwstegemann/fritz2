@@ -9,9 +9,7 @@ import dev.fritz2.headlessdemo.result
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 
-
 fun RenderContext.listboxDemo() {
-
     val characters = listOf(
         "Luke" to true,
         "Leia" to false,
@@ -20,7 +18,7 @@ fun RenderContext.listboxDemo() {
         "C3-PO" to false,
         "R2-D2" to true,
         "Vader" to false,
-        "Thrawn" to false
+        "Thrawn" to false,
     )
 
     val bestCharacter = storeOf("Luke", id = "starwars")
@@ -35,7 +33,8 @@ fun RenderContext.listboxDemo() {
                     | border border-primary-600 
                     | font-sans text-sm text-left text-primary-800
                     | hover:border-primary-800 
-                    | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800""".trimMargin()
+                    | focus:outline-none focus:ring-4 focus:ring-primary-600 focus:border-primary-800
+                """.trimMargin(),
             ) {
                 span("block truncate w-full") {
                     value.data.renderText()
@@ -47,19 +46,21 @@ fun RenderContext.listboxDemo() {
                 """w-full max-h-60 py-1 overflow-auto origin-top  
                     | bg-white rounded shadow-md divide-y divide-gray-100
                     | ring-1 ring-primary-600 ring-opacity-5 
-                    | focus:outline-none""".trimMargin(),
-                        tag = RenderContext::ul
+                    | focus:outline-none
+                """.trimMargin(),
+                tag = RenderContext::ul,
             ) {
                 placement = Placement.bottomStart
                 distance = 5
 
-                transition(opened,
+                transition(
+                    opened,
                     "transition duration-100 ease-out",
                     "opacity-0 scale-95",
                     "opacity-100 scale-100",
                     "transition duration-100 ease-in",
                     "opacity-100 scale-100",
-                    "opacity-0 scale-95"
+                    "opacity-0 scale-95",
                 )
 
                 characters.forEach { (entry, disabledState) ->
@@ -67,16 +68,19 @@ fun RenderContext.listboxDemo() {
                         entry,
                         """w-full relative py-2 pl-10 pr-4
                             | cursor-default select-none disabled:opacity-50
-                            | text-sm""".trimMargin(),
-                        tag = RenderContext::li
+                            | text-sm
+                        """.trimMargin(),
+                        tag = RenderContext::li,
                     ) {
-                        className(active.combine(disabled) { a, d ->
-                            if (a && !d) {
-                                "bg-primary-600 text-white"
-                            } else {
-                                if (d) "text-slate-400" else "text-primary-800"
-                            }
-                        })
+                        className(
+                            active.combine(disabled) { a, d ->
+                                if (a && !d) {
+                                    "bg-primary-600 text-white"
+                                } else {
+                                    if (d) "text-slate-400" else "text-primary-800"
+                                }
+                            },
+                        )
 
                         disable(disabledState)
 

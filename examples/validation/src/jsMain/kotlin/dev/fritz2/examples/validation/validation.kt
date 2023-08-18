@@ -17,14 +17,19 @@ object PersonListStore : RootStore<List<Person>>(emptyList()) {
 }
 
 object PersonStore : ValidatingStore<Person, Unit, Message>(
-    Person(), personValidator, metadataDefault = Unit, id = Person.id
+    Person(),
+    personValidator,
+    metadataDefault = Unit,
+    id = Person.id,
 ) {
     val save = handle { person ->
         if (validate(person, Unit).valid) {
             PersonListStore.add(person)
             cleanUpValMessages()
             Person()
-        } else person
+        } else {
+            person
+        }
     }
 }
 
@@ -46,7 +51,7 @@ fun RenderContext.details() {
                 div {
                     formInput("Name", name)
 
-                    //salary
+                    // salary
                     div("form-group") {
                         label {
                             `for`(salary.id)
@@ -68,7 +73,7 @@ fun RenderContext.details() {
                         }
                     }
 
-                    //birthday
+                    // birthday
                     div("form-group") {
                         label {
                             `for`(birthday.id)
@@ -145,7 +150,7 @@ fun RenderContext.table() {
                     tbody {
                         PersonListStore.data.renderEach { person ->
                             val completeAddress = "${person.address.street} ${person.address.number}, " +
-                                    "${person.address.postalCode} ${person.address.city}"
+                                "${person.address.postalCode} ${person.address.city}"
                             val selectedActivities = person.activities.filter { it.like }.joinToString { it.name }
 
                             tr {
@@ -186,7 +191,7 @@ fun RenderContext.formInput(
     label: String,
     subStore: Store<String>,
     inputType: String = "text",
-    extraClass: String = ""
+    extraClass: String = "",
 ) {
     div("form-group $extraClass") {
         label {
@@ -224,7 +229,6 @@ fun RenderContext.activityCheckbox(activity: Store<Activity>): HtmlTag<HTMLDivEl
 }
 
 fun main() {
-
     render("#target") {
         section {
             div("row") {
@@ -235,7 +239,6 @@ fun main() {
             }
         }
     }
-
 
     // adding bootstrap css classes to the validated elements
     PersonStore.messages.valid.combine(PersonStore.messages) { isValid, msgs ->

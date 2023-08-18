@@ -17,7 +17,6 @@ object Roles {
 }
 
 fun main() {
-
     val router = routerOf(mapOf("page" to Pages.home))
 
     render("#target") {
@@ -36,49 +35,55 @@ fun main() {
                 div("collapse navbar-collapse", id = "navbarContent") {
                     ul("navbar-nav mr-auto") {
                         li("btn nav-item") {
-                            className(router.data.map {
-                                if (it.containsValue(Pages.home)) "active" else ""
-                            })
+                            className(
+                                router.data.map {
+                                    if (it.containsValue(Pages.home)) "active" else ""
+                                },
+                            )
 
                             a("nav-link") {
                                 +Pages.home
 
                                 clicks.map {
                                     mapOf(
-                                            "page" to Pages.home
+                                        "page" to Pages.home,
                                     )
                                 } handledBy router.navTo
                             }
                         }
                         li("btn nav-item") {
-                            className(router.data.map {
-                                if (it.containsValue(Pages.show)) "active" else ""
-                            })
+                            className(
+                                router.data.map {
+                                    if (it.containsValue(Pages.show)) "active" else ""
+                                },
+                            )
 
                             a("nav-link") {
                                 +Pages.show
 
                                 clicks.map {
                                     mapOf(
-                                            "page" to Pages.show,
-                                            "extra" to "extra text"
+                                        "page" to Pages.show,
+                                        "extra" to "extra text",
                                     )
                                 } handledBy router.navTo
                             }
                         }
                         li("btn nav-item") {
-                            className(router.data.map {
-                                if (it.containsValue(Pages.change)) "active" else ""
-                            })
+                            className(
+                                router.data.map {
+                                    if (it.containsValue(Pages.change)) "active" else ""
+                                },
+                            )
 
                             a("nav-link") {
                                 +Pages.change
 
                                 clicks.map {
                                     mapOf(
-                                            "page" to Pages.change,
-                                            "debug" to false.toString(),
-                                            "role" to Roles.anonymous
+                                        "page" to Pages.change,
+                                        "debug" to false.toString(),
+                                        "role" to Roles.anonymous,
                                     )
                                 } handledBy router.navTo
                             }
@@ -98,7 +103,8 @@ fun main() {
                                     +"""|Lorem ipsum dolor sit amet, consetetur sadipscing elitr,
                                         |sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
                                         |sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. 
-                                        |Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.""".trimMargin()
+                                        |Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+                                    """.trimMargin()
                                 }
                             }
                         Pages.show ->

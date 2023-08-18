@@ -41,7 +41,7 @@ kotlin {
  * KSP support - start
  */
 dependencies {
-    add("kspCommonMainMetadata",  project(":lenses-annotation-processor"))
+    add("kspCommonMainMetadata", project(":lenses-annotation-processor"))
 }
 kotlin.sourceSets.commonMain { kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin") }
 tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().all {

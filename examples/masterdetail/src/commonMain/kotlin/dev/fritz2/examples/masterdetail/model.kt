@@ -12,7 +12,7 @@ data class Person(
     val name: String = "",
     val age: Int = 0,
     val salary: Int = 0,
-    val saved: Boolean = false
+    val saved: Boolean = false,
 ) {
     companion object {
         fun deserialize(source: String): Person = Json.decodeFromString(serializer(), source)

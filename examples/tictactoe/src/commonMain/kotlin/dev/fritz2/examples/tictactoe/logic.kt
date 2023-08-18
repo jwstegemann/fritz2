@@ -27,7 +27,7 @@ class Engine {
             listOf(1, 4, 7),
             listOf(2, 5, 8),
             listOf(0, 4, 8),
-            listOf(2, 4, 6)
+            listOf(2, 4, 6),
         )
 
         private fun markWinningCells(state: GameState, field: Field): Field {
@@ -37,8 +37,9 @@ class Engine {
             return field.map { cell ->
                 if (winningFields.contains(cell.id)) {
                     cell.copy(isInWinningGroup = true)
-                } else
+                } else {
                     cell
+                }
             }
         }
     }

@@ -11,7 +11,6 @@ import kotlin.js.Date
 
 @FlowPreview
 fun main() {
-
     val startStore = object : RootStore<Int>(1000, "start") {
 
         val start = handleAndEmit<Int> { maxCount ->
@@ -19,8 +18,9 @@ fun main() {
             for (i in 0..maxCount) {
                 delay(1)
                 emit(i)
-                if(i == maxCount)
+                if (i == maxCount) {
                     window.alert("Duration: ${Date().getTime() - now.getTime()} ms")
+                }
             }
             maxCount
         }
@@ -45,7 +45,6 @@ fun main() {
 
     render("#target") {
         div("form-group") {
-
             div("form-group") {
                 label {
                     `for`(startStore.id)
@@ -64,7 +63,7 @@ fun main() {
                     set(key, "$it")
                 }) {
                     +"number of updates: $it"
-                    clicks handledBy startStore.dummyHandler //register dummy handler
+                    clicks handledBy startStore.dummyHandler // register dummy handler
                     span {
                         scope.asDataAttr()
                     }
@@ -74,11 +73,13 @@ fun main() {
             div("progress") {
                 div("progress-bar") {
                     attr("role", "progressbar")
-                    inlineStyle(countStore.data
-                        .sample(1000)
-                        .combine(startStore.data) { count, maxIterations ->
-                        "width: ${(count.toDouble() / maxIterations) * 100}%;"
-                    })
+                    inlineStyle(
+                        countStore.data
+                            .sample(1000)
+                            .combine(startStore.data) { count, maxIterations ->
+                                "width: ${(count.toDouble() / maxIterations) * 100}%;"
+                            },
+                    )
                 }
             }
 
@@ -86,7 +87,7 @@ fun main() {
 
             button("btn btn-primary mr-2") {
                 +"Start"
-                className(isFinished.map { if(it) ".d-none" else "" })
+                className(isFinished.map { if (it) ".d-none" else "" })
 
                 clicks handledBy startStore.start
             }
@@ -95,7 +96,6 @@ fun main() {
 
                 clicks.map { 0 } handledBy countStore.update
             }
-
         }
     }
 }

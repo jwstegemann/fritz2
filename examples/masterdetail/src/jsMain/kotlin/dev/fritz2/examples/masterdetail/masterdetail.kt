@@ -29,7 +29,7 @@ object MasterStore : RootStore<List<Person>>(emptyList()) {
     }
 
     val delete = handle<String> { persons, id ->
-        window.localStorage.removeItem("${personPrefix}.$id")
+        window.localStorage.removeItem("$personPrefix.$id")
         persons.filterNot { it.id == id }
     }
 
@@ -46,8 +46,8 @@ object DetailStore : RootStore<Person>(Person()) {
     val load = handle<String> { _, id ->
         history.clear()
         Person.deserialize(
-            window.localStorage["${personPrefix}.$id"]
-                ?: throw NoSuchElementException("person with id ($id) does not exist")
+            window.localStorage["$personPrefix.$id"]
+                ?: throw NoSuchElementException("person with id ($id) does not exist"),
         )
     }
 
@@ -55,14 +55,14 @@ object DetailStore : RootStore<Person>(Person()) {
         running.track() {
             delay(1500)
             person.copy(saved = true).also { dirtyPerson ->
-                window.localStorage.setItem("${personPrefix}.${dirtyPerson.id}", Person.serialize(dirtyPerson))
+                window.localStorage.setItem("$personPrefix.${dirtyPerson.id}", Person.serialize(dirtyPerson))
             }.also { MasterStore.query() }
         }
     }
 
     val delete = handle { person ->
         history.clear()
-        window.localStorage.removeItem("${personPrefix}.${person.id}")
+        window.localStorage.removeItem("$personPrefix.${person.id}")
             .also { MasterStore.query() }
         Person()
     }
@@ -124,7 +124,6 @@ fun RenderContext.table() {
     }
 }
 
-
 /*
  * Details-View
  */
@@ -148,9 +147,11 @@ fun RenderContext.details() {
             div("card-footer") {
                 button("btn btn-success") {
                     span {
-                        className(DetailStore.running.data.map {
-                            if (it) "spinner-border spinner-border-sm mr-2" else ""
-                        })
+                        className(
+                            DetailStore.running.data.map {
+                                if (it) "spinner-border spinner-border-sm mr-2" else ""
+                            },
+                        )
                     }
                     DetailStore.isSaved.map { if (it) "Save" else "Add" }.renderText()
 
@@ -162,9 +163,11 @@ fun RenderContext.details() {
                     clicks handledBy DetailStore.delete
                 }
                 button("btn btn-warning ml-2") {
-                    className(DetailStore.history.data.combine(DetailStore.data) { history, value ->
-                        history.isNotEmpty() && history.first() != value
-                    }.map { if (it) "" else "d-none" })
+                    className(
+                        DetailStore.history.data.combine(DetailStore.data) { history, value ->
+                            history.isNotEmpty() && history.first() != value
+                        }.map { if (it) "" else "d-none" },
+                    )
                     +"Undo"
                     clicks handledBy DetailStore.undo
                 }
@@ -199,7 +202,7 @@ fun RenderContext.formGroup(
     cssClassName: Flow<String>? = null,
     handleChanges: HtmlTag<HTMLInputElement>.(Store<String>) -> Unit = {
         changes.values() handledBy store.update
-    }
+    },
 ) {
     div("form-group") {
         cssClassName?.apply { className(this) }

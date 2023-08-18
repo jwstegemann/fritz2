@@ -10,7 +10,7 @@ typealias Field = List<Cell>
 data class GameState(
     val field: Field = (0..8).map { Cell(it, "") },
     val player: String = "X",
-    val messages: List<GameEndMessage> = emptyList()
+    val messages: List<GameEndMessage> = emptyList(),
 ) {
     companion object {
         fun isFull(field: Field) = field.all { !it.isBlank }

@@ -7,7 +7,6 @@ import dev.fritz2.core.values
 import dev.fritz2.remote.http
 
 fun main() {
-
     val userStore = object : RootStore<String>("") {
 
         val users = http("https://reqres.in/api/users")
@@ -27,7 +26,7 @@ fun main() {
                         "name": "$s",
                         "job": "programmer"
                     }
-                """.trimIndent()
+                """.trimIndent(),
             )
                 .contentType("application/json; charset=utf-8")
                 .acceptJson().post().body()

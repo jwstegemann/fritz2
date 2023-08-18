@@ -4,13 +4,11 @@ apply(plugin = "maven-publish")
 apply(plugin = "signing")
 apply(plugin = "org.jetbrains.dokka")
 
-
 fun Project.signing(configure: SigningExtension.() -> Unit): Unit =
     configure(configure)
 
 fun Project.publishing(action: PublishingExtension.() -> Unit) =
     configure(action)
-
 
 signing {
     val signingKey: String = System.getenv("GPG_SIGNING_KEY").orEmpty()
