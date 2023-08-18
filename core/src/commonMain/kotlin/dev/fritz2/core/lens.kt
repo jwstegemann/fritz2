@@ -137,9 +137,11 @@ fun <T, I> lensForElement(element: T, idProvider: IdProvider<T, I>): Lens<List<T
         }
         if (count == 0) {
             throw CollectionLensSetException("no item found with id='${idProvider(element)}'")
-        } else if (count > 1) throw CollectionLensSetException(
-            "$count ambiguous items found with id='${idProvider(element)}'"
-        )
+        } else if (count > 1) {
+            throw CollectionLensSetException(
+                "$count ambiguous items found with id='${idProvider(element)}'"
+            )
+        }
     }
 }
 
@@ -158,7 +160,7 @@ fun <T> lensForElement(index: Int): Lens<List<T>, T> = object : Lens<List<T>, T>
         if (index < 0 || index >= parent.size) {
             throw CollectionLensSetException("no item found with index='$index'")
         } else {
-            parent.mapIndexed { i, it -> if (i == index) value else it }
+            parent.mapIndexed { i, x -> if (i == index) value else x }
         }
 }
 

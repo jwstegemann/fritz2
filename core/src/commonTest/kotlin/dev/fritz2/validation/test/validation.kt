@@ -1,5 +1,7 @@
 // package name conflict when test-package is equal to main-package
 // do not change until it is fixed by Jetbrains
+@file:Suppress("TopLevelPropertyNaming")
+
 package dev.fritz2.validation.test
 
 import dev.fritz2.core.Lens
@@ -51,9 +53,9 @@ data class Color(val r: Int, val g: Int, val b: Int) {
     }
 }
 
-val carNameIsBlank = "car name can not be blank"
-val colorValuesAreTooLow = "color members are lower then 0"
-val colorValuesAreTooHigh = "color members are greater then 255"
+const val carNameIsBlank = "car name can not be blank"
+const val colorValuesAreTooLow = "color members are lower then 0"
+const val colorValuesAreTooHigh = "color members are greater then 255"
 
 // Would be some type from a dedicated date-library of course!
 data class LocalDate(val year: Int, val month: Int, val day: Int) {

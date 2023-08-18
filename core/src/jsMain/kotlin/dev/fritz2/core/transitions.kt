@@ -118,6 +118,7 @@ fun Tag<HTMLElement>.transition(transition: Transition) {
  * @param leaveEnd optional classes to define the end point of the leave-transition
  * @receiver the [Tag] the transition will be applied to
  */
+@Suppress("LongParameterList")
 fun Tag<HTMLElement>.transition(
     enter: String? = null,
     enterStart: String? = null,
@@ -174,6 +175,7 @@ fun Tag<HTMLElement>.transition(on: Flow<Boolean>, transition: Transition) {
  * @param leaveEnd optional classes to define the end point of the leave-transition
  * @receiver the [Tag] the transition will be applied to
  */
+@Suppress("LongParameterList")
 fun Tag<HTMLElement>.transition(
     on: Flow<Boolean>,
     enter: String? = null,

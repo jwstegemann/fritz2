@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 package dev.fritz2.core
 
 import kotlinx.browser.document

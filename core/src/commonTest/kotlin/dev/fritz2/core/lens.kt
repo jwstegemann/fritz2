@@ -12,7 +12,7 @@ class LensesTests {
     private val heightLens = lensOf(Size::height.name, Size::height) { p, v -> p.copy(height = v) }
     private val ageLens = lensOf(Tree::age.name, Tree::age) { p, v -> p.copy(age = v) }
     private val sizeLens = lensOf(Tree::size.name, Tree::size) { p, v -> p.copy(size = v) }
-    private val tagLens = lensOf(Tree::tags.name, Tree::tags) { p, v -> p.copy(tags = v) }
+    // private val tagLens = lensOf(Tree::tags.name, Tree::tags) { p, v -> p.copy(tags = v) }
 
     @Test
     fun testFormatLens() {

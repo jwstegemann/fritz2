@@ -1,4 +1,4 @@
-@file:Suppress("unused")
+@file:Suppress("unused", "TooManyFunctions")
 
 package dev.fritz2.core
 
