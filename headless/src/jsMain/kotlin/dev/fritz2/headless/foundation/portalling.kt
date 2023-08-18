@@ -15,8 +15,8 @@ const val PORTALLING_MODAL_ZINDEX = 10
 const val PORTALLING_POPUP_ZINDEX = 30
 const val PORTALLING_TOAST_ZINDEX = 50
 
-
 private val portalRootId by lazy { "portal-root".also { addGlobalStyle("#$it { display: contents; }") } }
+
 private val portalContainerClass by lazy {
     "portal-container".also {
         addGlobalStyles(
@@ -52,9 +52,6 @@ private data class PortalContainer<C : HTMLElement>(
             content.invoke(this) { remove.invoke() }
         }
 }
-
-
-
 
 /**
  * Ein PortalRoot wird benötigt, um alle Overlays darin zu rendern. Sollte als letztes Element `document.body` stehen
@@ -94,10 +91,9 @@ internal object PortalRenderContext : HtmlTag<HTMLDivElement>("div", portalRootI
     }
 }
 
-
 /**
  * With Portalling a rendered overlay will be rendered outside of the clipping ancestors to avoid clipping.
- * Therefore a [portalRoot] is needed as last element in the document.body.
+ * Therefore, a [portalRoot] is needed as last element in the document.body.
  *
  * See https://floating-ui.com/docs/misc#clipping for more information.
  *
@@ -117,7 +113,6 @@ fun <C : HTMLElement> Tag<HTMLElement>.portalContainer(
     // toasts and modals are rendered directly into the PortalRenderContext, they do not need a reference
     val reference = if (this != PortalRenderContext) this else null
 
-
     PortalStack.add(
         PortalContainer(
             classes = classes,
@@ -131,7 +126,6 @@ fun <C : HTMLElement> Tag<HTMLElement>.portalContainer(
     )
 }
 
-
 /**
  * @see portalContainer
  */
@@ -142,4 +136,3 @@ fun Tag<HTMLElement>.portalContainer(
     zIndex: Int,
     content: Tag<HTMLDivElement>.(close: suspend (Unit) -> Unit) -> Unit,
 ) = portalContainer(classes, id, scope, RenderContext::div, zIndex, content)
-

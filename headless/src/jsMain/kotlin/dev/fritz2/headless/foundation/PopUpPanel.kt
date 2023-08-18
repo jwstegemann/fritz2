@@ -177,7 +177,6 @@ abstract class PopUpPanel<C : HTMLElement>(
         addMiddleware(flip())
     }
 
-
     fun addMiddleware(middleware: Middleware) {
         this.middleware = (this.middleware ?: emptyArray()) + middleware
     }
@@ -193,7 +192,6 @@ abstract class PopUpPanel<C : HTMLElement>(
         }
     }
 
-
     private val computePosition = {
         reference?.let {
             computePosition(reference.domNode, popupDiv.domNode, config)
@@ -203,14 +201,11 @@ abstract class PopUpPanel<C : HTMLElement>(
 
     open fun render() {
         if (reference != null) {
-
-
             val cleanup =
                 autoUpdate(reference.domNode, popupDiv.domNode, options = obj { animationFrame = true },
                     update = { computePosition() })
             afterMount { _, _ -> computePosition() }
             job.invokeOnCompletion { cleanup.invoke() }
-
 
             popupDiv.apply {
                 attr("data-popup-placement", computedPos.map { it.placement ?: "" })
@@ -232,7 +227,6 @@ abstract class PopUpPanel<C : HTMLElement>(
                 attr(Aria.controls, this@PopUpPanel.id.whenever(opened))
                 attrIfNotSet(Aria.haspopup, ariaHasPopup)
             }
-
 
             opened handledBy {
                 if (it) {

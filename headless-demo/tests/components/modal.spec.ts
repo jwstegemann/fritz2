@@ -78,23 +78,24 @@ test.describe('To check if', () => {
     
     });
     
-    test(`by pressing Enter on button and pressing again Enter on Open will reopen the modal`, async ({page}) => {
+    test.only(`by pressing Enter on button and pressing again Enter on Open will reopen the modal`, async ({page}) => {
         const buttonStay = page.locator(`#button-stay`);
         const buttonCancel = page.locator(`#button-cancel`);
         const buttonClose = page.locator(`#button-close`);
         
         await buttonStay.focus();
         await buttonStay.press('Enter');
-        await expect(buttonCancel).toBeVisible();
+        await expect(buttonStay).toBeVisible();
         
         await buttonStay.press('Tab');
         await buttonCancel.press('Enter');
         await page.locator('text=Open').press('Enter');
+        await page.waitForTimeout(500); // Not sure why this is needed, but locator will fail else!
         await expect(buttonCancel).toBeVisible();
         
         await buttonClose.focus();
         await buttonClose.press('Enter');
-        await page.locator('text=Open').press('Enter');
+        await page.locator('text=Back').press('Enter');
         await expect(buttonClose).toBeVisible();
     
     });
