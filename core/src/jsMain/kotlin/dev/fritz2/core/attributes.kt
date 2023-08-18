@@ -454,11 +454,27 @@ fun Tag<HTMLIFrameElement>.srcdoc(value: Flow<String>) = attr("srcdoc", value)
 fun Tag<HTMLIFrameElement>.name(value: String) = attr("name", value)
 fun Tag<HTMLIFrameElement>.name(value: Flow<String>) = attr("name", value)
 
-fun Tag<HTMLIFrameElement>.allowFullscreen(value: Boolean, trueValue: String = "") = attr("allowfullscreen", value, trueValue)
-fun Tag<HTMLIFrameElement>.allowFullscreen(value: Flow<Boolean>, trueValue: String = "") = attr("allowfullscreen", value, trueValue)
+fun Tag<HTMLIFrameElement>.allowFullscreen(value: Boolean, trueValue: String = "") = attr(
+    "allowfullscreen",
+    value,
+    trueValue
+)
+fun Tag<HTMLIFrameElement>.allowFullscreen(value: Flow<Boolean>, trueValue: String = "") = attr(
+    "allowfullscreen",
+    value,
+    trueValue
+)
 
-fun Tag<HTMLIFrameElement>.allowUserMedia(value: Boolean, trueValue: String = "") = attr("allowusermedia", value, trueValue)
-fun Tag<HTMLIFrameElement>.allowUserMedia(value: Flow<Boolean>, trueValue: String = "") = attr("allowusermedia", value, trueValue)
+fun Tag<HTMLIFrameElement>.allowUserMedia(value: Boolean, trueValue: String = "") = attr(
+    "allowusermedia",
+    value,
+    trueValue
+)
+fun Tag<HTMLIFrameElement>.allowUserMedia(value: Flow<Boolean>, trueValue: String = "") = attr(
+    "allowusermedia",
+    value,
+    trueValue
+)
 
 fun Tag<HTMLIFrameElement>.width(value: String) = attr("width", value)
 fun Tag<HTMLIFrameElement>.width(value: Flow<String>) = attr("width", value)
@@ -517,8 +533,16 @@ fun Tag<HTMLObjectElement>.data(value: Flow<String>) = attr("data", value)
 fun Tag<HTMLObjectElement>.type(value: String) = attr("type", value)
 fun Tag<HTMLObjectElement>.type(value: Flow<String>) = attr("type", value)
 
-fun Tag<HTMLObjectElement>.typeMustMatch(value: Boolean, trueValue: String = "") = attr("typemustmatch", value, trueValue)
-fun Tag<HTMLObjectElement>.typeMustMatch(value: Flow<Boolean>, trueValue: String = "") = attr("typemustmatch", value, trueValue)
+fun Tag<HTMLObjectElement>.typeMustMatch(value: Boolean, trueValue: String = "") = attr(
+    "typemustmatch",
+    value,
+    trueValue
+)
+fun Tag<HTMLObjectElement>.typeMustMatch(value: Flow<Boolean>, trueValue: String = "") = attr(
+    "typemustmatch",
+    value,
+    trueValue
+)
 
 fun Tag<HTMLObjectElement>.name(value: String) = attr("name", value)
 fun Tag<HTMLObjectElement>.name(value: Flow<String>) = attr("name", value)
@@ -590,7 +614,11 @@ fun Tag<HTMLVideoElement>.poster(value: String) = attr("poster", value)
 fun Tag<HTMLVideoElement>.poster(value: Flow<String>) = attr("poster", value)
 
 fun Tag<HTMLVideoElement>.playsInline(value: Boolean, trueValue: String = "") = attr("playsinline", value, trueValue)
-fun Tag<HTMLVideoElement>.playsInline(value: Flow<Boolean>, trueValue: String = "") = attr("playsinline", value, trueValue)
+fun Tag<HTMLVideoElement>.playsInline(value: Flow<Boolean>, trueValue: String = "") = attr(
+    "playsinline",
+    value,
+    trueValue
+)
 
 /*
  * HTMLTrackElement attributes
@@ -668,7 +696,11 @@ fun Tag<HTMLMediaElement>.muted(value: Flow<Boolean>, trueValue: String = "") {
 }
 
 fun Tag<HTMLMediaElement>.defaultMuted(value: Boolean, trueValue: String = "") = attr("defaultmuted", value, trueValue)
-fun Tag<HTMLMediaElement>.defaultMuted(value: Flow<Boolean>, trueValue: String = "") = attr("defaultmuted", value, trueValue)
+fun Tag<HTMLMediaElement>.defaultMuted(value: Flow<Boolean>, trueValue: String = "") = attr(
+    "defaultmuted",
+    value,
+    trueValue
+)
 
 /*
  * HTMLMapElement attributes
@@ -932,8 +964,16 @@ fun Tag<HTMLInputElement>.autocomplete(value: Flow<String>) = attr("autocomplete
 fun Tag<HTMLInputElement>.autofocus(value: Boolean, trueValue: String = "") = attr("autofocus", value, trueValue)
 fun Tag<HTMLInputElement>.autofocus(value: Flow<Boolean>, trueValue: String = "") = attr("autofocus", value, trueValue)
 
-fun Tag<HTMLInputElement>.defaultChecked(value: Boolean, trueValue: String = "") = attr("defaultchecked", value, trueValue)
-fun Tag<HTMLInputElement>.defaultChecked(value: Flow<Boolean>, trueValue: String = "") = attr("defaultchecked", value, trueValue)
+fun Tag<HTMLInputElement>.defaultChecked(value: Boolean, trueValue: String = "") = attr(
+    "defaultchecked",
+    value,
+    trueValue
+)
+fun Tag<HTMLInputElement>.defaultChecked(value: Flow<Boolean>, trueValue: String = "") = attr(
+    "defaultchecked",
+    value,
+    trueValue
+)
 
 fun Tag<HTMLInputElement>.checked(value: Boolean, trueValue: String = "") {
     domNode.checked = value
@@ -964,8 +1004,16 @@ fun Tag<HTMLInputElement>.formEnctype(value: Flow<String>) = attr("formenctype",
 fun Tag<HTMLInputElement>.formMethod(value: String) = attr("formmethod", value)
 fun Tag<HTMLInputElement>.formMethod(value: Flow<String>) = attr("formmethod", value)
 
-fun Tag<HTMLInputElement>.formNoValidate(value: Boolean, trueValue: String = "") = attr("formnovalidate", value, trueValue)
-fun Tag<HTMLInputElement>.formNoValidate(value: Flow<Boolean>, trueValue: String = "") = attr("formnovalidate", value, trueValue)
+fun Tag<HTMLInputElement>.formNoValidate(value: Boolean, trueValue: String = "") = attr(
+    "formnovalidate",
+    value,
+    trueValue
+)
+fun Tag<HTMLInputElement>.formNoValidate(value: Flow<Boolean>, trueValue: String = "") = attr(
+    "formnovalidate",
+    value,
+    trueValue
+)
 
 fun Tag<HTMLInputElement>.formTarget(value: String) = attr("formtarget", value)
 fun Tag<HTMLInputElement>.formTarget(value: Flow<String>) = attr("formtarget", value)
@@ -973,8 +1021,16 @@ fun Tag<HTMLInputElement>.formTarget(value: Flow<String>) = attr("formtarget", v
 fun Tag<HTMLInputElement>.height(value: Int) = attr("height", value)
 fun Tag<HTMLInputElement>.height(value: Flow<Int>) = attr("height", value)
 
-fun Tag<HTMLInputElement>.indeterminate(value: Boolean, trueValue: String = "") = attr("indeterminate", value, trueValue)
-fun Tag<HTMLInputElement>.indeterminate(value: Flow<Boolean>, trueValue: String = "") = attr("indeterminate", value, trueValue)
+fun Tag<HTMLInputElement>.indeterminate(value: Boolean, trueValue: String = "") = attr(
+    "indeterminate",
+    value,
+    trueValue
+)
+fun Tag<HTMLInputElement>.indeterminate(value: Flow<Boolean>, trueValue: String = "") = attr(
+    "indeterminate",
+    value,
+    trueValue
+)
 
 fun Tag<HTMLInputElement>.inputMode(value: String) = attr("inputmode", value)
 fun Tag<HTMLInputElement>.inputMode(value: Flow<String>) = attr("inputmode", value)
@@ -1076,8 +1132,16 @@ fun Tag<HTMLButtonElement>.formEnctype(value: Flow<String>) = attr("formenctype"
 fun Tag<HTMLButtonElement>.formMethod(value: String) = attr("formmethod", value)
 fun Tag<HTMLButtonElement>.formMethod(value: Flow<String>) = attr("formmethod", value)
 
-fun Tag<HTMLButtonElement>.formNoValidate(value: Boolean, trueValue: String = "") = attr("formnovalidate", value, trueValue)
-fun Tag<HTMLButtonElement>.formNoValidate(value: Flow<Boolean>, trueValue: String = "") = attr("formnovalidate", value, trueValue)
+fun Tag<HTMLButtonElement>.formNoValidate(value: Boolean, trueValue: String = "") = attr(
+    "formnovalidate",
+    value,
+    trueValue
+)
+fun Tag<HTMLButtonElement>.formNoValidate(value: Flow<Boolean>, trueValue: String = "") = attr(
+    "formnovalidate",
+    value,
+    trueValue
+)
 
 fun Tag<HTMLButtonElement>.formTarget(value: String) = attr("formtarget", value)
 fun Tag<HTMLButtonElement>.formTarget(value: Flow<String>) = attr("formtarget", value)
@@ -1145,8 +1209,16 @@ fun Tag<HTMLOptionElement>.disabled(value: Flow<Boolean>, trueValue: String = ""
 fun Tag<HTMLOptionElement>.label(value: String) = attr("label", value)
 fun Tag<HTMLOptionElement>.label(value: Flow<String>) = attr("label", value)
 
-fun Tag<HTMLOptionElement>.defaultSelected(value: Boolean, trueValue: String = "") = attr("defaultselected", value, trueValue)
-fun Tag<HTMLOptionElement>.defaultSelected(value: Flow<Boolean>, trueValue: String = "") = attr("defaultselected", value, trueValue)
+fun Tag<HTMLOptionElement>.defaultSelected(value: Boolean, trueValue: String = "") = attr(
+    "defaultselected",
+    value,
+    trueValue
+)
+fun Tag<HTMLOptionElement>.defaultSelected(value: Flow<Boolean>, trueValue: String = "") = attr(
+    "defaultselected",
+    value,
+    trueValue
+)
 
 fun Tag<HTMLOptionElement>.selected(value: Boolean, trueValue: String = "") {
     domNode.selected = value
@@ -1172,7 +1244,11 @@ fun Tag<HTMLTextAreaElement>.autocomplete(value: String) = attr("autocomplete", 
 fun Tag<HTMLTextAreaElement>.autocomplete(value: Flow<String>) = attr("autocomplete", value)
 
 fun Tag<HTMLTextAreaElement>.autofocus(value: Boolean, trueValue: String = "") = attr("autofocus", value, trueValue)
-fun Tag<HTMLTextAreaElement>.autofocus(value: Flow<Boolean>, trueValue: String = "") = attr("autofocus", value, trueValue)
+fun Tag<HTMLTextAreaElement>.autofocus(value: Flow<Boolean>, trueValue: String = "") = attr(
+    "autofocus",
+    value,
+    trueValue
+)
 
 fun Tag<HTMLTextAreaElement>.cols(value: Int) = attr("cols", value)
 fun Tag<HTMLTextAreaElement>.cols(value: Flow<Int>) = attr("cols", value)
@@ -1474,7 +1550,11 @@ fun Tag<HTMLMarqueeElement>.scrollDelay(value: Int) = attr("scrolldelay", value)
 fun Tag<HTMLMarqueeElement>.scrollDelay(value: Flow<Int>) = attr("scrolldelay", value)
 
 fun Tag<HTMLMarqueeElement>.trueSpeed(value: Boolean, trueValue: String = "") = attr("truespeed", value, trueValue)
-fun Tag<HTMLMarqueeElement>.trueSpeed(value: Flow<Boolean>, trueValue: String = "") = attr("truespeed", value, trueValue)
+fun Tag<HTMLMarqueeElement>.trueSpeed(value: Flow<Boolean>, trueValue: String = "") = attr(
+    "truespeed",
+    value,
+    trueValue
+)
 
 fun Tag<HTMLMarqueeElement>.vspace(value: Int) = attr("vspace", value)
 fun Tag<HTMLMarqueeElement>.vspace(value: Flow<Int>) = attr("vspace", value)

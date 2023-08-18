@@ -137,7 +137,9 @@ fun <T, I> lensForElement(element: T, idProvider: IdProvider<T, I>): Lens<List<T
         }
         if (count == 0) {
             throw CollectionLensSetException("no item found with id='${idProvider(element)}'")
-        } else if (count > 1) throw CollectionLensSetException("$count ambiguous items found with id='${idProvider(element)}'")
+        } else if (count > 1) throw CollectionLensSetException(
+            "$count ambiguous items found with id='${idProvider(element)}'"
+        )
     }
 }
 

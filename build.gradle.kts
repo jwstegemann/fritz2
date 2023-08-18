@@ -62,6 +62,7 @@ subprojects {
     apply(plugin = "io.gitlab.arturbosch.detekt")
 
     extensions.configure<DetektExtension>("detekt") {
+        autoCorrect = true
         source.setFrom(
             "src/commonMain/kotlin",
             "src/commonTest/kotlin",

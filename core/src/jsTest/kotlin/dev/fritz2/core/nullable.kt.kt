@@ -227,14 +227,22 @@ class NullableTests {
 
         assertEquals("$customerWithMail", renderedCustomerValue(), "wrong customer with mail after update")
         assertEquals(someMail, renderedMailValue(), "wrong mail value for customer with mail after update")
-        assertEquals(someMail, renderedMailValueWithDefault(), "wrong mail value with default for customer with mail after update")
+        assertEquals(
+            someMail,
+            renderedMailValueWithDefault(),
+            "wrong mail value with default for customer with mail after update"
+        )
 
         customerStore.update(customerWithoutMail)
         delay(100)
 
         assertEquals("$customerWithoutMail", renderedCustomerValue(), "wrong customer without mail after update")
         assertEquals("${null}", renderedMailValue(), "wrong mail value for customer without mail after update")
-        assertEquals(defaultMail, renderedMailValueWithDefault(), "wrong mail value with default for customer without mail after update")
+        assertEquals(
+            defaultMail,
+            renderedMailValueWithDefault(),
+            "wrong mail value with default for customer without mail after update"
+        )
 
         val setButton = document.getElementById(setMailId)
         assertNotNull(setButton, "customer content not rendered although not null")
@@ -244,7 +252,11 @@ class NullableTests {
 
         assertEquals("$customerWithMail", renderedCustomerValue(), "wrong customer with mail after update")
         assertEquals(someMail, renderedMailValue(), "wrong mail value for customer with mail after update")
-        assertEquals(someMail, renderedMailValueWithDefault(), "wrong mail value with default for customer with mail after update")
+        assertEquals(
+            someMail,
+            renderedMailValueWithDefault(),
+            "wrong mail value with default for customer with mail after update"
+        )
 
         val removeButton = document.getElementById(removeMailId)
         assertNotNull(removeButton, "customer content not rendered although not null")
@@ -254,6 +266,10 @@ class NullableTests {
 
         assertEquals("$customerWithoutMail", renderedCustomerValue(), "wrong customer without mail after remove")
         assertEquals("${null}", renderedMailValue(), "wrong mail value for customer without mail after remove")
-        assertEquals(defaultMail, renderedMailValueWithDefault(), "wrong mail value with default or customer without mail after remove")
+        assertEquals(
+            defaultMail,
+            renderedMailValueWithDefault(),
+            "wrong mail value with default or customer without mail after remove"
+        )
     }
 }

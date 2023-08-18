@@ -192,7 +192,11 @@ class StoreTests {
 
         flowOf(1) handledBy store.simpleTestHandlerWithActionThrowingException
         delay(150)
-        assertEquals(store.exceptionSimpleHandlerValue, errorHandlerResult, "exception not caught on simple handler with action")
+        assertEquals(
+            store.exceptionSimpleHandlerValue,
+            errorHandlerResult,
+            "exception not caught on simple handler with action"
+        )
         assertEquals(updates.value, getValue(), "wrong value rendered after simple handler with action")
         checkUpdate("store not updating after simple handler with action")
 
@@ -204,7 +208,11 @@ class StoreTests {
 
         flowOf(2) handledBy store.emittingTestHandlerWithActionThrowingException
         delay(150)
-        assertEquals(store.exceptionEmittingHandlerValue, errorHandlerResult, "exception not caught on emitting handler with action")
+        assertEquals(
+            store.exceptionEmittingHandlerValue,
+            errorHandlerResult,
+            "exception not caught on emitting handler with action"
+        )
         assertEquals(updates.value, getValue(), "wrong value rendered after emitting handler with action")
         checkUpdate("store not updating after emitting handler with action")
 

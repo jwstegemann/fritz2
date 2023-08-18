@@ -89,9 +89,17 @@ class LensesTests {
         val notNullLens: Lens<PostalAddress?, String> = streetLens.withNullParent()
 
         assertEquals(someStreet, notNullLens.get(addressWithCo), "not null lens does get value on non null parent")
-        assertFailsWith(NullPointerException::class, "not null lens does not throw exception when get on null parent") { notNullLens.get(null) }
+        assertFailsWith(NullPointerException::class, "not null lens does not throw exception when get on null parent") {
+            notNullLens.get(null)
+        }
 
-        assertEquals(newValue, notNullLens.set(addressWithCo, newValue)?.street, "not null lens does set value on non null parent")
-        assertFailsWith(NullPointerException::class, "not null lens does not throw exception when set on null parent") { notNullLens.set(null, newValue)?.street }
+        assertEquals(
+            newValue,
+            notNullLens.set(addressWithCo, newValue)?.street,
+            "not null lens does set value on non null parent"
+        )
+        assertFailsWith(NullPointerException::class, "not null lens does not throw exception when set on null parent") {
+            notNullLens.set(null, newValue)?.street
+        }
     }
 }

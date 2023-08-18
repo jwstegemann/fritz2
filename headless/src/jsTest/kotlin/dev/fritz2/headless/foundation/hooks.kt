@@ -38,7 +38,9 @@ class HookTests {
         }
         delay(100)
 
-        val result: HTMLSpanElement? = document.getElementById(divId)?.let { (it as HTMLDivElement).firstChild as HTMLSpanElement }
+        val result: HTMLSpanElement? = document.getElementById(
+            divId
+        )?.let { (it as HTMLDivElement).firstChild as HTMLSpanElement }
         assertNotNull(result)
         assertEquals("hook-payload", result.getAttribute("data-value-payload"))
         assertEquals("ok", result.getAttribute("data-also"))
@@ -70,7 +72,9 @@ class HookTests {
         }
         delay(100)
 
-        val result: HTMLSpanElement? = document.getElementById(divId)?.let { (it as HTMLDivElement).firstChild as HTMLSpanElement }
+        val result: HTMLSpanElement? = document.getElementById(
+            divId
+        )?.let { (it as HTMLDivElement).firstChild as HTMLSpanElement }
         assertNotNull(result)
         assertEquals("hook", result.getAttribute("data-value"))
         assertEquals("ok", result.getAttribute("data-also"))

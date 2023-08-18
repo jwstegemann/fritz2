@@ -288,9 +288,17 @@ class MountTests {
         val option2 = document.getElementById(option2Id) as HTMLOptionElement
         assertEquals(0, select.selectedIndex, "initial first option is not selected")
         assertEquals(true, option1.selected, "initial first option.selected is not true")
-        assertEquals("", option1.getAttribute("selected"), "initial first option.getAttribute(\"selected\") is not filled")
+        assertEquals(
+            "",
+            option1.getAttribute("selected"),
+            "initial first option.getAttribute(\"selected\") is not filled"
+        )
         assertEquals(false, option2.selected, "initial second option.selected is not false")
-        assertEquals(null, option2.getAttribute("selected"), "initial second option.getAttribute(\"selected\") is not empty")
+        assertEquals(
+            null,
+            option2.getAttribute("selected"),
+            "initial second option.getAttribute(\"selected\") is not empty"
+        )
 
         store.select("option2")
         delay(250)
