@@ -31,12 +31,14 @@ class MountTargetNotFoundException(message: String) : Exception(message)
 fun render(
     selector: String,
     override: Boolean = true,
-    content: RenderContext.() -> Unit
+    content: RenderContext.() -> Unit,
 ) {
     document.querySelector(selector)?.let { parentElement ->
         if (parentElement is HTMLElement) {
             render(parentElement, override, content)
-        } else MountTargetNotFoundException("element with id=$selector is not an HTMLElement")
+        } else {
+            MountTargetNotFoundException("element with id=$selector is not an HTMLElement")
+        }
     } ?: throw MountTargetNotFoundException("html document contains no element with id=$selector")
 }
 
@@ -51,9 +53,9 @@ fun render(
 fun render(
     targetElement: HTMLElement? = document.body,
     override: Boolean = true,
-    content: RenderContext.() -> Unit
+    content: RenderContext.() -> Unit,
 ) {
-    //add style sheet containing mount-point-class
+    // add style sheet containing mount-point-class
     addGlobalStyle(".$MOUNT_POINT_STYLE_CLASS { display: contents; }")
 
     if (targetElement != null) {
@@ -68,26 +70,28 @@ fun render(
                 targetElement.appendChild(element.domNode)
                 return element
             }
-
         }
 
         MainScope().launch {
             content(mountPoint)
             mountPoint.runAfterMounts()
         }
-
-    } else throw MountTargetNotFoundException("targetElement should not be null")
+    } else {
+        throw MountTargetNotFoundException("targetElement should not be null")
+    }
 }
 
 const val FRITZ2_GLOBAL_STYLESHEET_ID = "fritz2-global-styles"
 
-internal fun getOrCreateGlobalStylesheet() = (document.getElementById(FRITZ2_GLOBAL_STYLESHEET_ID)?.let {
-    (it as HTMLStyleElement).sheet
-} ?: (document.createElement("style") as HTMLStyleElement).also {
-    it.setAttribute("id", FRITZ2_GLOBAL_STYLESHEET_ID)
-    it.appendChild(document.createTextNode(""))
-    document.head!!.appendChild(it)
-}.sheet!!) as CSSStyleSheet
+internal fun getOrCreateGlobalStylesheet() = (
+    document.getElementById(FRITZ2_GLOBAL_STYLESHEET_ID)?.let {
+        (it as HTMLStyleElement).sheet
+    } ?: (document.createElement("style") as HTMLStyleElement).also {
+        it.setAttribute("id", FRITZ2_GLOBAL_STYLESHEET_ID)
+        it.appendChild(document.createTextNode(""))
+        document.head!!.appendChild(it)
+    }.sheet!!
+    ) as CSSStyleSheet
 
 /**
  * Adds global css-rules to a fritz2-specific stylesheet added to the document when first called

@@ -3,7 +3,6 @@ package dev.fritz2.examplesdemo
 import dev.fritz2.core.*
 
 fun RenderContext.reactive() {
-
     val store = storeOf("Hello Peter")
 
     div("p-4 text-sm font-medium text-gray-700") {

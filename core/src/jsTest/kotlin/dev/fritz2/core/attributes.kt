@@ -11,12 +11,10 @@ import org.w3c.dom.events.KeyboardEvent
 import org.w3c.dom.events.KeyboardEventInit
 import kotlin.test.*
 
-
 class AttributeTests {
 
     @Test
     fun testAttributes() = runTest {
-
         val testRange = (0..4)
         val testId = Id.next()
 
@@ -146,7 +144,6 @@ class AttributeTests {
         assertEquals("c", element.getAttribute("test"))
     }
 
-
     @Test
     fun testAlternatingNullableTFlows() = runTest {
         val testId = Id.next()
@@ -201,7 +198,7 @@ class AttributeTests {
         val storedState = storeOf(false)
 
         lateinit var textInput: Tag<HTMLInputElement>
-        //lateinit var checkBox: Tag<HTMLInputElement>
+        // lateinit var checkBox: Tag<HTMLInputElement>
         render {
             textInput = input(id = id) {
                 placeholder("Foo")
@@ -234,7 +231,7 @@ class AttributeTests {
 
         // Prüfen: domnode.value == Eingabe?
         delay(1500)
-        //assertEquals("a", textInput.domNode.value)
+        // assertEquals("a", textInput.domNode.value)
         assertEquals("e", input.value)
 
         // dann update auf neuer Wert
@@ -247,10 +244,10 @@ class AttributeTests {
         assertEquals("updated", textInput.domNode.value)
         assertEquals("updated", textInput.domNode.defaultValue)
 
-        //assertEquals("changed", textInput.domNode.getAttribute("defaultValue"))
-        //println(checkBox.domNode.getAttribute("checked").toBoolean())
-        //println(checkBox.domNode.checked)
-        //assertTrue(checkBox.domNode.getAttribute("checked").toBoolean())
-        //assertTrue(checkBox.domNode.getAttribute("defaultChecked").toBoolean())
+        // assertEquals("changed", textInput.domNode.getAttribute("defaultValue"))
+        // println(checkBox.domNode.getAttribute("checked").toBoolean())
+        // println(checkBox.domNode.checked)
+        // assertTrue(checkBox.domNode.getAttribute("checked").toBoolean())
+        // assertTrue(checkBox.domNode.getAttribute("defaultChecked").toBoolean())
     }
 }

@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
 import kotlin.test.*
 
-
 class AdHocHandlerTests {
 
     @Test
@@ -115,13 +114,12 @@ class AdHocHandlerTests {
         assertEquals(
             "true",
             document.getElementById(idWorkState)?.textContent,
-            "Handler has finished and set state to `true`"
+            "Handler has finished and set state to `true`",
         )
     }
 
     @Test
     fun testAdHocErrorHandling() = runTest {
-
         val valueId = Id.next()
         fun getValue() = document.getElementById(valueId)?.textContent
 
@@ -156,7 +154,7 @@ class AdHocHandlerTests {
         checkUpdate("store not updating after adhoc handler ")
 
         val adHocIntermediateException = "adHoc intermediate exception"
-        flowOf(2).map {throw Exception(adHocIntermediateException)} handledBy {
+        flowOf(2).map { throw Exception(adHocIntermediateException) } handledBy {
         }
         delay(150)
         checkUpdate("store not updating after intermediate exception before adhoc handler ")

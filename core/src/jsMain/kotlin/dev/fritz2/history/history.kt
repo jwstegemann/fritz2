@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
-
 /**
  * factory-method to create a [History]
  *
@@ -27,9 +26,8 @@ fun <T> history(capacity: Int = 0, initialValue: List<T> = emptyList()) =
  */
 fun <D> Store<D>.history(capacity: Int = 0, initialEntries: List<D> = emptyList(), synced: Boolean = true) =
     History(capacity, initialEntries).apply {
-        if(synced) this@history.data.handledBy { push(it) }
+        if (synced) this@history.data.handledBy { push(it) }
     }
-
 
 /**
  * Keeps track of historical values (i.e. of a [Store]) and allows you to navigate back in history
@@ -63,10 +61,13 @@ class History<T>(
      * Pushes a new [entry] to the history
      */
     fun push(entry: T) {
-        if(state.value.isEmpty()) state.value = state.value + entry
-        else if(state.value.last() != entry) state.value = state.value.let {
-            if(it.size == capacity) it.drop(1) else it
-        } + entry
+        if (state.value.isEmpty()) {
+            state.value = state.value + entry
+        } else if (state.value.last() != entry) {
+            state.value = state.value.let {
+                if (it.size == capacity) it.drop(1) else it
+            } + entry
+        }
     }
 
     /**
@@ -76,14 +77,17 @@ class History<T>(
      * @throws [IndexOutOfBoundsException] if called on an empty history.
      */
     fun back(): T =
-        if(state.value.size < 2) throw IndexOutOfBoundsException()
-        else state.value.dropLast(1).also { state.value = it }.last()
+        if (state.value.size < 2) {
+            throw IndexOutOfBoundsException()
+        } else {
+            state.value.dropLast(1).also { state.value = it }.last()
+        }
 
     /**
      * clears the history.
      */
     fun clear() {
-        if(state.value.isNotEmpty()) state.value = listOf(state.value.last())
+        if (state.value.isNotEmpty()) state.value = listOf(state.value.last())
     }
 
     /**

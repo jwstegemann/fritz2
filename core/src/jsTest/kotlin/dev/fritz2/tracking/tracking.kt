@@ -12,10 +12,8 @@ import kotlin.test.assertEquals
 
 class TrackingTests {
 
-
     @Test
     fun testTracking() = runTest {
-        
         val transactionText = "long running"
         val transactionId = "transaction-${Id.next()}"
 
@@ -62,12 +60,10 @@ class TrackingTests {
 
         val valueAfterTransaction = document.getElementById(valueId)?.textContent
         assertEquals(endValue, valueAfterTransaction)
-
     }
 
     @Test
     fun testStopTrackingIfExceptionOccursDuringOperation() = runTest {
-        
         val resultElementId = "tracker-${Id.next()}"
 
         val store = object : RootStore<Int>(0) {
@@ -108,12 +104,10 @@ class TrackingTests {
 
         val valueAfterTransaction = document.getElementById(resultElementId)?.textContent
         assertEquals("stopped", valueAfterTransaction)
-
     }
 
     @Test
     fun testExceptionHandlingInTrackerDuringOperation() = runTest {
-        
         val storeElementId = "store-${Id.next()}"
         val resultElementId = "tracker-${Id.next()}"
 
@@ -163,6 +157,5 @@ class TrackingTests {
         store.update("bar")
         delay(200)
         assertEquals("bar", textContent(storeElementId))
-
     }
 }

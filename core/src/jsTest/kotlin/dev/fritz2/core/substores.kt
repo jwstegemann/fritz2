@@ -23,7 +23,6 @@ class SubStoreTests {
 
     @Test
     fun testSubStore() = runTest {
-
         val person = Person("Foo", Address("Bar Street 3", PostalCode(9999)))
         val store = object : RootStore<Person>(person) {}
 
@@ -78,7 +77,6 @@ class SubStoreTests {
 
     @Test
     fun testSubStoreWithLensOf() = runTest {
-
         val person = Person("Foo", Address("Bar Street 3", PostalCode(9999)))
         val store = object : RootStore<Person>(person, id = "person") {}
 
@@ -92,7 +90,8 @@ class SubStoreTests {
                 val street = fields[1]
                 val code = fields[2].toInt()
                 Person(name, Address(street, PostalCode(code)))
-            })
+            },
+        )
 
         val completeSub = store.map(personFormatLens)
 
@@ -122,7 +121,6 @@ class SubStoreTests {
 
     @Test
     fun testSubStoreWithRenderEach() = runTest {
-
         val id = Id.next()
         val store = storeOf(listOf("a", "b", "c"))
 
@@ -131,7 +129,7 @@ class SubStoreTests {
         render {
             div(id = id) {
                 store.renderEach({ it }, this) {
-                    if(it.current == "b") bStore = it
+                    if (it.current == "b") bStore = it
                     p {
                         it.data.renderText()
                     }
@@ -154,7 +152,6 @@ class SubStoreTests {
 
     @Test
     fun testSubStoreWithRenderEachSameId() = runTest {
-
         val id = Id.next()
         val store = object : RootStore<List<String>>(listOf("a", "b", "c", "b")) {
             var throwable: Throwable? = null
@@ -168,7 +165,7 @@ class SubStoreTests {
         render {
             div(id = id) {
                 store.renderEach({ it }, this) {
-                    if(bStore == null && it.current == "b") bStore = it
+                    if (bStore == null && it.current == "b") bStore = it
                     p {
                         it.data.renderText()
                     }
@@ -192,7 +189,6 @@ class SubStoreTests {
 
     @Test
     fun testSubStoreWithIndex() = runTest {
-
         val id = Id.next()
         val store = storeOf(listOf("a", "b", "c"))
 
@@ -222,7 +218,6 @@ class SubStoreTests {
 
     @Test
     fun testSubStoreWithMap() = runTest {
-
         val id = Id.next()
         val store = storeOf(mapOf(1 to "a", 2 to "b", 3 to "c"))
 

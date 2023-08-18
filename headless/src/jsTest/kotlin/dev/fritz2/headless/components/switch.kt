@@ -56,7 +56,7 @@ class SwitchTest {
         val switchLabelElement = getElementById<HTMLLabelElement>("$componentId-label")
         assertEquals("Label", switchLabelElement.textContent, "wrong text-content")
 
-        val switchDescriptionElement = getElementById<HTMLSpanElement>( "$componentId-description-0")
+        val switchDescriptionElement = getElementById<HTMLSpanElement>("$componentId-description-0")
         assertEquals("Description", switchDescriptionElement.textContent, "wrong text-content")
 
         val switchToggleElement = getElementById<HTMLButtonElement>("$componentId-toggle")
@@ -80,5 +80,4 @@ class SwitchTest {
 
         assertFails { getElementById<HTMLDivElement>("$componentId-validation-messages") }
     }
-
 }

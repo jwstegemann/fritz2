@@ -34,7 +34,7 @@ fun FlipOptionsInit(
     boundary: HTMLElement? = null,
     rootBoundary: dynamic = null,
     flipVariations: Boolean? = null,
-    allowedAutoPlacements: Array<Placement>? = null
+    allowedAutoPlacements: Array<Placement>? = null,
 ): FlipOptions {
     val o = js("({})")
     if (fallbackPlacements != null) o["fallbackPlacements"] = fallbackPlacements

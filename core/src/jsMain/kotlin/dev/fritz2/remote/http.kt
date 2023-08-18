@@ -19,7 +19,7 @@ external fun btoa(decoded: String): String
 open class Response(
     private val response: FetchResponse,
     val request: Request,
-    val propagate: Boolean = true
+    val propagate: Boolean = true,
 ) {
     /**
      * A boolean indicating whether the response was successful (status in the range 200 – 299) or not.
@@ -87,7 +87,7 @@ open class Response(
     fun copy(
         response: FetchResponse = this.response,
         request: Request = this.request,
-        propagate: Boolean = this.propagate
+        propagate: Boolean = this.propagate,
     ) = Response(response, request, propagate)
 }
 
@@ -136,14 +136,13 @@ open class Request(
     ) = Request(
         url, method, headers, body, referrer, referrerPolicy,
         mode, credentials, cache, redirect, integrity, keepalive,
-        reqWindow, middlewares
+        reqWindow, middlewares,
     )
 
     /**
      * executes the HTTP call and sends it to the server, awaits the response (async) and returns a [Response].
      */
     suspend fun execute(): Response {
-
         var request = this
         for (interceptor in middlewares) request = interceptor.enrichRequest(request)
 
@@ -157,7 +156,6 @@ open class Request(
 
         return response
     }
-
 
     /**
      * builds a [RequestInit] object.
@@ -178,7 +176,7 @@ open class Request(
             redirect = redirect,
             integrity = integrity,
             keepalive = keepalive,
-            window = reqWindow
+            window = reqWindow,
         )
     }
 
@@ -237,7 +235,6 @@ open class Request(
      */
     suspend fun put(subUrl: String? = null): Response =
         (subUrl?.let { append(it) } ?: this).copy(method = "PUT").execute()
-
 
     /**
      * issues a patch request returning a flow of it's response
@@ -405,7 +402,6 @@ open class Request(
      * @param middlewares [Middleware] to use by this request
      */
     fun use(vararg middlewares: Middleware): Request = copy(middlewares = this.middlewares + middlewares.asList())
-
 }
 
 /**
@@ -414,4 +410,3 @@ open class Request(
  * @param baseUrl the common base of all urls that you want to call using the template
  */
 fun http(baseUrl: String = "") = Request(url = baseUrl)
-

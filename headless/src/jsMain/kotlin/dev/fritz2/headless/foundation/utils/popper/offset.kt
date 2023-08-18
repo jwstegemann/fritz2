@@ -14,4 +14,3 @@ fun OffsetOptionsInit(skidding: Int, distance: Int): OffsetOptions {
 
 fun Offset(skidding: Int, distance: Int): Modifier<OffsetOptions> =
     ModifierInit("offset", options = OffsetOptionsInit(skidding, distance))
-

@@ -23,7 +23,7 @@ abstract class PopUpPanel<C : HTMLElement>(
     private val ariaHasPopup: String,
     // Never add other classes to popperDiv as they will be overridden:
     private val popperDiv: HtmlTag<HTMLDivElement> = renderContext.div(POPUP_HIDDEN_CLASSES) {},
-    tag: Tag<C> = tagFactory(popperDiv, classes, id, scope) {}
+    tag: Tag<C> = tagFactory(popperDiv, classes, id, scope) {},
 ) : Tag<C> by tag {
 
     companion object {
@@ -44,105 +44,136 @@ abstract class PopUpPanel<C : HTMLElement>(
                 listOf(
                     """.$POPUP_RELATIVE {
                         position: relative;
-                    }""".trimIndent(),
+                    }
+                    """.trimIndent(),
                     """.popper[data-popper-reference-hidden] {
                 visibility: hidden;
                 pointer-events: none;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper-arrow-default {
                 width: 8px;
                 height: 8px;
                 background: inherit;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper-arrow::before {
                         width: 100%;
                         height: 100%;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper-arrow, .popper-arrow::before {
                 position: absolute;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper-arrow {
                 visibility: hidden;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper-arrow::before {
                 content: '';
                 transform: rotate(45deg);
                 background: inherit;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper-arrow::before, .popper.$FRITZ2_POPUP_VISIBLE .popper-arrow::before {
                 visibility: visible;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper-arrow::before, .popper.$FRITZ2_POPUP_HIDDEN .popper-arrow::before {
                 visibility: hidden;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper[data-popper-placement^='bottom'] .popper-arrow::before {
                 top: -50%;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper[data-popper-placement^='top'] .popper-arrow::before {
                 bottom: -50%;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper[data-popper-placement^='left'] .popper-arrow::before {
                 right: -50%;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper[data-popper-placement^='right'] .popper-arrow::before {
                 left: -50%;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper[data-popper-placement^='bottom'] .popper-arrow {
                 top: 0;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper[data-popper-placement^='top'] .popper-arrow {
                 bottom: 0;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper[data-popper-placement^='left'] .popper-arrow {
                 right: 0;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper[data-popper-placement^='right'] .popper-arrow {
                 left: 0;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper[data-popper-placement='bottom'] > .transform {
                 transform-origin: top;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper[data-popper-placement='bottom-start'] > .transform {
                 transform-origin: top left;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper[data-popper-placement='bottom-right'] > .transform {
                 transform-origin: top right;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper[data-popper-placement='top'] > .transform {
                 transform-origin: bottom;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper[data-popper-placement='top-start'] > .transform {
                 transform-origin: bottom left;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper[data-popper-placement='top-right'] > .transform {
                 transform-origin: bottom right;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper[data-popper-placement='left'] > .transform {
                 transform-origin: right;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper[data-popper-placement='left-start'] > .transform {
                 transform-origin: top right;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper[data-popper-placement='left-end'] > .transform {
                 transform-origin: bottom right;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper[data-popper-placement='right'] > .transform {
                 transform-origin: left;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper[data-popper-placement='right-start'] > .transform {
                 transform-origin: top left;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.popper[data-popper-placement='right-end'] > .transform {
                 transform-origin: bottom left;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.$FRITZ2_POPUP_VISIBLE {
                 visibility: visible;
                 z-index: 30;
-            }""".trimIndent(),
+            }
+                    """.trimIndent(),
                     """.$FRITZ2_POPUP_HIDDEN {
                 visibility: hidden;
-            }""".trimIndent(),
-                )
+            }
+                    """.trimIndent(),
+                ),
             )
         }
     }
@@ -171,11 +202,13 @@ abstract class PopUpPanel<C : HTMLElement>(
             }
 
             val popper = createPopper(
-                reference.domNode, popperDiv.domNode, PopperOptionsInit(
+                reference.domNode,
+                popperDiv.domNode,
+                PopperOptionsInit(
                     placement,
                     strategy,
-                    *modifiers.toTypedArray()
-                )
+                    *modifiers.toTypedArray(),
+                ),
             )
 
             job.invokeOnCompletion { popper.destroy() }

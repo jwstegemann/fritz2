@@ -21,7 +21,7 @@ interface Store<D> : WithJob {
      * @param execute lambda that is executed whenever a new action-value appears on the connected event-[Flow].
      */
     fun <A> handle(
-        execute: suspend (D, A) -> D
+        execute: suspend (D, A) -> D,
     ) = SimpleHandler<A> { flow, job ->
         flow.onEach { enqueue { d -> execute(d, it) } }
             .catch { d -> errorHandler(d) }
@@ -34,7 +34,7 @@ interface Store<D> : WithJob {
      * @param execute lambda that is executed for each event on the connected [Flow]
      */
     fun handle(
-        execute: suspend (D) -> D
+        execute: suspend (D) -> D,
     ) = SimpleHandler<Unit> { flow, job ->
         flow.onEach { enqueue { d -> execute(d) } }
             .catch { d -> errorHandler(d) }
@@ -48,12 +48,12 @@ interface Store<D> : WithJob {
      * @param execute lambda that is executed for each action-value on the connected [Flow]. You can emit values from this lambda.
      */
     fun <A, E> handleAndEmit(
-        execute: suspend FlowCollector<E>.(D, A) -> D
+        execute: suspend FlowCollector<E>.(D, A) -> D,
     ) = EmittingHandler<A, E>({ inFlow, outFlow, job ->
-            inFlow.onEach { enqueue { d -> outFlow.execute(d, it) } }
-                .catch { d -> errorHandler(d) }
-                .launchIn(MainScope() + job)
-        })
+        inFlow.onEach { enqueue { d -> outFlow.execute(d, it) } }
+            .catch { d -> errorHandler(d) }
+            .launchIn(MainScope() + job)
+    })
 
     /**
      * factory method to create an [EmittingHandler] that does not take an action in it's [execute]-lambda.
@@ -61,7 +61,7 @@ interface Store<D> : WithJob {
      * @param execute lambda that is executed for each event on the connected [Flow]. You can emit values from this lambda.
      */
     fun <E> handleAndEmit(
-        execute: suspend FlowCollector<E>.(D) -> D
+        execute: suspend FlowCollector<E>.(D) -> D,
     ) =
         EmittingHandler<Unit, E>({ inFlow, outFlow, job ->
             inFlow.onEach { enqueue { d -> outFlow.execute(d) } }
@@ -119,7 +119,7 @@ interface Store<D> : WithJob {
  */
 open class RootStore<D>(
     initialData: D,
-    override val id: String = Id.next()
+    override val id: String = Id.next(),
 ) : Store<D> {
     override val path: String = ""
 

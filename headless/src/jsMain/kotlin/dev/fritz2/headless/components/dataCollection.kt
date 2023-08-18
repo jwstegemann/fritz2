@@ -44,7 +44,6 @@ class CollectionDataProperty<T> : Property<CollectionData<T>>() {
     operator fun invoke(store: Store<List<T>>, idProvider: IdProvider<T, *>? = null) {
         value = CollectionData(store.data, idProvider, store.id)
     }
-
 }
 
 /**
@@ -81,22 +80,29 @@ class SelectionMode<T> {
     fun selectItem(itemToSelect: Flow<T>, data: CollectionData<T>) {
         if (single.isSet) {
             single.handler?.let {
-                it(single.data.flatMapLatest { current ->
-                    itemToSelect.map { item ->
-                        if (data.isSame(current, item)) null else item
-                    }
-                })
+                it(
+                    single.data.flatMapLatest { current ->
+                        itemToSelect.map { item ->
+                            if (data.isSame(current, item)) null else item
+                        }
+                    },
+                )
             }
         } else {
             multi.handler?.let {
-                it(multi.data.flatMapLatest { current ->
-                    itemToSelect.map { item ->
-                        data.idProvider?.let { id ->
-                            if (current.any { id(it) == id(item) }) current.filter { id(it) != id(item) }
-                            else current + item
-                        } ?: if (current.contains(item)) current - item else current + item
-                    }
-                })
+                it(
+                    multi.data.flatMapLatest { current ->
+                        itemToSelect.map { item ->
+                            data.idProvider?.let { id ->
+                                if (current.any { id(it) == id(item) }) {
+                                    current.filter { id(it) != id(item) }
+                                } else {
+                                    current + item
+                                }
+                            } ?: if (current.contains(item)) current - item else current + item
+                        }
+                    },
+                )
             }
         }
     }
@@ -120,7 +126,7 @@ class SelectionMode<T> {
                     single.data.map { current ->
                         if (items.any { data.isSame(current, it) }) current else null
                     }
-                }
+                },
             )
         } else {
             multi.handler?.invoke(
@@ -136,7 +142,7 @@ class SelectionMode<T> {
                             currents.filter { hashedItems.contains(it) }
                         }
                     }
-                }
+                },
             )
         }
     }
@@ -155,7 +161,7 @@ class ScrollIntoViewProperty : Property<ScrollIntoViewOptions>() {
         behavior: ScrollBehavior = ScrollBehavior.smooth,
         mode: ScrollMode = ScrollMode.ifNeeded,
         vertical: ScrollPosition = ScrollPosition.nearest,
-        horizontal: ScrollPosition = ScrollPosition.nearest
+        horizontal: ScrollPosition = ScrollPosition.nearest,
     ) {
         value = ScrollIntoViewOptionsInit(behavior, mode, vertical, horizontal)
     }
@@ -185,10 +191,13 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
     } ?: (a == b)
 
     private fun indexOfItem(list: List<T>, item: T?) =
-        if (item == null) -1
-        else data.value?.idProvider?.let { id ->
-            list.indexOfFirst { id(it) == id(item) }
-        } ?: list.indexOf(item)
+        if (item == null) {
+            -1
+        } else {
+            data.value?.idProvider?.let { id ->
+                list.indexOfFirst { id(it) == id(item) }
+            } ?: list.indexOf(item)
+        }
 
     private val sorting = storeOf<SortingOrder<T>?>(null)
     val sortBy = sorting.update
@@ -208,7 +217,9 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
     private val filtering = storeOf<((List<T>) -> List<T>)?>(null)
     val filterBy = filtering.update
     fun filterByText(toString: (T) -> String = { it.toString() }) = filtering.handle<String> { _, text ->
-        { it.filter { toString(it).lowercase().contains(text.lowercase()) } }
+        {
+            it.filter { toString(it).lowercase().contains(text.lowercase()) }
+        }
     }
 
     fun sortingDirection(s: Sorting<T>) = sorting.data.map {
@@ -244,7 +255,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CS>>,
-        initialize: DataCollectionSortButton<CS>.() -> Unit
+        initialize: DataCollectionSortButton<CS>.() -> Unit,
     ) {
         tag(this, classes, id, scope) {
             DataCollectionSortButton(sort, this).run {
@@ -267,14 +278,14 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         id: String? = null,
         internalScope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CS>>,
-        initialize: DataCollectionSortButton<CS>.() -> Unit
+        initialize: DataCollectionSortButton<CS>.() -> Unit,
     ) = dataCollectionSortButton(
         Sorting(comparatorAscending, comparatorDescending),
         classes,
         id,
         internalScope,
         tag,
-        initialize
+        initialize,
     )
 
     /**
@@ -288,7 +299,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         classes: String? = null,
         id: String? = null,
         internalScope: (ScopeContext.() -> Unit) = {},
-        initialize: DataCollectionSortButton<HTMLButtonElement>.() -> Unit
+        initialize: DataCollectionSortButton<HTMLButtonElement>.() -> Unit,
     ) = dataCollectionSortButton(sort, classes, id, internalScope, RenderContext::button, initialize)
 
     /**
@@ -303,15 +314,14 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         classes: String? = null,
         id: String? = null,
         internalScope: (ScopeContext.() -> Unit) = {},
-        initialize: DataCollectionSortButton<HTMLButtonElement>.() -> Unit
+        initialize: DataCollectionSortButton<HTMLButtonElement>.() -> Unit,
     ) = dataCollectionSortButton(
         Sorting(comparatorAscending, comparatorDescending),
         classes,
         id,
         internalScope,
-        initialize
+        initialize,
     )
-
 
     inner class DataCollectionItems<CI : HTMLElement>(tag: Tag<CI>, val collectionId: String?) : Tag<CI> by tag {
         val scrollIntoView = ScrollIntoViewProperty()
@@ -337,8 +347,10 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
                     filterFunction?.invoke(rawItems) ?: rawItems
                 }
             }.shareIn(MainScope() + job, SharingStarted.Eagerly, 1)
-        } else flowOf<List<T>>(emptyList()).also {
-            warnAboutMissingDatabinding("data", COMPONENT_NAME, componentId, this@DataCollection.domNode)
+        } else {
+            flowOf<List<T>>(emptyList()).also {
+                warnAboutMissingDatabinding("data", COMPONENT_NAME, componentId, this@DataCollection.domNode)
+            }
         }
 
         val items = filteredItems.flatMapLatest { filtered ->
@@ -359,10 +371,10 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
             attr("tabindex", "0")
             attrIfNotSet("role", Aria.Role.list)
 
-            //reset active Item when leaving dataCollectionItems
+            // reset active Item when leaving dataCollectionItems
             merge(
                 mouseleaves.filter { domNode != document.activeElement },
-                focusouts
+                focusouts,
             ).map { null } handledBy activeItem.update
 
             items.flatMapLatest { list ->
@@ -386,18 +398,21 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
 
             if (selection.isSet) {
                 data.value?.let {
-                    selection.selectItem(items.flatMapLatest {
-                        activeItem.data.flatMapLatest { current ->
-                            keydowns.filter {
-                                setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it))
-                            }.mapNotNull { event ->
-                                current?.first?.also {
-                                    event.preventDefault()
-                                    event.stopImmediatePropagation()
+                    selection.selectItem(
+                        items.flatMapLatest {
+                            activeItem.data.flatMapLatest { current ->
+                                keydowns.filter {
+                                    setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it))
+                                }.mapNotNull { event ->
+                                    current?.first?.also {
+                                        event.preventDefault()
+                                        event.stopImmediatePropagation()
+                                    }
                                 }
                             }
-                        }
-                    }.distinctUntilChanged(), it)
+                        }.distinctUntilChanged(),
+                        it,
+                    )
                     selection.sanitizeSelection(filteredItems, it)
                 }
             }
@@ -406,13 +421,20 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         inner class DataCollectionItem<CI : HTMLElement>(
             private val item: T,
             val collectionItemId: String?,
-            tag: Tag<CI>
+            tag: Tag<CI>,
         ) : Tag<CI> by tag {
             val selected =
                 if (selection.isSet) {
-                    (if (selection.single.isSet) selection.single.data.map { isSame(it, item) }
-                    else selection.multi.data.map { list -> list.any { isSame(it, item) } }).distinctUntilChanged()
-                } else flowOf(false)
+                    (
+                        if (selection.single.isSet) {
+                            selection.single.data.map { isSame(it, item) }
+                        } else {
+                            selection.multi.data.map { list -> list.any { isSame(it, item) } }
+                        }
+                        ).distinctUntilChanged()
+                } else {
+                    flowOf(false)
+                }
 
             val active = activeItem.data.map { isSame(it?.first, item) }.distinctUntilChanged()
 
@@ -425,8 +447,11 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
 
                 active.flatMapLatest { isActive ->
                     mousemoves.mapNotNull {
-                        if (!isActive) (item to false)
-                        else null
+                        if (!isActive) {
+                            (item to false)
+                        } else {
+                            null
+                        }
                     }
                 } handledBy activeItem.update
 
@@ -450,12 +475,16 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
             id: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CI>>,
-            initialize: DataCollectionItem<CI>.() -> Unit
+            initialize: DataCollectionItem<CI>.() -> Unit,
         ): Tag<CI> {
             val itemId = if (collectionId != null) {
-                if (id != null) "$collectionId-$id"
-                else if (data.value?.idProvider != null) "$collectionId-${data.value!!.idProvider!!(item).toString()}"
-                else null
+                if (id != null) {
+                    "$collectionId-$id"
+                } else if (data.value?.idProvider != null) {
+                    "$collectionId-${data.value!!.idProvider!!(item)}"
+                } else {
+                    null
+                }
             } else {
                 id ?: data.value?.idProvider?.invoke(item).toString()
             }
@@ -464,7 +493,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
                 this,
                 if (selection.isSet) classes(classes, "cursor-pointer") else classes,
                 itemId,
-                scope
+                scope,
             ) {
                 addComponentStructureInfo("parent is dataCollectionItem", this@dataCollectionItem.scope, this)
                 DataCollectionItem(item, itemId, this).run {
@@ -485,9 +514,8 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
             classes: String? = null,
             id: String? = null,
             internalScope: (ScopeContext.() -> Unit) = {},
-            initialize: DataCollectionItem<HTMLDivElement>.() -> Unit
+            initialize: DataCollectionItem<HTMLDivElement>.() -> Unit,
         ) = dataCollectionItem(item, classes, id, internalScope, RenderContext::div, initialize)
-
     }
 
     /**
@@ -501,7 +529,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CI>>,
-        initialize: DataCollectionItems<CI>.() -> Unit
+        initialize: DataCollectionItems<CI>.() -> Unit,
     ) {
         addComponentStructureInfo("dataCollectionItems", this@dataCollectionItems.scope, this)
         val collectionId = id ?: data.value?.id
@@ -523,10 +551,8 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         classes: String? = null,
         id: String? = null,
         internalScope: (ScopeContext.() -> Unit) = {},
-        initialize: DataCollectionItems<HTMLDivElement>.() -> Unit
+        initialize: DataCollectionItems<HTMLDivElement>.() -> Unit,
     ) = dataCollectionItems(classes, id, internalScope, RenderContext::div, initialize)
-
-
 }
 
 /**
@@ -569,7 +595,7 @@ fun <T, C : HTMLElement> RenderContext.dataCollection(
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
-    initialize: DataCollection<T, C>.() -> Unit
+    initialize: DataCollection<T, C>.() -> Unit,
 ): Tag<C> {
     addComponentStructureInfo(DataCollection.COMPONENT_NAME, this@dataCollection.scope, this)
     return tag(this, classes, id, scope) {
@@ -618,5 +644,5 @@ fun <T> RenderContext.dataCollection(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: DataCollection<T, HTMLDivElement>.() -> Unit
+    initialize: DataCollection<T, HTMLDivElement>.() -> Unit,
 ): Tag<HTMLDivElement> = dataCollection(classes, id, scope, RenderContext::div, initialize)

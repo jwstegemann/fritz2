@@ -68,12 +68,10 @@ class HandlersTests {
         button.click()
         delay(100)
         assertEquals("39", currentParagraph.textContent)
-
     }
 
     @Test
     fun eventHandlerDomChange() = runTest {
-
         val resultId = Id.next()
         val buttonId = Id.next()
 
@@ -85,7 +83,6 @@ class HandlersTests {
                 "$model."
             }
         }
-
 
         render {
             section {
@@ -168,7 +165,7 @@ class HandlersTests {
         assertEquals(
             "true",
             document.getElementById(idWorkState)?.textContent,
-            "Handler has finished and set state to `true`"
+            "Handler has finished and set state to `true`",
         )
     }
 
@@ -195,7 +192,7 @@ class HandlersTests {
             "Flow is empty",
             assertFails {
                 sut.single()
-            }.message
+            }.message,
         )
     }
 }

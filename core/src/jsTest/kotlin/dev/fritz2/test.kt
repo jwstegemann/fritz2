@@ -18,7 +18,7 @@ fun <T> runTest(block: suspend WithJob.() -> T): dynamic = MainScope().promise {
 fun <T> checkSingleFlow(
     done: CompletableDeferred<Boolean> = CompletableDeferred(),
     upstream: Flow<T>,
-    check: (Int, T) -> Boolean
+    check: (Int, T) -> Boolean,
 ) {
     var count = 0
     mountSimple(Job(), upstream) { value ->
@@ -33,7 +33,6 @@ typealias Endpoint = String
 const val testEndpoint: Endpoint = "test"
 const val restEndpoint: Endpoint = "rest"
 const val authenticatedEndpoint: Endpoint = "authenticated"
-
 
 suspend fun testHttpServer(endpoint: Endpoint): Request {
     val r = http("http://localhost:3000/$endpoint")

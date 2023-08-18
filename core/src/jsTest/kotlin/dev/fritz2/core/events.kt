@@ -13,12 +13,10 @@ import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-
 class EventsTest {
 
     @Test
     fun testChangeAndInputEvent() = runTest {
-
         val inputId = Id.next()
 
         val store = object : RootStore<String>("start") {}
@@ -52,7 +50,6 @@ class EventsTest {
 
     @Test
     fun testClickEvent() = runTest {
-
         val resultId = Id.next()
         val buttonId = Id.next()
 
@@ -97,7 +94,6 @@ class EventsTest {
 
     @Test
     fun testMultipleClickEvent() = runTest {
-
         val resultId = Id.next()
         val buttonId = Id.next()
 
@@ -118,7 +114,6 @@ class EventsTest {
                 countHandlerCalls++
                 "$model$"
             }
-
         }
 
         render {
@@ -155,7 +150,6 @@ class EventsTest {
 
     @Test
     fun testKeyboardEvent() = runTest {
-
         val resultId = Id.next()
         val inputId = Id.next()
 
@@ -178,7 +172,6 @@ class EventsTest {
                 }
                 pressed
             }
-
         }
 
         render {
@@ -207,10 +200,9 @@ class EventsTest {
                     KeyboardEvent("keydown", KeyboardEventInit(it.key, it.key, ctrlKey = true)),
                     KeyboardEvent("keydown", KeyboardEventInit(it.key, it.key, altKey = true)),
                     KeyboardEvent("keydown", KeyboardEventInit(it.key, it.key, shiftKey = true)),
-                    KeyboardEvent("keydown", KeyboardEventInit(it.key, it.key, metaKey = true))
+                    KeyboardEvent("keydown", KeyboardEventInit(it.key, it.key, metaKey = true)),
                 )
             }
-
 
         for (e: KeyboardEvent in keyboardEvents) {
             input.dispatchEvent(e)
@@ -234,7 +226,6 @@ class EventsTest {
 
     @Test
     fun testEnterForInput() = runTest {
-
         val inputId = Id.next()
         val resultId = Id.next()
 
@@ -245,8 +236,11 @@ class EventsTest {
                 input(id = inputId) {
                     value(store.data)
                     keyups.mapNotNull {
-                        if (shortcutOf(it) == Keys.Enter) this.domNode.value
-                        else null
+                        if (shortcutOf(it) == Keys.Enter) {
+                            this.domNode.value
+                        } else {
+                            null
+                        }
                     } handledBy store.update
                 }
                 p(id = resultId) {
@@ -272,7 +266,6 @@ class EventsTest {
 
     @Test
     fun testWindowListenerForClickEvent() = runTest {
-
         val labelId = "labelId"
         val divId = "divId"
 
@@ -284,13 +277,11 @@ class EventsTest {
                 labelId
             } handledBy store.update
 
-
             section {
                 div(id = divId) {
                     store.data.renderText()
                     label(id = labelId) { }
                 }
-
             }
         }
 
@@ -309,14 +300,13 @@ class EventsTest {
     @Ignore // composedPath() is not working in Karma tests
     @Test
     fun testWindowListenerForClickEventAndComposedPath() = runTest {
-
         val wrapperId = Id.next()
         val outerId = Id.next()
         val innerId = Id.next()
 
         val pathSize = storeOf(0)
         val setSize = pathSize.handle<Int> { _, size ->
-            console.log("Store: $size\n");
+            console.log("Store: $size\n")
             size
         }
 
@@ -358,7 +348,6 @@ class EventsTest {
     @Ignore
     @Test
     fun testWindowListenerForStopImmediatePropagation() = runTest {
-
         val divId = "divId"
         val buttonId = "buttonId"
 
@@ -397,7 +386,6 @@ class EventsTest {
 
     @Test
     fun testEventCaptured() = runTest {
-
         val outerId = Id.next()
         val innerId = Id.next()
 
@@ -427,7 +415,6 @@ class EventsTest {
 
     @Test
     fun testEventCapturedStopPropagation() = runTest {
-
         val outerId = Id.next()
         val innerId = Id.next()
 
@@ -457,7 +444,6 @@ class EventsTest {
 
     @Test
     fun testEventBubbled() = runTest {
-
         val outerId = Id.next()
         val innerId = Id.next()
 
@@ -487,7 +473,6 @@ class EventsTest {
 
     @Test
     fun testEventBubbledStopPropagation() = runTest {
-
         val outerId = Id.next()
         val innerId = Id.next()
 

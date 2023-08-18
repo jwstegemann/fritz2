@@ -14,7 +14,6 @@ class ScopeTests {
 
     @Test
     fun testScopeInDifferentContexts() = runTest {
-        
         val id1 = Id.next()
         val key1 = Scope.keyOf<String>("key1")
         val value1 = "value1"
@@ -66,5 +65,4 @@ class ScopeTests {
         assertEquals(value1, div3.getAttribute("data-${key1.name}"))
         assertEquals(value2, div3.getAttribute("data-${key2.name}"))
     }
-
 }

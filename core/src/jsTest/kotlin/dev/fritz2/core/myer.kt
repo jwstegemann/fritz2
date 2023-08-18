@@ -30,12 +30,14 @@ class MyerTests {
             is Patch.Move<T> -> {
                 val element = get(patch.from)
                 removeAt(patch.from)
-                if (patch.from > patch.to) add(patch.to, element)
-                else add(patch.to - 1, element)
+                if (patch.from > patch.to) {
+                    add(patch.to, element)
+                } else {
+                    add(patch.to - 1, element)
+                }
             }
         }
     }
-
 
     private fun createTestCase(): Pair<MutableList<String>, MutableList<String>> {
         val letters = listOf("a", "b", "c", "d", "e", "f", "g")
@@ -54,13 +56,13 @@ class MyerTests {
 
         for (n in 0 until rand.nextInt(maxOperations) + 1) {
             when (rand.nextInt(2)) {
-                //insert
+                // insert
                 0 -> {
                     val index = rand.nextInt(new.size + 1)
                     val element = letters[rand.nextInt(letters.size)]
                     new.add(index, element)
                 }
-                //delete
+                // delete
                 1 -> {
                     if (new.size > 0) {
                         val index = rand.nextInt(new.size)
@@ -73,28 +75,27 @@ class MyerTests {
         return Pair(old, new)
     }
 
-
     fun runTestCase(old: MutableList<String>, new: MutableList<String>) {
-
 //        console.log("old: $old \n")
 //        console.log("new: $new \n")
 
-        with(measureTime {
+        with(
+            measureTime {
                 val patches = Myer.diff<String, Nothing>(old, new, null)
 
                 try {
                     patches.forEach { patch ->
-    //                    console.log("applying patch: $patch \n")
+                        //                    console.log("applying patch: $patch \n")
                         old.applyPatch(patch)
-    //                    console.log("... result: $old \n")
+                        //                    console.log("... result: $old \n")
                     }
                 } catch (e: NoSuchElementException) {
-                    //if there is nothing to do this is ok
+                    // if there is nothing to do this is ok
                 }
 
                 assertEquals(new, old)
-
-            }.toDouble(DurationUnit.MILLISECONDS)) {
+            }.toDouble(DurationUnit.MILLISECONDS),
+        ) {
 //            console.log("took $this ms \n")
         }
     }

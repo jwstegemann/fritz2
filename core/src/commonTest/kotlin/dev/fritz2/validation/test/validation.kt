@@ -24,8 +24,9 @@ data class Car(val name: String, val color: Color) {
 
         val validator: Validation<Car, Unit, Message> = validation { inspector ->
             inspector.map(nameLens).let { nameInspector ->
-                if (nameInspector.data.isBlank())
+                if (nameInspector.data.isBlank()) {
                     add(Message(nameInspector.path, carNameIsBlank))
+                }
             }
             addAll(Color.validator(inspector.map(colorLens), Unit))
         }
@@ -74,7 +75,7 @@ data class LocalDate(val year: Int, val month: Int, val day: Int) {
 data class Person(
     val name: String,
     val birthday: LocalDate,
-    val address: Address
+    val address: Address,
 ) {
     data class ValidationMetaData(val today: LocalDate, val knownCities: Set<String>)
 
@@ -91,8 +92,9 @@ data class Person(
                 if (nameInspector.data.isBlank()) add(Message(nameInspector.path, "Name must not be blank!"))
             }
             inspector.map(birthdayLens).let { birthdayInspector ->
-                if (birthdayInspector.data > meta.today)
+                if (birthdayInspector.data > meta.today) {
                     add(Message(birthdayInspector.path, "Birthday must not be in the future!"))
+                }
             }
             addAll(Address.validate(inspector.map(addressLens), meta.knownCities))
         }
@@ -101,7 +103,7 @@ data class Person(
 
 data class Address(
     val street: String,
-    val city: String
+    val city: String,
 ) {
     companion object {
         // We cannot use @Lenses annotation in fritz2.core itself, so we must craft this by hand!
@@ -170,15 +172,15 @@ class ValidationTests {
         val fritz = Person(
             "", // must not be empty!
             LocalDate(1712, 1, 24),
-            Address("Am Schloss", "Potsdam") // city not in known cities list, see below
+            Address("Am Schloss", "Potsdam"), // city not in known cities list, see below
         )
 
         val errors = Person.validate(
             fritz,
             Person.ValidationMetaData(
                 LocalDate(1700, 1, 1), // set "today" into the past
-                setOf("Berlin", "Hamburg", "Braunschweig") // remember: no Potsdam inside
-            )
+                setOf("Berlin", "Hamburg", "Braunschweig"), // remember: no Potsdam inside
+            ),
         )
 
         assertEquals(3, errors.size, "Amount of error messages is false!")
@@ -192,7 +194,7 @@ class ValidationTests {
 
     @Test
     fun canOmitMetadataInCaseOfUnitType() {
-        assertEquals(colorValuesAreTooLow, Color.validator(Color(-1, 42 , 42)).first().text)
-        assertEquals(colorValuesAreTooLow, Color.validator(inspectorOf(Color(-1, 42 , 42))).first().text)
+        assertEquals(colorValuesAreTooLow, Color.validator(Color(-1, 42, 42)).first().text)
+        assertEquals(colorValuesAreTooLow, Color.validator(inspectorOf(Color(-1, 42, 42))).first().text)
     }
 }

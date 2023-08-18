@@ -18,7 +18,7 @@ class ShortcutTests {
     fun testCanCreateShortcutFromKeyboardEvent() {
         val event = KeyboardEvent(
             "keydown",
-            KeyboardEventInit("K", shiftKey = true, altKey = true, metaKey = true, ctrlKey = true)
+            KeyboardEventInit("K", shiftKey = true, altKey = true, metaKey = true, ctrlKey = true),
         )
         assertEquals(shortcutOf(event), Shortcut("K", true, true, true, true))
         assertEquals(Shortcut(event), Shortcut("K", true, true, true, true))
@@ -39,22 +39,22 @@ class ShortcutTests {
         // triple  concatenations
         assertEquals(
             Shortcut("K", shift = true, alt = true, ctrl = true),
-            Shortcut("K") + Keys.Shift + Keys.Alt + Keys.Control
+            Shortcut("K") + Keys.Shift + Keys.Alt + Keys.Control,
         )
         assertEquals(
             Shortcut("K", shift = true, alt = true, ctrl = true),
-            Shortcut("K") + Keys.Control + Keys.Shift + Keys.Alt
+            Shortcut("K") + Keys.Control + Keys.Shift + Keys.Alt,
         )
         assertEquals(
             Shortcut("K", shift = true, alt = true, ctrl = true),
-            Shortcut("K") + Keys.Alt + Keys.Control + Keys.Shift
+            Shortcut("K") + Keys.Alt + Keys.Control + Keys.Shift,
         )
 
         // plus is idempotent
         assertEquals(Shortcut("K", shift = true), Shortcut("K") + Keys.Shift + Keys.Shift)
         assertEquals(
             Shortcut("K", shift = true, alt = true),
-            Shortcut("K") + Keys.Shift + Keys.Alt + Keys.Shift + Keys.Alt + Keys.Shift + Keys.Alt
+            Shortcut("K") + Keys.Shift + Keys.Alt + Keys.Shift + Keys.Alt + Keys.Shift + Keys.Alt,
         )
     }
 
@@ -73,15 +73,15 @@ class ShortcutTests {
         // triple  concatenations
         assertEquals(
             Shortcut("K", shift = true, alt = true, ctrl = true),
-            Keys.Shift + Keys.Alt + Keys.Control + Shortcut("K")
+            Keys.Shift + Keys.Alt + Keys.Control + Shortcut("K"),
         )
         assertEquals(
             Shortcut("K", shift = true, alt = true, ctrl = true),
-            Keys.Control + Keys.Shift + Keys.Alt + Shortcut("K")
+            Keys.Control + Keys.Shift + Keys.Alt + Shortcut("K"),
         )
         assertEquals(
             Shortcut("K", shift = true, alt = true, ctrl = true),
-            Keys.Alt + Keys.Control + Keys.Shift + Shortcut("K")
+            Keys.Alt + Keys.Control + Keys.Shift + Shortcut("K"),
         )
     }
 

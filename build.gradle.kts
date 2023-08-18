@@ -1,8 +1,11 @@
+import io.gitlab.arturbosch.detekt.extensions.DetektExtension
+
 plugins {
-    kotlin("multiplatform") version "1.7.20" apply false
-    kotlin("plugin.serialization") version "1.7.20" apply false
-    id("com.google.devtools.ksp") version "1.7.20-1.0.6" apply false
-    id("org.jetbrains.dokka") version "1.7.20"
+    kotlin("multiplatform") version "1.8.22" apply false
+    kotlin("plugin.serialization") version "1.8.22" apply false
+    id("com.google.devtools.ksp") version "1.8.22-1.0.11" apply false
+    id("org.jetbrains.dokka") version "1.8.20"
+    id("io.gitlab.arturbosch.detekt") version "1.23.1" apply false
     id("maven-publish")
     signing
 }
@@ -11,10 +14,11 @@ plugins {
 // https://docs.gradle.org/current/userguide/platforms.html
 extra.apply {
     // core
-    set("kotlinVersion", "1.7.20")
-    set("kspVersion", "1.7.20-1.0.6")
+    set("kotlinVersion", "1.8.22")
+    set("kspVersion", "1.8.22-1.0.11")
     set("coroutinesVersion", "1.6.4")
     set("serializationVersion", "1.4.0")
+    set("detektVersion", "1.23.1")
 
     // test-server
     set("ktorVersion", "2.2.2")
@@ -45,7 +49,7 @@ extra.apply {
 }
 
 allprojects {
-    //manage common setting and dependencies
+    // manage common setting and dependencies
     repositories {
         mavenCentral()
     }
@@ -54,6 +58,23 @@ allprojects {
 subprojects {
     group = "dev.fritz2"
     version = "1.0-SNAPSHOT"
+
+    apply(plugin = "io.gitlab.arturbosch.detekt")
+
+    extensions.configure<DetektExtension>("detekt") {
+        source.setFrom(
+            "src/commonMain/kotlin",
+            "src/commonTest/kotlin",
+            "src/jsMain/kotlin",
+            "src/jsTest/kotlin",
+        )
+        buildUponDefaultConfig = true
+        config.setFrom("$rootDir/detekt.yml")
+    }
+
+    dependencies {
+        "detektPlugins"("io.gitlab.arturbosch.detekt:detekt-formatting:${rootProject.extra["detektVersion"]}")
+    }
 }
 
 tasks.dokkaHtmlMultiModule.configure {
@@ -67,7 +88,7 @@ tasks.register("metadataToWww") {
                 {
                     "version": "${subprojects.find { it.name == "core" }?.version ?: ""}"
                 }
-            """.trimIndent()
+            """.trimIndent(),
         )
     }
 }

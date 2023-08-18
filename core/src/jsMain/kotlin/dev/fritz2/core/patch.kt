@@ -39,9 +39,12 @@ sealed class Patch<out T> {
          *
          * @param mapping defines, how to map the values of the patch
          */
-        override fun <R> map(parentJob: Job, mapping: (T, Job) -> R): Patch<R> = InsertMany(elements.map {
-            mapping(it, Job(parentJob))
-        }, index)
+        override fun <R> map(parentJob: Job, mapping: (T, Job) -> R): Patch<R> = InsertMany(
+            elements.map {
+                mapping(it, Job(parentJob))
+            },
+            index,
+        )
     }
 
     /**

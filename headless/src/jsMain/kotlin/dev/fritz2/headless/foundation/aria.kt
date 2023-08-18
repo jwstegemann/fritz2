@@ -215,13 +215,13 @@ object Aria {
  */
 class AriaReferenceHook<C : Tag<*>>(private val name: String) : Hook<C, Unit, Unit>() {
     operator fun invoke(id: String): String {
-        value = id.let { v -> { _,_ -> attr(name, v) } }
+        value = id.let { v -> { _, _ -> attr(name, v) } }
         return id
     }
 
     operator fun invoke(): String {
         val id = Id.next()
-        value = id.let { v -> { _,_ -> attr(name, v) } }
+        value = id.let { v -> { _, _ -> attr(name, v) } }
         return id
     }
 }

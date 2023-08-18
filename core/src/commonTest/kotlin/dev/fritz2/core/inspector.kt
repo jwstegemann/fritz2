@@ -17,7 +17,6 @@ class InspectorTests {
 
     @Test
     fun testInspectorPaths() {
-
         val rootData = Person("Foo", Address("Street 5"))
         val rootInspector = inspectorOf(rootData)
 
@@ -54,11 +53,10 @@ class InspectorTests {
 
     @Test
     fun testPathsByElementLens() {
-
         val personList = listOf(
             Person("p1", Address("p1s1")),
             Person("p2", Address("p2s1")),
-            Person("p3", Address("p3s1"))
+            Person("p3", Address("p3s1")),
         )
 
         val rootInspector = inspectorOf(personList)
@@ -81,7 +79,7 @@ class InspectorTests {
         val personList = listOf(
             Person("p1", Address("p1s1")),
             Person("p2", Address("p2s1")),
-            Person("p3", Address("p3s1"))
+            Person("p3", Address("p3s1")),
         )
 
         val rootInspector = inspectorOf(personList)
@@ -108,7 +106,7 @@ class InspectorTests {
         val personList = listOf(
             Person("p1", Address("p1s1")),
             Person("p2", Address("p2s1")),
-            Person("p3", Address("p3s1"))
+            Person("p3", Address("p3s1")),
         )
 
         val rootInspector = inspectorOf(personList)
@@ -131,7 +129,7 @@ class InspectorTests {
         val personList = listOf(
             Person("p1", Address("p1s1")),
             Person("p2", Address("p2s1")),
-            Person("p3", Address("p3s1"))
+            Person("p3", Address("p3s1")),
         )
 
         val rootInspector = inspectorOf(personList)
@@ -158,7 +156,7 @@ class InspectorTests {
         val personList = mapOf(
             1 to Person("p1", Address("p1s1")),
             2 to Person("p2", Address("p2s1")),
-            3 to Person("p3", Address("p3s1"))
+            3 to Person("p3", Address("p3s1")),
         )
 
         val rootInspector = inspectorOf(personList)
@@ -181,7 +179,7 @@ class InspectorTests {
         val personList = mapOf(
             1 to Person("p1", Address("p1s1")),
             2 to Person("p2", Address("p2s1")),
-            3 to Person("p3", Address("p3s1"))
+            3 to Person("p3", Address("p3s1")),
         )
 
         val rootInspector = RootInspector(personList)

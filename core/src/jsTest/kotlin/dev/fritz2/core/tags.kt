@@ -11,13 +11,10 @@ import org.w3c.dom.HTMLSpanElement
 import org.w3c.dom.asList
 import kotlin.test.*
 
-
 class TagTests {
 
     @Test
     fun testTextNodes() = runTest {
-
-
         val id1 = Id.next()
         val id2 = Id.next()
 
@@ -43,7 +40,6 @@ class TagTests {
 
     @Test
     fun testTextOnString() = runTest {
-
         val id1 = Id.next()
         val id2 = Id.next()
         val text = "testText"
@@ -74,7 +70,6 @@ class TagTests {
 
     @Test
     fun testTextOnFlowOfString() = runTest {
-
         val testId = Id.next()
         val text = "testText"
 
@@ -93,8 +88,9 @@ class TagTests {
         assertEquals(text, element.textContent)
         assertTrue(
             mountPointTag.hasAttribute("data-mount-point"),
-            "Attribute `data-mount-point` missing, found only the following attributes: "
-                    + mountPointTag.attributes.asList().joinToString(",") { it.name })
+            "Attribute `data-mount-point` missing, found only the following attributes: " +
+                mountPointTag.attributes.asList().joinToString(",") { it.name },
+        )
     }
 
     @Test
@@ -135,7 +131,7 @@ class TagTests {
         assertEquals("RC-4", getSpanText(idValueReactive))
         val firstRenderedSpanCheck = getStaticTextNode(idMain)
         assertSame(firstRenderedSpan, firstRenderedSpanCheck)
-        assertEquals("fritz",  getStaticSpan(idMain).textContent)
+        assertEquals("fritz", getStaticSpan(idMain).textContent)
 
         // update with new value should trigger re-render
         store.update(Model("fritz2", "1.0-FINAL"))
@@ -149,7 +145,6 @@ class TagTests {
 
     @Test
     fun testCommentOnString() = runTest {
-
         val id1 = Id.next()
         val comment = "testComment"
 
@@ -172,7 +167,6 @@ class TagTests {
 
     @Test
     fun testSingleTag() = runTest {
-
         val testId = Id.next()
         val testClass = "testClass"
 
@@ -193,7 +187,6 @@ class TagTests {
 
     @Test
     fun testSingleTagWithBaseClass() = runTest {
-
         val testId = Id.next()
         val baseClass = "baseClass"
         val testClass = "testClass"
@@ -215,7 +208,6 @@ class TagTests {
 
     @Test
     fun testSingleTagWithBaseClassOnly() = runTest {
-
         val testId = Id.next()
         val baseClass = "baseClass"
 
@@ -236,7 +228,6 @@ class TagTests {
 
     @Test
     fun testMultipleTags() = runTest {
-
         val testRange = (0..4)
         val testIds = testRange.map { "testId$it" }
         val testClasses = testRange.map { "testClass$it" }
@@ -257,7 +248,6 @@ class TagTests {
             val e = document.getElementById("list")
             console.error(e?.outerHTML + "\n\n\n")
 
-
             val element = document.getElementById(testIds[i]).unsafeCast<HTMLDivElement>()
             assertEquals(testIds[i], element.id)
             assertEquals("li", element.localName)
@@ -267,7 +257,6 @@ class TagTests {
 
     @Test
     fun testRenderWithCondition() = runTest {
-
         val outerId = Id.next()
         val innerId = Id.next()
 
@@ -309,7 +298,6 @@ class TagTests {
 
     @Test
     fun testAnnex() = runTest {
-
         val contentId = Id.next()
 
         render {
@@ -327,13 +315,12 @@ class TagTests {
 
         assertEquals(
             document.getElementById(contentId)?.innerHTML,
-            "<div>inner div</div><span>outer div</span><span>after inner div</span>"
+            "<div>inner div</div><span>outer div</span><span>after inner div</span>",
         )
     }
 
     @Test
     fun testWheneverWithStaticData() = runTest {
-
         val steering = storeOf(false)
         val getAttribute = { document.getElementById("root")!!.getAttribute("data-foo") }
 
@@ -354,7 +341,6 @@ class TagTests {
 
     @Test
     fun testWheneverWithFlowData() = runTest {
-
         val steering = storeOf(false)
         val value = object : RootStore<String>("first") {
             private val items = listOf("first", "second", "skipped", "fourth")
@@ -418,5 +404,4 @@ class TagTests {
         // attr     |                                    fourth
         assertEquals("fourth", getAttribute())
     }
-
 }

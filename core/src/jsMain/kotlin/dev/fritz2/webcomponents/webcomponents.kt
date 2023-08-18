@@ -10,7 +10,9 @@ import kotlin.reflect.KClass
 
 internal fun <X : Element, T : WebComponent<X>> createClass(): (constructor: JsClass<T>, observedAttributes: Array<out String>) -> () -> dynamic =
     nativeFunction(
-        "_component", "_attributes", block = """
+        "_component",
+        "_attributes",
+        block = """
         return class extends HTMLElement {
         
             constructor() {
@@ -41,7 +43,7 @@ internal fun <X : Element, T : WebComponent<X>> createClass(): (constructor: JsC
                 this.webComponent.adoptedCallback(this)
             }
         }
-    """
+    """,
     )
 
 /**
@@ -75,7 +77,7 @@ abstract class WebComponent<E : Element>(observeAttributes: Boolean = true) {
     /**
      * this callback is used, when building the component in native-js (since ES2015-classes are not supported by Kotlin/JS by now)
      */
-    //cannot be private or internal because it is used in native js
+    // cannot be private or internal because it is used in native js
     @JsName("attributeChangedCallback")
     fun attributeChangedCallback(name: String, value: String) {
         _attributeChanges.tryEmit(Pair(name, value))
@@ -98,10 +100,12 @@ abstract class WebComponent<E : Element>(observeAttributes: Boolean = true) {
      */
     fun linkStylesheet(shadowRoot: ShadowRoot, url: String) {
         shadowRoot.ownerDocument?.let {
-            shadowRoot.appendChild(it.createElement("link").unsafeCast<HTMLLinkElement>().apply {
-                rel = "stylesheet"
-                href = url
-            })
+            shadowRoot.appendChild(
+                it.createElement("link").unsafeCast<HTMLLinkElement>().apply {
+                    rel = "stylesheet"
+                    href = url
+                },
+            )
         }
     }
 
@@ -113,9 +117,11 @@ abstract class WebComponent<E : Element>(observeAttributes: Boolean = true) {
      */
     fun setStylesheet(shadowRoot: ShadowRoot, text: String) {
         shadowRoot.ownerDocument?.let {
-            shadowRoot.appendChild(it.createElement("style").unsafeCast<HTMLStyleElement>().apply {
-                innerText = text
-            })
+            shadowRoot.appendChild(
+                it.createElement("style").unsafeCast<HTMLStyleElement>().apply {
+                    innerText = text
+                },
+            )
         }
     }
 
@@ -165,7 +171,7 @@ abstract class WebComponent<E : Element>(observeAttributes: Boolean = true) {
 fun <X : Element, T : WebComponent<X>> registerWebComponent(
     localName: String,
     webComponent: T,
-    vararg observedAttributes: String
+    vararg observedAttributes: String,
 ) {
     registerWebComponent(localName, webComponent::class, *observedAttributes)
 }
@@ -181,7 +187,7 @@ fun <X : Element, T : WebComponent<X>> registerWebComponent(
 fun <E : Element, T : WebComponent<E>> registerWebComponent(
     localName: String,
     constructor: KClass<T>,
-    vararg observedAttributes: String
+    vararg observedAttributes: String,
 ) {
     val customElementConstructor = createClass<E, T>()(constructor.js, observedAttributes)
     window.customElements.define(localName, customElementConstructor)

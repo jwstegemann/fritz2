@@ -49,7 +49,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CL>>,
-        content: Tag<CL>.() -> Unit
+        content: Tag<CL>.() -> Unit,
     ): Tag<CL> {
         addComponentStructureInfo("checkboxGroupLabel", this@checkboxGroupLabel.scope, this)
         return tag(this, classes, "$componentId-label", scope, content).also { label = it }
@@ -64,7 +64,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
     fun RenderContext.checkboxGroupLabel(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        content: Tag<HTMLLabelElement>.() -> Unit
+        content: Tag<HTMLLabelElement>.() -> Unit,
     ) = checkboxGroupLabel(classes, scope, RenderContext::label, content)
 
     /**
@@ -77,14 +77,14 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CV>>,
-        initialize: ValidationMessages<CV>.() -> Unit
+        initialize: ValidationMessages<CV>.() -> Unit,
     ) {
         value.validationMessages.map { it.isNotEmpty() }.render { isNotEmpty ->
             if (isNotEmpty) {
                 addComponentStructureInfo(
                     "checkboxGroupValidationMessages",
                     this@checkboxGroupValidationMessages.scope,
-                    this
+                    this,
                 )
                 tag(this, classes, "$componentId-${ValidationMessages.ID_SUFFIX}", scope) {
                     validationMessages = this
@@ -103,13 +103,13 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
     fun RenderContext.checkboxGroupValidationMessages(
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        initialize: ValidationMessages<HTMLDivElement>.() -> Unit
+        initialize: ValidationMessages<HTMLDivElement>.() -> Unit,
     ) = checkboxGroupValidationMessages(classes, scope, RenderContext::div, initialize)
 
     inner class CheckboxGroupOption<CO : HTMLElement>(
         tag: Tag<CO>,
         private val option: T,
-        val optionId: String
+        val optionId: String,
     ) : Tag<CO> by tag {
 
         val selected = value.data.map { it.contains(option) }
@@ -118,7 +118,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
         private var label: Tag<HTMLElement>? = null
         private var descriptions: MutableList<Tag<HTMLElement>> = mutableListOf()
 
-        private val toggleId = "${optionId}-toggle"
+        private val toggleId = "$optionId-toggle"
 
         fun render() {
             toggle?.apply {
@@ -126,9 +126,12 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
                 attr(
                     Aria.describedby,
                     value.validationMessages.map { messages ->
-                        if (messages.isNotEmpty()) validationMessages?.id
-                        else descriptions.map { it.id }.joinToString(" ")
-                    }
+                        if (messages.isNotEmpty()) {
+                            validationMessages?.id
+                        } else {
+                            descriptions.map { it.id }.joinToString(" ")
+                        }
+                    },
                 )
             }
         }
@@ -143,7 +146,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CT>>,
-            content: Tag<CT>.() -> Unit
+            content: Tag<CT>.() -> Unit,
         ): Tag<CT> {
             addComponentStructureInfo("checkboxGroupOptionToggle", this@checkboxGroupOptionToggle.scope, this)
             return tag(this, classes, toggleId, scope) {
@@ -160,9 +163,11 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
                     withKeyboardNavigation = false
                     toggleEvent = changes
                 }
-                value.handler?.invoke(value.data.flatMapLatest { value ->
-                    toggleEvent.map { if (value.contains(option)) value - option else value + option }
-                })
+                value.handler?.invoke(
+                    value.data.flatMapLatest { value ->
+                        toggleEvent.map { if (value.contains(option)) value - option else value + option }
+                    },
+                )
                 if (withKeyboardNavigation) {
                     value.handler?.invoke(
                         value.data.flatMapLatest { value ->
@@ -171,7 +176,8 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
                                 it.preventDefault()
                                 if (value.contains(option)) value - option else value + option
                             }
-                        })
+                        },
+                    )
                 }
             }.also { toggle = it }
         }
@@ -185,7 +191,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
         fun RenderContext.checkboxGroupOptionToggle(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            content: Tag<HTMLDivElement>.() -> Unit
+            content: Tag<HTMLDivElement>.() -> Unit,
         ) = checkboxGroupOptionToggle(classes, scope, RenderContext::div, content)
 
         /**
@@ -198,10 +204,10 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CL>>,
-            content: Tag<CL>.() -> Unit
+            content: Tag<CL>.() -> Unit,
         ): Tag<CL> {
             addComponentStructureInfo("checkboxGroupOptionLabel", this@checkboxGroupOptionLabel.scope, this)
-            return tag(this, classes, "${optionId}-label", scope, content).also { label = it }
+            return tag(this, classes, "$optionId-label", scope, content).also { label = it }
         }
 
         /**
@@ -213,7 +219,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
         fun RenderContext.checkboxGroupOptionLabel(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            content: Tag<HTMLLabelElement>.() -> Unit
+            content: Tag<HTMLLabelElement>.() -> Unit,
         ) = checkboxGroupOptionLabel(classes, scope, RenderContext::label) {
             content()
             `for`(optionId)
@@ -229,7 +235,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
             tag: TagFactory<Tag<CL>>,
-            content: Tag<CL>.() -> Unit
+            content: Tag<CL>.() -> Unit,
         ): Tag<CL> {
             addComponentStructureInfo("checkboxGroupOptionDescription", this@checkboxGroupOptionDescription.scope, this)
             return tag(
@@ -237,7 +243,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
                 classes,
                 "$optionId-description-${descriptions.size}",
                 scope,
-                content
+                content,
             ).also { descriptions.add(it) }
         }
 
@@ -250,7 +256,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
         fun RenderContext.checkboxGroupOptionDescription(
             classes: String? = null,
             scope: (ScopeContext.() -> Unit) = {},
-            content: Tag<HTMLSpanElement>.() -> Unit
+            content: Tag<HTMLSpanElement>.() -> Unit,
         ) = checkboxGroupOptionDescription(classes, scope, RenderContext::span, content)
     }
 
@@ -266,7 +272,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<CO>>,
-        initialize: CheckboxGroupOption<CO>.() -> Unit
+        initialize: CheckboxGroupOption<CO>.() -> Unit,
     ): Tag<CO> {
         addComponentStructureInfo("checkboxGroupOption", this@checkboxGroupOption.scope, this)
         val optionId = "$componentId-${id ?: Id.next()}"
@@ -289,7 +295,7 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
         classes: String? = null,
         id: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
-        initialize: CheckboxGroupOption<HTMLDivElement>.() -> Unit
+        initialize: CheckboxGroupOption<HTMLDivElement>.() -> Unit,
     ): Tag<HTMLDivElement> = checkboxGroupOption(option, classes, id, scope, RenderContext::div, initialize)
 }
 
@@ -324,7 +330,7 @@ fun <C : HTMLElement, T> RenderContext.checkboxGroup(
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
-    initialize: CheckboxGroup<C, T>.() -> Unit
+    initialize: CheckboxGroup<C, T>.() -> Unit,
 ): Tag<C> {
     addComponentStructureInfo(CheckboxGroup.COMPONENT_NAME, this@checkboxGroup.scope, this)
     return tag(this, classes, id, scope) {
@@ -365,5 +371,5 @@ fun <T> RenderContext.checkboxGroup(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    initialize: CheckboxGroup<HTMLDivElement, T>.() -> Unit
+    initialize: CheckboxGroup<HTMLDivElement, T>.() -> Unit,
 ): Tag<HTMLDivElement> = checkboxGroup(classes, id, scope, RenderContext::div, initialize)

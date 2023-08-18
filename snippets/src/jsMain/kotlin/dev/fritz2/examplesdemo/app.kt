@@ -9,28 +9,28 @@ val pages = mapOf(
     "start" to DemoPage(
         "Start",
         "Starting example showing fritz2 HTML DSL",
-        RenderContext::start
+        RenderContext::start,
     ),
     "simple" to DemoPage(
         "Simple",
         "Simple example showing how to structure your fritz2 code",
-        RenderContext::simple
+        RenderContext::simple,
     ),
     "reactive" to DemoPage(
         "Reactive",
         "Reactive example showing fritz2 two-way data binding",
-        RenderContext::reactive
+        RenderContext::reactive,
     ),
     "complex" to DemoPage(
         "Complex",
         "Complex example showing fritz2 validation",
-        RenderContext::complex
+        RenderContext::complex,
     ),
     "fundamentals" to DemoPage(
         "Fundamentals",
         "small example to demonstrate the fundamental concepts and functions",
-        RenderContext::fundamentals
-    )
+        RenderContext::fundamentals,
+    ),
 )
 
 fun RenderContext.overview() {
@@ -44,7 +44,8 @@ fun RenderContext.overview() {
                 a(
                     """-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50 hover:ring-2 hover:ring-white 
                     | ring-offset-2 ring-offset-amber-400 hover:outline-none shadow-lg rounded-lg bg-white 
-                    | opacity-80 hover:opacity-100 transition ease-in-out duration-150""".trimMargin()
+                    | opacity-80 hover:opacity-100 transition ease-in-out duration-150
+                    """.trimMargin(),
                 ) {
                     href("#")
                     /* <!-- Heroicon name: outline/support --> */
@@ -61,7 +62,8 @@ fun RenderContext.overview() {
                             d(
                                 """M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536  
                                 | 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 
-                                | 4 4 0 018 0z""".trimMargin()
+                                | 4 4 0 018 0z
+                                """.trimMargin(),
                             )
                         }
                     }
@@ -75,11 +77,9 @@ fun RenderContext.overview() {
             }
         }
     }
-
 }
 
 fun main() {
-
     val router = routerOf("")
 
     render {

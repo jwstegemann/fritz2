@@ -16,7 +16,7 @@ class NullableInspectorTests {
         assertEquals(
             expected,
             resultValue,
-            "Data of the derived Inspector must equal the expected value."
+            "Data of the derived Inspector must equal the expected value.",
         )
     }
 
@@ -31,7 +31,7 @@ class NullableInspectorTests {
         assertEquals(
             nonNullableStore.path,
             nonNullableInspector.path,
-            "Sub inspector and sub Store paths must be the same."
+            "Sub inspector and sub Store paths must be the same.",
         )
     }
 }

@@ -35,7 +35,7 @@ class ListBoxTest {
                 "classes",
                 componentId,
                 { set(scopeTestKey, scopeTestValue) },
-                RenderContext::div
+                RenderContext::div,
             ) {
                 value(componentState)
                 scope.asDataAttr(scopeTestKey)
@@ -80,13 +80,12 @@ class ListBoxTest {
         assertEquals("UL", listBoxItemsElement.tagName)
         assertEquals(listBoxEntries.size, listBoxItemsElement.childElementCount)
         val items = listBoxItemsElement.childNodes.asElementList()
-        for((index, item) in items.withIndex()) {
+        for ((index, item) in items.withIndex()) {
             assertEquals("$index", item.getAttribute("data-index"), "wrong index $index")
             assertEquals("false", item.getAttribute("data-active"), "wrong active $index")
-            assertEquals(if(index == 0) "true" else "false", item.getAttribute("data-selected"), "wrong selected $index")
-            assertEquals(if(index % 2 == 0) "true" else "false", item.getAttribute("data-disabled"), "wrong disabled $index")
+            assertEquals(if (index == 0) "true" else "false", item.getAttribute("data-selected"), "wrong selected $index")
+            assertEquals(if (index % 2 == 0) "true" else "false", item.getAttribute("data-disabled"), "wrong disabled $index")
         }
         assertFails { getElementById<HTMLDivElement>("$componentId-validation-messages") }
     }
-
 }

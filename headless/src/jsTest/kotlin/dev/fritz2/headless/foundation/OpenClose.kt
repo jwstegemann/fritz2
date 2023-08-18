@@ -15,7 +15,6 @@ class OpenCloseTest {
 
     @Test
     fun testOpenClose() = runTest {
-
         val id = Id.next()
         val openClose = object : OpenClose() {}
         val state = storeOf(false)
@@ -102,5 +101,4 @@ class OpenCloseTest {
         delay(100)
         assertEquals("false", div.getAttribute("open"), "after blur")
     }
-
 }

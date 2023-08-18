@@ -12,7 +12,6 @@ class LensesHelperTests {
     private val ageLens = lensOf(Tree::age.name, Tree::age) { p, v -> p.copy(age = v) }
     private val sizeLens = lensOf(Tree::size.name, Tree::size) { p, v -> p.copy(size = v) }
 
-
     @Test
     fun testHelper() {
         val p = Tree("Mammut Tree", 3000, Size(84.3))
@@ -26,17 +25,17 @@ class LensesHelperTests {
         assertEquals(
             p.size.height.toString(),
             formattedSizeLens.get(p),
-            "get on formattedSizeLens did not work"
+            "get on formattedSizeLens did not work",
         )
         assertEquals(
             "${Tree::size.name}.${Size::height.name}",
             formattedSizeLens.id,
-            "id on formattedSizeLens did not work"
+            "id on formattedSizeLens did not work",
         )
         assertEquals(
             formattedSizeLens.set(p, "55.12").size.height,
             55.12,
-            "set on formattedSizeLens did not work"
+            "set on formattedSizeLens did not work",
         )
     }
 }
