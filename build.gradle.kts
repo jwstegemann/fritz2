@@ -3,6 +3,7 @@ plugins {
     kotlin("plugin.serialization") version "1.7.20" apply false
     id("com.google.devtools.ksp") version "1.7.20-1.0.6" apply false
     id("org.jetbrains.dokka") version "1.7.20"
+    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.13.2"
     id("maven-publish")
     signing
 }
@@ -70,4 +71,26 @@ tasks.register("metadataToWww") {
             """.trimIndent()
         )
     }
+}
+
+apiValidation {
+    ignoredProjects.addAll(
+        listOf(
+            "lenses-annotation-processor",
+            "test-server",
+            "headless-demo",
+            "snippets",
+            "examples",
+            "gettingstarted",
+            "nestedmodel",
+            "performance",
+            "remote",
+            "masterdetail",
+            "routing",
+            "tictactoe",
+            "todomvc",
+            "validation",
+            "webcomponent",
+        )
+    )
 }
