@@ -44,7 +44,7 @@ kotlin {
         }
         val jsMain by getting {
             dependencies {
-                api(npm("@popperjs/core", rootProject.extra["popperjs"] as String))
+                api(npm("@floating-ui/dom", rootProject.extra["floatingui"] as String))
                 api(npm("scroll-into-view-if-needed", rootProject.extra["scroll-into-view-if-needed"] as String))
             }
         }

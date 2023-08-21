@@ -4,7 +4,9 @@ import dev.fritz2.core.RenderContext
 import dev.fritz2.core.storeOf
 import dev.fritz2.core.transition
 import dev.fritz2.headless.components.menu
-import dev.fritz2.headless.foundation.utils.popper.Placement
+import dev.fritz2.headless.foundation.utils.floatingui.core.middleware.offset
+import dev.fritz2.headless.foundation.utils.floatingui.utils.Placement
+import dev.fritz2.headless.foundation.utils.floatingui.utils.PlacementValues
 import dev.fritz2.headlessdemo.result
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -49,8 +51,8 @@ fun RenderContext.menuDemo() {
                         | border-white border-2  
                         | focus:outline-none""".trimMargin()
                 ) {
-                    placement = Placement.bottomStart
-                    distance = 5
+                    placement = PlacementValues.bottomStart
+                    addMiddleware(offset(5))
 
                     transition(
                         opened,

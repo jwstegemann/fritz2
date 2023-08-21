@@ -1,10 +1,11 @@
 package dev.fritz2.headless.components
 
-import dev.fritz2.core.Id
-import dev.fritz2.core.RenderContext
-import dev.fritz2.core.ScopeContext
-import dev.fritz2.core.Tag
+import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.*
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.take
 import org.w3c.dom.*
 
 /**
@@ -15,18 +16,22 @@ import org.w3c.dom.*
  *
  * For more information refer to the [official documentation](https://www.fritz2.dev/headless/modal/)
  */
-class Modal(val renderContext: RenderContext) : RenderContext by renderContext, OpenClose() {
+class Modal : OpenClose(), WithJob {
 
+    override val job: Job = Job()
     var restoreFocus: Boolean = true
     var setInitialFocus: InitialFocus = InitialFocus.InsistToSet
 
     private var panel: (RenderContext.() -> Tag<HTMLElement>)? = null
 
-    fun render() {
-        opened.render {
-            if (it) {
-                panel?.invoke(this)!!.apply {
-                    trapFocusInMountpoint(restoreFocus, setInitialFocus)
+    fun init() {
+        opened.filter { it }.handledBy {
+            PortalRenderContext.run {
+                portal(zIndex = PORTALLING_MODAL_ZINDEX, tag = RenderContext::dialog) { close ->
+                    panel?.invoke(this)!!.apply {
+                        trapFocusInMountpoint(restoreFocus, setInitialFocus)
+                    }
+                    opened.filter { !it }.map { }.take(1) handledBy close
                 }
             }
         }
@@ -149,7 +154,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
      * For more information refer to the
      * [official documentation](https://www.fritz2.dev/headless/modal/#modalpanel)
      */
-    fun <C : HTMLElement> RenderContext.modalPanel(
+    fun <C : HTMLElement> Modal.modalPanel(
         classes: String? = null,
         id: String? = null,
         internalScope: (ScopeContext.() -> Unit) = {},
@@ -158,7 +163,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
     ) {
         panel = {
             tag(this, classes, null, internalScope) {
-                addComponentStructureInfo("parent is modalPanel", this@modalPanel.scope, this)
+                addComponentStructureInfo("parent is modalPanel", scope, this)
                 ModalPanel(this, id).run {
                     initialize()
                     render()
@@ -173,7 +178,7 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
      * For more information refer to the
      * [official documentation](https://www.fritz2.dev/headless/modal/#modalpanel)
      */
-    fun RenderContext.modalPanel(
+    fun Modal.modalPanel(
         classes: String? = null,
         id: String? = null,
         internalScope: (ScopeContext.() -> Unit) = {},
@@ -208,9 +213,11 @@ class Modal(val renderContext: RenderContext) : RenderContext by renderContext, 
  *
  * For more information refer to the [official documentation](https://www.fritz2.dev/headless/modal/#modal)
  */
-fun RenderContext.modal(
+fun modal(
     initialize: Modal.() -> Unit
-) = Modal(this).run {
-    initialize(this)
-    render()
+) {
+    Modal().run {
+        initialize(this)
+        init()
+    }
 }

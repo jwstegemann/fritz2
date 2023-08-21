@@ -3,6 +3,7 @@ package dev.fritz2.headlessdemo
 import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.SHOW_COMPONENT_STRUCTURE
 import dev.fritz2.headlessdemo.components.*
+import dev.fritz2.headless.foundation.portalRoot
 import dev.fritz2.headlessdemo.foundation.testTrapFocus
 import dev.fritz2.routing.routerOf
 
@@ -135,5 +136,7 @@ fun main() {
                 (pages[route]?.content ?: RenderContext::overview)()
             }
         }
+
+        portalRoot ()
     }
 }

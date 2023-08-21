@@ -20,21 +20,22 @@ import org.w3c.dom.HTMLElement
 
 class Tooltip<C : HTMLElement>(
     renderContext: Tag<HTMLElement>,
+    reference:Tag<HTMLElement>,
     tagFactory: TagFactory<Tag<C>>,
     classes: String?,
     id: String?,
     scope: ScopeContext.() -> Unit
 ) : PopUpPanel<C>(
-    renderContext.annex,
+    renderContext,
     tagFactory,
     classes,
     id,
     scope,
-    opened = renderContext.run {
+    opened = reference .run {
         merge(mouseenters.map { true }, mouseleaves.map { false })
     },
     fullWidth = false,
-    renderContext,
+    reference = reference,
     ariaHasPopup = Aria.HasPopup.dialog
 )
 
@@ -51,12 +52,14 @@ fun <C : HTMLElement> Tag<HTMLElement>.tooltip(
     tag: TagFactory<Tag<C>>,
     initialize: Tooltip<C>.() -> Unit
 ) {
-    return Tooltip(this, tag, classes, id, scope).apply {
-        addComponentStructureInfo("parent is tooltip", this@tooltip.scope, this)
-    }.run {
-        initialize()
-        render()
-        attr("role", Aria.Role.tooltip)
+    portal(zIndex = PORTALLING_POPUP_ZINDEX) {
+        Tooltip(this, this@tooltip, tag, classes, id, scope).apply {
+            addComponentStructureInfo("parent is tooltip", this@tooltip.scope, this)
+        }.run {
+            initialize()
+            render()
+            attr("role", Aria.Role.tooltip)
+        }
     }
 }
 

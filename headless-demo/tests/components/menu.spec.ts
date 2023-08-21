@@ -18,61 +18,61 @@ test.describe('To open and close a menu', () => {
     async function createLocators(page: Page): Promise<[Locator, Locator, Locator]> {
         const btn = page.locator('#menu-button');
         const menuItems = page.locator('#menu-items');
-        const popperDiv = menuItems.locator("xpath=..");
-        return [btn, popperDiv, menuItems]
+        const popupDiv = menuItems.locator("xpath=..");
+        return [btn, popupDiv, menuItems]
     }
 
-    async function assertMenuIsOpen(btn: Locator, popperDiv: Locator, menuItems: Locator) {
-        await expect(popperDiv).toBeVisible();
+    async function assertMenuIsOpen(btn: Locator, popupDiv: Locator, menuItems: Locator) {
+        await expect(popupDiv).toBeVisible();
         await expect(btn).toHaveAttribute("aria-expanded", "true")
         await expect(menuItems).toBeFocused();
     }
 
-    async function assertMenuIsClosed(btn: Locator, popperDiv: Locator) {
-        await expect(popperDiv).toBeHidden();
+    async function assertMenuIsClosed(btn: Locator, popupDiv: Locator) {
+        await expect(popupDiv).toBeHidden();
         await expect(btn).toHaveAttribute("aria-expanded", "false")
     }
 
     test('click twice on the menuButton', async ({page}) => {
-        const [btn, popperDiv, menuItems] = await createLocators(page)
+        const [btn, popupDiv, menuItems] = await createLocators(page)
 
         await btn.focus()
-        await assertMenuIsClosed(btn, popperDiv)
+        await assertMenuIsClosed(btn, popupDiv)
 
         await btn.click();
-        await assertMenuIsOpen(btn, popperDiv, menuItems)
+        await assertMenuIsOpen(btn, popupDiv, menuItems)
 
         await btn.click();
-        await assertMenuIsClosed(btn, popperDiv)
+        await assertMenuIsClosed(btn, popupDiv)
     });
 
     test('click on the menuButton first and then click outside of the menuItems', async ({page}) => {
-        const [btn, popperDiv, menuItems] = await createLocators(page)
+        const [btn, popupDiv, menuItems] = await createLocators(page)
 
         await btn.focus()
-        await assertMenuIsClosed(btn, popperDiv)
+        await assertMenuIsClosed(btn, popupDiv)
 
         await btn.click();
-        await assertMenuIsOpen(btn, popperDiv, menuItems)
+        await assertMenuIsOpen(btn, popupDiv, menuItems)
 
         await page.mouse.click(0, 0)
-        await assertMenuIsClosed(btn, popperDiv)
+        await assertMenuIsClosed(btn, popupDiv)
     });
 
     for (const key of ["Enter", "Space"]) {
         test(`focus the menuButton and press ${key} then press Escape`, async ({page}) => {
-            const [btn, popperDiv, menuItems] = await createLocators(page)
+            const [btn, popupDiv, menuItems] = await createLocators(page)
 
             /* Need some delay actions because it was not performed correctly */
             await page.mouse.click(0, 0, {delay: 1000});
             await btn.focus()
-            await assertMenuIsClosed(btn, popperDiv)
+            await assertMenuIsClosed(btn, popupDiv)
 
             await page.press('#menu-button', key)
-            await assertMenuIsOpen(btn, popperDiv, menuItems)
+            await assertMenuIsOpen(btn, popupDiv, menuItems)
 
             await page.press('#menu-items', "Escape")
-            await assertMenuIsClosed(btn, popperDiv)
+            await assertMenuIsClosed(btn, popupDiv)
         });
     }
 
@@ -81,13 +81,13 @@ test.describe('To open and close a menu', () => {
             await expect(page.locator("#" + itemId)).toHaveAttribute("data-menu-active", "true")
         }
 
-        const [btn, popperDiv, listBoxItems] = await createLocators(page)
+        const [btn, popupDiv, listBoxItems] = await createLocators(page)
 
         await btn.focus()
-        await assertMenuIsClosed(btn, popperDiv)
+        await assertMenuIsClosed(btn, popupDiv)
 
         await btn.click();
-        await assertMenuIsOpen(btn, popperDiv, listBoxItems)
+        await assertMenuIsOpen(btn, popupDiv, listBoxItems)
 
         const item1 = page.locator("#menu-item-1")
         const itemM1 = await item1.boundingBox()

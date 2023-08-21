@@ -498,19 +498,18 @@ listbox<String> {
 Some bricks of the headless components (e.g. the `popOverPanel` or the `listboxItem`) are positioned dynamically
 and hover over the rest of the content. These are often faded in and out dynamically.
 
-These blocks are implemented using the library [Popper.js](https://popper.js.org). Accordingly, they offer a unified 
+These blocks are implemented using the library [Floating UI](https://floating-ui.com/). Accordingly, they offer a unified 
 configuration interface to the most important attributes.
 
 The following configurations are available in the scope of such a brick that implements the abstract class `PopUpPanel`
 in order to influence the positioning of the content:
 
-| Scope property | Typ         | Description                                                                                                                                                                                                                 |
-|----------------|-------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `placement`    | `Placement` | Defines the position of the building block, e.g. `Placement.top`, `Placement.bottomRight`, etc. Default is `Placement.auto`. The presumably best position is determined automatically based on the available visible space. |
-| `strategy`     | `Strategy`  | Determines whether the block should be positioned `absolute` (default) or `fixed`.                                                                                                                                          |
-| `flip`         | `Boolean`   | If the block comes too close to the edge of the visible area, the position automatically changes to the other side if more space is available there.                                                                        |
-| `skidding`     | `Int`       | Defines the shifting of the block along the reference element in pixels. The default value is 0.                                                                                                                            |
-| `distance`     | `Int`       | Defines the distance of the block from the reference element in pixels. The default value is 10.                                                                                                                            |
+| Scope property | Typ                 | Description                                                                                                                                                         |
+|----------------|---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `size`         | `PopUpPanelSize`    | Defines the width restrictions of the building block, e.g. `PopUpPanelSize.Min`, `PopUpPanelSize.Max`, etc.                                                         |
+| `placement`    | `Placement`         | Defines the position of the building block, e.g. `Placement.top`, `Placement.bottomRight`, etc.                                                                     |
+| `strategy`     | `Strategy`          | Determines whether the block should be positioned `absolute` (default) or `fixed`.                                                                                  |
+| `middleware`   | `Array<Middleware>` | Middleware are plain objects that modify the positioning coordinates in some fashion, or provide useful data for rendering, as calculated by the positioning cycle. |
 
 In addition, an arrow can be added pointing to the reference element. By default, the arrow is 8 pixels wide and
 inherits the background color of the panel. It can be styled as usual:
@@ -523,11 +522,54 @@ popOverPanel {
 }
 ```
 
-::: info
-Since such a floating panel will often need a higher ``z-index`` than the rest of the page(-section) it appears in, 
-we have set a default value of ``30`` for it. This offers enough flexibility to position elements below or above the 
-popup. 
+### Portalling
 
-The value is chosen inspired by the [tailwindcss](https://tailwindcss.com/docs/z-index) scale for ``z-index``: 
-It is the median of the predefined ones.
+Headless Components, which are rendered as a overlay above other elements are rendered using a portalling mechanism. 
+With portalling the Element is not rendered in-place, instead it is rendered in a `portalRoot`, which is a container 
+at the end of the Document-Body. 
+
+To use portalling we have to render the portalRoot manually in our main `render {}` Block like this:
+
+```kotlin
+fun main() {
+    //...
+
+    render {
+        // custom content
+        // ...
+        
+        portalRoot() // should be the last rendered element
+    }
+}
+```
+
+Portalling is already implemented in the Headless-Components `listBox`, `menu`, `modal`, `popOver`, `toast` 
+and `tooltip`. If your are using one of these components, you have only to render the `portalRoot` like above.
+
+For custom components you have to wrap your render code with a `portal` like this:
+```kotlin
+fun Tag<HTMLElement>.myCustomOverlay() = portal(zIndex = 100) {
+    // ...
+}
+```
+
+::: info
+Since such order of the floating panel are controlled using ``z-index``, we have set different z-indices for the 
+Headless-Components.
+
+These are defined as constants as:
+```
+/**
+ * Z-Index used for Portalled-Modals
+ */
+const val PORTALLING_MODAL_ZINDEX = 10
+/**
+ * Z-Index used for Portalled-Popups
+ */
+const val PORTALLING_POPUP_ZINDEX = 30
+/**
+ * Z-Index used for Portalled-Toasts
+ */
+const val PORTALLING_TOAST_ZINDEX = 50
+```
 :::

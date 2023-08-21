@@ -29,7 +29,7 @@ extra.apply {
     set("assertJVersion", "3.23.1")
 
     // npm
-    set("popperjs", "2.11.5")
+    set("floatingui", "1.5.1")
     set("scroll-into-view-if-needed", "2.2.29")
 
     // tailwind
