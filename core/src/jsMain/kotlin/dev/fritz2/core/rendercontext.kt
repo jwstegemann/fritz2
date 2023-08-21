@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.scan
 import kotlinx.dom.clear
 import org.w3c.dom.*
+import kotlin.reflect.KClass
 
 /**
  * Context for rendering static and dynamical content
@@ -34,6 +35,65 @@ interface RenderContext : WithJob, WithScope {
             target.domNode.clear()
             content(mountContext, it)
             mountContext.runAfterMounts()
+        }
+    }
+
+    /**
+     * Renders the data of a [Flow] only if the [predicate] is true.
+     *
+     * @receiver [Flow] containing the data
+     * @param predicate must be true for the value to be rendered
+     * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
+     * @param content [RenderContext] for rendering the data to the DOM
+     */
+    fun <V> Flow<V>.renderIf(
+        predicate: (V) -> Boolean,
+        into: Tag<HTMLElement>? = null,
+        content: Tag<*>.(V) -> Unit
+    ) {
+        render(into) {
+            if (predicate(it)) {
+                content(it)
+            }
+        }
+    }
+
+    /**
+     * Renders the non-null data of a [Flow].
+     *
+     * @receiver [Flow] containing the data
+     * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
+     * @param content [RenderContext] for rendering the data to the DOM
+     */
+    fun <V> Flow<V?>.renderNotNull(
+        into: Tag<HTMLElement>? = null,
+        content: Tag<*>.(V) -> Unit
+    ) {
+        render(into) {
+            if (it != null) {
+                content(it)
+            }
+        }
+    }
+
+    /**
+     * Renders the data of a [Flow] of type [W].
+     *
+     * @receiver [Flow] containing the data
+     * @param klass reference to the type we want to check
+     * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
+     * @param content [RenderContext] for rendering the data to the DOM
+     */
+    @Suppress("UNCHECKED_CAST")
+    fun <W: Any> Flow<*>.renderIs(
+        klass: KClass<W>,
+        into: Tag<HTMLElement>? = null,
+        content: Tag<*>.(W) -> Unit
+    ) {
+        render(into) {
+            if (klass.isInstance(it)) {
+                content(it as W)
+            }
         }
     }
 
