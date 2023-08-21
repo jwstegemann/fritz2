@@ -18,6 +18,16 @@ import kotlinx.coroutines.flow.mapNotNull
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 
+/**
+ * Enum-Class to set the width of the Popup to
+ * [Min]: Minimum the width of the reference
+ * [Max]: Maximum the width of the reference
+ * [Exact]: Exactly the width of the reference
+ *
+ * Or leaving it as [None] to disable any restrictions
+ *
+ * @see PopUpPanel.size
+ */
 enum class PopUpPanelSize {
     Min,
     Max,
@@ -167,9 +177,26 @@ abstract class PopUpPanel<C : HTMLElement>(
         }
     }
 
+    /**
+     * This field allows to set the allowed width range
+     * for the Popup element.
+     *
+     * The Popup might have [Min]imum, [Max]imum or [Exact]ly the reference elements width.
+     *
+     * Leaving it as [None] will disable any restrictions (Default behaviour)
+     *
+     * @see PopUpPanel.size
+     */
     var size: PopUpPanelSize = PopUpPanelSize.None
-    private val computedPosStore: Store<ComputePositionReturn> = storeOf(obj {})
-    val computedPos = computedPosStore.data
+
+    private val computedPositionStore: Store<ComputePositionReturn> = storeOf(obj {})
+
+    /**
+     * The Position calculated by the underlying FloatingUI Library. Can be used for custom rendering inside the Popup
+     *
+     * Check https://floating-ui.com/docs/computePosition#return-value for detailed documentation.
+     */
+    val computedPosition = computedPositionStore.data
 
     init {
         placement = PlacementValues.bottom
@@ -177,47 +204,62 @@ abstract class PopUpPanel<C : HTMLElement>(
         addMiddleware(flip())
     }
 
+
+    /**
+     * Adds a new Middleware to the array of middlewares.
+     *
+     * Check https://floating-ui.com/docs/middleware for available middlewares.
+     *
+     * @see ComputePositionConfig.middleware
+     */
     fun addMiddleware(middleware: Middleware) {
         this.middleware = (this.middleware ?: emptyArray()) + middleware
     }
 
     private var arrow: Tag<HTMLElement>? = null
+
+    /**
+     * Adds an arrow to the PopupPanel. The exact position will be calculated by the FloatingUI component and can be
+     * collected from [computedPosition]. The arrow points to the reference element.
+     */
     fun arrow(c: String = "popup-arrow-default") {
         div(classes(c, "popup-arrow")) {
             arrow = this
             addMiddleware(arrow { element = domNode })
             addMiddleware(offset(5))
-            inlineStyle(computedPos.mapNotNull { it.middlewareData?.arrow }
-                .map { "left: ${it.x}px; top: ${it.y}px;" })
-        }
-    }
-
-    private val computePosition = {
-        reference?.let {
-            computePosition(reference.domNode, popupDiv.domNode, config)
-                .then { computedPosStore.update(it) }
+            inlineStyle(computedPosition.mapNotNull { it.middlewareData?.arrow }
+                    .map { "left: ${it.x}px; top: ${it.y}px;" })
         }
     }
 
     open fun render() {
         if (reference != null) {
+
+            val computePosition = {
+                computePosition(reference.domNode, popupDiv.domNode, config)
+                        .then { computedPositionStore.update(it) }
+            }
+
             val cleanup =
-                autoUpdate(reference.domNode, popupDiv.domNode, options = obj { animationFrame = true },
-                    update = { computePosition() })
+                    autoUpdate(reference.domNode, popupDiv.domNode, options = obj { animationFrame = true },
+                            update = { computePosition() })
             afterMount { _, _ -> computePosition() }
+
+            // due to https://github.com/jwstegemann/fritz2/issues/782 we use job.invokeOnCompletion instead of beforeUnmount
+            // beforeUnmount { _,_-> cleanup.invoke() }
             job.invokeOnCompletion { cleanup.invoke() }
 
             popupDiv.apply {
-                attr("data-popup-placement", computedPos.map { it.placement ?: "" })
-                inlineStyle(computedPos.map {
+                attr("data-popup-placement", computedPosition.map { it.placement ?: "" })
+                inlineStyle(computedPosition.map {
                     listOfNotNull(
-                        "position: ${it.strategy}", "left: ${it.x}px", "top: ${it.y}px",
-                        when (size) {
-                            PopUpPanelSize.Min -> "min-width: ${reference.domNode.offsetWidth}px"
-                            PopUpPanelSize.Max -> "max-width: ${reference.domNode.offsetWidth}px"
-                            PopUpPanelSize.Exact -> "width: ${reference.domNode.offsetWidth}px"
-                            PopUpPanelSize.None -> null
-                        }
+                            "position: ${it.strategy}", "left: ${it.x}px", "top: ${it.y}px",
+                            when (size) {
+                                PopUpPanelSize.Min -> "min-width: ${reference.domNode.offsetWidth}px"
+                                PopUpPanelSize.Max -> "max-width: ${reference.domNode.offsetWidth}px"
+                                PopUpPanelSize.Exact -> "width: ${reference.domNode.offsetWidth}px"
+                                PopUpPanelSize.None -> null
+                            }
                     ).joinToString("; ")
                 })
             }

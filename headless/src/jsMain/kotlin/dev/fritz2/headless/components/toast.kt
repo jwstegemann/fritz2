@@ -48,7 +48,7 @@ fun <E : HTMLElement> toastContainer(
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<E>>
 ) {
-    PortalRenderContext.portalContainer(classes, id, scope, tag, PORTALLING_TOAST_ZINDEX) {
+    PortalRenderContext.portal(classes, id, scope, tag, PORTALLING_TOAST_ZINDEX) {
         addComponentStructureInfo("toast-container ($name)", this.scope, this)
         attrIfNotSet(Aria.live, "polite")
         ToastStore.filteredByContainer(name).renderEach(into = this) { fragment ->

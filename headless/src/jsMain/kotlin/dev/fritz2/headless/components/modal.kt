@@ -2,14 +2,10 @@ package dev.fritz2.headless.components
 
 import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.*
-import dev.fritz2.headless.foundation.PortalRenderContext.div
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.launch
 import org.w3c.dom.*
 
 /**
@@ -31,7 +27,7 @@ class Modal : OpenClose(), WithJob {
     fun init() {
         opened.filter { it }.handledBy {
             PortalRenderContext.run {
-                portalContainer(zIndex = PORTALLING_MODAL_ZINDEX, tag = RenderContext::dialog) { close ->
+                portal(zIndex = PORTALLING_MODAL_ZINDEX, tag = RenderContext::dialog) { close ->
                     panel?.invoke(this)!!.apply {
                         trapFocusInMountpoint(restoreFocus, setInitialFocus)
                     }

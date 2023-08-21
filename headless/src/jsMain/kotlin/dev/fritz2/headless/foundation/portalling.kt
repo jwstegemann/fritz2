@@ -10,9 +10,23 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.w3c.dom.*
 
-
+/**
+ * Z-Index used for Portalled-Modals
+ *
+ * @see portal
+ */
 const val PORTALLING_MODAL_ZINDEX = 10
+/**
+ * Z-Index used for Portalled-Popups
+ *
+ * @see portal
+ */
 const val PORTALLING_POPUP_ZINDEX = 30
+/**
+ * Z-Index used for Portalled-Toasts
+ *
+ * @see portal
+ */
 const val PORTALLING_TOAST_ZINDEX = 50
 
 private val portalRootId by lazy { "portal-root".also { addGlobalStyle("#$it { display: contents; }") } }
@@ -54,9 +68,11 @@ private data class PortalContainer<C : HTMLElement>(
 }
 
 /**
- * Ein PortalRoot wird benötigt, um alle Overlays darin zu rendern. Sollte als letztes Element `document.body` stehen
+ * A [portalRoot] is needed to use floating components like [modal], [toast] and [popupPanel].
  *
- * @see portalContainer
+ * Should be the last element in `document.body` to ensure it will not be clipped by other elements.
+ *
+ * @see portal
  */
 fun RenderContext.portalRoot(): RenderContext {
     addComponentStructureInfo(portalRootId, this.scope, this)
@@ -97,10 +113,10 @@ internal object PortalRenderContext : HtmlTag<HTMLDivElement>("div", portalRootI
  *
  * See https://floating-ui.com/docs/misc#clipping for more information.
  *
- * A Portal-Container always comes with a Companion-Element, which is rendered directly into the [RenderContext].
- * The Companion-Element is used to cleanup the decoupled PortalContainer when the companion-Element gets removed.
+ * A Portal might have a reference element. When the reference element is removed from the DOM, the portal will either.
+ * The reference element is always the receiver Type [Tag<HTMLElement>] of the [portal] extension function.
  */
-fun <C : HTMLElement> Tag<HTMLElement>.portalContainer(
+fun <C : HTMLElement> Tag<HTMLElement>.portal(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
@@ -127,12 +143,12 @@ fun <C : HTMLElement> Tag<HTMLElement>.portalContainer(
 }
 
 /**
- * @see portalContainer
+ * @see portal
  */
-fun Tag<HTMLElement>.portalContainer(
+fun Tag<HTMLElement>.portal(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     zIndex: Int,
     content: Tag<HTMLDivElement>.(close: suspend (Unit) -> Unit) -> Unit,
-) = portalContainer(classes, id, scope, RenderContext::div, zIndex, content)
+) = portal(classes, id, scope, RenderContext::div, zIndex, content)

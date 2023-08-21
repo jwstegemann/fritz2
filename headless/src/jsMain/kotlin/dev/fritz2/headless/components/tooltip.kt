@@ -3,11 +3,9 @@ package dev.fritz2.headless.components
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.ScopeContext
 import dev.fritz2.core.Tag
-import dev.fritz2.core.render
 import dev.fritz2.headless.foundation.*
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
-import org.w3c.dom.Element
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 
@@ -54,7 +52,7 @@ fun <C : HTMLElement> Tag<HTMLElement>.tooltip(
     tag: TagFactory<Tag<C>>,
     initialize: Tooltip<C>.() -> Unit
 ) {
-    portalContainer(zIndex = PORTALLING_POPUP_ZINDEX) {
+    portal(zIndex = PORTALLING_POPUP_ZINDEX) {
         Tooltip(this, this@tooltip, tag, classes, id, scope).apply {
             addComponentStructureInfo("parent is tooltip", this@tooltip.scope, this)
         }.run {

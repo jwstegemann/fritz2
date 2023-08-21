@@ -90,7 +90,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
         initialize: PopOverPanel<CP>.() -> Unit
     ) {
         addComponentStructureInfo("popOverPanel", this@popOverPanel.scope, this)
-        portalContainer(zIndex = PORTALLING_POPUP_ZINDEX) {
+        portal(zIndex = PORTALLING_POPUP_ZINDEX) {
             PopOverPanel(this, tag, classes, scope).run {
                 initialize()
                 render()
