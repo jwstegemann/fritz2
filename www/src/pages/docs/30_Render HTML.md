@@ -255,6 +255,9 @@ Based upon the `data`-property, which provides a `Flow` of the store's generic d
 | Render-Function            | Additional parameters | Description                                                                                                                   | Default Tag |    
 |----------------------------|-----------------------|-------------------------------------------------------------------------------------------------------------------------------|-------------|
 | `Flow<T>.render`           | -                     | Creates a mount-point providing the whole store's data value `T` inside `content` expression                                  | `div`       |
+| `Flow<T>.renderIf`         | predicate             | Creates a mount-point providing the whole store's data value `T` inside `content` expression when `predicate` is `true`       | `div`       |
+| `Flow<T>.renderNotNull`    | -                     | Creates a mount-point providing the whole store's data value `T` inside `content` expression when `T` is not `null`           | `div`       |
+| `Flow<T>.renderIs`         | klass                 | Creates a mount-point providing the whole store's data value `T` inside `content` expression when `T` is of type `klass`      | `div`       |
 | `Flow<String>.renderText`  | -                     | Creates a mount-point creating a text-node                                                                                    | `span`      |
 | `Flow<List<T>>.renderEach` | -                     | Creates a mount-point optimizing changes by `T.equals`. Provides a `T` inside the `content` expression. Use for value objects | `div`       |
 | `Flow<List<T>>.renderEach` | idProvider            | Creates a mount-point optimizing changes by `idProvider`. Provides a `T` inside the `content` expression. Use for entities    | `div`       |

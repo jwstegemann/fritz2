@@ -4,10 +4,14 @@ import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
-import org.w3c.dom.*
+import org.w3c.dom.HTMLBodyElement
+import org.w3c.dom.HTMLDivElement
+import org.w3c.dom.HTMLSpanElement
+import org.w3c.dom.asList
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
 
 class RenderContextTests {
 
@@ -49,6 +53,130 @@ class RenderContextTests {
         val div2 = document.getElementById(divId) as HTMLDivElement
 
         assertEquals("off", div2.textContent)
+    }
+
+    @Test
+    fun testRenderIfFunction() = runTest {
+        val store = storeOf(true)
+        val div1 = Id.next()
+        val div2 = Id.next()
+
+        render {
+            section {
+                store.data.renderIf({ it }) {
+                    div(id = div1) {
+                        +"on"
+                    }
+                }
+                store.data.renderIf({ !it }) {
+                    div(id = div2) {
+                        +"off"
+                    }
+                }
+            }
+        }
+
+        delay(100)
+
+        fun div(id: String) = document.getElementById(id) as HTMLDivElement?
+
+        assertEquals("on", div(div1)?.textContent)
+        assertNull(div(div2))
+
+        store.update(false)
+        delay(100)
+
+        assertEquals("off", div(div2)?.textContent)
+        assertNull(div(div1))
+
+        store.update(true)
+        delay(100)
+
+        assertEquals("on", div(div1)?.textContent)
+        assertNull(div(div2))
+    }
+
+    @Test
+    fun testRenderNotNullFunction() = runTest {
+        val store = storeOf<String?>(null)
+        val div1 = Id.next()
+
+        render {
+            section {
+                store.data.renderNotNull { value ->
+                    div(id = div1) {
+                        +value
+                    }
+                }
+            }
+        }
+
+        delay(100)
+
+        fun div(id: String) = document.getElementById(id) as HTMLDivElement?
+
+        assertNull(div(div1))
+
+        store.update("")
+        delay(100)
+
+        assertEquals("", div(div1)?.textContent)
+
+        store.update("abc")
+        delay(100)
+
+        assertEquals("abc", div(div1)?.textContent)
+
+        store.update(null)
+        delay(100)
+
+        assertNull(div(div1))
+    }
+
+    interface I
+    class A: I
+    class B: I
+
+    @Test
+    fun testRenderIsFunction() = runTest {
+
+        val store = storeOf<I?>(A())
+        val div1 = Id.next()
+        val div2 = Id.next()
+
+        render {
+            section {
+                store.data.renderIs(A::class) {
+                    div(id = div1) {
+                        +"A"
+                    }
+                }
+                store.data.renderIs(B::class) {
+                    div(id = div2) {
+                        +"B"
+                    }
+                }
+            }
+        }
+
+        delay(100)
+
+        fun div(id: String) = document.getElementById(id) as HTMLDivElement?
+
+        assertEquals("A", div(div1)?.textContent)
+        assertNull(div(div2))
+
+        store.update(B())
+        delay(100)
+
+        assertEquals("B", div(div2)?.textContent)
+        assertNull(div(div1))
+
+        store.update(null)
+        delay(100)
+
+        assertNull(div(div1))
+        assertNull(div(div2))
     }
 
     @Test
