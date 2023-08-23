@@ -2,9 +2,9 @@ package dev.fritz2.remote
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromDynamic
+import kotlinx.serialization.json.encodeToDynamic
 
 @PublishedApi internal val lenientJson = Json {
     ignoreUnknownKeys = true
@@ -17,10 +17,11 @@ import kotlinx.serialization.json.decodeFromDynamic
  * @param value information to be encoded
  * @param json (optional) JSON serialization configuration
  */
+@ExperimentalSerializationApi
 inline fun <reified T> Request.bodyJson(
     value: T,
     json: Json = lenientJson,
-): Request = body(json.encodeToString(value))
+): Request = body(JSON.stringify(json.encodeToDynamic(value)))
 
 /**
  * Encodes the given value as the body of the request.
@@ -29,11 +30,12 @@ inline fun <reified T> Request.bodyJson(
  * @param serializer serializer from `kotlinx-serialization`
  * @param json (optional) JSON serialization configuration
  */
+@ExperimentalSerializationApi
 fun <T> Request.bodyJson(
     value: T,
     serializer: KSerializer<T>,
     json: Json = lenientJson,
-): Request = body(json.encodeToString(serializer, value))
+): Request = body(JSON.stringify(json.encodeToDynamic(serializer, value)))
 
 /**
  * Decodes the information in the response from the JSON representation.
