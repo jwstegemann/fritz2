@@ -23,9 +23,9 @@ To use fritz2, set up a Kotlin multiplatform-project using one of these options:
 
 ```kotlin
 plugins {
-    kotlin("multiplatform") version "1.7.20"
+    kotlin("multiplatform") version "1.9.0"
     // KSP support needed for Lens generation
-    id("com.google.devtools.ksp") version "1.7.20-1.0.6"
+    id("com.google.devtools.ksp") version "1.9.0-1.0.13"
 }
 
 repositories {

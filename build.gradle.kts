@@ -1,9 +1,9 @@
 plugins {
-    kotlin("multiplatform") version "1.9.0" apply false
-    kotlin("plugin.serialization") version "1.9.0" apply false
-    id("com.google.devtools.ksp") version "1.9.0-1.0.13" apply false
-    id("org.jetbrains.dokka") version "1.8.10"
-    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.13.2"
+    kotlin("multiplatform") apply false
+    kotlin("plugin.serialization")  apply false
+    id("com.google.devtools.ksp") apply false
+    id("org.jetbrains.dokka")
+    id("org.jetbrains.kotlinx.binary-compatibility-validator")
     id("maven-publish")
     signing
 }

@@ -1,7 +1,7 @@
 plugins {
     application
     kotlin("jvm")
-    id("com.github.psxpaul.execfork") version "0.1.15"
+    id("com.github.psxpaul.execfork")
 }
 
 application {
