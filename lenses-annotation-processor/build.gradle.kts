@@ -22,22 +22,22 @@ kotlin {
             dependencies {
                 api(kotlin("stdlib"))
                 api(project(":core"))
-                implementation("com.squareup:kotlinpoet:${rootProject.extra["kotlinpoetVersion"]}")
-                implementation("com.squareup:kotlinpoet-ksp:${rootProject.extra["kotlinpoetVersion"]}")
-                implementation("com.google.devtools.ksp:symbol-processing-api:${rootProject.extra["kspVersion"]}")
-                api(kotlin("reflect:${rootProject.extra["kotlinVersion"]}"))
-                api(kotlin("script-runtime:${rootProject.extra["kotlinVersion"]}"))
-                implementation("com.google.auto.service:auto-service-annotations:${rootProject.extra["autoServiceVersion"]}")
+                implementation("com.squareup:kotlinpoet:_")
+                implementation("com.squareup:kotlinpoet-ksp:_")
+                implementation("com.google.devtools.ksp:symbol-processing-api:_")
+                api(kotlin("reflect:_"))
+                api(kotlin("script-runtime:_"))
+                implementation("com.google.auto.service:auto-service-annotations:_")
             }
         }
 
         val jvmTest by getting {
             dependencies {
                 implementation(kotlin("test-junit5"))
-                implementation("org.junit.jupiter:junit-jupiter-params:${rootProject.extra["junitJupiterParamsVersion"]}")
-                implementation("org.assertj:assertj-core:${rootProject.extra["assertJVersion"]}")
-                implementation("com.github.tschuchortdev:kotlin-compile-testing:${rootProject.extra["compileTestingVersion"]}")
-                implementation("com.github.tschuchortdev:kotlin-compile-testing-ksp:${rootProject.extra["compileTestingVersion"]}")
+                implementation("org.junit.jupiter:junit-jupiter-params:_")
+                implementation("org.assertj:assertj-core:_")
+                implementation("com.github.tschuchortdev:kotlin-compile-testing:_")
+                implementation("com.github.tschuchortdev:kotlin-compile-testing-ksp:_")
             }
         }
     }

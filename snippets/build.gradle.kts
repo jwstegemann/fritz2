@@ -17,16 +17,16 @@ kotlin {
             dependencies {
                 implementation(project(":core"))
                 // tailwind
-                implementation(npm("tailwindcss", rootProject.extra["tailwindcss"] as String))
-                implementation(npm("@tailwindcss/forms", rootProject.extra["tailwindcss/forms"] as String))
+                implementation(npm("tailwindcss", "_"))
+                implementation(npm("@tailwindcss/forms", "_"))
 
                 // webpack
-                implementation(devNpm("postcss", rootProject.extra["postcss"] as String))
-                implementation(devNpm("postcss-loader", rootProject.extra["postcss-loader"] as String))
-                implementation(devNpm("autoprefixer", rootProject.extra["autoprefixer"] as String))
-                implementation(devNpm("css-loader", rootProject.extra["css-loader"] as String))
-                implementation(devNpm("style-loader", rootProject.extra["style-loader"] as String))
-                implementation(devNpm("cssnano", rootProject.extra["cssnano"] as String))
+                implementation(devNpm("postcss", "_"))
+                implementation(devNpm("postcss-loader", "_"))
+                implementation(devNpm("autoprefixer", "_"))
+                implementation(devNpm("css-loader", "_"))
+                implementation(devNpm("style-loader", "_"))
+                implementation(devNpm("cssnano", "_"))
             }
         }
     }
