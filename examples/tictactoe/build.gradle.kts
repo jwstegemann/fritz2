@@ -9,11 +9,14 @@ repositories {
 }
 
 kotlin {
+    jvm() // needed for kspCommonMainMetadata
     js(IR) {
         browser {
-            webpackTask {
-                cssSupport.enabled = true
-            }
+            webpackTask(Action {
+                cssSupport {
+                    enabled.set(true)
+                }
+            })
         }
     }.binaries.executable()
 
@@ -41,7 +44,6 @@ kotlin.sourceSets.commonMain { kotlin.srcDir("build/generated/ksp/metadata/commo
 tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().all {
     if (name != "kspCommonMainKotlinMetadata") dependsOn("kspCommonMainKotlinMetadata")
 }
-// needed to work on Apple Silicon. Should be fixed by 1.6.20 (https://youtrack.jetbrains.com/issue/KT-49109#focus=Comments-27-5259190.0-0)
 /**
  * KSP support - end
  */

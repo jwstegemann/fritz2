@@ -14,6 +14,7 @@ public final class dev/fritz2/headless/validation/Severity : java/lang/Enum {
 	public static final field Info Ldev/fritz2/headless/validation/Severity;
 	public static final field Success Ldev/fritz2/headless/validation/Severity;
 	public static final field Warning Ldev/fritz2/headless/validation/Severity;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Ldev/fritz2/headless/validation/Severity;
 	public static fun values ()[Ldev/fritz2/headless/validation/Severity;
 }

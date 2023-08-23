@@ -1,8 +1,8 @@
 plugins {
-    kotlin("multiplatform") version "1.7.20" apply false
-    kotlin("plugin.serialization") version "1.7.20" apply false
-    id("com.google.devtools.ksp") version "1.7.20-1.0.6" apply false
-    id("org.jetbrains.dokka") version "1.7.20"
+    kotlin("multiplatform") version "1.9.0" apply false
+    kotlin("plugin.serialization") version "1.9.0" apply false
+    id("com.google.devtools.ksp") version "1.9.0-1.0.13" apply false
+    id("org.jetbrains.dokka") version "1.8.10"
     id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.13.2"
     id("maven-publish")
     signing
@@ -12,8 +12,8 @@ plugins {
 // https://docs.gradle.org/current/userguide/platforms.html
 extra.apply {
     // core
-    set("kotlinVersion", "1.7.20")
-    set("kspVersion", "1.7.20-1.0.6")
+    set("kotlinVersion", "1.9.0")
+    set("kspVersion", "1.9.0-1.0.13")
     set("coroutinesVersion", "1.6.4")
     set("serializationVersion", "1.4.0")
 
@@ -22,8 +22,8 @@ extra.apply {
     set("logbackVersion", "1.4.5")
 
     // lenses-annotation-processor
-    set("kotlinpoetVersion", "1.12.0")
-    set("compileTestingVersion", "1.4.9")
+    set("kotlinpoetVersion", "1.14.1")
+    set("compileTestingVersion", "1.5.0")
     set("autoServiceVersion", "1.0.1")
     set("junitJupiterParamsVersion", "5.8.2")
     set("assertJVersion", "3.23.1")

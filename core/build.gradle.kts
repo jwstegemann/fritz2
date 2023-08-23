@@ -5,12 +5,12 @@ plugins {
 
 kotlin {
     jvm()
-    js(BOTH).browser {
-        testTask {
+    js(IR).browser {
+        testTask(Action {
             //running test-server in background
             dependsOn(":test-server:start")
             // see "karma.config.d" folder for customizing karma
-        }
+        })
         // just to have a place to copy it from...
         /*
         runTask {
