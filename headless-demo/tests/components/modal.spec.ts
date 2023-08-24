@@ -78,7 +78,7 @@ test.describe('To check if', () => {
     
     });
     
-    test.only(`by pressing Enter on button and pressing again Enter on Open will reopen the modal`, async ({page}) => {
+    test(`by pressing Enter on button and pressing again Enter on Open will reopen the modal`, async ({page}) => {
         const buttonStay = page.locator(`#button-stay`);
         const buttonCancel = page.locator(`#button-cancel`);
         const buttonClose = page.locator(`#button-close`);
