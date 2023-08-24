@@ -4,8 +4,7 @@ package dev.fritz2.headlessdemo.components
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.transition
 import dev.fritz2.headless.components.popOver
-import dev.fritz2.headless.foundation.utils.floatingui.core.middleware.autoPlacement
-import dev.fritz2.headless.foundation.utils.floatingui.utils.Placement
+import dev.fritz2.headless.foundation.utils.floatingui.core.middleware.offset
 import dev.fritz2.headless.foundation.utils.floatingui.utils.PlacementValues
 import kotlinx.coroutines.flow.map
 
@@ -51,6 +50,7 @@ fun RenderContext.popOverDemo() {
             """.trimMargin()
         ) {
             placement = PlacementValues.bottomStart
+            addMiddleware(offset(5))
 
             transition(
                 opened,
