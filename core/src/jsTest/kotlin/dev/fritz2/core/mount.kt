@@ -178,6 +178,129 @@ class MountTests {
         }
     }
 
+    @Test
+    fun testRecursiveLifecycleHandler() = runTest {
+        val outerStore = storeOf(0)
+        val innerStore = storeOf(0)
+        val listStore = storeOf(listOf("123"))
+
+        var outerMountsCounter = 0
+        var outerUnmountsCounter = 0
+
+        var innerMountsCounter = 0
+        var innerUnmountsCounter = 0
+
+        var listMountsCounter = 0
+        var listUnmountsCounter = 0
+
+        render {
+            outerStore.data.render {
+                afterMount { _, _ -> outerMountsCounter += 1 }
+                beforeUnmount { _, _ -> outerUnmountsCounter += 1 }
+
+                innerStore.data.render {
+                    afterMount { _, _ -> innerMountsCounter += 1 }
+                    beforeUnmount { _, _ -> innerUnmountsCounter += 1 }
+
+                    listStore.renderEach({ it }) {
+                        div {
+                            afterMount { _, _ -> listMountsCounter += 1 }
+                            beforeUnmount { _, _ -> listUnmountsCounter += 1 }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        /**
+         * Checks, whether the amount of afterMount/beforeUnmount-Calls match the excepted values for the given action
+         */
+        suspend fun check(
+            title: String,
+            outerMount: Int = 0,
+            outerUnmounts: Int = 0,
+            innerMounts: Int = 0,
+            innerUnmounts: Int = 0,
+            listMounts: Int = 0,
+            listUnmounts: Int = 0,
+            action: () -> Unit
+        ) {
+            // Reset Values
+            outerMountsCounter = 0
+            outerUnmountsCounter = 0
+            innerMountsCounter = 0
+            innerUnmountsCounter = 0
+            listMountsCounter = 0
+            listUnmountsCounter = 0
+
+            // Invoke Aktion
+            action.invoke()
+            delay(100)
+
+            // Check Results
+            assertEquals(outerMount, outerMountsCounter, "$title - outerMounts wrong")
+            assertEquals(outerUnmounts, outerUnmountsCounter, "$title - outerUnmounts wrong")
+            assertEquals(innerMounts, innerMountsCounter, "$title - innerMounts wrong")
+            assertEquals(innerUnmounts, innerUnmountsCounter, "$title - innerUnmounts wrong")
+            assertEquals(listMounts, listMountsCounter, "$title - listMounts wrong")
+            assertEquals(listUnmounts, listUnmountsCounter, "$title - listUnmounts wrong")
+        }
+
+
+        check(
+            "Initial",
+            outerMount = 1,
+            innerMounts = 1,
+            listMounts = 1,
+        ) {}
+
+
+
+        check(
+            "Add to listStore",
+            listMounts = 1
+        ) { listStore.update(listOf("123", "234")) }
+
+
+
+        check(
+            "Remove from listStore",
+            listUnmounts = 1
+        ) { listStore.update(listOf("123")) }
+
+
+
+        check(
+            "Update InnerStore",
+            innerMounts = 1, innerUnmounts = 1,
+            listMounts = 1, listUnmounts = 1
+        ) { innerStore.update(1) }
+
+
+
+        check(
+            "Update OuterStore",
+            outerMount = 1, outerUnmounts = 1,
+            innerMounts = 1, innerUnmounts = 1,
+            listMounts = 1, listUnmounts = 1
+        ) { outerStore.update(1) }
+
+        check(
+            "Add to listStore",
+            listMounts = 1
+        ) { listStore.update(listOf("123", "234")) }
+
+        check(
+            "Update OuterStore",
+            outerMount = 1, outerUnmounts = 1,
+            innerMounts = 1, innerUnmounts = 1,
+            listMounts = 2, listUnmounts = 2
+        ) { outerStore.update(2) }
+
+
+    }
+
 
     @Test
     fun testLifecycleOnGlobalRender() = runTest {
