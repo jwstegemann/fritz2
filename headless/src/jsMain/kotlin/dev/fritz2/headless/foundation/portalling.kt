@@ -1,10 +1,8 @@
 package dev.fritz2.headless.foundation
 
 import dev.fritz2.core.*
-import kotlinx.browser.document
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -53,7 +51,7 @@ private data class PortalContainer<C : HTMLElement>(
     val scope: (ScopeContext.() -> Unit),
     val tag: TagFactory<Tag<C>>,
     val zIndex: Int,
-    val reference: HTMLElement?,
+    val reference: MountPoint?,
     val content: Tag<C>.(close: suspend (Unit) -> Unit) -> Unit
 ) {
     val portalId = Id.next() // used for renderEach only
@@ -64,6 +62,7 @@ private data class PortalContainer<C : HTMLElement>(
         tag(ctx, classes(portalContainerClass, classes), id, scope) {
             domNode.style.zIndex = zIndex.toString()
             content.invoke(this) { remove.invoke() }
+            reference?.beforeUnmount(this, null) { _, _ -> remove.invoke() }
         }
 }
 
@@ -82,21 +81,13 @@ fun RenderContext.portalRoot(): RenderContext {
 
 internal object PortalRenderContext : HtmlTag<HTMLDivElement>("div", portalRootId, null, Job(), Scope()) {
 
-    private val bodyMutation = callbackFlow {
-        val observer = MutationObserver { _, _ -> trySend(Unit) }
-        observer.observe(document.body!!, MutationObserverInit(childList = true, subtree = true))
-        awaitClose { observer.disconnect() }
-    }
+
 
     init {
         attr(Aria.live, "polite")
 
         PortalStack.data.distinctUntilChangedBy { it.map { it.portalId } }
             .renderEach(PortalContainer<*>::portalId, into = this) { it.render(this) }
-
-        bodyMutation.combine(PortalStack.data) { _, stack ->
-            stack.firstOrNull { it.reference != null && document.body?.contains(it.reference) == false }
-        }.mapNotNull { it?.portalId } handledBy PortalStack.remove
 
         MainScope().launch {
             delay(500)
@@ -116,7 +107,7 @@ internal object PortalRenderContext : HtmlTag<HTMLDivElement>("div", portalRootI
  * A Portal might have a reference element. When the reference element is removed from the DOM, the portal will either.
  * The reference element is always the receiver Type [Tag<HTMLElement>] of the [portal] extension function.
  */
-fun <C : HTMLElement> Tag<HTMLElement>.portal(
+fun <C : HTMLElement> RenderContext.portal(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
@@ -135,7 +126,7 @@ fun <C : HTMLElement> Tag<HTMLElement>.portal(
             id = portalId,
             scope = scope,
             tag = tag,
-            reference = reference?.domNode,
+            reference = reference?.mountPoint(),
             zIndex = zIndex,
             content = content
         )
@@ -145,7 +136,7 @@ fun <C : HTMLElement> Tag<HTMLElement>.portal(
 /**
  * @see portal
  */
-fun Tag<HTMLElement>.portal(
+fun RenderContext.portal(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},

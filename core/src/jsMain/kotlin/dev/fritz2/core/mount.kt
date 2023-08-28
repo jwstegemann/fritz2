@@ -84,9 +84,9 @@ internal abstract class MountPointImpl : MountPoint, WithJob {
 internal val MOUNT_POINT_KEY = Scope.Key<MountPoint>("MOUNT_POINT")
 
 /**
- * Allows to access the nearest [MountPoint] from any [Tag]
+ * Allows to access the nearest [MountPoint] from any [WithScope]
  */
-fun Tag<*>.mountPoint(): MountPoint? = this.scope[MOUNT_POINT_KEY]
+fun WithScope.mountPoint(): MountPoint? = this.scope[MOUNT_POINT_KEY]
 
 /**
  * Convenience method to register lifecycle handler for after a [Tag] is mounted
@@ -96,7 +96,7 @@ fun Tag<*>.mountPoint(): MountPoint? = this.scope[MOUNT_POINT_KEY]
  * @receiver the [Tag] to register the lifecycle handler for
  */
 fun <T : Element> Tag<T>.afterMount(payload: Any? = null, handler: DomLifecycleHandler) {
-    this.scope[MOUNT_POINT_KEY]?.afterMount(this, payload, handler)
+    mountPoint()?.afterMount(this, payload, handler)
 }
 
 /**
@@ -107,7 +107,7 @@ fun <T : Element> Tag<T>.afterMount(payload: Any? = null, handler: DomLifecycleH
  * @receiver the [Tag] to register the lifecycle handler for
  */
 fun <T : Element> Tag<T>.beforeUnmount(payload: Any? = null, handler: DomLifecycleHandler) {
-    this.scope[MOUNT_POINT_KEY]?.beforeUnmount(this, payload, handler)
+    mountPoint()?.beforeUnmount(this, payload, handler)
 }
 
 internal class MountContext<T : HTMLElement>(
@@ -128,10 +128,15 @@ internal class MountContext<T : HTMLElement>(
     override fun <N : Node, W : WithDomNode<N>> register(element: W, content: (W) -> Unit): W {
         return target.register(element, content)
     }
+
+    init {
+        target.beforeUnmount { _, _ -> runBeforeUnmounts() }
+    }
 }
 
 internal class BuildContext(
     override val job: Job,
+    target: Tag<*>,
     mountScope: Scope,
 ) : RenderContext, MountPointImpl() {
 
@@ -140,6 +145,10 @@ internal class BuildContext(
     override fun <N : Node, W : WithDomNode<N>> register(element: W, content: (W) -> Unit): W {
         content(element)
         return element
+    }
+
+    init {
+        target.beforeUnmount { _, _ -> runBeforeUnmounts() }
     }
 }
 
@@ -189,7 +198,7 @@ internal fun <V> RenderContext.mountPatches(
     into: Tag<HTMLElement>?,
     upstream: Flow<List<V>>,
     batch: Boolean,
-    createPatches: (Flow<List<V>>, MutableMap<Node, MountPointImpl>) -> Flow<List<Patch<Tag<HTMLElement>>>>,
+    createPatches: Tag<HTMLElement>.(Flow<List<V>>, MutableMap<Node, MountPointImpl>) -> Flow<List<Patch<Tag<HTMLElement>>>>,
 ) {
     val target = into?.apply {
         this.domNode.clear()
@@ -198,7 +207,10 @@ internal fun <V> RenderContext.mountPatches(
 
     val mountPoints = mutableMapOf<Node, MountPointImpl>()
 
-    mountSimple(target.job, createPatches(upstream.onEach { if (batch) target.inlineStyle("visibility: hidden;") }, mountPoints)) { patches ->
+    mountSimple(
+        target.job,
+        createPatches(target, upstream.onEach { if (batch) target.inlineStyle("visibility: hidden;") }, mountPoints)
+    ) { patches ->
         patches.forEach { patch ->
             when (patch) {
                 is Patch.Insert -> insert(target.domNode, mountPoints, patch.element, patch.index)
