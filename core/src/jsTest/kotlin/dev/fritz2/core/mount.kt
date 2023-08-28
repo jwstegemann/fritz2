@@ -148,7 +148,7 @@ class MountTests {
                         +it.toString()
 
                         mountPoint()?.afterMount(this) { _, _ ->
-                            mounts += 1;
+                            mounts += 1
                         }
                         beforeUnmount { _, _ ->
                             unmounts += 1
@@ -212,7 +212,6 @@ class MountTests {
             }
         }
 
-
         /**
          * Checks, whether the amount of afterMount/beforeUnmount-Calls match the excepted values for the given action
          */
@@ -247,7 +246,6 @@ class MountTests {
             assertEquals(listUnmounts, listUnmountsCounter, "$title - listUnmounts wrong")
         }
 
-
         check(
             "Initial",
             outerMount = 1,
@@ -255,29 +253,21 @@ class MountTests {
             listMounts = 1,
         ) {}
 
-
-
         check(
             "Add to listStore",
             listMounts = 1
         ) { listStore.update(listOf("123", "234")) }
-
-
 
         check(
             "Remove from listStore",
             listUnmounts = 1
         ) { listStore.update(listOf("123")) }
 
-
-
         check(
             "Update InnerStore",
             innerMounts = 1, innerUnmounts = 1,
             listMounts = 1, listUnmounts = 1
         ) { innerStore.update(1) }
-
-
 
         check(
             "Update OuterStore",
@@ -297,10 +287,7 @@ class MountTests {
             innerMounts = 1, innerUnmounts = 1,
             listMounts = 2, listUnmounts = 2
         ) { outerStore.update(2) }
-
-
     }
-
 
     @Test
     fun testLifecycleOnGlobalRender() = runTest {
@@ -310,7 +297,7 @@ class MountTests {
         render {
             div {
                 afterMount { _, _ ->
-                    mounts += 1;
+                    mounts += 1
                 }
             }
         }
