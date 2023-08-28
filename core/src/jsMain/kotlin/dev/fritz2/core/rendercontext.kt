@@ -30,8 +30,8 @@ interface RenderContext : WithJob, WithScope {
         val mountContext = MountContext(Job(job), target)
 
         mountSimple(job, this) {
-            mountContext.job.cancelChildren()
             mountContext.runBeforeUnmounts()
+            mountContext.job.cancelChildren()
             target.domNode.clear()
             content(mountContext, it)
             mountContext.runAfterMounts()
@@ -120,7 +120,7 @@ interface RenderContext : WithJob, WithScope {
             }.map { (old, new) ->
                 Myer.diff(old, new, idProvider).map { patch ->
                     patch.map(job) { value, newJob ->
-                        val mountPoint = BuildContext(newJob, scope)
+                        val mountPoint = BuildContext(newJob, this, scope)
                         content(mountPoint, value).also {
                             mountPoints[it.domNode] = mountPoint
                         }
@@ -128,6 +128,8 @@ interface RenderContext : WithJob, WithScope {
                 }
             }
         }
+
+
     }
 
     /**

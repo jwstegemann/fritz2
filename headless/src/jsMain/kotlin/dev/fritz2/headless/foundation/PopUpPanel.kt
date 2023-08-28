@@ -275,7 +275,6 @@ abstract class PopUpPanel<C : HTMLElement>(
                     computePosition()
                     popupDiv.domNode.className = POPUP_VISIBLE_CLASSES
                     this@PopUpPanel.waitForAnimation()
-                    setFocus()
                 } else {
                     this@PopUpPanel.waitForAnimation()
                     popupDiv.domNode.className = POPUP_HIDDEN_CLASSES
