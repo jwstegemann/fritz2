@@ -7,7 +7,7 @@ eleventyNavigation:
     key: validation
     parent: documentation
     title: Validation
-    order: 60
+    order: 70
 ---
 
 When accepting user-input, it is a nice idea to validate the data before processing it any further.
@@ -16,16 +16,17 @@ To do validation in fritz2, you first have to create a `Validation` object.
 To do so you can use the global `validation` function which has the following type parameters:
 * the type of data to validate
 * a type for metadata you want to forward from your `Handler`s to your validation (or `Unit` by default if you do not need this)
-* a type describing the validation-results (like a message, etc.). Should implement the minimal `ValidationMessage` interface.
+* a type describing the validation-results (like a message, etc.) which should implement the minimal `ValidationMessage` interface
 
 It is recommended to put your validation code inside the companion object of your data-class in the `commonMain` source-set 
 of your multiplatform-project. Code in `commonMain` can be used in `jsMain` (frontend) and `jvmMain` (backend). 
 
-Inside the `validation` function you have the `Inspector` for your data model which gives you the right paths next to the data 
-by using the same lens-functions as in your sub-stores by calling the `map()` method. The mapped `Inspector`s then 
-have two attributes `data` and `path`.
+Inside the `validation` function you have access to the `Inspector` of your data model. It gives you the paths to the data 
+ by calling the `map()` method which, like in store-mapping, requires a lens as parameter. The mapped result is also an
+`Inspector` and has two attributes `data` and `path` which you can use during the validation of the specific member of the
+model.
 
-To add a validation-message to the list of messages, just use the `add` function.
+To add a validation-message to the list of messages, use the `add` function.
 
 ```kotlin
 data class Message(override val path: String, val severity: Severity, val text: String): ValidationMessage {
@@ -60,7 +61,7 @@ enum class Severity {
     Error
 }
 ```
-You can structure and implement your concrete validation-rules with everything Kotlin offers. 
+You can structure and implement your validation-rules with everything Kotlin offers. 
 
 Now you can use the `Validation` object in your `jsMain` code:
 
@@ -68,14 +69,12 @@ Now you can use the `Validation` object in your `jsMain` code:
 val store: ValidatingStore<Person, Unit, Message> = storeOf(Person("Chris", 42), Person.validation)
 val msgs: Flow<List<Message>> = store.messages
 ```
-By default, a `ValidatingStore` automatically validates its data after it gets changed to update the list of messages.
-You can access this validation-messages with `store.messages`. 
-This gives you a `Flow<List<M>>` where `M` is your `ValidationMessage`-type.
-You can handle the `Flow` of your messages like any other `Flow` of a `List`, 
-for example by rendering your messages to HTML:
+By default, a `ValidatingStore` automatically validates its data after changes occur to update the list of messages.
+You can access these validation-messages with `store.messages`. It's `Flow<List<M>>` where `M` is your `ValidationMessage`-type.
+Handle the `Flow` of messages like any other `Flow` of a `List`, for example by rendering it to HTML:
 
 ```kotlin
-// create some messages
+// create some messages with shady data
 store.update(Person("", 101))
 
 render {
@@ -89,7 +88,7 @@ render {
 }
 ```
 
-If you want to start the validation process in a specific hander you can do so by implementing the `ValidatingStore` 
+If you want to start the validation process in a specific handler you can do so by implementing the `ValidatingStore` 
 by yourself:
 
 ```kotlin

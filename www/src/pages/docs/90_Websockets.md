@@ -10,7 +10,9 @@ eleventyNavigation:
     order: 90
 ---
 
-fritz2 offers support for websockets you can use with different protocols. To use it, you first have to create a socket:
+fritz2 offers support for websockets you can use with different protocols. 
+
+First create a socket:
  
 ```kotlin
 val websocket: Socket = websocket("ws://myserver:3333")
@@ -91,5 +93,5 @@ val entityStore = object : RootStore<Person>(Person()) {
 ```
 
 When the model in the `Store` changes, it will be sent to the server via Websockets, and vice versa of course.
-To get a full working example you can have a look at our [Ktor Chat](https://github.com/jamowei/fritz2-ktor-chat) 
+For a full working example have a look at our [Ktor Chat](https://github.com/jamowei/fritz2-ktor-chat) 
 project.

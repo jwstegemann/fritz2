@@ -7,12 +7,12 @@ eleventyNavigation:
     key: routing
     parent: documentation
     title: Routing
-    order: 70
+    order: 60
 ---
 
-Writing a Single Page Application (SPA), you might need a way to render a certain view depending on url-parameters. This is called routing. 
-fritz2 uses the hash-part of the url which starts with a `#`: `https://my.doma.in/path#hash`. url-parameters (`?`) are usually handled by the server, 
-while url-hashes (`#`) are handled by the browser.
+When writing a Single Page Application (SPA), you might need a way to render a certain view depending on url-parameters. 
+This is called routing. fritz2 uses the hash-part of the url which starts with a `#`: `https://my.doma.in/path#hash`. 
+Url-parameters (`?`) are usually handled by the server, while url-hashes (`#`) are handled by the browser.
 
 fritz2 offers a general mechanism for using client-site routing in your SPA. 
 It includes a class called `Router` which registers itself to listen for the specific dom-events of the hash changing. 
@@ -27,18 +27,17 @@ interface Route<T> {
 A `Route` always has a default route to start with.
 It also needs a way to serialize and deserialize the url-hash string to a kotlin (data-)class and vice versa.
 
-To make this mechanism easier to use, we already implemented two ways of handling routing in fritz2: 
+To make this mechanism easier to use, we implemented two ways of handling routing in fritz2: 
 * `StringRoute` uses the url-hash how it is.
-* `MapRoute` serialize and deserialize the url-hash to `Map<String,String>` where `&` is the separator between the entries.
+* `MapRoute` serializes and deserializes the url-hash to `Map<String,String>` where `&` is the separator between the entries.
 
 You can easily create a new instance of `Router` by using the global `routerOf()` function. 
-There are currently three of them for each type of your `Route`.
-* `routerOf(default: String): Router<String>` which uses `StringRoute`
-* `routerOf(default: Map<String, String>): MapRouter` which uses `MapRoute`
-* `<T> routerOf(default: Route<T>): Router<T>` which uses your custom implementation of the `Route` interface
+There are currently three of them, one for each type of `Route`:
+* `routerOf(default: String): Router<String>` uses `StringRoute`
+* `routerOf(default: Map<String, String>): MapRouter` uses `MapRoute`
+* `<T> routerOf(default: Route<T>): Router<T>` uses your custom implementation of the `Route` interface
 
-Routing is straightforward:
-Using simple `String`s by `StringRoute`:
+Routing is straightforward using simple `String`s by `StringRoute`:
 ```kotlin
 val router = routerOf("welcome")
 
@@ -57,19 +56,19 @@ render {
 ```
 
 ## MapRouter
-In bigger web-apps often additional routing information is needed when navigating to another site.
-Therefore, you can use the `MapRouter` instead:
+In bigger web-apps often need additional routing information when navigating to another site.
+Here, use the `MapRouter` instead of the string router:
 ```kotlin
 val router = routerOf(mapOf("page" to "welcome", "foo" to "bar"))
 
 render {
     section {
-        // use a child Store for two-way data binding
+        // use a child store for two-way data binding
         val foo = router.map("foo")
         foo.update("bars")
 
-        // or use special select() function where other contains the rest of the map entries
-        // for one-way data binding
+        // or use special select() function where 'other' contains the rest 
+        // of the map entries for one-way data binding
         router.select(key = "page").render { (page, other) ->
             when(page) {
                 "welcome" -> div { +"Welcome" }
@@ -87,13 +86,12 @@ render {
 A router using a `MapRoute` offers two extra `select` methods:
 * `fun select(key: String): Flow<Pair<String?, Map<String, String>>>` extracts the values as `Pair` for the given `key` 
 and the rest of the route
-* `fun select(key: String, orElse: String): Flow<String>` extracts the value for a given `key` when available otherwise 
+* `fun select(key: String, orElse: String): Flow<String>` extracts the value for a given `key` when available, otherwise 
 it returns `orElse`
 
-Or as you can see, you can also use the well-known `map()` function by providing a `key` to get a new `Store` 
-to render its data and to handle updates.
+Or use the well-known `map()` function by providing a `key` to get a new `Store` to render its data and to handle updates.
 
-If you want to use your own special `Route` instead, try this:
+If you want to use your own `Route` instead, try this:
 ```kotlin
 class SetRoute(override val default: Set<String>) : Route<Set<String>> {
     private val separator = "&"
@@ -173,5 +171,4 @@ fun main() {
 }
 ```
 
-Have a look at our [routing example](/examples/routing)
-to see how it works and to play around with it.
+Have a look at our [routing example](/examples/routing) to see how it works and to play around with it.

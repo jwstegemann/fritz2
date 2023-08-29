@@ -12,55 +12,64 @@ eleventyNavigation:
 
 ## Overview
 
-fritz2 uses stores to manage the application state by holding some data model. But quite often those data does 
-not fit naturally to the needed UI-fragment. This is often due to the normalized form, where redundancy is avoided
-as much as possible. Also, HTML can only render `Strings` in the end, but the `String` representation of some data 
-types might differ from case to case, and we do not want to store those all explicitly.
+fritz2 uses stores to manage the application state by holding a data model. But quite often the data does 
+not fit into the desired UI-fragment out of the box. This is often due to the normalized form which avoids redundancy 
+as much as possible. Also, HTML can only render `Strings` at the end of the day, but the correct `String` representation 
+of data types differs from case to case, and we do not want to store those explicitly.
 
-In order to support clean data management but also a good match between data and UI-shape, fritz2's store concept
-offers a powerful concept: Store *mapping*.
+In order to support clean data management and compromise well between data and UI-shape, fritz2's stores 
+offer a powerful concept: store mapping.
 
-Like the known `map`-function from collections, where some source type `T` gets transformed to some other type `R`
-inside an expression, we can also *map* a store in order to change its source type to some other, better fitting type.
-There is one big difference between the classical `map`-function and the store's mapping functions: A store needs
-not only a function from `T -> R` (getter) but also from `R -> T` (setter) as a store manages changes!
+Remember the `map`-function from collections where a source type `T` is transformed to another type `R`
+inside of an expression? We can also *map* a store in order to change its source type to a more suitable type.
+However, there is one big difference between the classical `map`-function and the store's mapping functions: A store needs
+both a getter-function from `T -> R` and a setter-function from `R -> T` to manage changes, while the collections functions
+only requires the getter.
 
 ### Lenses
 
-There is a universal concept in computer science for such a functionality called *lens*. You might have a look at
-the [excellent documentation on lenses](https://arrow-kt.io/learn/immutable-data/lens/) from the 
-[arrow-project](https://arrow-kt.io).
+If you are unfamiliar with the universal concept for the functionality called *lens* in computer science, take
+a look at the [excellent documentation on lenses](https://arrow-kt.io/learn/immutable-data/lens/) from the 
+[arrow-project](https://arrow-kt.io) before reading on.
 
-fritz2 also offers the method `lensOf()` for a short-and-sweet-experience, which accepts a getter- and 
+A `Lens` is basically a way to describe the relation between an outer and inner entity in a structure. It focuses on the
+inner entity from the viewpoint of the outer entity, which is how it got its name. Lenses are especially useful when 
+using immutable data-types like fritz2 does.
+
+A `Lens` needs to handle the following:
+
+* Getting the value of the inner entity from a given instance of the outer entity
+* Creating a new instance of the outer entity (immutable!) as a copy of a given one with a different value only for the
+  inner entity
+
+fritz2 offers the method `lensOf()` for a short-and-sweet-experience which accepts a getter- and 
 a setter-expression:
 ```kotlin
 val nameLens: Lens<Person, String> = lensOf({ it.name }, { person, value -> person.copy(name = value) })
 ```
 
-The lens can then be used to access the `name`-property of a `Person` or to create a new person with changed name:
+This lens can be used to access the `name`-property of a `Person`, or to create a new person with changed name:
 ```kotlin
 val fritz2 = Person(1, "fritz2")
 val nameOfFritz2: String = nameLens.get(person) // nameOfFritz2 = "fritz2"
 val hugo: Person = nameLens.set(fritz2, "hugo") // hugo = Person(1, "hugo")
 ```
-As you can see, there is no *magic*; just plain old function calling.
+As you can see, there is no magic, just plain old function calling.
 
-Let us take a step back and explore, how this concept of lenses can be used to map one store to another.
+Let's take a step back and explore how the concept of lenses can be used to map one store to another.
 
-### Mapping a Store
+### Mapping Complex Stores Using Lenses
 
-Imagine a use case, where we want to render the interests of a person like a kind of tags as comma seperated values.
-We would also like to change them by typing them as CSV.
+Imagine a use case where the interests of a person are rendered as tags - comma seperated values. They can be changed 
+by typing them as CSV.
 
-In order to further process interests of a person, it makes more sense to store them a `List<Interests>` though. 
-So that should be the canonical state representation in our application.
+But in order to further process these interests, it makes more sense to store them in a `List<Interest>`, so that will
+be the canonical state representation in our application:
 ```kotlin
 val interestsStore: Store<List<Interest>> = storeOf(emptyList())
 ```
-
-It does not fit to the requirements of the specific UI-fragment though!
-
-We can define a `Lens` that does the mapping between the list and the `String` based CSV representation:
+However, this representation does not fit the requirements of the specific UI-fragment - but no worries! Simply define 
+a `Lens` that does the mapping between the list and the `String` based CSV representation:
 ```kotlin
 val interestLens: Lens<List<Interest>, String> = lensOf(
     List<Interest>::joinToString, // getter
@@ -68,7 +77,7 @@ val interestLens: Lens<List<Interest>, String> = lensOf(
 )
 ```
 
-Armed with this lens, we can finally map the whole interest-store and use the resulting store for the UI:
+Armed with this lens, we can map the interest-store and use the resulting store in the UI:
 ```kotlin
 val interestsStore: Store<List<Interest>> = storeOf(emptyList())
 
@@ -79,56 +88,45 @@ val interestLens: Lens<List<Interest>, String> = lensOf(
 
 val csvInterests: Store<String> = interestsStore.map(interestLens)
 //  ^^^^^^^^^^^^^^^^^^^^^^^^^^^                  ^^^^^^^^^^^^^^^^^
-//  We create a new store with the               we use the `map` function to "map" the store
-//  desired type (2nd of the `Lens`)             and provide the lens, that `map` uses to process the mapping
+//  Create a new store with the                  Use the `map` function to map the store
+//  desired type (2nd of the `Lens`)             and provide the lens for the transformations
 
 render {
-    h1 { +"Choose Interests from" }
+    h1 { +"Choose Interests from:" }
     p { +Interest.values().joinToString() }
     input {
         label { +"Interests:" }
-        // connect the input reactively to the mapped CSV representation store
+        // reactively connect the input to the mapped CSV representation store
         value(csvInterests.data) 
         changes.values() handledBy csvInterests.update
     }
     h1 { +"Chosen Interests:" }
     csvInterests.data.renderText()
     
-    // Just to demonstrate that the original store is always in sync with the mapped one:
+    // just to demonstrate that the original store is always in sync with the mapped one:
     interestsStore.data handledBy { interests ->
         console.log(interests)
     }
 }
 ```
 As you can see, the mapped store fits perfectly to the desired (yet a little artificial) requirements for the UI:
-There is no mapping inside the UI, nor are there any custom handler or data-flows in the store.
+There is no mapping inside the UI, nor are there any custom handlers or data-flows in the store.
 
-To be fair, the heavy work is done by the manual creation of the lens though.
-
-fritz2 offers some more tools to make lens generation easier, especially for the use case of destructuring complex
-model types.
+But to be fair, the manual creation of the lens is heavy work. So fritz2 offers more tools to make lens generation 
+easier, especially for the use case of destructuring complex model types.
 
 ## Essentials
 
-### Lenses in Depth
+### Deeper Into Lenses
 
-Most of the time, your model for a view will not be of just a simple data-type but a complex entity, like a
+Most of the time, a model for a view will not be of a simple data-type but a complex entity, like a
 person having a name, multiple addresses, an email, a date of birth, etc.
 
-In those cases, you will most likely need `Store`s for the single properties of your main entity, and - later on - for
+In those cases, you will most likely need `Store`s for the properties of your main entity, and - later on - for
 the properties of the child-entity like the street in an address in our example from above.
 
-fritz2 uses a mechanism called `Lens` to describe the relationship between an entity and its child-entities and
+fritz2 again uses `Lens`es to describe the relationship between an entity and its child-entities and
 properties.
-
-A `Lens` is basically a way to describe the relation between an outer and inner entity in a structure.
-It focuses on the inner entity from the viewpoint of the outer entity, which is how it got its name.
-Lenses are especially useful when using immutable data-types like fritz2 does.
-A `Lens` needs to handle the following:
-
-* Getting the value of the inner entity from a given instance of the outer entity
-* Creating a new instance of the outer entity (immutable!) as a copy of a given one with a different value only for the 
-inner entity
 
 In fritz2, a `Lens` is defined by the following interface:
 ```kotlin
@@ -139,8 +137,8 @@ interface Lens<P,T> {
 }
 ```
 
-You can easily use this interface by just implementing `get()` and `set()`.
-fritz2 also offers the method `lensOf()` for a short-and-sweet-experience:
+All you do to benefit is implement the functions `get()` and `set()`, or use the `lensOf()` function we discussed in
+previous sections:
 
 ```kotlin
 val nameLens = lensOf("name", { it.name }, { person, value -> person.copy(name = value) })
@@ -169,16 +167,15 @@ val nameLens = Person.name()
 
 You can see it in action at our [nestedmodel-example](/examples/nestedmodel).
 
-Keep in mind that your annotated classes have to be in your `commonMain` source-set
+Keep in mind that your annotated classes have to be in your `commonMain` source-set,
 otherwise the automatic generation of the lenses will not work!
 
-Have a look at the [validation-example](/examples/validation)
-to see how to set it up.
+Have a look at the [validation-example](/examples/validation) to see how to set it up.
 
 This will also help you define a multiplatform project for sharing your model and validation code between
 the browser and backend.
 
-### Destructuring complex Models with mapped `Store`s and `Lense`s
+### Destructuring Complex Models With Mapped `Store`s and `Lense`s
 
 Having a `Lens` available which points to some specific property makes it very easy to get a `Store` for that
 property from an original `Store` of the parent entity:
@@ -201,11 +198,11 @@ val personStore = storeOf(Person(Name("first name", "last name"), "more text"))
 val nameStore = personStore.map(Person.name())
 ```
 
-Now you can use your `nameStore` exactly like any other `Store` to set up _two-way data binding_, call `map(...)`
+Now you can use your `nameStore` exactly like any other `Store` to set up _two-way data binding_. Call `map(...)`
 again to access the properties of `Name`. If a `Store` contains a `List`, you can of course iterate over it by
 using `renderEach()`. It's fully recursive from here on down to the deepest nested parts of your model.
 
-[Rememeber](/docs/createstores/#extend-none-custom-(local)-stores) that you can also add `Handler`s to your `Store`s 
+[Remember](/docs/createstores/#extend-none-custom-(local)-stores) that you can also add `Handler`s to your `Store`s 
 by simply calling the `handle` method:
 
 ```kotlin
@@ -222,12 +219,12 @@ render {
 }
 ```
 
-To keep your code well-structured, it is recommended to implement complex logic at your `Store` or inherit it by 
+To keep your code well-structured, it is recommended to implement complex logic in your `Store` or inherit it by 
 using interfaces. However, the code above is a decent solution for small (convenience-)handlers.
 
-### Calling `map` on a `Store` with nullable Content
+### Calling `map` on a `Store` With Nullable Content
 
-To call `map` on a nullable `Store` only makes sense, when you have checked, that its state is not null:
+Calling `map` on a nullable `Store` only makes sense when you have checked that its state is not null:
 
 ```kotlin
 @Lenses
@@ -253,13 +250,13 @@ applicationStore.data.render { person ->
 }
 ```
 
-### Handling nullable States in `Store`s
+### Handling Nullable States in `Store`s
 
-If you have a `Store` with a nullable state, you can use `mapNull` to derive a non-nullable `Store` from it,
-that transparently translates a `null`-value from its parent `Store` to the given default-value and vice versa.
+If you have a `Store` with a nullable state, you can use `mapNull` to derive a non-nullable `Store` from it which 
+transparently translates a `null`-value from its parent `Store` to the given default-value and vice versa.
 
-In the following case, when you enter some text in the input and remove it again,
-you will have a state of `null` in your `nameStore`:
+After text is entered into and then removed from the input of the following example, `nameStore` will have a state of
+`null`: 
 
 ```kotlin
 val nameStore = storeOf<String?>(null)
@@ -274,7 +271,7 @@ render {
 }
 ```
 
-In real world, you will often come across nullable attributes of complex entities. Then you can call `mapNull`
+In the real world, you will often come across nullable attributes of complex entities. Call `mapNull`
 directly on the `Store` you create to use with your form elements:
 
 ```kotlin
@@ -292,8 +289,8 @@ val nameStore = personStore.map(Person.name()).mapNull("")
 
 ### Combining Lenses
 
-A `Lens` supports the `plus`-operator with another lens in order to create a new lens, that combines the two in such a
-way, that the `get` and `set`-functions are chained in natural order.
+A `Lens` supports the `plus`-operator with another lens in order to create a new lens which combines the two. 
+The `get` and `set`-functions of the resulting lens are chained in natural order.
 
 Imagine the following example:
 ```kotlin
@@ -311,8 +308,10 @@ val person = Person(Address("Lerchenweg"))
 streetOfPerson.get(person) // -> "Lerchenweg"
 streetOfPerson.set("Rosenstraße") // Person(address = Address("Rosenstraße"))
 ```
+This works, but the syntax is quite cumbersome - especially for deeper nested models.
 
-Let us recap, how this example would work with automatically generated lenses:
+Let's see how this example would work with automatically generated lenses.
+
 ```kotlin
 @Lenses
 data class Address(val street: String) { companion object }
@@ -323,10 +322,8 @@ data class Person(val address: Address) { companion object }
 val streetOfPerson = Person.address() + Address.street()
 ```
 
-This works, but the syntax is quite cumbersome; especially for deeper nested models!
-
-This is why our automatic `@Lenses`-annotation-processor has a dedicated support for deeper nested models as well and
-creates extension functions for all lenses, so you can *chain* the calls in a fluent way:
+fritz2's automatic `@Lenses`-annotation-processor has dedicated support for deeper nested models as well and
+creates extension functions for all lenses. This allows you to chain the calls fluently:
 
 ```kotlin
 @Lenses
@@ -337,18 +334,18 @@ data class Person(val address: Address) { companion object }
 
 val streetOfPerson = Person.address().street()
 ```
-This fluent API looks much terser and cleaner compared to the canonical one above. Beware that under the hood nothing
-special happens! The generated code simply uses the `plus` operator the same way you can do so manually.
+This fluent API looks much terser and cleaner compared to the canonical one above. Note that, under the hood, nothing
+special happens - the generated code simply uses the `plus` operator the same way you would.
 
-Combining lenses is i.a. very useful for formatting values like you will learn about in the next section.
+Combining lenses is also very useful for formatting values, as we shall see in the next section.
 
 ### Formatting Values
 
-In html you can only use `String`s in your attributes like in the `value` attribute of `input {}`. To use other data
-types in your model you have to specify how to represent a specific value as `String` (e.g. Number, Currency, Date).
-When you work with `input {}` you also need parse the entered text back to your data type.
-For all Kotlin basic types there is a convenience function `asString()` which generates a `Lens` from this type to 
-`String` and vice versa. Therefore, it calls internally the `T.toString()` and `String.toT()` functions.
+HTML allows only `String`s in your attributes, for example the `value` attribute of `input {}`. To use other data
+types in your model, you have to specify how a type should be represented as `String` (e.g. Number, Currency, Date).
+When working with `input {}`, you also need parse the user input back to your data type.
+For all Kotlin basic types, there is a convenience function `asString()` which generates a `Lens` from this type to 
+`String` and vice versa. It internally calls the `T.toString()` and `String.toT()` functions.
 
 ```kotlin
 @Lenses
@@ -358,15 +355,9 @@ val ageLens: Lens<Person, Int> = Person.age() // cannot be used in tag attribute
 val ageLensAsString: Lens<Person, String> = Person.age().asString() // now it is usable
 ```
 
-fritz2 also provides a special `lensOf()` function for creating a `Lens<P, String>` for special types that are not 
-basic:
+Also, remember that you can use the `lensOf()` function to create lenses which we introduced in the lenses section.
 
-```kotlin
-fun <P> lensOf(format: (P) -> String, parse: (String) -> P): Lens<P, String>
-```
-
-If you use other types like `kotlinx.datetime.LocalDate` in your data classes, you have to specify a special lens for it.
-This lens then converts the value to a `String` and vice versa.
+When using other types like `kotlinx.datetime.LocalDate`, special lenses for string conversion need to be specified for them:
 ```kotlin
 import kotlinx.datetime.*
 
@@ -378,29 +369,29 @@ object Formats {
 }
 ```
 
-Now you can use the `Formats.date` lens for deriving appropriate stores:
+Now you can use the `Formats.date` lens for deriving stores:
 
 ```kotlin
 val personStore = storeOf<Person>(Person(LocalDate(1990, 1, 1)))
 
 val birthday: Store<String> = personStore.map(Person.birthday() + Formats.date)
-// or when interim store is needed
+// or when an interim store is needed
 val birthday: Store<String> = personStore.map(Person.birthday()).map(Formats.date)
 ```
 
-Take a look at our complete [validation example](/examples/validation) to get an impression on that topic.
+Take a look at our complete [validation example](/examples/validation) to get an impression of that topic.
 
 ### Summary of Store-Mapping-Factories
 
-| Factory                                                         | Use case                                                                                                                                                       |
-|-----------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `Store<P>.map(lens: Lens<P, T>): Store<T>`                      | Most generic map-function. Maps any `Store` given a `Lens`. Use for model destructuring with automatic generated lenses for example.                           |
-| `Store<P?>.map(lens: Lens<P & Any, T>): Store<T>`               | Maps any *nullable* `Store` given a `Lens` to a `Store` of a definitely none nullable `T`. Use in `render*`-content expressions combined with some null check. |
-| `Store<List<T>>.mapByElement(element: T, idProvider): Store<T>` | Maps a `Store` of some `List<T>` to one element of that list. Works for entities, as a stable Id is needed.                                                    |
-| `Store<List<T>>.mapByIndex(index: Int): Store<T>`               | Maps a `Store` of some `List<T>` to one element of that list using the index.                                                                                  |
-| `Store<Map<K, V>>.mapByKey(key: K): Store<V>`                   | Maps a `Store` of some `Map<T>` to one element of that map using the key                                                                                       |
-| `Store<T?>.mapNull(default: T): Store<T>`                       | Maps a `Store` of some nullable `T` to a `Store` of a definitely none nullable `T` using some default value in case of `null` in source-store.                 |
-| `MapRouter.mapByKey(key: String): Store<String>`                | Maps a `MapRouter` to a `Store`. See [chapter about routers](/docs/routing/#maprouter) for more information.                                                   |
+| Factory                                                         | Use case                                                                                                                                                  |
+|-----------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `Store<P>.map(lens: Lens<P, T>): Store<T>`                      | Most generic map-function. Maps any `Store` given a `Lens`. Use for model destructuring with automatic generated lenses for example.                      |
+| `Store<P?>.map(lens: Lens<P & Any, T>): Store<T>`               | Maps any nullable `Store` given a `Lens` to a `Store` of a definitely none nullable `T`. Use in `render*`-content expressions combined with a null check. |
+| `Store<List<T>>.mapByElement(element: T, idProvider): Store<T>` | Maps a `Store` of a `List<T>` to one element of that list. Works for entities, as a stable Id is needed.                                                  |
+| `Store<List<T>>.mapByIndex(index: Int): Store<T>`               | Maps a `Store` of a `List<T>` to one element of that list using the index.                                                                                |
+| `Store<Map<K, V>>.mapByKey(key: K): Store<V>`                   | Maps a `Store` of a `Map<T>` to one element of that map using the key.                                                                                    |
+| `Store<T?>.mapNull(default: T): Store<T>`                       | Maps a `Store` of a nullable `T` to a `Store` of a definitely none nullable `T` using a default value in case of `null` in source-store.                  |
+| `MapRouter.mapByKey(key: String): Store<String>`                | Maps a `MapRouter` to a `Store`. See [chapter about routers](/docs/routing/#maprouter) for more information.                                              |
 
 ### Summary Lens-Factories
 
@@ -408,23 +399,23 @@ Take a look at our complete [validation example](/examples/validation) to get an
 |---------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
 | `lensOf(id: String, getter: (P) -> T, setter: (P, T) -> P): Lens<P, T>`   | Most generic lens (used by `lenses-annotation-processor`. Fits for complex model destructuring. |
 | `lensOf(parse: (String) -> P, format: (P) -> String): Lens<P, String>`    | Formatting lens: Use for mapping into `String`s.                                                |
-| `lensForElement(element: T, idProvider: IdProvider<T, I>): Lens<List, T>` | Select one element from a list of entities, therefore some stable Id is needed.                 |
-| `lensForElement(index: Int): Lens<List, T>`                               | Select one element from a list by index. Useful for value objects                               |
-| `lensForElement(key: K): Lens<Map<K, V>, V>`                              | Select one element from a map by some key.                                                      |
+| `lensForElement(element: T, idProvider: IdProvider<T, I>): Lens<List, T>` | Select one element from a list of entities, therefore a stable Id is needed.                    |
+| `lensForElement(index: Int): Lens<List, T>`                               | Select one element from a list by index. Useful for value objects.                              |
+| `lensForElement(key: K): Lens<Map<K, V>, V>`                              | Select one element from a map by key.                                                           |
 
 ## Advanced Topics
 
-### Reactive Rendering of Lists of Entities with automatically Mapped Element Store
+### Reactive Rendering of Entity-Lists With Auto-Mapped Store
 
-There is a special convenience method for the [reactive rendering](/docs/render/#reactive-rendering) of list of 
-entities, that can only be explained with the already explained knowledge about `Store`s and `Lens`es.
+There is a special convenience method for the [reactive rendering](/docs/render/#reactive-rendering) of lists of 
+entities which requires some knowledge about `Store`s and `Lens`es.
 
-On a store of `List<T>` an extension method called `renderEach` ia defined *directly* on the
+On a store of `List<T>`, an extension method called `renderEach` is defined directly on the
 store. It is mandatory to pass an `idProvider`, so this is targeted to entity-types.
 
-Inside the content-parameter expression of `renderEach`, instead of some `T` a whole `Store<T>` gets injected. So
-under the hood there is some store-mapping taking place, where for each element of the original list, a mapped store
-handling that element from the original store is created:
+Inside the content-parameter expression of `renderEach`, instead of just `T`, a `Store<T>` gets injected. Some 
+store-mapping takes place under the hood: For each element of the original list, a mapped store
+handling that element from the original store is created.
 
 ```kotlin
 val storedPersons: Store<List<Person>> = storeOf(listOf(Person(1, "fritz2", emptySet())))
@@ -441,7 +432,7 @@ render {
             
             val storedName = storedPerson.map(nameLens) // create this store to map it further
             
-            // provide some input element in order to modify one property of that person
+            // provide an input element in order to modify one property of that person
             input {
                 value(storedName.data)
                 changes.values() handledBy storedName.update
@@ -451,10 +442,9 @@ render {
 }
 ```
 
-Typical use cases are tables with editable cells for example.
+Tables with editable cells are a typical use case for `Store<List<T>>.renderEach`.
+Check out the boilerplate code that can be omitted in comparison to using the `Flow<List<T>>.renderEach`-function:
 
-With all the knowledge about reactive rendering of entities and lenses, we can demonstrate, what boilerplate code
-can be omitted, using the `Flow<List<T>>.renderEach`-function:
 ```kotlin
 val storedPersons: Store<List<Person>> = storeOf(listOf(Person(1, "fritz2", emptySet())))
 
@@ -462,7 +452,7 @@ val nameLens: Lens<Person, String> = lensOf("name", Person::name) { person, name
 
 render {
     div {
-        storedPersons.data.renderEach(Person::id) { person -> // we only get some `T` ...
+        storedPersons.data.renderEach(Person::id) { person -> //  We get a `T`.. 
             
             // ... thus we must create the mapped store manually:
             val storedPerson = storedPersons.mapByElement(person, Person::id)
@@ -478,5 +468,5 @@ render {
 }
 ```
 
-You might recognize that the parameters of `renderEach` and `mapByElement` are identically. That's why it is possible
+You might notice that the parameters of `renderEach` and `mapByElement` are identically. That's why it is possible
 to encapsulate the store mapping directly into the former presented convenience function.
