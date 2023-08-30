@@ -240,8 +240,8 @@ val storedPerson = storeOf<Person?>(null)
 //...
 
 storedPerson.data.render { person ->
-    if (person != null) { // If person is null you would get NullPointerExceptions reading or updating its store.
-                          // So you must create a safe scope manually, where it is ensured that person is not null!
+    if (person != null) { // Avoid NullPointerExceptions reading or updating storedPerson
+                          // by manually creating a safe scope ensuring that person is not null
         val storedName = customerStore.map(Person.name())
         input {
             value(storedName.data)
@@ -249,7 +249,7 @@ storedPerson.data.render { person ->
         }
     }
     else {
-        p { + "no customer selected" }
+        p { + "No customer selected" }
     }
 }
 ```
