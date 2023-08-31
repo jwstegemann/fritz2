@@ -3,6 +3,7 @@ package dev.fritz2.core
 import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flowOf
 import org.w3c.dom.HTMLButtonElement
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -174,6 +175,28 @@ class PatchTests {
         clickButton(deleteBtnId)
         delay(100)
         assertEquals("yaxde", listContent(listId), "list incorrect after delete")
+
+    }
+
+
+    @Test
+    fun testFastDeletePredecessor() = runTest {
+        render {
+            div(id = "div") {
+                flowOf(
+                    listOf("ABC"),
+                    listOf("ABC", "CDE"),
+                    listOf("CDE"), // The first element gets removed, the delete patch should still select the correct element
+                    listOf()
+                ).renderEach(into = this) {
+                    p { +it }
+                }
+            }
+        }
+
+        delay(100)
+        val div = document.getElementById("div")
+        assertEquals(0, div!!.childElementCount)
 
     }
 }
