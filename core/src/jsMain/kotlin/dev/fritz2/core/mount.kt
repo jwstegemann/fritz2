@@ -3,6 +3,8 @@ package dev.fritz2.core
 import kotlinx.browser.document
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.dom.clear
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
@@ -44,40 +46,47 @@ interface MountPoint {
 }
 
 internal abstract class MountPointImpl : MountPoint, WithJob {
-    suspend fun runBeforeUnmounts() {
-        if (beforeUnmountListeners != null) {
-            beforeUnmountListeners!!.map {
-                (MainScope() + job).launch {
-                    it.handler(it.target, it.payload)
+
+    val mutex = Mutex()
+
+    suspend fun runBeforeUnmounts() = mutex.withLock {
+        if (job.isActive) {
+            (MainScope() + job).launch {
+                beforeUnmountListeners.forEach {
+                    try {
+                        it.handler(it.target, it.payload)
+                    } catch (e: Exception) {
+                        console.error("Error in beforeUnmounts", e)
+                    }
                 }
-            }.joinAll()
-            beforeUnmountListeners!!.clear()
+                beforeUnmountListeners.clear()
+            }.join()
         }
     }
 
     suspend fun runAfterMounts() {
-        if (afterMountListeners != null) {
-            afterMountListeners!!.map {
-                (MainScope() + job).launch {
+        (MainScope() + job).launch {
+            afterMountListeners.forEach {
+                try {
                     it.handler(it.target, it.payload)
+                } catch (e: Exception) {
+                    console.error("Error in afterMounts", e)
                 }
             }
-            afterMountListeners!!.clear()
+            afterMountListeners.clear()
         }
     }
 
-    private var afterMountListeners: MutableList<DomLifecycleListener>? = null
+    private val afterMountListeners: MutableList<DomLifecycleListener> = mutableListOf()
 
-    private var beforeUnmountListeners: MutableList<DomLifecycleListener>? = null
+    private val beforeUnmountListeners: MutableList<DomLifecycleListener> = mutableListOf()
 
     override fun afterMount(target: WithDomNode<Element>, payload: Any?, handler: DomLifecycleHandler) {
-        if (afterMountListeners == null) afterMountListeners = mutableListOf()
-        afterMountListeners!!.add(DomLifecycleListener(target, payload, handler))
+        afterMountListeners.add(DomLifecycleListener(target, payload, handler))
     }
 
     override fun beforeUnmount(target: WithDomNode<Element>, payload: Any?, handler: DomLifecycleHandler) {
-        if (beforeUnmountListeners == null) beforeUnmountListeners = mutableListOf()
-        beforeUnmountListeners!!.add(DomLifecycleListener(target, payload, handler))
+        beforeUnmountListeners.add(DomLifecycleListener(target, payload, handler))
     }
 }
 
@@ -283,8 +292,8 @@ private suspend inline fun insertMany(target: Node, mountPoints: MutableMap<Node
         itemToDelete?.let {
             mountPoints.remove(it)?.let { mountPoint ->
                 (MainScope() + parentJob).launch {
-                    mountPoint.job.cancelChildren()
                     mountPoint.runBeforeUnmounts()
+                    mountPoint.job.cancelChildren()
                     target.removeChild(it)
                 }
             }

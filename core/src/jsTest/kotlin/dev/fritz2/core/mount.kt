@@ -179,7 +179,7 @@ class MountTests {
     }
 
     @Test
-    fun testRecursiveLifecycleHandler() = runTest {
+    fun testNestedLifecycleHandler() = runTest {
         val outerStore = storeOf(0)
         val innerStore = storeOf(0)
         val listStore = storeOf(listOf("123"))
@@ -289,9 +289,104 @@ class MountTests {
         ) { outerStore.update(2) }
     }
 
+
+    @Test
+    fun testNestedRenderEachLifecycleHandler() = runTest {
+        val renderStore = storeOf(0)
+        val renderEachStore = storeOf(listOf("123"))
+
+        var renderMountsCounter = 0
+        var renderUnmountsCounter = 0
+
+        var renderEachMountsCounter = 0
+        var renderEachUnmountsCounter = 0
+
+        render {
+            renderEachStore.renderEach({ it }) {
+                div {
+                    afterMount { _, _ -> renderEachMountsCounter += 1 }
+                    beforeUnmount { _, _ -> renderEachUnmountsCounter += 1 }
+
+                    renderStore.data.render {
+                        afterMount { _, _ -> renderMountsCounter += 1 }
+                        beforeUnmount { _, _ -> renderUnmountsCounter += 1 }
+                    }
+
+                }
+            }
+
+        }
+
+        /**
+         * Checks, whether the amount of afterMount/beforeUnmount-Calls match the excepted values for the given action
+         */
+        suspend fun check(
+            title: String,
+            renderMounts: Int = 0,
+            renderUnmounts: Int = 0,
+            renderEachMounts: Int = 0,
+            renderEachUnmounts: Int = 0,
+            action: () -> Unit
+        ) {
+            // Reset Values
+            renderMountsCounter = 0
+            renderUnmountsCounter = 0
+            renderEachMountsCounter = 0
+            renderEachUnmountsCounter = 0
+
+            // Invoke Aktion
+            action.invoke()
+            delay(100)
+
+            // Check Results
+            assertEquals(renderMounts, renderMountsCounter, "$title - renderMounts wrong")
+            assertEquals(renderUnmounts, renderUnmountsCounter, "$title - renderUnmounts wrong")
+            assertEquals(renderEachMounts, renderEachMountsCounter, "$title - renderEachMounts wrong")
+            assertEquals(renderEachUnmounts, renderEachUnmountsCounter, "$title - renderEachUnmounts wrong")
+        }
+
+        check(
+            "Initial",
+            renderMounts = 1,
+            renderEachMounts = 1,
+        ) {}
+
+        check(
+            "update renderStore",
+            renderMounts = 1,
+            renderUnmounts = 1
+        ) {
+            renderStore.update(2)
+        }
+
+        check(
+            "Add to renderEach",
+            renderMounts = 1, renderEachMounts = 1
+        ) {
+            renderEachStore.update(listOf("123","222"))
+        }
+
+        check(
+            "Remove second element from renderEach",
+            renderUnmounts = 1, renderEachUnmounts = 1
+        ) {
+            renderEachStore.update(listOf("123"))
+        }
+
+        check(
+            "Remove all elements from renderEach",
+            renderUnmounts = 1, renderEachUnmounts = 1
+        ) {
+            renderEachStore.update(emptyList())
+        }
+
+
+    }
+
+
     @Test
     fun testLifecycleOnGlobalRender() = runTest {
-        
+
         var mounts = 0
 
         render {
