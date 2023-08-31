@@ -224,7 +224,7 @@ internal fun <V> RenderContext.mountPatches(
             when (patch) {
                 is Patch.Insert -> insert(target.domNode, mountPoints, patch.element, patch.index)
                 is Patch.InsertMany -> insertMany(target.domNode, mountPoints, patch.elements, patch.index)
-                is Patch.Delete -> delete(target.domNode, mountPoints, patch.start, patch.count, target.job)
+                is Patch.Delete -> delete(target.domNode, mountPoints, patch.start, patch.count)
                 is Patch.Move -> move(target.domNode, patch.from, patch.to)
             }
         }
@@ -286,16 +286,16 @@ private suspend inline fun insertMany(target: Node, mountPoints: MutableMap<Node
  * @param start position for deleting
  * @param count of elements to delete
  */
- private suspend inline fun delete(target: Node, mountPoints: MutableMap<Node, MountPointImpl>, start: Int, count: Int, parentJob: Job) {
+private suspend inline fun delete(target: Node, mountPoints: MutableMap<Node, MountPointImpl>, start: Int, count: Int) {
     var itemToDelete = target.childNodes.item(start)
     repeat(count) {
         itemToDelete?.let {
+            itemToDelete = it.nextSibling
             mountPoints.remove(it)?.let { mountPoint ->
                 mountPoint.runBeforeUnmounts()
                 mountPoint.job.cancelChildren()
                 target.removeChild(it)
             }
-            itemToDelete = it.nextSibling
         }
     }
 }

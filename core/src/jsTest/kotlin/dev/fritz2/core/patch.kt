@@ -4,7 +4,9 @@ import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
+import org.w3c.dom.HTMLElement
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -186,7 +188,11 @@ class PatchTests {
                 flowOf(
                     listOf("ABC"),
                     listOf("ABC", "CDE"),
-                    listOf("CDE"), // The first element gets removed, the delete patch should still select the correct element
+                    listOf("ABC", "ABC", "CDE"),
+                    listOf(
+                        "ABC",
+                        "CDE"
+                    ), // The first element gets removed, the delete patch should still select the correct element
                     listOf()
                 ).renderEach(into = this) {
                     p { +it }
@@ -198,5 +204,37 @@ class PatchTests {
         val div = document.getElementById("div")
         assertEquals(0, div!!.childElementCount)
 
+    }
+
+    @Test
+    fun testRenderEach() = runTest {
+        val store = storeOf("abcdef")
+        render {
+            div(id = "div") {
+                store.data.map { it.toCharArray().map { "$it" } }.renderEach(into = this) {
+                    p { +it }
+                }
+            }
+        }
+
+        delay(100)
+        val div = document.getElementById("div") as HTMLElement
+
+        suspend fun check(str:String){
+            store.update(str)
+            delay(100)
+            assertEquals(str, div.innerText.filter { it.isLetter() })
+            assertEquals(str.length, div.childElementCount)
+        }
+
+        check("abcdef")
+        check("abcadefa")
+        check("abcdefa")
+        check("abdefa")
+        check("aaabdea")
+        check("aaaea")
+        check("aaea")
+        check("aae")
+        check("")
     }
 }
