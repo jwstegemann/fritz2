@@ -292,8 +292,8 @@ private suspend inline fun insertMany(target: Node, mountPoints: MutableMap<Node
         itemToDelete?.let {
             mountPoints.remove(it)?.let { mountPoint ->
                 (MainScope() + parentJob).launch {
-                    mountPoint.job.cancelChildren()
                     mountPoint.runBeforeUnmounts()
+                    mountPoint.job.cancelChildren()
                     target.removeChild(it)
                 }
             }
