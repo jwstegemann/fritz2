@@ -146,7 +146,8 @@ render { /* creates the initial `RenderContext` */
             // create a text-node with the plus operator
             +"Input"
             
-            //TODO: Ich finde die Nutzung von 'for' in einem der ersten Beispiele nicht so schön, weil es die Sonderlocke mit den ' enthält 
+            //TODO: Ich finde die Nutzung von 'for' in einem der ersten Beispiele nicht so schön, weil es die 
+            // Sonderlocke mit den ' enthält 
             
             //set tag specific attributes - they are predefined for all HTML tags
             `for`("SomeId")
@@ -259,8 +260,8 @@ button {
 ```
 
 The predefined `update` handler (which simply replaces the store's content with a new value) is often not sufficient
-for all use cases. So fritz2 allows the definition of custom handlers like the one above, which simply takes the old state, 
-capitalizes it and sets the result as new value.
+for all use cases. So fritz2 allows the definition of custom handlers like the one above, which simply takes the old 
+state, capitalizes it and sets the result as new value.
 
 ### Identifying Data
 
@@ -324,8 +325,9 @@ essentials of stores.
 ## Complete Example
 
 This is the full source of the example above, including all styling to make it look like the screenshot.
-You can just copy and paste it into the vanilla [tailwind template](https://github.com/jwstegemann/fritz2-tailwind-template)
-project, replacing the `main` function and then running the app.
+You can just copy and paste it into the vanilla 
+[tailwind template](https://github.com/jwstegemann/fritz2-tailwind-template) project, replacing the `main` function and 
+then running the app.
 
 ```kotlin
 import dev.fritz2.core.*

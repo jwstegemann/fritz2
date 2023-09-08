@@ -22,9 +22,8 @@ offer a powerful concept: store mapping.
 
 Remember the `map`-function from collections where a source type `T` is transformed to another type `R`
 inside of an expression? We can also *map* a store in order to change its source type to a more suitable type.
-However, there is one big difference between the classical `map`-function and the store's mapping functions: A store needs
-both a getter-function from `T -> R` and a setter-function from `R -> T` to manage changes, while the collections functions
-only requires the getter.
+However, there is one big difference between the classical `map`-function and the store's mapping functions: A store 
+needs both a getter-function from `T -> R` and a setter-function from `R -> T` to manage changes.
 
 ### Lenses
 
@@ -58,7 +57,7 @@ As you can see, there is no magic, just plain old function calling.
 
 Let's take a step back and explore how the concept of lenses can be used to map one store to another.
 
-### Mapping Complex Stores Using Lenses
+### Mapping Stores Using Lenses
 
 Imagine a use case where the interests of a person are rendered as tags - comma seperated values. They can be changed 
 by typing them as CSV.
@@ -117,7 +116,7 @@ easier, especially for the use case of destructuring complex model types.
 
 ## Essentials
 
-### Deeper Into Lenses
+### Lenses in Depth
 
 Most of the time, a model for a view will not be of a simple data-type but a complex entity, like a
 person having a name, multiple addresses, an email, a date of birth, etc.
@@ -308,7 +307,6 @@ val person = Person(Address("Lerchenweg"))
 streetOfPerson.get(person) // -> "Lerchenweg"
 streetOfPerson.set("Rosenstraße") // Person(address = Address("Rosenstraße"))
 ```
-This works, but the syntax is quite cumbersome - especially for deeper nested models.
 
 Let's see how this example would work with automatically generated lenses.
 
@@ -321,6 +319,8 @@ data class Person(val address: Address) { companion object }
 
 val streetOfPerson = Person.address() + Address.street()
 ```
+
+This works, but the syntax is quite cumbersome, especially for deeper nested models.
 
 fritz2's automatic `@Lenses`-annotation-processor has dedicated support for deeper nested models as well and
 creates extension functions for all lenses. This allows you to chain the calls fluently:
@@ -355,7 +355,11 @@ val ageLens: Lens<Person, Int> = Person.age() // cannot be used in tag attribute
 val ageLensAsString: Lens<Person, String> = Person.age().asString() // now it is usable
 ```
 
-Also, remember that you can use the `lensOf()` function to create lenses which we introduced in the lenses section.
+Also, remember that you can use the `lensOf()` function to create lenses which we introduced in the lenses section:
+
+```kotlin
+fun <P> lensOf(format: (P) -> String, parse: (String) -> P): Lens<P, String>
+```
 
 When using other types like `kotlinx.datetime.LocalDate`, special lenses for string conversion need to be specified for them:
 ```kotlin
@@ -405,7 +409,7 @@ Take a look at our complete [validation example](/examples/validation) to get an
 
 ## Advanced Topics
 
-### Reactive Rendering of Entity-Lists With Auto-Mapped Store
+### Reactive Rendering of Entity-Lists With Auto-Mapped Element Store
 
 There is a special convenience method for the [reactive rendering](/docs/render/#reactive-rendering) of lists of 
 entities which requires some knowledge about `Store`s and `Lens`es.

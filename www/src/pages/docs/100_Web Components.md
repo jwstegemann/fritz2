@@ -79,7 +79,9 @@ object WeatherCard : WebComponent<HTMLDivElement>() {
         }
 }
 ```
-Also add an observed attribute named `city` to be set by the user of this component. Next, register the component and add the observed `city` to the registration.
+Also add an observed attribute named `city` to be set by the user of this component. Next, register the component and 
+add the observed `city` to the registration.
+
 ```kotlin
 fun main() {
     registerWebComponent("weather-card", WeatherCard, "city")

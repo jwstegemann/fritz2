@@ -15,16 +15,16 @@ When accepting user-input, it is a nice idea to validate the data before process
 To do validation in fritz2, you first have to create a `Validation` object. 
 To do so you can use the global `validation` function which has the following type parameters:
 * the type of data to validate
-* a type for metadata you want to forward from your `Handler`s to your validation (or `Unit` by default if you do not need this)
-* a type describing the validation-results (like a message, etc.) which should implement the minimal `ValidationMessage` interface
+* a type for metadata you want to forward from `Handler`s to the validation (`Unit` by default if you don't need this)
+* a type describing the validation-results (like a message, etc.), implementing the minimal `ValidationMessage` interface
 
-It is recommended to put your validation code inside the companion object of your data-class in the `commonMain` source-set 
-of your multiplatform-project. Code in `commonMain` can be used in `jsMain` (frontend) and `jvmMain` (backend). 
+It is recommended to put your validation code inside the companion object of your data-class in the `commonMain` 
+source-set of your multiplatform-project. Code in `commonMain` can be used in `jsMain` (frontend) and `jvmMain` (backend). 
 
-Inside the `validation` function you have access to the `Inspector` of your data model. It gives you the paths to the data 
- by calling the `map()` method which, like in store-mapping, requires a lens as parameter. The mapped result is also an
-`Inspector` and has two attributes `data` and `path` which you can use during the validation of the specific member of the
-model.
+Inside the `validation` function you have access to the `Inspector` of your data model. It gives you the paths to the 
+data by calling the `map()` method which, like in store-mapping, requires a lens as parameter. The mapped result is also 
+an `Inspector` and has two attributes `data` and `path` which you can use during the validation of the specific member 
+of the model.
 
 To add a validation-message to the list of messages, use the `add` function.
 
@@ -70,8 +70,9 @@ val store: ValidatingStore<Person, Unit, Message> = storeOf(Person("Chris", 42),
 val msgs: Flow<List<Message>> = store.messages
 ```
 By default, a `ValidatingStore` automatically validates its data after changes occur to update the list of messages.
-You can access these validation-messages with `store.messages`. It's `Flow<List<M>>` where `M` is your `ValidationMessage`-type.
-Handle the `Flow` of messages like any other `Flow` of a `List`, for example by rendering it to HTML:
+You can access these validation-messages with `store.messages`. It's `Flow<List<M>>` where `M` is your 
+`ValidationMessage`-type. Handle the `Flow` of messages like any other `Flow` of a `List`, for example by rendering it 
+to HTML:
 
 ```kotlin
 // create some messages with shady data

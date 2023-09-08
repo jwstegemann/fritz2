@@ -29,7 +29,7 @@ It also needs a way to serialize and deserialize the url-hash string to a kotlin
 
 To make this mechanism easier to use, we implemented two ways of handling routing in fritz2: 
 * `StringRoute` uses the url-hash how it is.
-* `MapRoute` serializes and deserializes the url-hash to `Map<String,String>` where `&` is the separator between the entries.
+* `MapRoute` serializes and deserializes the url-hash to `Map<String,String>` where `&` is separating the entries.
 
 You can easily create a new instance of `Router` by using the global `routerOf()` function. 
 There are currently three of them, one for each type of `Route`:

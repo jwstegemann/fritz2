@@ -10,7 +10,8 @@ eleventyNavigation:
     order: 80
 ---
 
-Using the browser's default fetch API can get quite tiresome, which is why fritz2 offers a small fluent api wrapper for it.
+Using the browser's default fetch API can get quite tiresome, which is why fritz2 offers a small fluent api wrapper for 
+it.
 
 First, you create a `Request` which points to your endpoint url:
 ```kotlin
@@ -24,7 +25,9 @@ Sending a request is pretty straightforward:
 ```kotlin
 swapiApi.get("planets/$num").body()
 ```
-`body()` returns the body of the response as a `String`. Alternatively you can use the following methods to get different results:
+`body()` returns the body of the response as a `String`. Alternatively you can use the following methods to get 
+different results:
+
 * `blob(): Blob`
 * `arrayBuffer(): ArrayBuffer`
 * `formData(): FormData`
@@ -37,7 +40,8 @@ The same works for `POST` and all other HTTP methods - just use different parame
 
 The remote service is primarily designed for use in your `Store`'s `Handler`s when 
 exchanging data with the backend. 
-Here is a short example which uses [https://github.com/Kotlin/kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization)
+Here is a short example which uses 
+[https://github.com/Kotlin/kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization)
 to parse the returning JSON:
 ```kotlin
 val swapiStore = object : RootStore<String>("") {
@@ -300,7 +304,8 @@ MyAuthentication.authenticated.render {
 }
 ```
 
-If you have to access the current principal at any given point in time, you can do so using the `current` property of your Authentication.
+If you have to access the current principal at any given point in time, you can do so using the `current` property of 
+your Authentication.
 
 If the first request requires authentication, subsequent requests that use the same authentication middleware
 will wait for the working authentication process to finish. So make sure you always complete or cancel it and use

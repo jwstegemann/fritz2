@@ -64,8 +64,8 @@ of every fritz2 application; they provide the current value in a reactive way an
 
 The store's `data`-property offers a `Flow` of the stored value `T`. To reactively bind this value to the DOM, 
 use one of the `render*`-functions of the data flow on it. The function creates a so-called *mount-point* which manages 
-the automatic update of the DOM on every change of the store's data. The *mount-point* uses a dedicated tag created in the 
-DOM as reference to the node where the deletion and recreation of the defined UI-fragment happens.
+the automatic update of the DOM on every change of the store's data. The *mount-point* uses a dedicated tag created in 
+the DOM as reference to the node where the deletion and recreation of the defined UI-fragment happens.
 
 To react to (user) events like the click onto a button, a store provides so-called `Handler`s, which create the new
 value of the store. The default and built-in handler `update` simply substitutes the old state with a new value.
@@ -869,8 +869,8 @@ render {
 }
 ```
 
-Of course, you can also use a subtype of `RenderContext`, like a certain `Tag`, as receiver if you want to limit the usage
-of your component to this parent type.
+Of course, you can also use a subtype of `RenderContext`, like a certain `Tag`, as receiver if you want to limit the 
+usage of your component to this parent type.
 
 Using plain functions, it's also straight forward to parametrize your component:
 
