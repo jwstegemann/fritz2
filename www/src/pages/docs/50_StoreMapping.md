@@ -231,20 +231,21 @@ data class Person(val name: String)
 
 //...
 
-val applicationStore = storeOf<Person>(null)
+val storedPerson = storeOf<Person?>(null)
 
 //...
 
-applicationStore.data.render { person ->
-    if (person != null) { // if person is null you would get NullPointerExceptions reading or updating its Stores
-        val nameStore = customerStore.map(Person.name())
+storedPerson.data.render { person ->
+    if (person != null) { // Avoid NullPointerExceptions reading or updating storedPerson
+                          // by manually creating a safe scope ensuring that person is not null
+        val storedName = customerStore.map(Person.name())
         input {
-            value(nameStore.data)
-            changes.values() handledBy nameStore.update
+            value(storedName.data)
+            changes.values() handledBy storedName.update
         }
     }
     else {
-        p { + "no customer selected" }
+        p { + "No customer selected" }
     }
 }
 ```

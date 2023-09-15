@@ -15,7 +15,7 @@ eleventyNavigation:
 It helps to understand what *fritz2* is in the first place. What does it do? What problems does it help me solve?
 Why would I want to use it?
 
-We would like to show you the basic concepts, explain what they are used form, and show you the beauty and elegance
+We would like to show you the basic concepts, explain what they are used for, and show you the beauty and elegance
 of the applied framework API. 
 
 **fritz2 is a lightweight, yet fully functional framework to build reactive web apps in Kotlin.**
