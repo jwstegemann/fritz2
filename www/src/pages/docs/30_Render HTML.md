@@ -64,10 +64,10 @@ of every fritz2 application; they provide the current value in a reactive way an
 
 The store's `data`-property offers a `Flow` of the stored value `T`. To reactively bind this value to the DOM, 
 use one of the `render*`-functions of the data flow on it. The function creates a so-called *mount-point* which manages 
-the automatic update of the DOM on every change of the store's data. The *mount-point* uses a dedicated tag created in the 
-DOM as reference to the node where the deletion and recreation of the defined UI-fragment happens.
+the automatic update of the DOM on every change of the store's data. The *mount-point* uses a dedicated tag created in 
+the DOM as reference to the node where the deletion and recreation of the defined UI-fragment happens.
 
-To react to (user) events like the click onto a button, a store provides so-called `handler`s, which create the new
+To react to (user) events like the click onto a button, a store provides so-called `Handler`s, which create the new
 value of the store. The default and built-in handler `update` simply substitutes the old state with a new value.
 
 :::info
@@ -869,8 +869,8 @@ render {
 }
 ```
 
-Of course, you can also use a subtype of `RenderContext`, like a certain `Tag`, as receiver if you want to limit the usage
-of your component to this parent type.
+Of course, you can also use a subtype of `RenderContext`, like a certain `Tag`, as receiver if you want to limit the 
+usage of your component to this parent type.
 
 Using plain functions, it's also straight forward to parametrize your component:
 
@@ -893,7 +893,7 @@ To allow nested components, use a lambda with `RenderContext` as its receiver, o
 calling the lambda in:
 
 ```kotlin
-// return an html element if you need it
+// return an HTML element if you need it
 fun RenderContext.container(content: RenderContext.() -> Unit) {
     div("container") {
         content()
@@ -1011,8 +1011,8 @@ fun main() {
 
 This of course only works in combination with a matching `index.html` in the `jsMain/resources`-folder, which is just a
 normal web-page. To set it up correctly,
-1. there must be one html-tag as target reference; by default the `document.body` tag is used.
-2. the resulting js-artifact must be included as `<script>` tag beneath the static html.
+1. there must be one HTML-tag as target reference; by default the `document.body` tag is used.
+2. the resulting js-artifact must be included as `<script>` tag beneath the static HTML.
 
 ```html
 <!doctype html>
@@ -1033,7 +1033,7 @@ normal web-page. To set it up correctly,
 The global `render` factory accepts a 
 `selector` string (see [querySelector](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector)), 
 or alternatively a [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement), 
-to select the target html-tag:
+to select the target HTML-tag:
 
 ```kotlin
 fun main() {
@@ -1052,7 +1052,7 @@ When calling `render` like that, your content will be mounted to an `HTMLElement
 If you want to mount your content to the `body` of your `index.html` instead, you can omit this parameter.
 
 The second option is to set the `override` parameter to `false`, which means that your content will be appended.
-By default, all child elements will be removed before your content is appended to the target html-tag.
+By default, all child elements will be removed before your content is appended to the target HTML-tag.
 
 Run the project by calling `./gradlew jsRun` in your project's main directory. Add `-t` to enable automatic
 building and reloading in the browser after changing your code.

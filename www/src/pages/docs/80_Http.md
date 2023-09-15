@@ -10,7 +10,8 @@ eleventyNavigation:
     order: 80
 ---
 
-Using the browser's default fetch API can get quite tiresome, which is why fritz2 offers a small fluent api wrapper for it.
+Using the browser's default fetch API can get quite tiresome, which is why fritz2 offers a small fluent api wrapper for 
+it.
 
 First, you create a `Request` which points to your endpoint url:
 ```kotlin
@@ -18,13 +19,15 @@ val swapiApi = http("https://swapi.dev/api").acceptJson().contentType("applicati
 ```
 The remote service offers some [convenience methods](https://www.fritz2.dev/api/core/dev.fritz2.remote/-request/index.html)
 to configure your API calls, like the `acceptJson()` above, 
-which simply adds the correct header to each request sent using the template.
+which simply adds the correct header to each request sent via the template.
 
 Sending a request is pretty straightforward:
 ```kotlin
 swapiApi.get("planets/$num").body()
 ```
-`body()` returns the body of the response as a `String`. Alternatively you can use the following methods to get different results:
+`body()` returns the body of the response as a `String`. Alternatively you can use the following methods to get 
+different results:
+
 * `blob(): Blob`
 * `arrayBuffer(): ArrayBuffer`
 * `formData(): FormData`
@@ -37,8 +40,9 @@ The same works for `POST` and all other HTTP methods - just use different parame
 
 The remote service is primarily designed for use in your `Store`'s `Handler`s when 
 exchanging data with the backend. 
-Here is a short example which uses [https://github.com/Kotlin/kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization)
-for parsing the returning JSON:
+Here is a short example which uses 
+[https://github.com/Kotlin/kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization)
+to parse the returning JSON:
 ```kotlin
 val swapiStore = object : RootStore<String>("") {
 
@@ -130,7 +134,7 @@ myEndpoint.get("some/Path").body()
 ```
 
 `enrichRequest` is called before each `Request` you configured to use this `Middleware`. You can add additional headers, 
-parameters, etc. here. `handleResponse` is called on each `Response`.
+parameters, etc., here. `handleResponse` is called on each `Response`.
 
 To implement a simple logging `Middleware`, you could write the following: 
 
@@ -151,7 +155,7 @@ val myAPI = http("/myAPI").use(logging)
 ```
 
 You can add multiple Middlewares in one row with .use(mw1, mw2, mw3). The `enrichRequest` functions will be called from 
-left to right (mw1,mw2,mw3), the `handleResponse` functions from right to left (mw3, mw2, mw1). 
+left to right (mw1, mw2, mw3), the `handleResponse` functions from right to left (mw3, mw2, mw1). 
 
 You can stop the processing of a Response by Middlewares further down the chain by returning `response.stopPropagation()`.
 
@@ -217,7 +221,7 @@ object MyAuthentication : Authentication<Principal>() {
             closeTheLoginModal() // example
             Credentials() // clear the input form
         } catch (e: Exception) {
-            // show some error message
+            // show an error message
             it
         }
     }
@@ -300,8 +304,9 @@ MyAuthentication.authenticated.render {
 }
 ```
 
-If you have to get the current principal at a given point in time, you can do so using the `current` property of your Authentication.
+If you have to access the current principal at any given point in time, you can do so using the `current` property of 
+your Authentication.
 
 If the first request requires authentication, subsequent requests that use the same authentication middleware
-will wait for the started authentication process to finish. So make sure you always complete or cancel it and use
+will wait for the working authentication process to finish. So make sure you always complete or cancel it and use
 a fresh endpoint within for remote requests required (login, get roles, etc.).
