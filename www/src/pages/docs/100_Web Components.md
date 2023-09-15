@@ -11,10 +11,10 @@ eleventyNavigation:
 ---
 
 With fritz2, you can easily use [WebComponents](https://webcomponents.org) in any HTML-context. 
-Some of the following code-snippets are not runnable on their own. Please find the complete example 
-[here](/examples/webcomponent).
+Some of the following code-snippets are not runnable on their own. Please find the 
+[complete example here](/examples/webcomponent).
 
-### Import as script
+### Import as Script
 
 Before you can use a custom HTML element, you have to add the component to your site's scripts.
 One way is adding a `<script>` tag which points to the component in your HTML file:
@@ -51,7 +51,7 @@ Please see the [official documentation](https://kotlinlang.org/docs/js-modules.h
 for more details on this.
 
 For obvious reasons we cannot provide typesafe attributes for custom elements, 
-but you can implement a `HtmlTag` and provide an extension function for `RenderContext`:
+but you can implement an `HtmlTag` and provide an extension function for `RenderContext`:
 
 ```kotlin
 class M3Stars(job: Job, scope: Scope) : HtmlTag<HTMLElement>("m3-stars", job = job, scope = scope) {
@@ -79,18 +79,19 @@ object WeatherCard : WebComponent<HTMLDivElement>() {
         }
 }
 ```
-We also add an observed attribute named `city` which then can be set by the user of our component.
-Next, register your component:
+Also add an observed attribute named `city` to be set by the user of this component. Next, register the component and 
+add the observed `city` to the registration.
+
 ```kotlin
 fun main() {
     registerWebComponent("weather-card", WeatherCard, "city")
 }
 ```
-Here you can see that we observe the `city` which must be added to the registration.
+
 
 To react to the lifecycle of your component, you can override the according methods from the specification.
 
-Packaging (i.e. as a npm-package) and publishing is out of scope of this documentation.
+Packaging (i.e. as an npm-package) and publishing is out of scope of this documentation.
 
-Again, to see it in action, please have a look at our [webcomponents example](/examples/webcomponent).
+To see it in action, please have a look at our [webcomponents example](/examples/webcomponent).
 

@@ -16,10 +16,10 @@ State handling is probably the key aspect of any reactive web application, so fr
 mighty concept: `Store`s.
 
 A store stores all your data for running an application; no matter if it is domain data or UI state. In contrast to
-other approaches, there might be an arbitrary number of stores, which you can connect to handle the overall state
+other approaches, there might be an arbitrary number of stores which you can connect to handle the overall state
 together.
 
-Before we start, let us recap some model types, that are used for some upcoming examples:
+Before we start, let us recap some of the model types used for upcoming examples:
 ```kotlin
 // example of some value type
 enum class Interest {
@@ -39,11 +39,11 @@ data class Person(
 
 ### Simple Store by Factory
 
-The simplest way to create some store is to create one with the `storeOf` factory:
+The simplest way to create a store is the `storeOf` factory:
 
 ```kotlin
-// a store can be created anywhere in you application!
-// pass some data as initial state into it
+// a store can be created anywhere in your application.
+// pass some data as initial state into it:
 val storedInterest: Store<Interest> = storeOf(Interest.Programming)
 
 // a store can manage any complex type `T`
@@ -55,11 +55,11 @@ Once you have created the store, it can be used for...
 - ... dealing with state changes triggered by (user) events.
 
 This store supports the former functions by exposing the following two properties out of the box:
-- `data`: This `Flow` of `T` can be used to render the current state into the UI by using some `render*`-functions. 
+- `data`: This `Flow` of `T` can be used to render the current state into the UI by using any `render*`-function. 
 This is described in the [reactive rendering](/docs/render/#reactive-rendering) sections of the 
 [Render HTML](/docs/render) chapter.
-- `update`: This is a `Handler` which manages a state changes of the store. This particular handler takes one `T` and
-simply substitutes the "old" state `T` of the store with it.
+- `update`: This is a `Handler` which manages the state changes of the store. This particular handler takes one `T` and
+simply substitutes `T` for the old state of the store.
 
 You can use this handler to conveniently implement _two-way data binding_ by using the `changes` event-flow
 of an `input`-`Tag`, for example:
@@ -78,19 +78,19 @@ render {
 }
 ```
 
-`changes` in this example is a `Flow` of events created by listening to the `Change`-Event of the underlying input-element.
-Calling `values()` on it extracts the current value from the input.
+`changes` in this example is a `Flow` of events created by listening to the `Change`-Event of the underlying 
+input-element. Calling `values()` on it extracts the current value from the input.
 Whenever such an event is raised, a new value appears on the `Flow` and is processed by the `update`-Handler of the
 `Store` to update the model. Event-flows are available for
 [all HTML5-events](https://www.fritz2.dev/api/core/dev.fritz2.core/-with-events/index.html).
 There are some more [convenience functions](https://www.fritz2.dev/api/core/dev.fritz2.core/-listener/index.html) to
-help you to extract data from an event or control event-processing.
+help you to extract data from an event or to control event-processing.
 
 ### Custom Store
 
-In order to extend a store with own handlers or some specific data-flows, you can create your own store-object:
+In order to extend a store with custom handlers or data-flows, you can create your own store-object:
 ```kotlin
-// use `RootStore` as base class! It implements all the functions you will rely on. 
+// use `RootStore` as base class - it implements all the functions you will rely on. 
 val storedInterests = object : RootStore<List<Interest>>(emptyList()) {
     // fill with custom functionality
 }
@@ -108,34 +108,32 @@ val storedInterests = InterestsStore()
 
 ### Custom Handler
 
-Our custom store already has the handler `update` which - as we already know - simply substitutes the store's "old" state 
-with a new one. This is not sufficient, when for example dealing with a list. It would be awkward to *add* some interest for
-example.
+Our custom store already has the handler `update` which - as you already know - substitutes a new state for the 
+old one. This is not sufficient when, for example, dealing with a list since it is not possible to simply add an 
+element to the current list - the whole list must be substituted.
 
-For purposes like this, you can create your own handler inside some `Store` scope with one of the `handle`-factory
+For purposes like this, you can create your own handler on a `Store` scope with one of the `handle`-factory
 functions.
 
-In this case we need the `handle` function that takes a `action` type-parameter,
-which is simply our `Interest` we want to add. Then the lambda function inside the `handle` factory
-has the following two parameters for returning the new state of the store:
-- the *old* `state` of the store
+The `handle` function takes an `action` type-parameter, which in our case is simply the `Interest` we want to add. 
+The resulting lambda function inside the `handle` factory then has the following two parameters:
+- the old `state` of the store
 - the `action` parameter
 
-We can determine the new state simply by adding the new interest to the existing list:
+We can determine the new state by adding the new `Interest` to the existing list:
 
 ```kotlin
 val storedInterests = object : RootStore<List<Interest>>(emptyList()) {
 
-    val add: Handler<Interest> = handle { state: List<Interest>, action: Interest ->
-        if(state.contains(action)) state else state + action
+    val add: Handler<Interest> = handle { currentState: List<Interest>, action: Interest ->
+        if(currentState.contains(action)) currentState else currentState + action
     }
 }
 ```
 
-We can craft a small UI, where the user can click on one item of the list of all existing interests to add one to
-his personal interests:
+Let's add a small UI in which the user can select one of all existing interests to add it to his personal interests:
 ```kotlin
-div { +"all interests:" }
+div { +"All interests:" }
 ul {
     Interest.values().forEach { interest ->
         li {
@@ -147,7 +145,7 @@ ul {
         }
     }
 }
-div { +"selected interests:" }
+div { +"Selected interests:" }
 ul {
     storedInterests.data.renderEach { interest ->
         li { +interest.toString() }
@@ -157,11 +155,11 @@ ul {
 
 ### Custom Data-Flow Property
 
-Besides custom handlers a custom store is also a perfect place to hold custom `data`-flows, which do things like
-mapping, filtering, sorting or other operations before the final result should get rendered.
+Besides custom handlers, a custom store is also a perfect place to hold custom `data`-flows which do things like
+mapping, filtering, sorting, or other operations without immediately rendering the result to the ui.
 
-Imagine you want to list the interests grouped by some criteria (which should in real world applications part of the
-model of course). You could add a property to your store, that does the filtering and mapping:
+Say you want to list the interests grouped by some criteria (which in real world applications should be part of the
+model). Add a `Flow`-property to your store that does the filtering and mapping...
 ```kotlin
 val storedInterests = object : RootStore<List<Interest>>(emptyList()) {
     
@@ -172,9 +170,9 @@ val storedInterests = object : RootStore<List<Interest>>(emptyList()) {
     val add = handle {...}
 }
 ```
-And then you can use it for your UI rendering:
+...and then use it to render the UI:
 ```kotlin
-div { +"selected none programming interests:" }
+div { +"Selected none-programming interests:" }
 ul {
     storedInterests.noneProgramming.renderEach { interest ->
         li { +interest }
@@ -184,9 +182,9 @@ ul {
 
 Of course, you could also do the intermediate operations in place, which might look like this:
 ```kotlin
-div { +"selected none programming interests:" }
+div { +"Selected none programming interests:" }
 ul {
-    // Don't do this in real world!
+    // Don't do this in the real world!
     storedInterests.data
         .filter { interest -> interest.any { it == Interest.History || it == Interest.Sports } }
         .map { it.toString() }
@@ -196,12 +194,12 @@ ul {
 }
 ```
 
-Even though this works, the intermediate operations clutter the UI declaration and make it harder to read. A second
-disadvantage is the absence of any meaningful naming; you have to understand all the filtering and mapping to 
-understand, what would be rendered here. A property in a store always has a (meaningful) name.
+But you don't want to do it this way. Even though this works, the intermediate operations clutter the UI declaration and 
+make it harder to read. A second disadvantage is the absence of any meaningful naming - you have to understand all the 
+filtering and mapping to understand what would be rendered here. A property in a store always has a (meaningful) name.
 
 :::info
-As rule of thumb strive for dedicated properties inside a custom store, to bundle all the needed custom data-flows.
+As rule of thumb strive for dedicated properties inside a custom store to bundle all the needed custom data-flows.
 :::
 
 ## Essentials
@@ -209,25 +207,26 @@ As rule of thumb strive for dedicated properties inside a custom store, to bundl
 ### Flows
 
 As fritz2 heavily depends on flows, introduced by [kotlinx.coroutines](https://github.com/Kotlin/kotlinx.coroutines),
-we want to look a little deeper into their concept and why we use them as important building block for the reactive
+let's look a little deeper into this concept and why it is such an important building block for reactive
 rendering.
 
 A `Flow` is a time discrete stream of values.
 
-Like a collection, you can use `Flow`s to represent multiple values, but unlike other collections like `List`s, for example,
-the values are retrieved one by one. fritz2 relies on `Flow`s to represent values that change over time and lets you react
-to them (your data-model for example) .
+Like a collection, you can use `Flow`s to represent multiple values, but unlike other collections like `List`s, for 
+example, the values are retrieved one by one. fritz2 relies on `Flow`s to represent values that change over time and 
+lets you react to them (your data-model for example) .
 
-A `Flow` is built from a source which creates the values. This source could be your model or the events raised by an element,
-for example. On the other end of the `Flow`, a simple function called for each element collects the values one by one.
-Between those two ends, various actions can be taken on the data (formatting strings, filtering the values, combining values, etc).
+A `Flow` is built from a source which creates the values. This source could be your model or the events raised by an 
+element, for example. On the other end of the `Flow`, a simple function called for each element collects the values one 
+by one. Between those two ends, various actions can be taken on the data (formatting strings, filtering the values, 
+combining values, etc).
 
 The great thing about `Flow`s is that they are _cold_, which means that nothing is calculated before the result is needed.
 This makes them perfect for fritz2's use case: 
 It uses flows for the "output" of a store by its `data`-property and for 
 [all HTML5-events](https://www.fritz2.dev/api/core/dev.fritz2.core/-with-events/index.html).
 
-They do not consume any memory or CPU load, until they get rendered: The mount-points consumes them and pull new values.
+They do not consume any memory or CPU load until they get rendered: the mount-points consume them and pull new values.
 
 In Kotlin, there is another communication model called `Channel` which is the _hot_ counterpart of the `Flow`.
 fritz2 only uses `Channel`s internally to feed the flows, so you should not encounter them while using fritz2.
@@ -238,10 +237,10 @@ have a look at the [official documentation](https://kotlinlang.org/docs/flow.htm
 
 ### Custom Handler in Depth
 
-As you have already learned from the [overview](#custom-handler) it often makes sense to write custom
+As you have already learned from the [overview](#custom-handler), it often makes sense to write custom
 handlers for a dedicated task.
 
-There are three different variants of handler factories available, which differ in the amount of parameters available
+There are three different variants of handler factories available which differ in the amount of parameters available
 in the handle expression:
 
 | Factory                        | Parameters in handle-expression | Use case                                                                                                                                                                                                                                  |
@@ -251,19 +250,19 @@ in the handle expression:
 | `Store<T>.handleAndEmit<A, E>` | `state: T`, `action: A`         | New state can be based upon information passed from the event source. Typical use cases are updating some part of the overall state or adding or dropping a list item. This handler ist a `Flow` itself one can `emit` some value `E` on. |
 
 We will look at the first two of them here; the [emitting-handler](#emittinghandler---observer-pattern-for-handlers) 
-is rather an advanced topic and covered in a dedicated section there.
+is a rather advanced topic and will be covered in another section.
 
-Have a look at our [nested model](/examples/masterdetail) example too.
+Have a look at our [nested model](/examples/masterdetail) example as well.
 
 #### Example Use Case
 
-Let's imagine some application that manages a list of persons.
-The application should allow to...
+Imagine an application that manages a list of persons.
+The application should allow the user to...
 - ... add a new person
-- ... add some interest to a specific person
-- ... clear the whole list
+- ... add an interest to a person
+- ... clear the list
 
-First we need a store for a `List<Person>`, where we can create the needed handlers and some simple UI code, that will
+First we need a store for a `List<Person>` where we can create the needed handlers, and some simple UI code which will
 render all persons:
 
 ```kotlin
@@ -290,18 +289,18 @@ render {
 }
 ```
 
-#### Implement some Handler with Action
+#### Implement a Handler With Action
 
-Now we can implement the first requirement: Add a new person.
+Now we can implement the first requirement: add a new person.
 In order to do so, we will need a new `Person`-object to be passed into the handler. Inside the handle-code we can then
-add this person to the existing list, if the object is not already present in the list to avoid duplicates.
+add this person to the existing list if the object is not already present in the list to avoid duplicates.
 
-Thus, we need the typical `handle`-factory, which accepts a so-called *action* parameter. This could be an arbitrary 
-type `A`. The existing default handler `update` uses the `T` as action, as it simply substitutes the old state by the
-passed new object of the same type. But an action can be any type and is not limited to anything.
+Thus, we need the typical `handle`-factory, which accepts an `action` parameter of any arbitrary 
+type. The existing default handler `update` uses the `T` as action, as it simply substitutes the newly passed object 
+for the old state of the same type. But an action can be any type and is not limited to anything.
 
-In our case the type `T` of the store is `List<Person>`, but as action it is sufficient to have a single 
-`Person`-object. 
+In our case the type `T` of the store is `List<Person>`, but as action, a single 
+`Person`-object will do. 
 
 ```kotlin
 val storedPersons = object : RootStore<List<Person>>(emptyList()) {
@@ -318,11 +317,10 @@ val storedPersons = object : RootStore<List<Person>>(emptyList()) {
     }
 }
 ```
-The above handler-code shows some typical pattern: We create the new store's state by analyzing first the "old" state
-with some information from the action and then decide whether the old state could remain or there must be some update
-also using some information from the action.
+The above handler-code shows a typical pattern: the new store's state is created by analyzing the "old" state first 
+with information from the action, and then deciding to change the state or keep the old state.
 
-Let's "simulate" some UI, that uses this handler:
+Here's a UI that uses this handler:
 
 ```kotlin
 val storedPersons = object : RootStore<List<Person>>(emptyList()) {
@@ -332,18 +330,18 @@ val storedPersons = object : RootStore<List<Person>>(emptyList()) {
 }
 
 render {
-// (rendering of person omitted) 
-
+    // Rendering of person omitted...
+    
     section {
         button {
             +"Add Fritz"
             clicks.map {
-                // we define some static person; in real life this might be created by some user input
+                // define a static person; in real life this might be created by user input
                 Person(1, "Fritz", setOf(Interest.Programming, Interest.History))
             } handledBy storedPersons.addPerson
-            // in order to call `addPerson`, we need a `Flow<A>` as first parameter for `handledBy`
-            // So the flow defines the action `A`, that the handle-code will receive,
-            // in this case some `Person`-object
+            // In order to call `addPerson`, we need a `Flow<A>` as first parameter for `handledBy`
+            // so the flow defines the action `A` which the handle-code will receive,
+            // in this case a `Person`-object
         }
     }
 }
@@ -351,17 +349,16 @@ render {
 
 #### Use Meta-Information in Action
 
-In order to implement the second requirement, which is to add some interest to some specific person, we should
-recap the shape of our model: `Person` is an *entity*, so it has some stable identifier. To determine the person in
-the list, which some new interest should be added to this person's interests list, we simply can rely on the
-`Person.id`-property.
+In order to implement the second requirement, which is to add an interest to a person, we should
+recap the shape of our model: `Person` is an entity, meaning it has a stable identifier. We can rely on the 
+`Person.id`-property to determine which person will receive the newly added interest.
 
 So our action consists of two parts:
-- the id of the specific person, where the interest will be added to (meta-information)
+- the id of the person to whom the interest will be added (meta-information)
 - the interest to add (information)
 
-For simple cases like this, a `Pair` is a sufficient choice to group both information. But of course you could also
-create some (data) class or any other kotlin feature that fits.
+For simple cases like this, a `Pair` is a sufficient choice to group the information. But of course you could also
+create a (data) class or any other kotlin feature that fits.
 
 ```kotlin
 val storedPersons = object : RootStore<List<Person>>(emptyList()) {
@@ -376,13 +373,13 @@ val storedPersons = object : RootStore<List<Person>>(emptyList()) {
             if (person.id == idForUpdate) person.copy(interests = person.interests + newInterest) else person
             //               ^^^^^^^^^^^                                             ^^^^^^^^^^^
             //               use meta-information to determine the specific          use the information portion
-            //               person that must get an update                          from action to update the person
+            //               person that must be updated                             of action to update the person
         }
     }
 }
 
 render {
-    // (rendering of person omitted)
+    // Rendering of person omitted...
 
     section {
         button {
@@ -396,12 +393,12 @@ render {
 }
 ```
 
-#### Create Handler without external Information
+#### Create Handler Without External Information
 
-The last task is quite easy: It should be possible, to clear the complete list of users.
+The last task is quite easy: it should be possible to clear the list of users.
 
-We can set an empty list as new store's state without any further information. Thus, the handler we must create does not
-need any action parameter at all.
+We can set an empty list as the new store's state without any further information. Thus, the handler we must create does 
+not need any action parameter at all.
 
 fritz2 offers a special variant for cases like this, where the action type is `Unit`.
 
@@ -414,7 +411,7 @@ val storedPersons = object : RootStore<List<Person>>(emptyList()) {
 }
 
 render {
-    // (rendering of person omitted) 
+    // Rendering of person omitted... 
 
     section {
         button {
@@ -425,7 +422,7 @@ render {
 }
 ```
 
-Don't be fooled: Inside the handler-code the "old" state would be available; we simply do not need it for our 
+Don't be fooled: Inside the handler-code, the "old" state would be available; we simply do not need it for our 
 implementation. Just to make this more explicit, look at this:
 ```kotlin
 val clear: Handler<Unit> = handle { persons ->
@@ -434,7 +431,7 @@ val clear: Handler<Unit> = handle { persons ->
 }
 ```
 
-There are other use-cases where the access to the old state is definitely needed, and you always have access therefore.
+There are other use-cases where the access to the old state is definitely needed, and therefore you always have access.
 
 #### Complete Example
 
@@ -492,9 +489,9 @@ render {
 }
 ```
 
-### Calling a Handler directly
+### Calling a Handler Directly
 
-If you need to purposefully fire an action somewhere inside a `RenderContext` or a `Store` you can directly invoke
+If you need to purposefully fire an action somewhere inside a `RenderContext` or a `Store`, you can directly invoke
 a `Handler`:
 ```kotlin
 //call handler with data
@@ -504,9 +501,9 @@ someStore.someHandler(someAction)
 someStore.someHandler()
 ```
 
-### Ad Hoc Handler - Handler without a Store
+### Ad Hoc Handler - Handler Without a Store
 
-It is possible in fritz2 to create some handler without any store.
+It is possible in fritz2 to create handlers without any store.
 
 Common use cases are the combination of multiple handler calls based upon the same event or to simply create a working
 placeholder before the store is ready.
@@ -529,10 +526,10 @@ section {
 
 ### Extend None Custom (Local) Stores 
 
-Sometimes creating a [custom store](#custom-stores) is kinda overkill or there are certain situations, where it is
-simply more feasible to rely on [store-mapping](/docs/storemapping/) which implies there is no custom store available.
+Sometimes creating a [custom store](#custom-stores) is a bit overkill, or it's simply more feasible to rely on 
+[store-mapping](/docs/storemapping/) which implies there is no custom store available.
 
-In those cases - often in some small local code area - it is totally ok, to customize a standard store created by 
+In those cases - often in some small local code area - it is totally fine to customize a standard store created by 
 `storeOf`-factory.
 
 ```kotlin
@@ -551,7 +548,7 @@ render {
 }
 ```
 
-As the `handler`-factory functions are *extension* functions, it is possible to extend a "closed" store-object.
+As the `Handler`-factory functions are extension functions, it is possible to extend a closed store-object.
 
 ### Connecting Stores to Each Other
 
@@ -567,7 +564,7 @@ object SaveStore : RootStore<String>("") {
 object InputStore : RootStore<String>("") { 
     val input = handle<String> { _, input ->
         SaveStore.save(input) // call other store`s handler
-        input // do not forget to return the "next" store state!
+        input // do not forget to return the new store state
     }
 }
 ```
@@ -576,8 +573,8 @@ Have a look at our [nested model](/examples/nestedmodel) example too.
 
 ### History in Stores
 
-Sometimes you may want to keep the history of states in your store, so you can navigate back in time to build an
-undo-function or maybe just for debugging...
+Sometimes you may want to keep the history of states in your store to navigate back in time to build an
+undo-function, or maybe just for debugging...
 
 fritz2 offers a `history` factory to do so.
 
@@ -587,24 +584,24 @@ val store = object : RootStore<String>("") {
 }
 ```
 
-By default, you synchronise the history with the updates of your store,
-so each new state will be added to the history automatically.
+By default, the history is synchronized with the updates of your store, so each new state will be added to the history 
+automatically.
 
-Calling `history(synced = false)`, you can control the content of the history
-by manually adding new entries. Call `push(entry)` to do so.
+By calling `history(synced = false)`, you can control the content of the history
+and manually add new entries. Call `push(entry)` to do so.
 
 You can access the complete history via its `data` attribute as `Flow<List<T>>`
-or by using `current` attribute which returns a `List<T>`. For your convenience `history` also offers
+or by using `current` attribute which returns a `List<T>`. For your convenience, `history` also offers
 * a `Flow<Boolean>` called `available` representing if entries are available (e.g., to show or hide an undo button)
 * a `back()` method to get the latest entry and remove it from the history
 * a `clear()` method to clear the history
 
-For a store with a minimal undo function you just have to write:
+For a store with a minimal undo function, just write:
 ```kotlin
 val storedData = object : RootStore<String>("") {
     val hist = history()
 
-    // your handlers go here (add history.clear() here where suitable)
+    // your handlers go here (add history.clear() here if suitable)
 
     val undo = handle { hist.back() }
 }
@@ -628,10 +625,10 @@ render {
 
 ### Track Processing State of Stores
 
-When one of your handlers contains a long-running action (like server-call, etc.) you might want to keep the user
+When one of your handlers contains a long-running action (like a server-call, etc.) you might want to keep the user
 informed that something is going on.
 
-Using fritz2 you can use the `tracker` factory to implement this:
+In fritz2, you can use the `tracker` factory to implement this:
 
 ```kotlin
 val storedData = object : RootStore<String>("") {
@@ -655,11 +652,11 @@ render {
     }
 }
 ```
-The service provides you with a boolean `Flow` representing the state of the running transaction.
+The tracker provides you with a boolean `Flow` representing the state of the running transaction.
 
-Beware that you are responsible for handling exceptions, if you use an unsafe operation within the tracking scope.
-The tracker is safe in the way, that it will catch any escaped exception, then stops the tracking, and finally it will
-rethrow the former.
+Keep in mind that you are responsible for handling exceptions when using unsafe operations within the tracking scope.
+The tracker is safe in the way that it will catch any escaped exception, then stop the tracking, and finally rethrow the 
+former.
 
 If you want your tracking to continue instead, just handle exceptions within the tracking scope.
 
@@ -683,7 +680,7 @@ val personStore = object : RootStore<Person>(Person(...)) {
 }
 ```
 The `EmittingHandler` named `save` emits the saved `Person` on its `Flow`.
-Another store can be setup to handle this `Person` by connecting the handlers:
+Another store can be set up to handle this `Person` by connecting the handlers:
 ```kotlin
 val personStore = ... //see above
 
@@ -702,23 +699,21 @@ val personListStore = object : RootStore<List<Person>>(emptyList<Person>()) {
 After connecting these two stores via their handlers, a saved `Person` will also be added to the list
 in `personListStore`. All dependent components will be updated accordingly.
 
-To see a complete example visit our
+To see a complete example, visit our
 [validation example](/examples/validation) which uses connected
-stores and validate a `Person` before adding it to a list of `Person`s.
+stores and validates a `Person` before adding it to a list of `Person`s.
 
-### React to Changes inside the Store itself
+### React to Changes Inside the Store Itself - Skip Initial Data
 
-If you need a handler's code to be executed whenever the model is changed,
-you have to use the `drop(1)` function on a `Flow` to skip the `initialData`:
+If you need a handler's code to be executed whenever the model is changed, use the `drop(1)` function on the store's 
+`data` Flow to skip the value used on store creation:
 
 ```kotlin
-val store = object : RootStore<String>("initial") {
+val store = object : RootStore<String>("initial") { // "initial" is on the flow unless it's dropped
     init {
         data.drop(1) handledBy {
-            console.log("model changed to: $it")
+            console.log("model changed to: $it") // start logging with the first real value change
         }
     }
 }
 ```
-
-By using the ad-hoc `handledBy` function here your store gets not updated after new data arrives.

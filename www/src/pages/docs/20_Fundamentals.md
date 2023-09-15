@@ -23,7 +23,7 @@ of the applied framework API.
 The main concepts of fritz2 are:
 - Declarative UI Creation: This is achieved through HTML-tag-like factories that can be nested in order to closely 
 resemble the DOM structure.
-- State Handling: `Store`s take care of the data and offer functions to update it by (UI-) events (`handler`s). They 
+- State Handling: `Store`s take care of the data and offer functions to update it by (UI-) events (`Handler`s). They 
 also use the data to *reactively* render the affected parts of your UI.
 
 Sounds simple, right? In fact, it is. The main principles and concepts are that simple, that's why we consider
@@ -146,7 +146,8 @@ render { /* creates the initial `RenderContext` */
             // create a text-node with the plus operator
             +"Input"
             
-            //TODO: Ich finde die Nutzung von 'for' in einem der ersten Beispiele nicht so schön, weil es die Sonderlocke mit den ' enthält 
+            //TODO: Ich finde die Nutzung von 'for' in einem der ersten Beispiele nicht so schön, weil es die 
+            // Sonderlocke mit den ' enthält 
             
             //set tag specific attributes - they are predefined for all HTML tags
             `for`("SomeId")
@@ -217,7 +218,7 @@ of `String`s. The data on the flow is the current input value, and all the meta 
 need here is omitted.
 
 Once we got our flow of data in the right shape, we can connect it to the store in order to update its state.
-This is done by so-called `handler`s. A handler is a method that produces the new state of the store.
+This is done by so-called `Handler`s. A handler is a method that produces the new state of the store.
 In this case we want the new input value to completely replace the old one. This can be done with the predefined,  
 built-in `update` handler on every store:
 
@@ -259,8 +260,8 @@ button {
 ```
 
 The predefined `update` handler (which simply replaces the store's content with a new value) is often not sufficient
-for all use cases. So fritz2 allows the definition of custom handlers like the one above, which simply takes the old state, 
-capitalizes it and sets the result as new value.
+for all use cases. So fritz2 allows the definition of custom handlers like the one above, which simply takes the old 
+state, capitalizes it and sets the result as new value.
 
 ### Identifying Data
 
@@ -309,7 +310,7 @@ Every time the stored data changes, the new data will be applied to the renderin
 subtree accordingly.
 
 In most cases, the user can interact with the UI and produce events from within the DOM on the right side.
-The events are used to call `handler`s to update the store's data. All handlers have access to the current
+The events are used to call `Handler`s to update the store's data. All handlers have access to the current
 store state and the value passed by the event-flow and use both to create the new store state.
 
 The new state will then appear on the `data`-flow and finally result in a change of the UI. Et voilà, the circle of life
@@ -324,8 +325,9 @@ essentials of stores.
 ## Complete Example
 
 This is the full source of the example above, including all styling to make it look like the screenshot.
-You can just copy and paste it into the vanilla [tailwind template](https://github.com/jwstegemann/fritz2-tailwind-template)
-project, replacing the `main` function and then running the app.
+You can just copy and paste it into the vanilla 
+[tailwind template](https://github.com/jwstegemann/fritz2-tailwind-template) project, replacing the `main` function and 
+then running the app.
 
 ```kotlin
 import dev.fritz2.core.*
