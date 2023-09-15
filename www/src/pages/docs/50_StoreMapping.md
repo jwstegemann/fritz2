@@ -29,17 +29,8 @@ needs both a getter-function from `T -> R` and a setter-function from `R -> T` t
 
 If you are unfamiliar with the universal concept for the functionality called *lens* in computer science, take
 a look at the [excellent documentation on lenses](https://arrow-kt.io/learn/immutable-data/lens/) from the 
-[arrow-project](https://arrow-kt.io) before reading on.
-
-A `Lens` is basically a way to describe the relation between an outer and inner entity in a structure. It focuses on the
-inner entity from the viewpoint of the outer entity, which is how it got its name. Lenses are especially useful when 
-using immutable data-types like fritz2 does.
-
-A `Lens` needs to handle the following:
-
-* Getting the value of the inner entity from a given instance of the outer entity
-* Creating a new instance of the outer entity (immutable!) as a copy of a given one with a different value only for the
-  inner entity
+[arrow-project](https://arrow-kt.io) before reading on. We are about to give you a short intro to lenses, and further 
+discuss them later in the Essentials section [Lenses in Depth](#lenses-in-depth).
 
 fritz2 offers the method `lensOf()` for a short-and-sweet-experience which accepts a getter- and 
 a setter-expression:
@@ -126,6 +117,16 @@ the properties of the child-entity like the street in an address in our example 
 
 fritz2 again uses `Lens`es to describe the relationship between an entity and its child-entities and
 properties.
+
+A `Lens` is basically a way to describe the relation between an outer and inner entity in a structure. It focuses on the
+inner entity from the viewpoint of the outer entity, which is how it got its name. Lenses are especially useful when
+using immutable data-types like fritz2 does.
+
+A `Lens` needs to handle the following:
+
+* Getting the value of the inner entity from a given instance of the outer entity
+* Creating a new instance of the outer entity (immutable!) as a copy of a given one with a different value only for the
+  inner entity
 
 In fritz2, a `Lens` is defined by the following interface:
 ```kotlin
