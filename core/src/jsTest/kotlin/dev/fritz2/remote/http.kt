@@ -38,6 +38,18 @@ class RemoteTests {
 
 
     @Test
+    fun testQueryParameters() = runTest {
+        val parameters = mapOf(
+            "q" to "hello",
+            "orderBy" to "name",
+        )
+        val remote = testHttpServer(testEndpoint)
+        val url = remote.get("get", parameters).request.url
+        assertTrue(url.endsWith("?q=hello&orderBy=name"))
+    }
+
+
+    @Test
     fun testBasicAuth() = runTest {
         val remote = testHttpServer(testEndpoint)
         val user = "test"
