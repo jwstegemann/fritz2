@@ -7,7 +7,8 @@ import {expect, Page, test} from '@playwright/test';
 test.beforeEach(async ({page}) => {
     /* go to the page of CheckBoxGroup component */
     await page.goto("#dataCollection");
-
+    await expect(page.locator("#portal-root")).toBeAttached();
+    await page.waitForTimeout(200);
 });
 
 test.describe('To select', () => {
@@ -136,14 +137,13 @@ test.describe('Navigating', () => {
             await page.locator('#tabGroup-tab-list-tab-1').click();
 
             const selected2 = page.locator('id=Sigrun Kensy B.Eng.');
-            const selectedBox2 = await selected2.boundingBox()
             const nameDiv1 = page.locator('id=Prof. Alberto Kraushaar B.A.');
             const nameDiv2 = page.locator('id=Monique Riehl');
-
             await dataTableState(page)
 
-            await page.mouse.click(0, 0, {delay: 1000})
+            await page.mouse.click(0, 0)
 
+            const selectedBox2 = await selected2.boundingBox()
             await page.mouse.move(selectedBox2.x + selectedBox2.width / 2, selectedBox2.y + selectedBox2.height / 2, {steps: 100});
             await page.mouse.click(selectedBox2.x + selectedBox2.width / 2, selectedBox2.y + selectedBox2.height / 2, {delay: 1000});
 
@@ -227,7 +227,8 @@ test.describe('To', () => {
 
             const filterField = page.locator('#gridList-filter-field');
             await filterField.fill(data.expression)
-            await page.mouse.click(0, 0, {delay: 4000})
+            await filterField.press("Enter");
+            await page.waitForTimeout(4000)
 
             const filteredRows = await page.locator("id=gridList >> li").count()
             const selectedRows = parseInt(await page.locator("id=result").getAttribute("data-selected-count"));
@@ -246,19 +247,22 @@ test.describe('To', () => {
 
         const sortbtn = page.locator('#gridList-sort-name');
         const table = page.locator('id=gridList >> ul')
-        const tableFirst = table.locator('xpath=//li').first()
-        const tableSecond = table.locator('xpath=//li').nth(1)
-        const tableLast = table.locator('xpath=//li').last()
+        const tableFirst = table.locator('xpath=.//li').first()
+        const tableSecond = table.locator('xpath=.//li').nth(1)
+        const tableLast = table.locator('xpath=.//li').last()
 
-        await sortbtn.click({delay: 4000})
+        await sortbtn.click()
+        await page.waitForTimeout(5000);
         await expect(tableFirst).toContainText("Albertine");
         await expect(tableLast).toContainText("Yasemin");
 
-        await sortbtn.click({delay: 4000})
+        await sortbtn.click()
+        await page.waitForTimeout(5000);
         await expect(tableFirst).toContainText("Yasemin");
         await expect(tableLast).toContainText("Albertine");
 
-        await sortbtn.click({delay: 4000})
+        await sortbtn.click()
+        await page.waitForTimeout(5000);
         await expect(tableFirst).toHaveAttribute("data-datatable-selected", "true")
         await expect(tableFirst).toHaveAttribute("data-datatable-active", "false")
         await expect(tableSecond).toHaveAttribute("data-datatable-selected", "true")

@@ -9,8 +9,9 @@ import {expect, test} from '@playwright/test';
 test.beforeEach(async ({page}) => {
     /* go to the page of Modal component */
     await page.goto("#modal");
+    await expect(page.locator("#portal-root")).toBeAttached();
+    await page.waitForTimeout(200);
     await page.locator('text=Open').click();
-
 });
 
 test.describe('To check if', () => {

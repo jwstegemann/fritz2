@@ -11,7 +11,8 @@ import {expect, test} from '@playwright/test';
 test.beforeEach(async ({page}) => {
     /* go to the page of Text Area component */
     await page.goto("#textarea");
-
+    await expect(page.locator("#portal-root")).toBeAttached();
+    await page.waitForTimeout(200);
 });
 
 test.describe('To check the', () => {

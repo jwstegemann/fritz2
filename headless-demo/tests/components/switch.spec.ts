@@ -9,7 +9,8 @@ import {expect, Locator, Page, test} from '@playwright/test';
 test.beforeEach(async ({page}) => {
     /* go to the page of Switch component */
     await page.goto("#switch");
-
+    await expect(page.locator("#portal-root")).toBeAttached();
+    await page.waitForTimeout(200);
 });
 
 test.describe('To switch on and off', () => {
