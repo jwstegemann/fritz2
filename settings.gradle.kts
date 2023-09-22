@@ -7,8 +7,7 @@ pluginManagement {
 rootProject.name = "fritz2"
 
 plugins {
-    id("de.fayard.refreshVersions") version "0.60.1"
-////                            # available:"0.60.1"
+    id("de.fayard.refreshVersions") version "0.60.2"
 }
 
 refreshVersions {
