@@ -2,6 +2,7 @@ package dev.fritz2.remote
 
 import kotlinx.coroutines.await
 import org.khronos.webgl.ArrayBuffer
+import org.w3c.dom.url.URLSearchParams
 import org.w3c.fetch.*
 import org.w3c.files.Blob
 import org.w3c.xhr.FormData
@@ -186,9 +187,12 @@ open class Request(
      * issues a get request returning a flow of it's response
      *
      * @param subUrl endpoint url which getting appended to the [url] with `/`
+     * @param parameters query parameters which are encoded and appended to the [url]
      */
-    suspend fun get(subUrl: String? = null): Response =
-        (subUrl?.let { append(it) } ?: this).copy(method = "GET").execute()
+    suspend fun get(subUrl: String? = null, parameters: Map<String, String>? = null): Response =
+        (subUrl?.let { append(it) } ?: this)
+            .run { parameters?.let { queryParameters(parameters) } ?: this }
+            .copy(method = "GET").execute()
 
     /**
      * issues a head request returning a flow of it's response
@@ -253,6 +257,17 @@ open class Request(
      * @param subUrl url which getting appended to the [url] with `/`
      */
     fun append(subUrl: String): Request = copy(url = "${url.trimEnd('/')}/${subUrl.trimStart('/')}")
+
+    /**
+     * appends the given [parameters] to the [url]
+     *
+     * @param parameters set of key-value pairs to be added
+     */
+    fun queryParameters(parameters: Map<String, String>): Request {
+        val params = URLSearchParams()
+        parameters.forEach { (k, v) -> params.append(k, v) }
+        return this.copy(url = "$url?$params")
+    }
 
     /**
      * sets the body content to the request

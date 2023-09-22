@@ -146,10 +146,9 @@ render { /* creates the initial `RenderContext` */
             // create a text-node with the plus operator
             +"Input"
             
-            //TODO: Ich finde die Nutzung von 'for' in einem der ersten Beispiele nicht so schön, weil es die 
-            // Sonderlocke mit den ' enthält 
-            
-            //set tag specific attributes - they are predefined for all HTML tags
+            // set tag specific attributes - they are predefined for all HTML tags
+            // (the backticks are needed here as `for` is an identifier in Kotlin and thus the function call needs
+            // to be escaped)
             `for`("SomeId")
         }
         // as second parameter, you can pass an ID to the tag
