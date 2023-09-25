@@ -239,6 +239,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             } handledBy activeIndex.update
 
             value.handler?.invoke(
+                this,
                 state.flatMapLatest { (currentIndex, entries) ->
                     keydowns.filter {
                         setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it))
@@ -284,6 +285,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
                 }
 
                 value.handler?.invoke(
+                    this,
                     mousedowns.mapNotNull { e ->
                         e.preventDefault()
                         e.stopImmediatePropagation()

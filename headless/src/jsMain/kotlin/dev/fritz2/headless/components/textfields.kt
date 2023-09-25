@@ -137,7 +137,7 @@ class InputField<C : HTMLElement>(tag: Tag<C>, id: String?) :
         addComponentStructureInfo("inputTextfield", this@inputTextfield.scope, this)
         return input(classes, id = fieldId, scope = scope, content).apply {
             attr(Aria.invalid, "true".whenever(value.hasError))
-            value.handler?.invoke(changes.values())
+            value.handler?.invoke(this, changes.values())
             value(value.data)
         }.also { field = it }
     }
@@ -302,7 +302,7 @@ class TextArea<C : HTMLElement>(tag: Tag<C>, id: String?) :
         addComponentStructureInfo("textareaTextfield", this@textareaTextfield.scope, this)
         return textarea(classes, id = fieldId, scope = scope, content).apply {
             attr(Aria.invalid, "true".whenever(value.hasError))
-            value.handler?.invoke(changes.values())
+            value.handler?.invoke(this, changes.values())
             value(value.data)
         }.also { field = it }
     }

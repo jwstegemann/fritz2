@@ -55,7 +55,7 @@ class CollectionDataProperty<T> : Property<CollectionData<T>>() {
  *
  * Of course both can be omitted if no selection is needed.
  */
-class SelectionMode<T> {
+class SelectionMode<T>(private val withJob: WithJob) {
     val single = DatabindingProperty<T?>()
     val multi = DatabindingProperty<List<T>>()
 
@@ -79,24 +79,26 @@ class SelectionMode<T> {
      * @param data the [CollectionData] that holds the [CollectionData.isSame] and [CollectionData.idProvider] values
      */
     fun selectItem(itemToSelect: Flow<T>, data: CollectionData<T>) {
-        if (single.isSet) {
-            single.handler?.let {
-                it(single.data.flatMapLatest { current ->
-                    itemToSelect.map { item ->
-                        if (data.isSame(current, item)) null else item
-                    }
-                })
-            }
-        } else {
-            multi.handler?.let {
-                it(multi.data.flatMapLatest { current ->
-                    itemToSelect.map { item ->
-                        data.idProvider?.let { id ->
-                            if (current.any { id(it) == id(item) }) current.filter { id(it) != id(item) }
-                            else current + item
-                        } ?: if (current.contains(item)) current - item else current + item
-                    }
-                })
+        withJob.apply {
+            if (single.isSet) {
+                single.handler?.let {
+                    it(single.data.flatMapLatest { current ->
+                        itemToSelect.map { item ->
+                            if (data.isSame(current, item)) null else item
+                        }
+                    })
+                }
+            } else {
+                multi.handler?.let {
+                    it(multi.data.flatMapLatest { current ->
+                        itemToSelect.map { item ->
+                            data.idProvider?.let { id ->
+                                if (current.any { id(it) == id(item) }) current.filter { id(it) != id(item) }
+                                else current + item
+                            } ?: if (current.contains(item)) current - item else current + item
+                        }
+                    })
+                }
             }
         }
     }
@@ -116,6 +118,7 @@ class SelectionMode<T> {
     fun sanitizeSelection(availableItems: Flow<List<T>>, data: CollectionData<T>) {
         if (single.isSet) {
             single.handler?.invoke(
+                withJob,
                 availableItems.flatMapLatest { items ->
                     single.data.map { current ->
                         if (items.any { data.isSame(current, it) }) current else null
@@ -124,6 +127,7 @@ class SelectionMode<T> {
             )
         } else {
             multi.handler?.invoke(
+                withJob,
                 availableItems.flatMapLatest { items ->
                     if (data.idProvider != null) {
                         val itemIds = items.map(data.idProvider).toHashSet()
@@ -217,7 +221,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         } ?: SortDirection.NONE
     }
 
-    val selection = SelectionMode<T>()
+    val selection = SelectionMode<T>(this)
 
     inner class DataCollectionSortButton<CS : HTMLElement>(val sorting: Sorting<T>, tag: Tag<CS>) :
         Tag<CS> by tag {

@@ -83,6 +83,7 @@ interface WithJob {
 
 }
 
+/*
 /**
  * Connects a [Flow] to a [Handler].
  *
@@ -99,3 +100,5 @@ infix fun <A> Flow<A>.handledBy(handler: Handler<A>) = handler.process(this, Job
  */
 infix fun <A> Flow<A>.handledBy(execute: suspend (A) -> Unit) =
     this.onEach { execute(it) }.catch { printErrorIgnoreLensException(it) }.launchIn(MainScope() + Job())
+
+ */

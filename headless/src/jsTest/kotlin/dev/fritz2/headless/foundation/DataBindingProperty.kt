@@ -93,7 +93,7 @@ class DataBindingPropertyTest {
         assertEquals("false", ul.getAttribute("hasError"))
         assertEquals(0, ul.childElementCount)
 
-        prop.handler?.invoke(flowOf(true))
+        prop.handler?.invoke(this, flowOf(true))
         delay(100)
         assertEquals("true", div.getAttribute("state"))
         assertEquals("true", div.getAttribute("prop"))
