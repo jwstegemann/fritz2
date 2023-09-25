@@ -39,7 +39,9 @@ class MountTests {
             value == values.last()
         }
 
-        store.data handledBy {}
+        store.apply {
+            store.data handledBy {}
+        }
 
         return GlobalScope.promise {
             values.forEach { value ->
@@ -52,7 +54,7 @@ class MountTests {
 
     @Test
     fun testOrderOfSingleMountPointCreation() = runTest {
-        
+
         val outer = Id.next()
         val inner1 = Id.next()
         val inner2 = Id.next()
@@ -81,7 +83,7 @@ class MountTests {
 
     @Test
     fun testOrderOfMultiMountPointCreation() = runTest {
-        
+
         val outer = Id.next()
         val inner1 = Id.next()
         val inner2 = Id.next()
@@ -112,7 +114,7 @@ class MountTests {
 
     @Test
     fun testOrderOfTextNodeCreation() = runTest {
-        
+
         val id = Id.next()
 
         val text = flowOf("test")
@@ -133,7 +135,7 @@ class MountTests {
 
     @Test
     fun testLifecycleHandler() = runTest {
-        
+
         val testId = Id.next()
 
         val countingStore = storeOf(0)
@@ -363,7 +365,7 @@ class MountTests {
             "Add to renderEach",
             renderMounts = 1, renderEachMounts = 1
         ) {
-            renderEachStore.update(listOf("123","222"))
+            renderEachStore.update(listOf("123", "222"))
         }
 
         check(
@@ -403,7 +405,7 @@ class MountTests {
 
     @Test
     fun testValueAttributeMountPoint() = runTest {
-        
+
         val id = Id.next()
 
         val store = object : RootStore<String>("test") {
@@ -437,7 +439,7 @@ class MountTests {
 
     @Test
     fun testCheckedAttributeMountPoint() = runTest {
-        
+
         val id = Id.next()
 
         val store = object : RootStore<Boolean>(true) {
@@ -471,7 +473,7 @@ class MountTests {
 
     @Test
     fun testSelectedAttributeMountPoint() = runTest {
-        
+
         val id = Id.next()
         val option1Id = "option1-${Id.next()}"
         val option2Id = "option2-${Id.next()}"
@@ -505,9 +507,17 @@ class MountTests {
         val option2 = document.getElementById(option2Id) as HTMLOptionElement
         assertEquals(0, select.selectedIndex, "initial first option is not selected")
         assertEquals(true, option1.selected, "initial first option.selected is not true")
-        assertEquals("", option1.getAttribute("selected"), "initial first option.getAttribute(\"selected\") is not filled")
+        assertEquals(
+            "",
+            option1.getAttribute("selected"),
+            "initial first option.getAttribute(\"selected\") is not filled"
+        )
         assertEquals(false, option2.selected, "initial second option.selected is not false")
-        assertEquals(null, option2.getAttribute("selected"), "initial second option.getAttribute(\"selected\") is not empty")
+        assertEquals(
+            null,
+            option2.getAttribute("selected"),
+            "initial second option.getAttribute(\"selected\") is not empty"
+        )
 
         store.select("option2")
         delay(250)
@@ -529,7 +539,7 @@ class MountTests {
 
     @Test
     fun testMountTargetNotFoundException() = runTest {
-        
+
         assertFailsWith(MountTargetNotFoundException::class) {
             render("error") {
                 div {

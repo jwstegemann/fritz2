@@ -3,8 +3,6 @@ package dev.fritz2.core
 import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
 import kotlin.test.*
@@ -119,46 +117,4 @@ class AdHocHandlerTests {
         )
     }
 
-    @Test
-    fun testAdHocErrorHandling() = runTest {
-
-        val valueId = Id.next()
-        fun getValue() = document.getElementById(valueId)?.textContent
-
-        val startValue = "start"
-
-        val store = object : RootStore<String>(startValue) {
-        }
-
-        render {
-            div {
-                span(id = valueId) { store.data.renderText() }
-            }
-        }
-
-        val updates = MutableStateFlow(startValue)
-        updates handledBy store.update
-
-        suspend fun checkUpdate(msg: String) {
-            val valueAfterSuccessfullUpdate = Id.next()
-            updates.value = valueAfterSuccessfullUpdate
-            delay(150)
-            assertEquals(valueAfterSuccessfullUpdate, getValue(), msg)
-        }
-
-        checkUpdate("store not updating after start")
-
-        val adHocException = "adHoc exception"
-        flowOf(Unit) handledBy {
-            throw Exception(adHocException)
-        }
-        delay(150)
-        checkUpdate("store not updating after adhoc handler ")
-
-        val adHocIntermediateException = "adHoc intermediate exception"
-        flowOf(2).map {throw Exception(adHocIntermediateException)} handledBy {
-        }
-        delay(150)
-        checkUpdate("store not updating after intermediate exception before adhoc handler ")
-    }
 }

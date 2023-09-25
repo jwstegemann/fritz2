@@ -234,24 +234,23 @@ fun main() {
                 table()
             }
         }
-    }
 
+        // adding bootstrap css classes to the validated elements
+        PersonStore.messages.valid.combine(PersonStore.messages) { isValid, msgs ->
+            // cleanup validation
+            cleanUpValMessages()
 
-    // adding bootstrap css classes to the validated elements
-    PersonStore.messages.valid.combine(PersonStore.messages) { isValid, msgs ->
-        // cleanup validation
-        cleanUpValMessages()
-
-        console.log("$isValid, ${msgs.joinToString { it.path }}")
-        // add messages to input groups only if there were errors
-        if (!isValid) msgs else emptyList()
-    } handledBy { messages ->
-        for (msg in messages) {
-            val element = document.getElementById(msg.path)
-            element?.addClass(msg.status.inputClass)
-            val message = document.getElementById("${msg.path}-message")
-            message?.addClass(msg.status.messageClass)
-            message?.textContent = msg.text
+            console.log("$isValid, ${msgs.joinToString { it.path }}")
+            // add messages to input groups only if there were errors
+            if (!isValid) msgs else emptyList()
+        } handledBy { messages ->
+            for (msg in messages) {
+                val element = document.getElementById(msg.path)
+                element?.addClass(msg.status.inputClass)
+                val message = document.getElementById("${msg.path}-message")
+                message?.addClass(msg.status.messageClass)
+                message?.textContent = msg.text
+            }
         }
     }
 }
