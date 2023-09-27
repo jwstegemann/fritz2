@@ -8,37 +8,8 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.w3c.dom.*
 
-/**
- * Z-Index used for Portalled-Modals
- *
- * @see portal
- */
-const val PORTALLING_MODAL_ZINDEX = 10
-/**
- * Z-Index used for Portalled-Popups
- *
- * @see portal
- */
-const val PORTALLING_POPUP_ZINDEX = 30
-/**
- * Z-Index used for Portalled-Toasts
- *
- * @see portal
- */
-const val PORTALLING_TOAST_ZINDEX = 50
 
 private val portalRootId by lazy { "portal-root".also { addGlobalStyle("#$it { display: contents; }") } }
-
-private val portalContainerClass by lazy {
-    "portal-container".also {
-        addGlobalStyles(
-            listOf(
-                ".$it { display: contents; }",
-                ".$it > * { z-index: inherit; }"
-            )
-        )
-    }
-}
 
 private object PortalStack : RootStore<List<PortalContainer<out HTMLElement>>>(emptyList()) {
     val add = handle<PortalContainer<out HTMLElement>> { stack, it -> stack + it }
@@ -50,7 +21,6 @@ private data class PortalContainer<C : HTMLElement>(
     val id: String?,
     val scope: (ScopeContext.() -> Unit),
     val tag: TagFactory<Tag<C>>,
-    val zIndex: Int,
     val reference: MountPoint?,
     val content: Tag<C>.(close: suspend (Unit) -> Unit) -> Unit
 ) {
@@ -59,8 +29,7 @@ private data class PortalContainer<C : HTMLElement>(
     val remove = PortalStack.handle { list -> list.filterNot { it.portalId == portalId } }
 
     fun render(ctx: RenderContext) =
-        tag(ctx, classes(portalContainerClass, classes), id, scope) {
-            domNode.style.zIndex = zIndex.toString()
+        tag(ctx, classes, id, scope) {
             content.invoke(this) { remove.invoke() }
             reference?.beforeUnmount(this, null) { _, _ -> remove.invoke() }
         }
@@ -112,7 +81,6 @@ fun <C : HTMLElement> RenderContext.portal(
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
-    zIndex: Int,
     content: Tag<C>.(close: suspend (Unit) -> Unit) -> Unit = {}
 ) {
     val portalId = id ?: Id.next()
@@ -127,7 +95,6 @@ fun <C : HTMLElement> RenderContext.portal(
             scope = scope,
             tag = tag,
             reference = reference?.mountPoint(),
-            zIndex = zIndex,
             content = content
         )
     )
@@ -140,6 +107,5 @@ fun RenderContext.portal(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    zIndex: Int,
     content: Tag<HTMLDivElement>.(close: suspend (Unit) -> Unit) -> Unit,
-) = portal(classes, id, scope, RenderContext::div, zIndex, content)
+) = portal(classes, id, scope, RenderContext::div, content)

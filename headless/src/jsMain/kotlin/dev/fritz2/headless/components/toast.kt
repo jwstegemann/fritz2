@@ -36,6 +36,8 @@ private object ToastStore : RootStore<List<ToastSlice>>(emptyList()) {
 /**
  * Factory function to create a [toastContainer].
  *
+ * It is recommended to define some explicit z-index within the classes-parameter.
+ *
  * For more information refer to the
  * [official documentation](https://www.fritz2.dev/headless/toast/#toastContainer)
  *
@@ -48,7 +50,7 @@ fun <E : HTMLElement> toastContainer(
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<E>>
 ) {
-    PortalRenderContext.portal(classes, id, scope, tag, PORTALLING_TOAST_ZINDEX) {
+    PortalRenderContext.portal(classes, id, scope, tag) {
         addComponentStructureInfo("toast-container ($name)", this.scope, this)
         attrIfNotSet(Aria.live, "polite")
         ToastStore.filteredByContainer(name).renderEach(into = this) { fragment ->
@@ -59,6 +61,8 @@ fun <E : HTMLElement> toastContainer(
 
 /**
  * Factory function to create a [toastContainer] with a [HTMLUListElement] as default [Tag].
+ *
+ * It is recommended to define some explicit z-index within the classes-parameter.
  *
  * For more information refer to the
  * [official documentation](https://www.fritz2.dev/headless/toast/#toastContainer)

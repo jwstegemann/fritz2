@@ -80,6 +80,8 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
     /**
      * Factory function to create a [popOverPanel].
      *
+     * It is recommended to define some explicit z-index within the classes-parameter.
+     *
      * For more information refer to the
      * [official documentation](https://www.fritz2.dev/headless/popover/#popoverpanel)
      */
@@ -90,7 +92,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
         initialize: PopOverPanel<CP>.() -> Unit
     ) {
         addComponentStructureInfo("popOverPanel", this@popOverPanel.scope, this)
-        portal(zIndex = PORTALLING_POPUP_ZINDEX) {
+        portal {
             PopOverPanel(this, tag, classes, scope).run {
                 initialize()
                 render()
@@ -102,6 +104,8 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
 
     /**
      * Factory function to create a [popOverPanel] with a [HTMLDivElement] as default [Tag].
+     *
+     * It is recommended to define some explicit z-index within the classes-parameter.
      *
      * For more information refer to the
      * [official documentation](https://www.fritz2.dev/headless/popover/#popoverpanel)

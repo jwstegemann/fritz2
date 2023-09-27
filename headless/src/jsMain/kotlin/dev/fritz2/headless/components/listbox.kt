@@ -341,6 +341,8 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
     /**
      * Factory function to create a [listboxItems].
      *
+     * It is recommended to define some explicit z-index within the classes-parameter.
+     *
      * For more information refer to the
      * [official documentation](https://www.fritz2.dev/headless/listbox/#listboxitems)
      */
@@ -352,7 +354,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
     ) {
         addComponentStructureInfo("listboxItems", this@listboxItems.scope, this)
         if (!openState.isSet) openState(storeOf(false))
-        portal(zIndex = PORTALLING_POPUP_ZINDEX) {
+        portal {
             ListboxItems(this, tag, classes, scope).run {
                 size = PopUpPanelSize.Min
                 initialize()
@@ -363,6 +365,8 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
 
     /**
      * Factory function to create a [listboxItems] with a [HTMLDivElement] as default [Tag].
+     *
+     * It is recommended to define some explicit z-index within the classes-parameter.
      *
      * For more information refer to the
      * [official documentation](https://www.fritz2.dev/headless/listbox/#listboxitems)

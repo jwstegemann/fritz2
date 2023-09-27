@@ -13,13 +13,13 @@ fun RenderContext.toastDemo() {
     div {
         toastContainer(
             toastContainerDefault,
-            "absolute top-5 right-5 z-10 flex flex-col gap-2 items-start",
+            "absolute z-50 top-5 right-5 z-10 flex flex-col gap-2 items-start",
             id = toastContainerDefault
         )
 
         toastContainer(
             containerImportant,
-            "absolute top-5 left-1/2 -translate-x-1/2 z-10 flex flex-col gap-2 items-center",
+            "absolute z-50 top-5 left-1/2 -translate-x-1/2 z-10 flex flex-col gap-2 items-center",
             id = containerImportant
         )
     }

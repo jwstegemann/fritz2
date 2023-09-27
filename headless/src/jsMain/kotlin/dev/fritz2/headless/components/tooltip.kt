@@ -42,6 +42,8 @@ class Tooltip<C : HTMLElement>(
 /**
  * Factory function to create a [tooltip].
  *
+ * It is recommended to define some explicit z-index within the classes-parameter.
+ *
  * For more information refer to the
  * [official documentation](https://www.fritz2.dev/headless/tooltip/)
  */
@@ -52,7 +54,7 @@ fun <C : HTMLElement> Tag<HTMLElement>.tooltip(
     tag: TagFactory<Tag<C>>,
     initialize: Tooltip<C>.() -> Unit
 ) {
-    portal(zIndex = PORTALLING_POPUP_ZINDEX) {
+    portal {
         Tooltip(this, this@tooltip, tag, classes, id, scope).apply {
             addComponentStructureInfo("parent is tooltip", this@tooltip.scope, this)
         }.run {
@@ -65,6 +67,8 @@ fun <C : HTMLElement> Tag<HTMLElement>.tooltip(
 
 /**
  * Factory function to create a [tooltip] with a [HTMLDivElement] as default [Tag].
+ *
+ * It is recommended to define some explicit z-index within the classes-parameter.
  *
  * For more information refer to the
  * [official documentation](https://www.fritz2.dev/headless/tooltip)
