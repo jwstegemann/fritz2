@@ -3,6 +3,7 @@ package dev.fritz2.remote
 import dev.fritz2.core.*
 import dev.fritz2.runTest
 import kotlinx.browser.document
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
@@ -174,7 +175,7 @@ class WebSocketTests {
 
         val socket = websocket.append("json")
 
-        val entityStore = object : RootStore<SocketPerson>(defaultPerson) {
+        val entityStore = object : RootStore<SocketPerson>(defaultPerson, job = Job()) {
             override fun errorHandler(cause: Throwable) {
                 fail(cause.message)
             }

@@ -1,5 +1,6 @@
 package dev.fritz2.core
 
+import kotlinx.coroutines.Job
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -23,7 +24,7 @@ class NullableInspectorTests {
     @Test
     fun testPathsAreEqualForStoresAndInspectorsWhenDerivedViaMapNull() {
         val rootInspector = inspectorOf<String?>(null)
-        val rootStore = storeOf<String?>(null)
+        val rootStore = storeOf<String?>(null, job = Job())
 
         val nonNullableInspector = rootInspector.mapNull("Test")
         val nonNullableStore = rootStore.mapNull("Test")

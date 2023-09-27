@@ -2,9 +2,11 @@ package dev.fritz2.tracking
 
 import dev.fritz2.core.Id
 import dev.fritz2.core.RootStore
+import dev.fritz2.core.invoke
 import dev.fritz2.core.render
 import dev.fritz2.runTest
 import kotlinx.browser.document
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlin.test.Test
@@ -23,7 +25,7 @@ class TrackingTests {
         val endValue = "end"
         val valueId = "value-${Id.next()}"
 
-        val store = object : RootStore<String>(startValue) {
+        val store = object : RootStore<String>(startValue, job = Job()) {
             val running = tracker()
 
             val longRunningHandler = handle {
@@ -70,7 +72,7 @@ class TrackingTests {
         
         val resultElementId = "tracker-${Id.next()}"
 
-        val store = object : RootStore<Int>(0) {
+        val store = object : RootStore<Int>(0, job = Job()) {
             val running = tracker()
 
             val handler = handle {
@@ -119,7 +121,7 @@ class TrackingTests {
 
         var lastException: String? = null
 
-        val store = object : RootStore<String>("initial") {
+        val store = object : RootStore<String>("initial", job = Job()) {
             val running = tracker()
             override fun errorHandler(cause: Throwable) {
                 lastException = cause.message

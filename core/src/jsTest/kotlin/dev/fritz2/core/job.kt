@@ -2,6 +2,7 @@ package dev.fritz2.core
 
 import dev.fritz2.runTest
 import kotlinx.browser.document
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
@@ -69,7 +70,7 @@ class AdHocHandlerTests {
     fun cancelAdHocHandlersJobAfterCallingOtherHandlersWontCancelThose() = runTest {
         var busyFlag = true
 
-        val heavyWork = object : RootStore<Boolean>(false) {
+        val heavyWork = object : RootStore<Boolean>(false, job = Job()) {
             val doWork = handle {
                 do {
                     delay(10)

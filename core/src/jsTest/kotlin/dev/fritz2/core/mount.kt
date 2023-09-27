@@ -22,7 +22,7 @@ class MountTests {
     @Test
     fun testStore(): Promise<Boolean> {
 
-        val store = RootStore("")
+        val store = RootStore("", job = Job())
 
         val values = listOf(
             "",
@@ -408,7 +408,7 @@ class MountTests {
 
         val id = Id.next()
 
-        val store = object : RootStore<String>("test") {
+        val store = object : RootStore<String>("test", job = Job()) {
             val modify = handle {
                 "modified"
             }
@@ -442,7 +442,7 @@ class MountTests {
 
         val id = Id.next()
 
-        val store = object : RootStore<Boolean>(true) {
+        val store = object : RootStore<Boolean>(true, job = Job()) {
             val modify = handle { model ->
                 !model
             }
@@ -478,7 +478,7 @@ class MountTests {
         val option1Id = "option1-${Id.next()}"
         val option2Id = "option2-${Id.next()}"
 
-        val store = object : RootStore<String>("option1") {
+        val store = object : RootStore<String>("option1", job = Job()) {
             val select = handle<String> { _, action ->
                 action
             }

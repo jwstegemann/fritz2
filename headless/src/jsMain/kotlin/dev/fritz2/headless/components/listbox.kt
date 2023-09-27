@@ -4,6 +4,7 @@ import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.*
 import dev.fritz2.headless.foundation.utils.scrollintoview.HeadlessScrollOptions
 import dev.fritz2.headless.foundation.utils.scrollintoview.scrollIntoView
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
@@ -38,7 +39,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
 
     internal data class ListboxEntry<T>(val value: T, val disabled: Boolean, var character: Char?)
 
-    private val entries = object : RootStore<List<ListboxEntry<T>>>(emptyList()) {
+    private val entries = object : RootStore<List<ListboxEntry<T>>>(emptyList(), job = Job()) {
         val addEntry = handle<ListboxEntry<T>> { old, entry -> old + entry }
         val setCharacter = handle<Pair<Int, Char?>> { old, (index, c) ->
             old.mapIndexed { i, o -> if (i == index) o.copy(character = c) else o }

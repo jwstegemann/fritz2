@@ -11,7 +11,7 @@ import org.w3c.dom.*
 
 private val portalRootId by lazy { "portal-root".also { addGlobalStyle("#$it { display: contents; }") } }
 
-private object PortalStack : RootStore<List<PortalContainer<out HTMLElement>>>(emptyList()) {
+private object PortalStack : RootStore<List<PortalContainer<out HTMLElement>>>(emptyList(), job = Job()) {
     val add = handle<PortalContainer<out HTMLElement>> { stack, it -> stack + it }
     val remove = handle<String> { stack, id -> stack.filterNot { it.portalId == id } }
 }

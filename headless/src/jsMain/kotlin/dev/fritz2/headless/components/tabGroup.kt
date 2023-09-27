@@ -2,6 +2,7 @@ package dev.fritz2.headless.components
 
 import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.*
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
@@ -17,7 +18,7 @@ import org.w3c.dom.HTMLElement
  */
 class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
 
-    private class DisabledTabStore(initial: List<Boolean>) : RootStore<List<Boolean>>(initial) {
+    private class DisabledTabStore(initial: List<Boolean>) : RootStore<List<Boolean>>(initial, job = Job()) {
         val addTab = handle { state -> state + false }
 
         fun disabledHandler(index: Int) = handle<Boolean> { state, disabled ->

@@ -18,14 +18,14 @@ import org.w3c.dom.events.Event
  *
  * @param default default route
  */
-fun routerOf(default: String = ""): Router<String> = Router(StringRoute(default))
+fun routerOf(default: String = "", job: Job = Job()): Router<String> = Router(StringRoute(default), job)
 
 /**
  * Creates a new [Map] based [Router]
  *
  * @param default default route
  */
-fun routerOf(default: Map<String, String> = emptyMap()) = MapRouter(default)
+fun routerOf(default: Map<String, String> = emptyMap(), job: Job = Job()) = MapRouter(default, job)
 
 /**
  * Creates a new type based [Router].
@@ -33,7 +33,7 @@ fun routerOf(default: Map<String, String> = emptyMap()) = MapRouter(default)
  *
  * @param default default route
  */
-fun <T> routerOf(default: Route<T>): Router<T> = Router(default)
+fun <T> routerOf(default: Route<T>, job: Job = Job()): Router<T> = Router(default, job)
 
 /**
  * Router register the event-listener for hashchange-event and
@@ -45,13 +45,12 @@ fun <T> routerOf(default: Route<T>): Router<T> = Router(default)
  */
 open class Router<T>(
     private val defaultRoute: Route<T>,
+    override val job: Job = Job()
 ) : Store<T> {
 
     override val id: String = ""
 
     override val path: String = ""
-
-    override val job: Job = Job()
 
     private val state: MutableStateFlow<T> = MutableStateFlow(defaultRoute.default)
 
@@ -100,8 +99,8 @@ open class Router<T>(
  *
  * @param defaultRoute default [Route] to start with.
  */
-open class MapRouter(defaultRoute: Map<String, String> = emptyMap()) :
-    Router<Map<String, String>>(MapRoute(defaultRoute)) {
+open class MapRouter(defaultRoute: Map<String, String> = emptyMap(), job: Job = Job()) :
+    Router<Map<String, String>>(MapRoute(defaultRoute), job) {
 
     /**
      * Selects with the given [key] a [Pair] of the value
