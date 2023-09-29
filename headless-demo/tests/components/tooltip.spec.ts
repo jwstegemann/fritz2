@@ -17,7 +17,8 @@ import {expect, test} from '@playwright/test';
 test.beforeEach(async ({page}) => {
     /* go to the page of Tooltip component */
     await page.goto("#tooltip");
-
+    await expect(page.locator("#portal-root")).toBeAttached();
+    await page.waitForTimeout(200);
 });
 
 test.describe('To check the display of tooltip', () => {

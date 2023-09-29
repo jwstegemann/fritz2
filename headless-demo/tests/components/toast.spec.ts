@@ -2,6 +2,8 @@ import {expect, test} from "@playwright/test";
 
 test.beforeEach(async ({page}) => {
     await page.goto('#toast')
+    await expect(page.locator("#portal-root")).toBeAttached();
+    await page.waitForTimeout(200);
 });
 
 test.describe('Toast', () => {

@@ -1,17 +1,5 @@
 {
-  "name": "headless-demo",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "npx playwright test"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
-    "@playwright/test": "^1.27.1",
-    "playwright-expect": "^0.1.2",
-    "ua-parser-js": "^1.0.2"
+    "@playwright/test": "^1.38.1"
   }
 }

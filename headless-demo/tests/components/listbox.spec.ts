@@ -11,6 +11,8 @@ import {expect, Locator, Page, test} from '@playwright/test';
 
 test.beforeEach(async ({page}) => {
     await page.goto("#listbox");
+    await expect(page.locator("#portal-root")).toBeAttached();
+    await page.waitForTimeout(200);
 });
 
 test.describe('To open and close a listBox', () => {
@@ -22,7 +24,7 @@ test.describe('To open and close a listBox', () => {
         return [btn, popupDiv, listBoxItems]
     }
 
-    async function assertListBoxIsOpen(btn: Locator, popupDiv: Locator, listBoxItems: Locator) {
+    async function assertListBoxIsOpen(btn: Locator, popupDiv: Locator) {
         await expect(popupDiv).toBeVisible();
         await expect(btn).toHaveAttribute("aria-expanded", "true")
     }

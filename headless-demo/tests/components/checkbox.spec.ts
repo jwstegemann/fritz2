@@ -10,7 +10,8 @@ import {expect, Page, test} from '@playwright/test';
 test.beforeEach(async ({page}) => {
     /* go to the page of CheckBoxGroup component */
     await page.goto("#checkboxGroup");
-
+    await expect(page.locator("#portal-root")).toBeAttached();
+    await page.waitForTimeout(200);
 });
 
 test.describe('Checking', () => {
@@ -77,8 +78,7 @@ test.describe('To check', () => {
     ]
 
     async function checkResult(page: Page) {
-        const result = page.locator('#result');
-        return result;
+        return page.locator('#result');
     }
 
     /**

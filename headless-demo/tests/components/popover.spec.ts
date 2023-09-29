@@ -11,7 +11,8 @@ import {expect, test} from '@playwright/test';
 test.beforeEach(async ({page}) => {
     /* go to the page of Pop Over component */
     await page.goto("#popover");
-
+    await expect(page.locator("#portal-root")).toBeAttached();
+    await page.waitForTimeout(200);
 });
 
 test.describe('To open the popover', () => {

@@ -10,7 +10,8 @@ import {expect, test} from '@playwright/test';
 test.beforeEach(async ({page}) => {
     /* go to the page of TabGroup component */
     await page.goto("#tabGroup");
-
+    await expect(page.locator("#portal-root")).toBeAttached();
+    await page.waitForTimeout(200);
 });
 
 test.describe('Checking', () => {

@@ -7,7 +7,8 @@ import {expect, Page, test} from '@playwright/test';
 test.beforeEach(async ({page}) => {
     /* go to the page of CheckBoxGroup component */
     await page.goto("#dataCollection");
-
+    await expect(page.locator("#portal-root")).toBeAttached();
+    await page.waitForTimeout(200);
 });
 
 test.describe('To select', () => {
@@ -218,7 +219,8 @@ test.describe('To', () => {
             const filterField = page.locator('#dataTable-filter-field');
 
             await filterField.fill(data.expression)
-            await page.mouse.click(0, 0, {delay: 4000})
+            await filterField.press("Enter");
+            await page.waitForTimeout(5000)
 
             const filteredRows = await page.locator('xpath=//tbody//tr').count()
             const selectedRows = parseInt(await page.locator("id=result").getAttribute("data-selected-count"));
@@ -233,27 +235,29 @@ test.describe('To', () => {
 
         const sortbtn = page.locator('#dataTable-sort-name');
         const table = page.locator('id=dataTable >> tbody')
-        const tableFirst = table.locator('xpath=//tr').first()
-        const tableSecond = table.locator('xpath=//tr').nth(1)
-        const tableLast = table.locator('xpath=//tr').last()
+        const tableFirst = table.locator('xpath=.//tr').first()
+        const tableSecond = table.locator('xpath=.//tr').nth(1)
+        const tableLast = table.locator('xpath=.//tr').last()
 
         /* verify a-z order */
-        await sortbtn.click({delay: 4000})
+        await sortbtn.click()
+        await page.waitForTimeout(5000);
         await expect(tableFirst).toContainText("Albertine");
         await expect(tableLast).toContainText("Yasemin");
 
         /* verify z-a order */
-        await sortbtn.click({delay: 4000})
+        await sortbtn.click()
+        await page.waitForTimeout(5000);
         await expect(tableFirst).toContainText("Yasemin");
         await expect(tableLast).toContainText("Albertine");
 
         /* verify original order */
-        await sortbtn.click({delay: 4000})
+        await sortbtn.click()
+        await page.waitForTimeout(5000);
         await expect(tableFirst).toHaveAttribute("data-datatable-selected", "true")
         await expect(tableFirst).toHaveAttribute("data-datatable-active", "false")
         await expect(tableSecond).toHaveAttribute("data-datatable-selected", "true")
         await expect(tableFirst).toHaveAttribute("data-datatable-active", "false")
-
     });
 
     /**

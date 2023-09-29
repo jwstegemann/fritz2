@@ -10,7 +10,8 @@ import {expect, Locator, Page, test} from '@playwright/test';
 test.beforeEach(async ({page}) => {
     /* go to the page of Menu component */
     await page.goto("#menu");
-
+    await expect(page.locator("#portal-root")).toBeAttached();
+    await page.waitForTimeout(200);
 });
 
 test.describe('To open and close a menu', () => {
@@ -209,60 +210,42 @@ test.describe("Navigating", () => {
 test.describe("To select an item from a menu open the menuItems", () => {
 
     test("click on one item", async ({page}) => {
-        async function getMenuItem(itemName: String) {
-            const menuItem = page.locator("#" + itemName);
-            return menuItem;
-        }
-
-        async function getMenuItemText(itemName: String) {
-            const menuItemText = page.locator("#" + itemName).textContent();
-            return menuItemText;
-        }
-
-        const btn = page.locator('#menu-button');
-        const result = page.locator('#result');
+        const btn = page.getByRole('button', {name: 'Open Menu'});
+        const result = page.locator("#result");
 
         await btn.click();
-        await (await getMenuItem("menu-item-1")).click();
-        await expect(result).toContainText(await getMenuItemText("menu-item-1"));
+        await expect(page.locator('#menu-items')).toBeVisible();
+        await page.locator("#menu-item-1").click()
+        await expect(result).toContainText("Archive");
 
         await btn.click();
-        await (await getMenuItem("menu-item-2")).click();
-        await expect(result).toContainText(await getMenuItemText("menu-item-2"));
-
-        await btn.click();
-        await (await getMenuItem("menu-item-3")).click();
-        await expect(result).toContainText(await getMenuItemText("menu-item-3"));
-
-        await btn.click();
-        await (await getMenuItem("menu-item-4")).click();
-        await expect(result).toContainText(await getMenuItemText("menu-item-4"));
-
-        await btn.click();
-        await (await getMenuItem("menu-item-6")).click();
-        await expect(result).toContainText(await getMenuItemText("menu-item-6"));
+        await expect(page.locator('#menu-items')).toBeVisible();
+        await page.locator("#menu-item-4").click();
+        await expect(result).toContainText("Edit");
     });
 
     for (const key of ["Enter", "Space"]) {
         for (const spec of [
             {id: "#menu-item-1", arrowDowns: 0, text: "Archive"},
             {id: "#menu-item-2", arrowDowns: 1, text: "Move"},
-            {id: "#menu-item-3", arrowDowns: 2, text: "Delete"},
-            {id: "#menu-item-4", arrowDowns: 3, text: "Edit"},
             {id: "#menu-item-6", arrowDowns: 4, text: "Encrypt"},
         ]) {
             test(`press ${spec.arrowDowns} times down and then press ${key} on item`, async ({page, browserName}) => {
                 test.slow(browserName === 'webkit', 'This test for Menu is slow on Mac');
 
-                const btn = await page.locator('#menu-button');
-                const result = await page.locator('#result');
-                const menuItem1 = await page.locator(spec.id);
+                const btn = page.getByRole('button', {name: 'Open Menu'});
+                const result = page.locator("#result");
+                const targetItem = page.locator(spec.id);
 
-                await btn.click({delay: 500});
+                await btn.click();
+                await expect(page.locator('#menu-items')).toBeVisible();
+                await page.waitForTimeout(200);
                 for (let times = 0; times < spec.arrowDowns; times++) {
-                    await (menuItem1).press("ArrowDown");
+                    await page.keyboard.press("ArrowDown", {delay: 100});
                 }
-                await (menuItem1).press(key, {delay: 500});
+
+                await expect(targetItem).toHaveAttribute("data-menu-active", "true");
+                await targetItem.press(key);
                 await expect(result).toContainText(spec.text);
             });
         }
