@@ -16,9 +16,12 @@ import org.w3c.dom.*
  *
  * For more information refer to the [official documentation](https://www.fritz2.dev/headless/modal/)
  */
-class Modal : OpenClose(), WithJob {
+class Modal(id: String?) : OpenClose(), WithJob {
+
+    val componentId: String by lazy { id ?: Id.next() }
 
     override val job: Job = Job()
+
     var restoreFocus: Boolean = true
     var setInitialFocus: InitialFocus = InitialFocus.InsistToSet
 
@@ -27,7 +30,8 @@ class Modal : OpenClose(), WithJob {
     fun init() {
         opened.filter { it }.handledBy {
             PortalRenderContext.run {
-                portal(zIndex = PORTALLING_MODAL_ZINDEX, tag = RenderContext::dialog) { close ->
+                portal(id = componentId, tag = RenderContext::dialog) { close ->
+                    inlineStyle("display: contents")
                     panel?.invoke(this)!!.apply {
                         trapFocusInMountpoint(restoreFocus, setInitialFocus)
                     }
@@ -151,6 +155,8 @@ class Modal : OpenClose(), WithJob {
     /**
      * Factory function to create a [modalPanel].
      *
+     * It is recommended to define some explicit z-index within the classes-parameter.
+     *
      * For more information refer to the
      * [official documentation](https://www.fritz2.dev/headless/modal/#modalpanel)
      */
@@ -174,6 +180,8 @@ class Modal : OpenClose(), WithJob {
 
     /**
      * Factory function to create a [modalPanel] with a [HTMLDivElement] as default [Tag].
+     *
+     * It is recommended to define some explicit z-index within the classes-parameter.
      *
      * For more information refer to the
      * [official documentation](https://www.fritz2.dev/headless/modal/#modalpanel)
@@ -214,9 +222,10 @@ class Modal : OpenClose(), WithJob {
  * For more information refer to the [official documentation](https://www.fritz2.dev/headless/modal/#modal)
  */
 fun modal(
+    id: String? = null,
     initialize: Modal.() -> Unit
 ) {
-    Modal().run {
+    Modal(id).run {
         initialize(this)
         init()
     }

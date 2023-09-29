@@ -19,7 +19,7 @@ fun RenderContext.tooltipButton(idPrefix: String) {
         id = "$idPrefix-reference"
     ) {
         +"Some Button"
-    }.tooltip("px-2 py-1 bg-slate-400 rounded text-sm text-white", id = "$idPrefix-tooltip") {
+    }.tooltip("z-30 px-2 py-1 bg-slate-400 rounded text-sm text-white", id = "$idPrefix-tooltip") {
         placement = PlacementValues.right
         arrow()
         +"Some more Information"
@@ -38,7 +38,7 @@ fun RenderContext.tooltipInput(idPrefix: String) {
     ) {
         placeholder("some input")
         type("text")
-    }.tooltip("px-2 py-1 bg-slate-400 rounded text-sm text-white", id = "$idPrefix-tooltip") {
+    }.tooltip("z-30 px-2 py-1 bg-slate-400 rounded text-sm text-white", id = "$idPrefix-tooltip") {
         placement = PlacementValues.right
         arrow()
         +"Some more Information"

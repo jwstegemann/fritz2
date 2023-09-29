@@ -250,6 +250,8 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
     /**
      * Factory function to create a [menuItems].
      *
+     * It is recommended to define some explicit z-index within the classes-parameter.
+     *
      * For more information refer to the
      * [official documentation](https://www.fritz2.dev/headless/menu/#menuitems)
      */
@@ -261,7 +263,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
     ) {
         if (!openState.isSet) openState(storeOf(false))
         addComponentStructureInfo("menuItems", this@menuItems.scope, this)
-        portal(zIndex = PORTALLING_POPUP_ZINDEX) {
+        portal {
             MenuItems(this, tag, classes, scope).run {
                 initialize()
                 render()
@@ -271,6 +273,8 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
 
     /**
      * Factory function to create a [menuItems] with a [HTMLDivElement] as default [Tag].
+     *
+     * It is recommended to define some explicit z-index within the classes-parameter.
      *
      * For more information refer to the
      * [official documentation](https://www.fritz2.dev/headless/menu/#menuitems)
