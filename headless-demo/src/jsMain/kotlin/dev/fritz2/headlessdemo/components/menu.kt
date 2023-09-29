@@ -46,7 +46,7 @@ fun RenderContext.menuDemo() {
                 }
 
                 menuItems(
-                    """w-56 max-h-56 overflow-y-auto origin-top-left
+                    """w-56 max-h-56 overflow-y-auto origin-top-left z-30
                         | bg-white rounded shadow-md divide-y divide-gray-100
                         | border-white border-2  
                         | focus:outline-none""".trimMargin()

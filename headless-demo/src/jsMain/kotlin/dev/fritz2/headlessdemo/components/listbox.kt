@@ -48,7 +48,7 @@ fun RenderContext.listboxDemo() {
             }
 
             listboxItems(
-                """w-full max-h-60 py-1 overflow-auto origin-top  
+                """w-full max-h-60 py-1 overflow-auto origin-top z-30
                     | bg-white rounded shadow-md divide-y divide-gray-100
                     | ring-1 ring-primary-600 ring-opacity-5 
                     | focus:outline-none""".trimMargin(),

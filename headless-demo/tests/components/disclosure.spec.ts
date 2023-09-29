@@ -9,7 +9,8 @@ import {expect, Page, test} from '@playwright/test';
 test.beforeEach(async ({page}) => {
     /* go to the page of Disclosure component */
     await page.goto("#disclosure");
-
+    await expect(page.locator("#portal-root")).toBeAttached();
+    await page.waitForTimeout(200);
 });
 test.describe('Checking', () => {
 

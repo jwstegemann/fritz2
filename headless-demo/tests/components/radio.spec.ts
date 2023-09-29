@@ -1,4 +1,4 @@
-import {expect, test, Page} from '@playwright/test';
+import {expect, Page, test} from '@playwright/test';
 
 /*
  * Missing tests due to limited example component:
@@ -11,7 +11,8 @@ import {expect, test, Page} from '@playwright/test';
 test.beforeEach(async ({page}) => {
     /* go to the page of Radio Group component */
     await page.goto("#radioGroup");
-
+    await expect(page.locator("#portal-root")).toBeAttached();
+    await page.waitForTimeout(200);
 });
 
 test.describe('Checking', () => {
@@ -24,8 +25,7 @@ test.describe('Checking', () => {
     ]
 
     async function checkResult(page: Page) {
-        const result = page.locator('#result');
-        return result;
+        return page.locator('#result');
     
     }
     

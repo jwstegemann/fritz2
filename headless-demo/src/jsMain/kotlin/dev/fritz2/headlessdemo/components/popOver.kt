@@ -44,7 +44,7 @@ fun RenderContext.popOverDemo() {
         }
 
         popOverPanel(
-            """z-10 max-w-sm lg:max-w-3xl px-0  
+            """z-30 max-w-sm lg:max-w-3xl px-0  
             | bg-white overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5
             | focus:outline-none
             """.trimMargin()
