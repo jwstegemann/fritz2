@@ -30,7 +30,8 @@ class Modal(id: String?) : OpenClose(), WithJob {
     fun init() {
         opened.filter { it }.handledBy {
             PortalRenderContext.run {
-                portal("display: contents", id = componentId, tag = RenderContext::dialog) { close ->
+                portal(id = componentId, tag = RenderContext::dialog) { close ->
+                    inlineStyle("display: contents")
                     panel?.invoke(this)!!.apply {
                         trapFocusInMountpoint(restoreFocus, setInitialFocus)
                     }
