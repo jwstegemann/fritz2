@@ -245,9 +245,7 @@ abstract class PopUpPanel<C : HTMLElement>(
                             update = { computePosition() })
             afterMount { _, _ -> computePosition() }
 
-            // due to https://github.com/jwstegemann/fritz2/issues/782 we use job.invokeOnCompletion instead of beforeUnmount
-            // beforeUnmount { _,_-> cleanup.invoke() }
-            job.invokeOnCompletion { cleanup.invoke() }
+            beforeUnmount { _,_-> cleanup.invoke() }
 
             popupDiv.apply {
                 attr("data-popup-placement", computedPosition.map { it.placement ?: "" })

@@ -24,7 +24,7 @@ interface Store<D> : WithJob {
     fun <A> handle(
         execute: suspend (D, A) -> D
     ) = SimpleHandler<A> { flow, job ->
-        val executeJob = flow.onEach { enqueue { d -> execute(d, it) } }
+        val executeJob = flow.onEach { enqueue { d -> withContext(NonCancellable) { execute(d, it) } } }
             .catch { d -> errorHandler(d) }
             .launchIn(MainScope() + job)
         this.job.invokeOnCompletion { executeJob.cancel() }
@@ -38,7 +38,7 @@ interface Store<D> : WithJob {
     fun handle(
         execute: suspend (D) -> D
     ) = SimpleHandler<Unit> { flow, job ->
-        val executeJob = flow.onEach { enqueue { d -> execute(d) } }
+        val executeJob = flow.onEach { enqueue { d -> withContext(NonCancellable) { execute(d) } } }
             .catch { d -> errorHandler(d) }
             .launchIn(MainScope() + job)
         this.job.invokeOnCompletion { executeJob.cancel() }
@@ -53,7 +53,7 @@ interface Store<D> : WithJob {
     fun <A, E> handleAndEmit(
         execute: suspend FlowCollector<E>.(D, A) -> D
     ) = EmittingHandler<A, E>({ inFlow, outFlow, job ->
-        val executeJob = inFlow.onEach { enqueue { d -> outFlow.execute(d, it) } }
+        val executeJob = inFlow.onEach { enqueue { d -> withContext(NonCancellable) { outFlow.execute(d, it) } } }
             .catch { d -> errorHandler(d) }
             .launchIn(MainScope() + job)
         this.job.invokeOnCompletion { executeJob.cancel() }
@@ -68,7 +68,7 @@ interface Store<D> : WithJob {
         execute: suspend FlowCollector<E>.(D) -> D
     ) =
         EmittingHandler<Unit, E>({ inFlow, outFlow, job ->
-            val executeJob = inFlow.onEach { enqueue { d -> outFlow.execute(d) } }
+            val executeJob = inFlow.onEach { enqueue { d -> withContext(NonCancellable) { outFlow.execute(d) } } }
                 .catch { d -> errorHandler(d) }
                 .launchIn(MainScope() + job)
             this.job.invokeOnCompletion { executeJob.cancel() }
@@ -156,13 +156,13 @@ open class RootStore<D>(
     final override val data: Flow<D> = flow {
         try {
             activeFlows.incrementAndGet()
-            val ctx = currentCoroutineContext()
-            this@RootStore.job.invokeOnCompletion { ctx.cancel() }
-            emitAll(state)
+            emit(state)
+            this@RootStore.job.join()
+            emit(emptyFlow())
         } finally {
             activeFlows.decrementAndGet()
         }
-    }
+    }.flatMapLatest { it }
 
     /**
      * Represents the current data of this [Store].
@@ -194,6 +194,12 @@ open class RootStore<D>(
          * Count of active [Store.job]-Instances, can be used to detect memory-leaks
          */
         val ACTIVE_JOBS get() = activeJobs.value
+
+        fun resetCounters() {
+            activeFlows.value = 0
+            activeJobs.value = 0
+        }
+
     }
 }
 

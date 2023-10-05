@@ -187,9 +187,11 @@ fun Tag<HTMLElement>.transition(
  * wait for a running animation on the DOM-Node to finish.
  */
 suspend fun WithDomNode<*>.waitForAnimation() {
-    kotlinx.browser.window.awaitAnimationFrame()
-    kotlinx.browser.window.awaitAnimationFrame()
-    animationDone(domNode).await()
+    runCatching {
+        kotlinx.browser.window.awaitAnimationFrame()
+        kotlinx.browser.window.awaitAnimationFrame()
+        animationDone(domNode).await()
+    }
 }
 
 

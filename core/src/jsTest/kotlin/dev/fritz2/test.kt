@@ -1,18 +1,24 @@
 package dev.fritz2
 
-import dev.fritz2.core.WithJob
-import dev.fritz2.core.mountSimple
+import dev.fritz2.core.*
 import dev.fritz2.remote.Request
 import dev.fritz2.remote.http
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
+import org.w3c.dom.HTMLDivElement
 
 fun <T> runTest(block: suspend WithJob.() -> T): dynamic = MainScope().promise {
+    val job = Job()
     delay(50)
     block(object : WithJob {
-        override val job: Job = Job()
+        override val job: Job = job
     })
     delay(50)
+    job.cancelAndJoin()
+}
+
+fun WithJob.renderWithJob(content: RenderContext.() -> Unit) {
+    HtmlTag<HTMLDivElement>("div", job = job, scope = Scope()).apply(content)
 }
 
 fun <T> checkSingleFlow(

@@ -1,9 +1,7 @@
 package dev.fritz2.core
 
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.plus
 import org.w3c.dom.events.Event
 
 /**
@@ -48,7 +46,8 @@ interface WithJob {
      * @receiver [Flow] of action/events to bind to
      */
     infix fun <A> Flow<A>.handledBy(execute: suspend (A) -> Unit) =
-        this.onEach { execute(it) }.catch { errorHandler(it) }.launchIn(MainScope() + job)
+        this.onEach { withContext(NonCancellable) { execute(it) } }.catch { errorHandler(it) }
+            .launchIn(MainScope() + job)
 
 
     /**
@@ -67,7 +66,8 @@ interface WithJob {
      * @param execute function that will handle the fired [Event]
      */
     infix fun <E : Event> Flow<E>.handledBy(execute: suspend (E) -> Unit) =
-        this.onEach { execute(it) }.catch { errorHandler(it) }.launchIn(MainScope() + job)
+        this.onEach { withContext(NonCancellable) { execute(it) } }.catch { errorHandler(it) }
+            .launchIn(MainScope() + job)
 
 
 
