@@ -35,12 +35,12 @@ import kotlinx.coroutines.flow.*
  */
 open class ValidatingStore<D, T, M>(
     initialData: D,
+    job: Job,
     private val validation: Validation<D, T, M>,
     private val metadataDefault: T,
     private val validateAfterUpdate: Boolean = true,
     override val id: String = Id.next(),
-    job: Job
-) : RootStore<D>(initialData, id, job) {
+) : RootStore<D>(initialData, job, id) {
 
     private val validationMessages: MutableStateFlow<List<M>> = MutableStateFlow(emptyList())
 
@@ -102,12 +102,12 @@ val <M : ValidationMessage> Flow<List<M>>.valid: Flow<Boolean>
  */
 fun <D, T, M> storeOf(
     initialData: D,
+    job: Job,
     validation: Validation<D, T, M>,
     metadataDefault: T,
     id: String = Id.next(),
-    job: Job
 ): ValidatingStore<D, T, M> =
-    ValidatingStore(initialData, validation, metadataDefault, validateAfterUpdate = true, id, job)
+    ValidatingStore(initialData, job, validation, metadataDefault, validateAfterUpdate = true, id)
 
 /**
  * Convenience function to create a simple [ValidatingStore] without any metadata and handlers.
@@ -124,7 +124,7 @@ fun <D, M> storeOf(
     id: String = Id.next(),
     job: Job
 ): ValidatingStore<D, Unit, M> =
-    ValidatingStore(initialData, validation, Unit, validateAfterUpdate = true, id, job)
+    ValidatingStore(initialData, job, validation, Unit, validateAfterUpdate = true, id)
 
 /**
  * Convenience function to create a simple [ValidatingStore] without any handlers, etc.
@@ -143,7 +143,7 @@ fun <D, T, M> WithJob.storeOf(
     id: String = Id.next(),
     job: Job = this.job
 ): ValidatingStore<D, T, M> =
-    ValidatingStore(initialData, validation, metadataDefault, validateAfterUpdate = true, id, job)
+    ValidatingStore(initialData, job, validation, metadataDefault, validateAfterUpdate = true, id)
 
 /**
  * Convenience function to create a simple [ValidatingStore] without any metadata and handlers.
@@ -160,7 +160,7 @@ fun <D, M> WithJob.storeOf(
     id: String = Id.next(),
     job: Job = this.job
 ): ValidatingStore<D, Unit, M> =
-    ValidatingStore(initialData, validation, Unit, validateAfterUpdate = true, id, job)
+    ValidatingStore(initialData, job, validation, Unit, validateAfterUpdate = true, id)
 
 /**
  * Finds all corresponding [ValidationMessage]s to this [Store].

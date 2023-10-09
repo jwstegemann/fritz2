@@ -46,7 +46,7 @@ fun <T> routerOf(default: Route<T>, job: Job = Job()): Router<T> = Router(defaul
 open class Router<T>(
     private val defaultRoute: Route<T>,
     override val job: Job = Job()
-) : Store<T> {
+) : Store<T>() {
 
     override val id: String = ""
 

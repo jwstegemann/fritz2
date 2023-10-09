@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.map
 class SubStore<P, D>(
     val parent: Store<P>,
     private val lens: Lens<P, D>
-) : Store<D> {
+) : Store<D>() {
 
     /**
      * [Job] used as parent job on all coroutines started in [Handler]s in the scope of this [Store]

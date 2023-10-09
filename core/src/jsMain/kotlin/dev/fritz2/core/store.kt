@@ -1,10 +1,12 @@
 package dev.fritz2.core
 
 import kotlinx.atomicfu.atomic
+import kotlinx.browser.window
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.*
+import org.w3c.dom.events.Event
 
 /**
  * Defines a type for transforming one value into the next
@@ -14,7 +16,46 @@ typealias Update<D> = suspend (D) -> D
 /**
  * [Store] interface is the main type for all two-way data binding activities.
  */
-interface Store<D> : WithJob {
+abstract class Store<D> {
+
+    /**
+     * [Job] for launching coroutines in.
+     */
+    abstract val job: Job
+
+    /**
+     * [id] of this [Store].
+     * ids of depending [Store]s are concatenated and separated by a dot.
+     */
+    abstract val id: String
+
+    /**
+     * Path of this [Store] derived from the underlying model.
+     * Paths of depending [Store]s are concatenated and separated by a dot.
+     */
+    abstract val path: String
+
+    /**
+     * the [Flow] representing the current value of the [Store]. Use this to bind it to ui-elements or derive calculated values by using [map] for example.
+     */
+    abstract val data: Flow<D>
+
+    /**
+     * represents the current value of the [Store]
+     */
+    abstract val current: D
+
+    /**
+     * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
+     */
+    abstract val update: Handler<D>
+
+    /**
+     * abstract method defining, how this [Store] handles an [Update]
+     *
+     * @param update the [Update] to handle
+     */
+    abstract suspend fun enqueue(update: Update<D>)
 
     /**
      * Factory method to create a [SimpleHandler] mapping the actual value of the [Store] and a given Action to a new value.
@@ -75,38 +116,11 @@ interface Store<D> : WithJob {
         })
 
     /**
-     * abstract method defining, how this [Store] handles an [Update]
+     * Default error handler printing the error to console.
      *
-     * @param update the [Update] to handle
+     * @param cause Throwable to handle
      */
-    suspend fun enqueue(update: Update<D>)
-
-    /**
-     * [id] of this [Store].
-     * ids of depending [Store]s are concatenated and separated by a dot.
-     */
-    val id: String
-
-    /**
-     * Path of this [Store] derived from the underlying model.
-     * Paths of depending [Store]s are concatenated and separated by a dot.
-     */
-    val path: String
-
-    /**
-     * the [Flow] representing the current value of the [Store]. Use this to bind it to ui-elements or derive calculated values by using [map] for example.
-     */
-    val data: Flow<D>
-
-    /**
-     * represents the current value of the [Store]
-     */
-    val current: D
-
-    /**
-     * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
-     */
-    val update: Handler<D>
+    open fun errorHandler(cause: Throwable): Unit = printErrorIgnoreLensException(cause)
 
     /**
      * Creates a new [Store] that contains data derived by a given [Lens].
@@ -124,9 +138,9 @@ interface Store<D> : WithJob {
  */
 open class RootStore<D>(
     initialData: D,
-    override val id: String = Id.next(),
-    job: Job
-) : Store<D> {
+    job: Job,
+    override val id: String = Id.next()
+) : Store<D>() {
     override val path: String = ""
 
     private val state: MutableStateFlow<D> = MutableStateFlow(initialData)
@@ -180,6 +194,51 @@ open class RootStore<D>(
      */
     override val update = this.handle<D> { _, newValue -> newValue }
 
+    private val withJob = object : WithJob {
+        override val job: Job by lazy { this@RootStore.job }
+        override fun errorHandler(cause: Throwable) = this@RootStore.errorHandler(cause)
+    }
+
+    /**
+     * Allows to use the [WithJob]-Context of this Store. Allows to run [handledBy] on the Store-Job
+     */
+    protected fun withJobContext(init: WithJob.() -> Unit) = withJob.init()
+
+    /**
+     * Connects a [Flow] to a [Handler].
+     *
+     * @param handler [Handler] that will be called for each action/event on the [Flow]
+     * @receiver [Flow] of action/events to bind to a [Handler]
+     */
+    protected infix fun <A> Flow<A>.handledBy(handler: Handler<A>) = withJobContext { this@handledBy handledBy handler }
+
+    /**
+     * Connects a [Flow] to a suspendable [execute] function.
+     *
+     * @param execute function that will be called for each action/event on the [Flow]
+     * @receiver [Flow] of action/events to bind to
+     */
+    protected infix fun <A> Flow<A>.handledBy(execute: suspend (A) -> Unit) =
+        withJobContext { this@handledBy handledBy execute }
+
+
+    /**
+     * Connects [Event]s to a [Handler].
+     *
+     * @receiver [Flow] which contains the [Event]
+     * @param handler that will handle the fired [Event]
+     */
+    protected infix fun <E : Event> Flow<E>.handledBy(handler: Handler<Unit>) =
+        withJobContext { this@handledBy handledBy handler }
+
+    /**
+     * Connects a [Flow] to a suspendable [execute] function.
+     *
+     * @receiver [Flow] which contains the [Event]
+     * @param execute function that will handle the fired [Event]
+     */
+    protected infix fun <E : Event> Flow<E>.handledBy(execute: suspend (E) -> Unit) =
+        withJobContext { this@handledBy handledBy execute }
 
     companion object {
         private val activeFlows = atomic(0)
@@ -200,6 +259,11 @@ open class RootStore<D>(
             activeJobs.value = 0
         }
 
+        init {
+            window.asDynamic().fritz2 = {}
+            window.asDynamic().fritz2.active_jobs = { ACTIVE_JOBS }
+            window.asDynamic().fritz2.active_flows = { ACTIVE_FLOWS }
+        }
     }
 }
 
@@ -209,8 +273,8 @@ open class RootStore<D>(
  * @param initialData first current value of this [Store]
  * @param id id of this store. Ids of derived [Store]s will be concatenated.
  */
-fun <D> storeOf(initialData: D, id: String = Id.next(), job: Job): Store<D> =
-    RootStore(initialData, id, job)
+fun <D> storeOf(initialData: D, job: Job, id: String = Id.next()): Store<D> =
+    RootStore(initialData, job, id)
 
 /**
  * Convenience function to create a simple [Store] without any handlers, etc.
@@ -218,5 +282,5 @@ fun <D> storeOf(initialData: D, id: String = Id.next(), job: Job): Store<D> =
  * @param initialData first current value of this [Store]
  * @param id id of this store. Ids of derived [Store]s will be concatenated.
  */
-fun <D> WithJob.storeOf(initialData: D, id: String = Id.next(), job: Job = this.job): Store<D> =
-    RootStore(initialData, id, job)
+fun <D> WithJob.storeOf(initialData: D, job: Job = this.job, id: String = Id.next()): Store<D> =
+    RootStore(initialData, job, id)
