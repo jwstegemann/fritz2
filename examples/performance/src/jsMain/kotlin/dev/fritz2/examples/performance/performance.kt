@@ -15,7 +15,7 @@ fun main() {
     val counter = storeOf(0, job = Job())
     val increment = counter.handle { it + 1 }
 
-    val startStore = object : RootStore<Int>(1000, "start", job = Job()) {
+    val startStore = object : RootStore<Int>(1000, Job(), "start") {
 
 
         val start = handleAndEmit { maxCount ->

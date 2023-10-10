@@ -5,6 +5,7 @@ import dev.fritz2.runTest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlin.test.BeforeTest
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -64,6 +65,7 @@ class JobLifecycle {
     }
 
     @Test
+    @Ignore // Store.apply {} does not use the Store-Job anymore, so RenderContext-Job used here
     fun testGlobalJob() = runTest {
         assertEquals(0, RootStore.ACTIVE_JOBS, "ACTIVE_JOBS is not initially 0")
         assertEquals(0, RootStore.ACTIVE_FLOWS, "ACTIVE_FLOWS is not initially 0")

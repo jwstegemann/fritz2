@@ -120,9 +120,9 @@ fun <D, T, M> storeOf(
  */
 fun <D, M> storeOf(
     initialData: D,
+    job: Job,
     validation: Validation<D, Unit, M>,
     id: String = Id.next(),
-    job: Job
 ): ValidatingStore<D, Unit, M> =
     ValidatingStore(initialData, job, validation, Unit, validateAfterUpdate = true, id)
 
@@ -138,10 +138,10 @@ fun <D, M> storeOf(
  */
 fun <D, T, M> WithJob.storeOf(
     initialData: D,
+    job: Job = this.job,
     validation: Validation<D, T, M>,
     metadataDefault: T,
     id: String = Id.next(),
-    job: Job = this.job
 ): ValidatingStore<D, T, M> =
     ValidatingStore(initialData, job, validation, metadataDefault, validateAfterUpdate = true, id)
 
@@ -156,9 +156,9 @@ fun <D, T, M> WithJob.storeOf(
  */
 fun <D, M> WithJob.storeOf(
     initialData: D,
+    job: Job = this.job,
     validation: Validation<D, Unit, M>,
     id: String = Id.next(),
-    job: Job = this.job
 ): ValidatingStore<D, Unit, M> =
     ValidatingStore(initialData, job, validation, Unit, validateAfterUpdate = true, id)
 

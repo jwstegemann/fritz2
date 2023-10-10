@@ -148,7 +148,7 @@ class WebSocketTests {
     private val ageLens = lensOf("age", SocketPerson::age) { p, v -> p.copy(age = v) }
     private val idLens = lensOf("id", SocketPerson::_id) { p, v -> p.copy(_id = v) }
 
-    fun Store<SocketPerson>.syncWith(socket: Socket) {
+    fun WithJob.syncWith(store: Store<SocketPerson>, socket: Socket) {
         val session = socket.connect()
         var last: SocketPerson? = null
         apply {
@@ -156,9 +156,9 @@ class WebSocketTests {
                 val received = Json.decodeFromString(SocketPerson.serializer(), it)
                 last = received
                 received
-            } handledBy this@syncWith.update
+            } handledBy store.update
 
-            this@syncWith.data.drop(1) handledBy {
+            store.data.drop(1) handledBy {
                 if (last != it) session.send(Json.encodeToString(SocketPerson.serializer(), it))
             }
         }
@@ -181,7 +181,8 @@ class WebSocketTests {
             }
 
             init {
-                syncWith(socket)
+                val store = this
+                withJobContext { syncWith(store, socket) }
             }
         }
 

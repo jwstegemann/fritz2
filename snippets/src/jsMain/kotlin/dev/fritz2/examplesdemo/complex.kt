@@ -17,7 +17,7 @@ fun RenderContext.complex() {
             add(Message(it.path,"Not a valid mail address"))
     }
 
-    val store = storeOf("", validation)
+    val store = storeOf("", validation = validation)
 
     div("p-4 text-sm font-medium text-gray-700") {
         input(id = store.id, baseClass = "block w-full shadow-sm border-gray-300 rounded-md focus:ring-blue-700 focus:border-blue-700") {

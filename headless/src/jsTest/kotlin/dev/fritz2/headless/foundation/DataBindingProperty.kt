@@ -66,7 +66,7 @@ class DataBindingPropertyTest {
     fun testDataBindingPropertyWithStore() = runTest {
         val id = Id.next()
         val msgs = Id.next()
-        val state = storeOf(false, validation, id)
+        val state = storeOf(false, validation = validation, id = id)
         val prop = DatabindingProperty<Boolean>()
         prop(state)
 

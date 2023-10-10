@@ -24,7 +24,7 @@ class ValidationJSTests {
         val c3 = Car("car3", Color(256, -1, 120))
 
         val store: ValidatingStore<Car, Unit, Message> =
-            storeOf(Car(carName, Color(120, 120, 120)), Car.validator)
+            storeOf(Car(carName, Color(120, 120, 120)), validation = Car.validator)
 
         val idData = "data-${Id.next()}"
         val idMessages = "messages-${Id.next()}"
@@ -84,7 +84,7 @@ class ValidationJSTests {
     fun testSubStoreValidation() = runTest {
 
         val store: ValidatingStore<Car, Unit, Message> =
-            storeOf(Car("car", Color(120, 120, 120)), Car.validator)
+            storeOf(Car("car", Color(120, 120, 120)), validation = Car.validator)
         val colorStore = store.map(Car.colorLens)
         val rColorStore = colorStore.map(Color.rLens)
         val gColorStore = colorStore.map(Color.gLens)
@@ -203,7 +203,7 @@ class MessageFilterTests {
     @Test
     fun testOverlappingFieldnamesDoNotMatchEachOthersPathes() = runTest {
         val initial = Foo("", "", Bar("", ""))
-        val store = storeOf(initial, Foo.validate)
+        val store = storeOf(initial, validation = Foo.validate)
         store.update(initial.copy(foo = "a"))
         /*
         Validation should result in messages with these pathes:

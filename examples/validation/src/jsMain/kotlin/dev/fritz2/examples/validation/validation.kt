@@ -18,7 +18,7 @@ object PersonListStore : RootStore<List<Person>>(emptyList(), job = Job()) {
 }
 
 object PersonStore : ValidatingStore<Person, Unit, Message>(
-    Person(), personValidator, metadataDefault = Unit, id = Person.id, job = Job()
+    Person(), Job(), personValidator, metadataDefault = Unit, id = Person.id
 ) {
     val save = handle { person ->
         if (validate(person, Unit).valid) {

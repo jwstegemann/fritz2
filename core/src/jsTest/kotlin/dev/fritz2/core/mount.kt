@@ -39,10 +39,6 @@ class MountTests {
             value == values.last()
         }
 
-        store.apply {
-            store.data handledBy {}
-        }
-
         return GlobalScope.promise {
             values.forEach { value ->
                 store.enqueue { value }
