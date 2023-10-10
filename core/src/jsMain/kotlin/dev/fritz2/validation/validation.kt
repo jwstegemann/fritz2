@@ -35,9 +35,9 @@ import kotlinx.coroutines.flow.*
  */
 open class ValidatingStore<D, T, M>(
     initialData: D,
-    job: Job,
     private val validation: Validation<D, T, M>,
     private val metadataDefault: T,
+    job: Job,
     private val validateAfterUpdate: Boolean = true,
     override val id: String = Id.next(),
 ) : RootStore<D>(initialData, job, id) {
@@ -102,12 +102,12 @@ val <M : ValidationMessage> Flow<List<M>>.valid: Flow<Boolean>
  */
 fun <D, T, M> storeOf(
     initialData: D,
-    job: Job,
     validation: Validation<D, T, M>,
     metadataDefault: T,
+    job: Job = Job(),
     id: String = Id.next(),
 ): ValidatingStore<D, T, M> =
-    ValidatingStore(initialData, job, validation, metadataDefault, validateAfterUpdate = true, id)
+    ValidatingStore(initialData, validation, metadataDefault, job, validateAfterUpdate = true, id)
 
 /**
  * Convenience function to create a simple [ValidatingStore] without any metadata and handlers.
@@ -120,11 +120,11 @@ fun <D, T, M> storeOf(
  */
 fun <D, M> storeOf(
     initialData: D,
-    job: Job,
     validation: Validation<D, Unit, M>,
+    job: Job,
     id: String = Id.next(),
 ): ValidatingStore<D, Unit, M> =
-    ValidatingStore(initialData, job, validation, Unit, validateAfterUpdate = true, id)
+    ValidatingStore(initialData, validation, Unit, job, validateAfterUpdate = true, id)
 
 /**
  * Convenience function to create a simple [ValidatingStore] without any handlers, etc.
@@ -138,12 +138,12 @@ fun <D, M> storeOf(
  */
 fun <D, T, M> WithJob.storeOf(
     initialData: D,
-    job: Job = this.job,
     validation: Validation<D, T, M>,
     metadataDefault: T,
+    job: Job = this.job,
     id: String = Id.next(),
 ): ValidatingStore<D, T, M> =
-    ValidatingStore(initialData, job, validation, metadataDefault, validateAfterUpdate = true, id)
+    ValidatingStore(initialData, validation, metadataDefault,  job, validateAfterUpdate = true, id)
 
 /**
  * Convenience function to create a simple [ValidatingStore] without any metadata and handlers.
@@ -156,11 +156,11 @@ fun <D, T, M> WithJob.storeOf(
  */
 fun <D, M> WithJob.storeOf(
     initialData: D,
-    job: Job = this.job,
     validation: Validation<D, Unit, M>,
+    job: Job = this.job,
     id: String = Id.next(),
 ): ValidatingStore<D, Unit, M> =
-    ValidatingStore(initialData, job, validation, Unit, validateAfterUpdate = true, id)
+    ValidatingStore(initialData, validation, Unit, job, validateAfterUpdate = true, id)
 
 /**
  * Finds all corresponding [ValidationMessage]s to this [Store].

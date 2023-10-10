@@ -149,7 +149,7 @@ open class RootStore<D>(
     /**
      * [Job] used as parent job on all coroutines started in [Handler]s in the scope of this [Store]
      */
-    override val job: Job = (MainScope() + job).launch(start = CoroutineStart.UNDISPATCHED) {
+    final override val job: Job = (MainScope() + job).launch(start = CoroutineStart.UNDISPATCHED) {
         activeJobs.incrementAndGet()
         queue.consumeEach { update ->
             try {
@@ -195,7 +195,7 @@ open class RootStore<D>(
     override val update = this.handle<D> { _, newValue -> newValue }
 
     private val withJob = object : WithJob {
-        override val job: Job by lazy { this@RootStore.job }
+        override val job: Job = this@RootStore.job
         override fun errorHandler(cause: Throwable) = this@RootStore.errorHandler(cause)
     }
 

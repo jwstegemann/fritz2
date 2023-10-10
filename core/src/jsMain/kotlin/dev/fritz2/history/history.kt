@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.map
  * @param capacity max number of entries in history
  * @param initialValue initial content of the history
  */
-fun <T> history(capacity: Int = 0, initialValue: List<T> = emptyList(), job: Job) =
+fun <T> history(capacity: Int = 0, initialValue: List<T> = emptyList(), job: Job = Job()) =
     History(capacity, initialValue, job)
 
 /**
@@ -51,7 +51,7 @@ fun <D> Store<D>.history(capacity: Int = 0, initialEntries: List<D> = emptyList(
 class History<T>(
     private val capacity: Int,
     initialEntries: List<T>,
-    job: Job
+    override val job: Job = Job()
 ) : WithJob {
     init {
         require(initialEntries.size <= capacity) {
@@ -60,8 +60,6 @@ class History<T>(
     }
 
     private val state: MutableStateFlow<List<T>> = MutableStateFlow(initialEntries)
-
-    override val job: Job = Job(job)
 
     /**
      * Gives a [Flow] with the entries of the history.

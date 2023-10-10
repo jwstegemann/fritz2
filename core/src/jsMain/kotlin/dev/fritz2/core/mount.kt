@@ -48,7 +48,7 @@ interface MountPoint {
 internal abstract class MountPointImpl : MountPoint, WithJob {
 
 
-    val mutex = Mutex()
+    private val mutex = Mutex()
 
     suspend fun runBeforeUnmounts() = (MainScope() + job).launch(NonCancellable) {
         mutex.withLock {
