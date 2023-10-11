@@ -18,7 +18,7 @@ import org.w3c.dom.HTMLElement
  */
 class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
 
-    private class DisabledTabStore(initial: List<Boolean>) : RootStore<List<Boolean>>(initial, job = Job()) {
+    private class DisabledTabStore(initial: List<Boolean>, job: Job) : RootStore<List<Boolean>>(initial, job = job) {
         val addTab = handle { state -> state + false }
 
         fun disabledHandler(index: Int) = handle<Boolean> { state, disabled ->
@@ -26,7 +26,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
         }
     }
 
-    private val disabledTabs = DisabledTabStore(emptyList())
+    private val disabledTabs = DisabledTabStore(emptyList(), job)
     val value by lazy { DatabindingProperty<Int>() }
 
     /**

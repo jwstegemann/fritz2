@@ -16,7 +16,7 @@ import org.w3c.dom.*
  *
  * For more information refer to the [official documentation](https://www.fritz2.dev/headless/modal/)
  */
-class Modal(id: String?) : OpenClose(), WithJob {
+class Modal(id: String?) : OpenClose() {
 
     val componentId: String by lazy { id ?: Id.next() }
 

@@ -39,7 +39,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
 
     internal data class ListboxEntry<T>(val value: T, val disabled: Boolean, var character: Char?)
 
-    private val entries = object : RootStore<List<ListboxEntry<T>>>(emptyList(), job = Job()) {
+    private val entries = object : RootStore<List<ListboxEntry<T>>>(emptyList(), job = job) {
         val addEntry = handle<ListboxEntry<T>> { old, entry -> old + entry }
         val setCharacter = handle<Pair<Int, Char?>> { old, (index, c) ->
             old.mapIndexed { i, o -> if (i == index) o.copy(character = c) else o }
