@@ -14,6 +14,10 @@ demoHash: tooltip
 demoHeight: 18rem
 ---
 
+::: warning
+**Beware:** To use the `tooltip`-function you have to include `portalRoot` at the end of your render context as explained [here](https://www.fritz2.dev/headless/#portalling).
+:::
+
 ## Basic Example
 
 Adding a tooltip to an existing `Tag` (a standard HTML-tag or one built by a headless component) is straight forward.
