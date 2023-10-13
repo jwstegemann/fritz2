@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.*
  * @param initialData first current value of this [Store]
  * @param validation [Validation] function to use at the data on this [Store].
  * @param metadataDefault default metadata to be used by the automatic validation (where no explicit values are given)
+ * @param job Job to be used by the [Store]
  * @param validateAfterUpdate flag to decide if a new value gets automatically validated after setting it to the [Store].
  * @param id id of this [Store]. Ids of parent [Store]s will be concatenated.
  */
@@ -98,6 +99,7 @@ val <M : ValidationMessage> Flow<List<M>>.valid: Flow<Boolean>
  * @param initialData first current value of this [Store]
  * @param validation [Validation] instance to use at the data on this [Store].
  * @param metadataDefault default metadata to be used by the automatic validation (where no explicit values are given)
+ * @param job Job to be used by the [Store]
  * @param id id of this [Store]. Ids of [SubStore]s will be concatenated.
  */
 fun <D, T, M> storeOf(
@@ -116,6 +118,7 @@ fun <D, T, M> storeOf(
  *
  * @param initialData first current value of this [Store]
  * @param validation [Validation] instance to use at the data on this [Store].
+ * @param job Job to be used by the [Store]
  * @param id id of this [Store]. Ids of [SubStore]s will be concatenated.
  */
 fun <D, M> storeOf(
@@ -134,6 +137,7 @@ fun <D, M> storeOf(
  * @param initialData first current value of this [Store]
  * @param validation [Validation] instance to use at the data on this [Store].
  * @param metadataDefault default metadata to be used by the automatic validation (where no explicit values are given)
+ * @param job Job to be used by the [Store]
  * @param id id of this [Store]. Ids of [SubStore]s will be concatenated.
  */
 fun <D, T, M> WithJob.storeOf(
@@ -152,6 +156,7 @@ fun <D, T, M> WithJob.storeOf(
  *
  * @param initialData first current value of this [Store]
  * @param validation [Validation] instance to use at the data on this [Store].
+ * @param job Job to be used by the [Store]
  * @param id id of this [Store]. Ids of [SubStore]s will be concatenated.
  */
 fun <D, M> WithJob.storeOf(

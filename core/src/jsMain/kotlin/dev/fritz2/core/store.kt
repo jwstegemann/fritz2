@@ -16,46 +16,46 @@ typealias Update<D> = suspend (D) -> D
 /**
  * [Store] interface is the main type for all two-way data binding activities.
  */
-abstract class Store<D> {
+interface Store<D> {
 
     /**
      * [Job] for launching coroutines in.
      */
-    abstract val job: Job
+    val job: Job
 
     /**
      * [id] of this [Store].
      * ids of depending [Store]s are concatenated and separated by a dot.
      */
-    abstract val id: String
+    val id: String
 
     /**
      * Path of this [Store] derived from the underlying model.
      * Paths of depending [Store]s are concatenated and separated by a dot.
      */
-    abstract val path: String
+    val path: String
 
     /**
      * the [Flow] representing the current value of the [Store]. Use this to bind it to ui-elements or derive calculated values by using [map] for example.
      */
-    abstract val data: Flow<D>
+    val data: Flow<D>
 
     /**
      * represents the current value of the [Store]
      */
-    abstract val current: D
+    val current: D
 
     /**
      * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
      */
-    abstract val update: Handler<D>
+    val update: Handler<D>
 
     /**
      * abstract method defining, how this [Store] handles an [Update]
      *
      * @param update the [Update] to handle
      */
-    abstract suspend fun enqueue(update: Update<D>)
+    suspend fun enqueue(update: Update<D>)
 
     /**
      * Factory method to create a [SimpleHandler] mapping the actual value of the [Store] and a given Action to a new value.
@@ -134,13 +134,14 @@ abstract class Store<D> {
  * A [Store] can be initialized with a given value.
  *
  * @param initialData first current value of this [Store]
+ * @param job Job to be used by the [Store]
  * @param id id of this [Store]. Ids of derived [Store]s will be concatenated.
  */
 open class RootStore<D>(
     initialData: D,
     job: Job,
     override val id: String = Id.next()
-) : Store<D>() {
+) : Store<D> {
     override val path: String = ""
 
     private val state: MutableStateFlow<D> = MutableStateFlow(initialData)
@@ -271,6 +272,7 @@ open class RootStore<D>(
  * Convenience function to create a simple [Store] without any handlers, etc.
  *
  * @param initialData first current value of this [Store]
+ * @param job Job to be used by the [Store]
  * @param id id of this store. Ids of derived [Store]s will be concatenated.
  */
 fun <D> storeOf(initialData: D, job: Job, id: String = Id.next()): Store<D> =
@@ -280,6 +282,7 @@ fun <D> storeOf(initialData: D, job: Job, id: String = Id.next()): Store<D> =
  * Convenience function to create a simple [Store] without any handlers, etc.
  *
  * @param initialData first current value of this [Store]
+ * @param job Job to be used by the [Store]
  * @param id id of this store. Ids of derived [Store]s will be concatenated.
  */
 fun <D> WithJob.storeOf(initialData: D, job: Job = this.job, id: String = Id.next()): Store<D> =

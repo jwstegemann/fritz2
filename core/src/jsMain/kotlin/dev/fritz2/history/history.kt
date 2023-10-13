@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.map
  *
  * @param capacity max number of entries in history
  * @param initialValue initial content of the history
+ * @param job Job to be used by the [History]
  */
 fun <T> history(capacity: Int = 0, initialValue: List<T> = emptyList(), job: Job = Job()) =
     History(capacity, initialValue, job)
@@ -23,6 +24,7 @@ fun <T> history(capacity: Int = 0, initialValue: List<T> = emptyList(), job: Job
  *
  * @param capacity max number of entries in history
  * @param initialValue initial content of the history
+ * @param job Job to be used by the [History]
  */
 fun <T> WithJob.history(capacity: Int = 0, initialValue: List<T> = emptyList(), job: Job = this.job) =
     History(capacity, initialValue, job)
@@ -34,6 +36,7 @@ fun <T> WithJob.history(capacity: Int = 0, initialValue: List<T> = emptyList(), 
  * @receiver [Store] to sync with
  * @param capacity max number of entries in history
  * @param initialEntries initial entries in history
+ * @param job Job to be used by the [History]
  * @param synced if true, the history will sync with store updates
  */
 fun <D> Store<D>.history(capacity: Int = 0, initialEntries: List<D> = emptyList(), job: Job = this.job, synced: Boolean = true) =
@@ -47,6 +50,7 @@ fun <D> Store<D>.history(capacity: Int = 0, initialEntries: List<D> = emptyList(
  *
  * @param capacity max number of entries in history
  * @param initialEntries initial entries in history
+ * @param job Job to be used by the [History]
  */
 class History<T>(
     private val capacity: Int,
