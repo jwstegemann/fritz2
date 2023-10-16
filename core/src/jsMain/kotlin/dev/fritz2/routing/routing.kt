@@ -3,7 +3,6 @@ package dev.fritz2.routing
 import dev.fritz2.core.Store
 import dev.fritz2.core.Update
 import dev.fritz2.core.lensForElement
-import dev.fritz2.history.History
 import kotlinx.browser.window
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -50,7 +49,7 @@ fun <T> routerOf(default: Route<T>, job: Job = Job()): Router<T> = Router(defaul
  */
 open class Router<T>(
     private val defaultRoute: Route<T>,
-    override val job: Job = Job()
+    override val job: Job
 ) : Store<T> {
 
     override val id: String = ""
@@ -105,7 +104,7 @@ open class Router<T>(
  * @param defaultRoute default [Route] to start with.
  * @param job Job to be used by the [Router]
  */
-open class MapRouter(defaultRoute: Map<String, String> = emptyMap(), job: Job = Job()) :
+open class MapRouter(defaultRoute: Map<String, String> = emptyMap(), job: Job) :
     Router<Map<String, String>>(MapRoute(defaultRoute), job) {
 
     /**

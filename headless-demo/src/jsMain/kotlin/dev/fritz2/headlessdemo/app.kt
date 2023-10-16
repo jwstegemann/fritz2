@@ -137,6 +137,6 @@ fun main() {
             }
         }
 
-        portalRoot ()
+        portalRoot()
     }
 }

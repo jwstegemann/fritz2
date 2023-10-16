@@ -120,7 +120,7 @@ interface Store<D> {
      *
      * @param cause Throwable to handle
      */
-    open fun errorHandler(cause: Throwable): Unit = printErrorIgnoreLensException(cause)
+    fun errorHandler(cause: Throwable): Unit = printErrorIgnoreLensException(cause)
 
     /**
      * Creates a new [Store] that contains data derived by a given [Lens].
@@ -203,7 +203,7 @@ open class RootStore<D>(
     /**
      * Allows to use the [WithJob]-Context of this Store. Allows to run [handledBy] on the Store-Job
      */
-    protected fun withJobContext(init: WithJob.() -> Unit) = withJob.init()
+    protected fun runWithJob(init: WithJob.() -> Unit) = withJob.init()
 
     /**
      * Connects a [Flow] to a [Handler].
@@ -211,7 +211,7 @@ open class RootStore<D>(
      * @param handler [Handler] that will be called for each action/event on the [Flow]
      * @receiver [Flow] of action/events to bind to a [Handler]
      */
-    protected infix fun <A> Flow<A>.handledBy(handler: Handler<A>) = withJobContext { this@handledBy handledBy handler }
+    protected infix fun <A> Flow<A>.handledBy(handler: Handler<A>) = runWithJob { this@handledBy handledBy handler }
 
     /**
      * Connects a [Flow] to a suspendable [execute] function.
@@ -220,8 +220,7 @@ open class RootStore<D>(
      * @receiver [Flow] of action/events to bind to
      */
     protected infix fun <A> Flow<A>.handledBy(execute: suspend (A) -> Unit) =
-        withJobContext { this@handledBy handledBy execute }
-
+        runWithJob { this@handledBy handledBy execute }
 
     /**
      * Connects [Event]s to a [Handler].
@@ -230,7 +229,7 @@ open class RootStore<D>(
      * @param handler that will handle the fired [Event]
      */
     protected infix fun <E : Event> Flow<E>.handledBy(handler: Handler<Unit>) =
-        withJobContext { this@handledBy handledBy handler }
+        runWithJob { this@handledBy handledBy handler }
 
     /**
      * Connects a [Flow] to a suspendable [execute] function.
@@ -239,7 +238,7 @@ open class RootStore<D>(
      * @param execute function that will handle the fired [Event]
      */
     protected infix fun <E : Event> Flow<E>.handledBy(execute: suspend (E) -> Unit) =
-        withJobContext { this@handledBy handledBy execute }
+        runWithJob { this@handledBy handledBy execute }
 
     companion object {
         private val activeFlows = atomic(0)

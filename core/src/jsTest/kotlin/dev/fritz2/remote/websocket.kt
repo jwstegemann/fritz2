@@ -182,7 +182,7 @@ class WebSocketTests {
 
             init {
                 val store = this
-                withJobContext { syncWith(store, socket) }
+                runWithJob { syncWith(store, socket) }
             }
         }
 

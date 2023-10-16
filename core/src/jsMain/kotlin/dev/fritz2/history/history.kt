@@ -16,16 +16,6 @@ import kotlinx.coroutines.flow.map
  * @param initialValue initial content of the history
  * @param job Job to be used by the [History]
  */
-fun <T> history(capacity: Int = 0, initialValue: List<T> = emptyList(), job: Job = Job()) =
-    History(capacity, initialValue, job)
-
-/**
- * factory-method to create a [History]
- *
- * @param capacity max number of entries in history
- * @param initialValue initial content of the history
- * @param job Job to be used by the [History]
- */
 fun <T> WithJob.history(capacity: Int = 0, initialValue: List<T> = emptyList(), job: Job = this.job) =
     History(capacity, initialValue, job)
 
@@ -44,7 +34,6 @@ fun <D> Store<D>.history(capacity: Int = 0, initialEntries: List<D> = emptyList(
         if (synced) this@history.data handledBy { push(it) }
     }
 
-
 /**
  * Keeps track of historical values (i.e. of a [Store]) and allows you to navigate back in history
  *
@@ -55,7 +44,7 @@ fun <D> Store<D>.history(capacity: Int = 0, initialEntries: List<D> = emptyList(
 class History<T>(
     private val capacity: Int,
     initialEntries: List<T>,
-    override val job: Job = Job()
+    override val job: Job
 ) : WithJob {
     init {
         require(initialEntries.size <= capacity) {
