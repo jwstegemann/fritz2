@@ -595,7 +595,20 @@ object InputStore : RootStore<String>("", job = Job()) {
 }
 ```
 
-TODO: Hier fehlt noch ein Beispiel für die Verbindung im `init`-Block!
+Another common pattern is to connect different stores inside the `init`-block of a `Store`:
+```kotlin
+object SaveStore : RootStore<String>("", job = Job()) {
+    val save = handle<String> { _, data -> data }
+}
+
+object InputStore : RootStore<String>("", job = Job()) {
+    
+    init {
+        data handledBy SaveStore.save
+        // call any arbitrary number of connections
+    }
+}
+```
 
 Have a look at our [nested model](/examples/nestedmodel) example too.
 
@@ -637,7 +650,7 @@ But this is as so bad, as it sounds!
 
 There are basically two different kind of stores, which you have to deal with:
 - Global application stores, that exist for the whole lifetime of an application.
-- Temporary stores that exist only within some reactively rendered UI-portion.
+- Local stores that exist only within some reactively rendered UI-portion.
 
 And job-handling for both types is really easy!
 
@@ -673,7 +686,7 @@ any `WithJob`-context):
 val storedInterests = storeOf<List<Interest>>(emptyList(), job = Job())
 ```
 
-#### Stores as part of Reactive Rendering
+#### Local Stores as Part of Reactive Rendering
 
 On the other hand, there are `Store`s that handle data, that is only needed inside some limited, reactively rendered
 UI-portion and should exist only for same time as the surrounding `RenderContext` exists. Those kind of stores
