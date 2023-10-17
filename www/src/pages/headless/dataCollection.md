@@ -30,7 +30,7 @@ over and render the rows of the table. If you told the `DataCollection` to use a
 to use the same `IdProvider` here in `renderEach`.
 
 ```kotlin
-val persons = storeOf(listOf(Person( /*... */ )))
+val persons = storeOf(listOf(Person( /*... */ )), job = Job())
 
 dataCollection<Person> {
     data(persons.data, Person::id)
@@ -122,7 +122,7 @@ is used to produce a `String` that is checked to contain (case-insensitive) the 
 You can provide a lambda to create a different `String` representation for an item to be searched:
 
 ```kotlin
-    val filterStore = storeOf("")
+    val filterStore = storeOf("", job = Job())
     inputField {
         value(filterStore)
         inputTextfield { placeholder("filter...") }

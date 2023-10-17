@@ -21,7 +21,7 @@ binding named `value` has to be initialized.
 Furthermore, the actual input element must be created using `textareaTextfield`.
 
 ```kotlin
-val name = storeOf("")
+val name = storeOf("", job = Job())
 
 textArea {
     value(name)
@@ -40,7 +40,7 @@ If the HTML `label` tag is used for the label (by default), a mouse click on the
 focused.
 
 ```kotlin
-val name = storeOf("")
+val name = storeOf("", job = Job())
 
 textArea {
     value(name)

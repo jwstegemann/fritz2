@@ -66,7 +66,7 @@ You can structure and implement your validation-rules with everything Kotlin off
 Now you can use the `Validation` object in your `jsMain` code:
 
 ```kotlin
-val store: ValidatingStore<Person, Unit, Message> = storeOf(Person("Chris", 42), Person.validation)
+val store: ValidatingStore<Person, Unit, Message> = storeOf(Person("Chris", 42), Person.validation, job = Job())
 val msgs: Flow<List<Message>> = store.messages
 ```
 By default, a `ValidatingStore` automatically validates its data after changes occur to update the list of messages.
@@ -93,7 +93,7 @@ If you want to start the validation process in a specific handler you can do so 
 by yourself:
 
 ```kotlin
-object PersonStore: ValidatingStore<Person, Unit, Message>(Person("", 0), Person.validation) {
+object PersonStore: ValidatingStore<Person, Unit, Message>(Person("", 0), Person.validation, job = Job()) {
     val save = handle {
         if(validate(it).valid) {
             // send request to server...

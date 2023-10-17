@@ -84,7 +84,7 @@ fun Store<Person>.syncWith(socket: Socket) {
 
 val socket = websocket("ws://...")
 
-val entityStore = object : RootStore<Person>(Person()) {
+val entityStore = object : RootStore<Person>(Person(), job = Job()) {
     init {
         syncWith(socket, PersonResource)
     }

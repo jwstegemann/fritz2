@@ -90,9 +90,9 @@ render {
         </p>
         <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {% highlight "kotlin" %}
-val store = storeOf("Hello Peter")
-
 render {
+    val store = storeOf("Hello Peter")
+
     div("...") {
         input("...") {
             type("text")
@@ -152,9 +152,9 @@ val validation = validation<String, Message> {
         add(Message(it.path,"Not a valid mail address"))
 }
 
-val store = storeOf("", validation)
-
 render {
+    val store = storeOf("", validation)
+
     div("...") {
         input("...") {
             type("text")

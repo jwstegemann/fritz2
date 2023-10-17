@@ -17,9 +17,9 @@ You can easily create lightweight **reactive** HTML components which are bound t
 and **automatically** change whenever the model data changes:
 
 ```kotlin
-val model = storeOf("init value")
-
 render {
+    val model = storeOf("init value")
+    
     div("some-css-class") {
         input {
             value(model.data)

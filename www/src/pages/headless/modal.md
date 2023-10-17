@@ -27,7 +27,7 @@ upcoming event, e.g. by clicking on a button.
 Closing is usually triggered within the modal dialog. The scope of `modal` provides the `close` handler for this task.
 
 ```kotlin
-val toggle = storeOf(false)
+val toggle = storeOf(false, job = Job())
 
 button {
     +"Open"

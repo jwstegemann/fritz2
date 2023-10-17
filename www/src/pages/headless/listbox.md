@@ -44,7 +44,7 @@ If the entries change, you must re-render the whole component.
 ```kotlin
 // some domain type for this example, a collection to choose from, and an external store
 val characters = listOf("Luke", "Leia", "Han",)
-val bestCharacter = storeOf("Luke")
+val bestCharacter = storeOf("Luke", job = Job())
 
 listbox<String> {
     // set up (two-way) data binding
@@ -109,7 +109,7 @@ val characters = listOf(
     "Han" to false
 )
     
-val bestCharacter = storeOf("Luke")
+val bestCharacter = storeOf("Luke", job = Job())
     
 listbox<String> {
     value(bestCharacter)
