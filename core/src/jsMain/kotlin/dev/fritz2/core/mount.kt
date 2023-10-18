@@ -50,7 +50,7 @@ internal abstract class MountPointImpl : MountPoint, WithJob {
 
     private val mutex = Mutex()
 
-    suspend fun runBeforeUnmounts() = (MainScope() + job).launch(NonCancellable) {
+    suspend fun runBeforeUnmounts() = withContext(NonCancellable) {
         mutex.withLock {
             beforeUnmountListeners.forEach {
                 try {
@@ -61,10 +61,10 @@ internal abstract class MountPointImpl : MountPoint, WithJob {
             }
             beforeUnmountListeners.clear()
         }
-    }.join()
+    }
 
 
-    suspend fun runAfterMounts() = (MainScope() + job).launch(NonCancellable) {
+    suspend fun runAfterMounts() = withContext(NonCancellable) {
         afterMountListeners.forEach {
             try {
                 it.handler(it.target, it.payload)
