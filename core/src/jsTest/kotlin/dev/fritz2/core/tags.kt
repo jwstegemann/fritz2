@@ -2,6 +2,7 @@ package dev.fritz2.core
 
 import dev.fritz2.runTest
 import kotlinx.browser.document
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -356,7 +357,7 @@ class TagTests {
     fun testWheneverWithFlowData() = runTest {
 
         val steering = storeOf(false)
-        val value = object : RootStore<String>("first") {
+        val value = object : RootStore<String>("first", job = Job()) {
             private val items = listOf("first", "second", "skipped", "fourth")
 
             val next = handle {

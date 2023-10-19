@@ -62,6 +62,11 @@ fritz2 supports reactive UIs as one of its core features, so let us enhance the 
 First of all, we need a so-called `Store` for holding the dynamic data of our application. Such stores are the heart
 of every fritz2 application; they provide the current value in a reactive way and handle all the data changes.
 
+:::info
+The store creation and its core functionalities will be explained in-depth in [chapter](/docs/createstores). 
+So do not care about the details, the relevant facts you need to understand this chapter are explained here. 
+:::
+
 The store's `data`-property offers a `Flow` of the stored value `T`. To reactively bind this value to the DOM, 
 use one of the `render*`-functions of the data flow on it. The function creates a so-called *mount-point* which manages 
 the automatic update of the DOM on every change of the store's data. The *mount-point* uses a dedicated tag created in 
@@ -77,10 +82,10 @@ on this topic only to help you understand the example.
 
 ```kotlin
 fun main() {
-    // define a store to hold the dynamic data, in this case a `String`
-    val storedName = storeOf("World")
-
     render {
+        // define a store to hold the dynamic data, in this case a `String`
+        val storedName = storeOf("World")
+
         div(id = "header") {
         }
         div(id = "container") {
@@ -155,9 +160,9 @@ All the building blocks we showcased here make fritz2 a fully reactive web frame
 
 ```kotlin
 fun main() {
-    val storedName = storeOf("World")
-
     render {
+        val storedName = storeOf("World")
+
         div("w-48 m-4 flex flex-col gap-2") {
             // ^^^^^^^^^^^^^^^^^^^^^^^^^^^
             // set (static) CSS classnames as first parameter of a tag factory
@@ -278,10 +283,10 @@ data as a parameter and returning `Unit`. Inside this `content` parameter, you t
 and can use all HTML tag factories to create the desired UI-fragment.
 
 ```kotlin
-// define a Person and "store" it
-val storedPerson = storeOf(Person(1, "Fritz", 42))
-
 render {
+    // define a Person and "store" it
+    val storedPerson = storeOf(Person(1, "Fritz", 42))
+
     storedPerson.data.render { person -> // the current store's value is injected
         dl {
             dt { +"Id" }
@@ -342,9 +347,9 @@ fritz2 offers a *dedicated* render variant called `renderText`
 on data flows of type `String`:
 
 ```kotlin
-val storedText = storeOf("fritz2")
-
 render {
+    val storedText = storeOf("fritz2")
+
     div {
         // attention: needs a *Tag*, not just a `RenderContext`
         storedText.data.renderText()
@@ -363,9 +368,9 @@ There is also an extension function `asString` which converts a `Flow<T>` to a `
 `toString` method internally:
 
 ```kotlin
-val storedCount = storeOf<Int>(0)
-
 render {
+    val storedCount = storeOf<Int>(0)
+
     div {
         storedCount.data.asString().renderText()
     }
@@ -376,9 +381,9 @@ The `renderText` function is useful when long text has smaller dynamic parts.
 Since only the smaller parts will change, the other parts must not be part of the mount-point:
 
 ```kotlin
-val storedText = storeOf("fritz2")
-
 render {
+    val storedText = storeOf("fritz2")
+
     p {
         +"There is an excellent Kotlin based framework named "
         storedText.data.renderText() // only the dynamic part is here; the other text-nodes are static
@@ -389,9 +394,9 @@ render {
 
 Imagine a `render` based solution on the contrary:
 ```kotlin
-val storedText = storeOf("fritz2")
-
 render {
+    val storedText = storeOf("fritz2")
+
     p {
         storedText.data.render { frameworkName ->
             +"There is an excellent Kotlin based framework named "
@@ -413,10 +418,10 @@ and thus is better to read.
 Since a store of `List<T>` is a common use case, fritz2 offers a special `renderEach` function for this as well:
 
 ```kotlin
-// define a store with some type of `List<T>`
-val storedInterests = storeOf(Interest.values().toList())
-
 render {
+    // define a store with some type of `List<T>`
+    val storedInterests = storeOf(Interest.values().toList())
+
     ul {
         // for every value of store's interest list, the provided `content` expression is executed
         storedInterests.data.renderEach { interest -> // the current applied value of the data flow
@@ -453,9 +458,9 @@ In order to gain some understanding for this technical aspect, consider the abov
 `render`-function:
 
 ```kotlin
-val storedInterests = storeOf(Interest.values().toList())
-
 render {
+    val storedInterests = storeOf(Interest.values().toList())
+
     ul {
         storedInterests.data.render { interests -> // name suggests a list
             // "manually" create <li> tags for each item
@@ -500,9 +505,9 @@ val persons = listOf(
     Person(3, "Cleopatra", 50)
 )
 
-val storedPersons = storeOf(persons)
-
 render {
+    val storedPersons = storeOf(persons)
+
     ul {
         storedPersons.data.renderEach(Person::id) { person ->
             //                        ^^^^^^^^^^
@@ -631,9 +636,9 @@ preferably appear only if the dependent element exist. The `attr` functions for 
 only set an attribute if the value is *not* `null`. This behaviour can be used to achieve the desired effect:
 
 ```kotlin
-val isOpened = storeOf(true)
-
 render {
+    val isOpened = storeOf(true)
+
     button {
         +"Toggle"
         clicks handledBy isOpened.handle { !it }
@@ -661,9 +666,9 @@ as possible.
 
 Let's recap the first reactive rendering example:
 ```kotlin
-val storedPerson = storeOf(Person(1, "Fritz", 42))
-
 render {
+    val storedPerson = storeOf(Person(1, "Fritz", 42))
+
     storedPerson.data.render { person ->
         dl {
             dt { +"Id" }
@@ -703,7 +708,7 @@ performance and reduce memory-usage:
 // define a small helper type to hold all static parts of a `Person`
 data class StaticPerson(val id: Int, val name: String)
 
-val storedPerson = object : RootStore<Person>(Person(1, "Fritz", 42)) {
+val storedPerson = object : RootStore<Person>(Person(1, "Fritz", 42), job = Job()) {
 
     // collect all static properties of the person into the helper class object
     val staticPart: Flow<StaticPerson> = data.map { StaticPerson(it.id, it.name) }
@@ -773,9 +778,9 @@ The above concept applies also to the `renderText`-function or [mapped stores](/
 
 Let's recap the first reactive rendering example:
 ```kotlin
-val storedPerson = storeOf(Person(1, "Fritz", 42))
-
 render {
+    val storedPerson = storeOf(Person(1, "Fritz", 42))
+
     storedPerson.data.render { person ->
         dl {
             dt { +"Id" }

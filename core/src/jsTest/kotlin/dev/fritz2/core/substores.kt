@@ -2,6 +2,7 @@ package dev.fritz2.core
 
 import dev.fritz2.runTest
 import kotlinx.browser.document
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLDivElement
@@ -25,7 +26,7 @@ class SubStoreTests {
     fun testSubStore() = runTest {
 
         val person = Person("Foo", Address("Bar Street 3", PostalCode(9999)))
-        val store = object : RootStore<Person>(person) {}
+        val store = object : RootStore<Person>(person, job = Job()) {}
 
         val nameSub = store.map(nameLens)
         val addressSub = store.map(addressLens)
@@ -80,7 +81,7 @@ class SubStoreTests {
     fun testSubStoreWithLensOf() = runTest {
 
         val person = Person("Foo", Address("Bar Street 3", PostalCode(9999)))
-        val store = object : RootStore<Person>(person, id = "person") {}
+        val store = object : RootStore<Person>(person, id = "person", job = Job()) {}
 
         val personFormatLens = lensOf(
             { value: Person ->
@@ -124,7 +125,7 @@ class SubStoreTests {
     fun testSubStoreWithRenderEach() = runTest {
 
         val id = Id.next()
-        val store = storeOf(listOf("a", "b", "c"))
+        val store = storeOf(listOf("a", "b", "c"), job = Job())
 
         lateinit var bStore: Store<String>
 
@@ -156,7 +157,7 @@ class SubStoreTests {
     fun testSubStoreWithRenderEachSameId() = runTest {
 
         val id = Id.next()
-        val store = object : RootStore<List<String>>(listOf("a", "b", "c", "b")) {
+        val store = object : RootStore<List<String>>(listOf("a", "b", "c", "b"), job = Job()) {
             var throwable: Throwable? = null
             override fun errorHandler(cause: Throwable) {
                 throwable = cause
@@ -184,7 +185,7 @@ class SubStoreTests {
         assertEquals("abcb", container.textContent)
         assertEquals(null, store.throwable)
 
-        bStore?.update("d")
+        bStore?.update?.invoke("d")
 
         delay(200)
         assertTrue(store.throwable is CollectionLensSetException)

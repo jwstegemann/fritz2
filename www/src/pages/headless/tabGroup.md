@@ -144,7 +144,7 @@ provided handler.
 If the data binding is not specified, the first active tab is always selected initially.
 
 ```kotlin
-val currentIndex = storeOf(1) // preselect *second* tab (0-based as all collections in Kotlin)
+val currentIndex = storeOf(1, job = Job()) // preselect *second* tab (0-based as all collections in Kotlin)
 
 currentIndex.data handledBy {
     console.log("Current Index is: $it")

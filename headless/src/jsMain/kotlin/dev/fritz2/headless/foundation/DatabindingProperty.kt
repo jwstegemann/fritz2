@@ -1,7 +1,7 @@
 package dev.fritz2.headless.foundation
 
 import dev.fritz2.core.Store
-import dev.fritz2.core.handledBy
+import dev.fritz2.core.WithJob
 import dev.fritz2.headless.validation.ComponentValidationMessage
 import dev.fritz2.validation.messages
 import dev.fritz2.validation.valid
@@ -38,7 +38,7 @@ class DatabindingProperty<T> : Property<DatabindingProperty.DataBinding<T>>() {
     data class DataBinding<T>(
         val id: String? = null,
         val data: Flow<T>,
-        val handler: ((Flow<T>) -> Unit)? = null,
+        val handler: (WithJob.(Flow<T>) -> Unit)? = null,
         val messages: Flow<List<ComponentValidationMessage>>? = null
     )
 
@@ -47,7 +47,7 @@ class DatabindingProperty<T> : Property<DatabindingProperty.DataBinding<T>>() {
 
     val data: Flow<T> by lazy { value?.data ?: emptyFlow() }
 
-    val handler: ((Flow<T>) -> Unit)? by lazy { value?.handler }
+    val handler: (WithJob.(Flow<T>) -> Unit)? by lazy { value?.handler }
 
     val hasError: Flow<Boolean> by lazy { value?.messages?.valid?.map { !it } ?: flowOf(false) }
 
@@ -57,9 +57,11 @@ class DatabindingProperty<T> : Property<DatabindingProperty.DataBinding<T>>() {
         id: String? = null,
         data: Flow<T>,
         messages: Flow<List<ComponentValidationMessage>>? = null,
-        handler: ((Flow<T>) -> Unit)? = null
+        handler: (WithJob.(Flow<T>) -> Unit)? = null
     ) {
         //FIXME: if (data is SharedFlow<T>) data else data.shareIn(MainScope() + job, SharingStarted.Lazily)
+        //  Pay attention, that we need some parent job here! It is crucial, that there is some cancellation, which
+        //  `WithJob` based context offer!
         value = DataBinding(id, data, handler, messages)
     }
 

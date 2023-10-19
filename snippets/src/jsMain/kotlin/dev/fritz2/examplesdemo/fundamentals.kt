@@ -3,9 +3,9 @@ package dev.fritz2.examplesdemo
 import dev.fritz2.core.*
 
 fun RenderContext.fundamentals() {
-    val store = storeOf("Hello, fritz2!")
-
     render {
+        val store = storeOf("Hello, fritz2!")
+
         div("p-4 text-sm font-medium text-gray-700 bg-white") {
             div("flex flex-col gap-2") {
                 label {

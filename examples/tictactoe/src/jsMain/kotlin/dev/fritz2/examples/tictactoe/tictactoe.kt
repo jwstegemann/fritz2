@@ -4,9 +4,10 @@ import dev.fritz2.core.RenderContext
 import dev.fritz2.core.RootStore
 import dev.fritz2.core.render
 import dev.fritz2.core.viewBox
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.map
 
-class GameStore(private val engine: Engine, initialState: GameState) : RootStore<GameState>(initialState) {
+class GameStore(private val engine: Engine, initialState: GameState) : RootStore<GameState>(initialState, job = Job()) {
 
     val field = data.map { it.field }
 

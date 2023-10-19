@@ -195,7 +195,7 @@ generally minimal:
 
 ```kotlin
 val frameworks = listOf("fritz2", "Spring", "flask")
-val storedChoice = storeOf(frameworks.first())
+val storedChoice = storeOf(frameworks.first(), job = Job())
 // headless start
 radioGroup<String>() { // <div>
     value(storedChoice) // data binding
@@ -221,7 +221,7 @@ val frameworks = listOf(
   Framework("fritz2", "Kotlin based, reactive, frontend based web framework"),
   // ... and some more...
 )
-val storedChoice = storeOf(null)
+val storedChoice = storeOf(null, job = Job())
 // headless start
 radioGroup<Framework?>() { // <div>
     value(storedChoice) // data binding

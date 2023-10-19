@@ -1,9 +1,10 @@
 package dev.fritz2.examples.gettingstarted
 
 import dev.fritz2.core.*
+import kotlinx.coroutines.Job
 
 fun main() {
-    val store = storeOf("")
+    val store = storeOf("", job = Job())
 
     render("#target") {
         div {

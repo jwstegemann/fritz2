@@ -22,7 +22,7 @@ component via the ``value`` property.
 The current status can be queried via the ``enabled`` data stream.
 
 ```kotlin
-val switchState = storeOf(false)
+val switchState = storeOf(false, job = Job())
 
 switch {
     value(switchState)
@@ -69,7 +69,7 @@ block `switchValidationMessages` that is only rendered when there are some messa
 within its scope as a data stream `msgs`.
 
 ```kotlin
-val switchState = storeOf(false)
+val switchState = storeOf(false, job = Job())
 
 switch {
     value(switchState)

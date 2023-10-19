@@ -44,7 +44,7 @@ Here is a short example which uses
 [https://github.com/Kotlin/kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization)
 to parse the returning JSON:
 ```kotlin
-val swapiStore = object : RootStore<String>("") {
+val swapiStore = object : RootStore<String>("", job = Job()) {
 
     private val api = http("https://swapi.dev/api")
         .acceptJson()
@@ -209,7 +209,7 @@ data class Credentials(val name: String = "", val password: String = "") {
 }
 
 object MyAuthentication : Authentication<Principal>() {
-    val loginStore = storeOf(Credentials())
+    val loginStore = storeOf(Credentials(), job = Job())
     
     val login = loginStore.handle {
         val form = FormData()

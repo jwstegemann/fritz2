@@ -53,9 +53,9 @@ import dev.fritz2.core.*
 // some styling is omitted; have a look at the complete example at the end of this chapter
 
 fun main() {
-    val store = storeOf("Hello, fritz2!")
-
     render {
+        val store = storeOf("Hello, fritz2!")
+
         div("w-48 m-4 flex flex-col gap-2") {
             label {
                 +"Input"
@@ -332,9 +332,9 @@ then running the app.
 import dev.fritz2.core.*
 
 fun main() {
-    val store = storeOf("Hello, fritz2!")
-
     render {
+        val store = storeOf("Hello, fritz2!")
+
         div("w-48 m-4 flex flex-col gap-2") {
             label {
                 +"Input"

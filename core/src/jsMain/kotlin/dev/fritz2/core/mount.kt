@@ -47,34 +47,32 @@ interface MountPoint {
 
 internal abstract class MountPointImpl : MountPoint, WithJob {
 
-    val mutex = Mutex()
 
-    suspend fun runBeforeUnmounts() = mutex.withLock {
-        if (job.isActive) {
-            (MainScope() + job).launch {
-                beforeUnmountListeners.forEach {
-                    try {
-                        it.handler(it.target, it.payload)
-                    } catch (e: Exception) {
-                        console.error("Error in beforeUnmounts", e)
-                    }
-                }
-                beforeUnmountListeners.clear()
-            }.join()
-        }
-    }
+    private val mutex = Mutex()
 
-    suspend fun runAfterMounts() {
-        (MainScope() + job).launch {
-            afterMountListeners.forEach {
+    suspend fun runBeforeUnmounts() = withContext(NonCancellable) {
+        mutex.withLock {
+            beforeUnmountListeners.forEach {
                 try {
                     it.handler(it.target, it.payload)
                 } catch (e: Exception) {
-                    console.error("Error in afterMounts", e)
+                    console.error("Error in beforeUnmounts", e)
                 }
             }
-            afterMountListeners.clear()
+            beforeUnmountListeners.clear()
         }
+    }
+
+
+    suspend fun runAfterMounts() = withContext(NonCancellable) {
+        afterMountListeners.forEach {
+            try {
+                it.handler(it.target, it.payload)
+            } catch (e: Exception) {
+                console.error("Error in afterMounts", e)
+            }
+        }
+        afterMountListeners.clear()
     }
 
     private val afterMountListeners: MutableList<DomLifecycleListener> = mutableListOf()
@@ -181,7 +179,7 @@ internal val SET_MOUNT_POINT_DATA_ATTRIBUTE: Tag<*>.() -> Unit = {
  */
 inline fun <T> mountSimple(parentJob: Job, upstream: Flow<T>, crossinline collect: suspend (T) -> Unit) {
     (MainScope() + parentJob).launch(start = CoroutineStart.UNDISPATCHED) {
-        upstream.distinctUntilChanged().onEach { collect(it) }.catch {
+        upstream.distinctUntilChanged().mapLatest { collect(it);it }.catch {
             when (it) {
                 is CollectionLensGetException -> {}
                 else -> console.error(it)
@@ -220,15 +218,16 @@ internal fun <V> RenderContext.mountPatches(
         target.job,
         createPatches(target, upstream.onEach { if (batch) target.inlineStyle("visibility: hidden;") }, mountPoints)
     ) { patches ->
-        patches.forEach { patch ->
-            when (patch) {
-                is Patch.Insert -> insert(target.domNode, mountPoints, patch.element, patch.index)
-                is Patch.InsertMany -> insertMany(target.domNode, mountPoints, patch.elements, patch.index)
-                is Patch.Delete -> delete(target.domNode, mountPoints, patch.start, patch.count)
-                is Patch.Move -> move(target.domNode, patch.from, patch.to)
+        withContext(NonCancellable) {
+            patches.forEach { patch ->
+                when (patch) {
+                    is Patch.Insert -> insert(target.domNode, mountPoints, patch.element, patch.index)
+                    is Patch.InsertMany -> insertMany(target.domNode, mountPoints, patch.elements, patch.index)
+                    is Patch.Delete -> delete(target.domNode, mountPoints, patch.start, patch.count)
+                    is Patch.Move -> move(target.domNode, patch.from, patch.to)
+                }
             }
         }
-
         if (batch) {
             kotlinx.browser.window.awaitAnimationFrame()
             target.inlineStyle("")

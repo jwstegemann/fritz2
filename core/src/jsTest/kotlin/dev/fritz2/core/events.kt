@@ -2,6 +2,7 @@ package dev.fritz2.core
 
 import dev.fritz2.runTest
 import kotlinx.browser.document
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
@@ -21,7 +22,7 @@ class EventsTest {
 
         val inputId = Id.next()
 
-        val store = object : RootStore<String>("start") {}
+        val store = object : RootStore<String>("start", job = Job()) {}
 
         render {
             section {
@@ -56,7 +57,7 @@ class EventsTest {
         val resultId = Id.next()
         val buttonId = Id.next()
 
-        val store = object : RootStore<String>("start") {
+        val store = object : RootStore<String>("start", job = Job()) {
             var countHandlerCalls = 0
 
             val addADot = handle { model ->
@@ -101,7 +102,7 @@ class EventsTest {
         val resultId = Id.next()
         val buttonId = Id.next()
 
-        val store = object : RootStore<String>("") {
+        val store = object : RootStore<String>("", job = Job()) {
             var countHandlerCalls = 0
 
             val addDot = handle { model ->
@@ -159,7 +160,7 @@ class EventsTest {
         val resultId = Id.next()
         val inputId = Id.next()
 
-        val store = object : RootStore<String>("") {
+        val store = object : RootStore<String>("", job = Job()) {
             var countHandlerCalls = 0
 
             val keyPressed = handle { _, shortcut: Shortcut ->
@@ -238,7 +239,7 @@ class EventsTest {
         val inputId = Id.next()
         val resultId = Id.next()
 
-        val store = object : RootStore<String>("start") {}
+        val store = object : RootStore<String>("start", job = Job()) {}
 
         render {
             section {
@@ -276,7 +277,7 @@ class EventsTest {
         val labelId = "labelId"
         val divId = "divId"
 
-        val store = object : RootStore<String>("") {
+        val store = object : RootStore<String>("", job = Job()) {
         }
 
         render {
@@ -365,7 +366,7 @@ class EventsTest {
         val windowEventText = "windowEventText"
         val windowSecondEventText = "windowSecondEventText"
 
-        val windowStore = object : RootStore<String>("") {}
+        val windowStore = object : RootStore<String>("", job = Job()) {}
 
         render {
             Window.clicks.stopImmediatePropagation().map {

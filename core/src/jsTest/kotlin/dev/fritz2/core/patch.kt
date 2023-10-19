@@ -2,6 +2,7 @@ package dev.fritz2.core
 
 import dev.fritz2.runTest
 import kotlinx.browser.document
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -17,7 +18,7 @@ class PatchTests {
         (document.getElementById(id) as HTMLButtonElement).click()
     }
 
-    class TestListStore : RootStore<List<String>>(listOf("a", "b", "c", "d")) {
+    class TestListStore : RootStore<List<String>>(listOf("a", "b", "c", "d"), job = Job()) {
         val append = handle { model -> model + "e" }
         val change = handle { model -> listOf(model.first(), "x") + model.takeLast(3) }
         val insert = handle { model -> listOf("y") + model }
@@ -79,7 +80,7 @@ class PatchTests {
             Entity("2", "b"),
             Entity("3", "c"),
             Entity("4", "d")
-        )
+        ), job = Job()
     ) {
         val append = handle { model -> model + Entity("5", "e") }
         val change = handle { model -> listOf(model.first(), Entity("2", "x")) + model.takeLast(3) }

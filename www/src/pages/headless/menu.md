@@ -43,7 +43,7 @@ val entries = listOf(
     MenuEntry("Move", HeroIcons.share),
 )
 
-val action = storeOf("")
+val action = storeOf("", job = Job())
 
 menu {
     menuButton {
@@ -102,7 +102,7 @@ val entries = listOf(
     MenuEntry("Encrypt", HeroIcons.key)
 )
 
-val action = storeOf("")
+val action = storeOf("", job = Job())
 
 menu {
     menuButton { /* ... */ }

@@ -2,11 +2,8 @@
 
 package dev.fritz2.validation
 
-import dev.fritz2.core.Id
-import dev.fritz2.core.RootStore
-import dev.fritz2.core.Store
-import dev.fritz2.core.SubStore
-import dev.fritz2.core.Handler
+import dev.fritz2.core.*
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 
 
@@ -33,6 +30,7 @@ import kotlinx.coroutines.flow.*
  * @param initialData first current value of this [Store]
  * @param validation [Validation] function to use at the data on this [Store].
  * @param metadataDefault default metadata to be used by the automatic validation (where no explicit values are given)
+ * @param job Job to be used by the [Store]
  * @param validateAfterUpdate flag to decide if a new value gets automatically validated after setting it to the [Store].
  * @param id id of this [Store]. Ids of parent [Store]s will be concatenated.
  */
@@ -40,9 +38,10 @@ open class ValidatingStore<D, T, M>(
     initialData: D,
     private val validation: Validation<D, T, M>,
     private val metadataDefault: T,
+    job: Job,
     private val validateAfterUpdate: Boolean = true,
-    override val id: String = Id.next()
-) : RootStore<D>(initialData, id) {
+    override val id: String = Id.next(),
+) : RootStore<D>(initialData, job, id) {
 
     private val validationMessages: MutableStateFlow<List<M>> = MutableStateFlow(emptyList())
 
@@ -100,15 +99,17 @@ val <M : ValidationMessage> Flow<List<M>>.valid: Flow<Boolean>
  * @param initialData first current value of this [Store]
  * @param validation [Validation] instance to use at the data on this [Store].
  * @param metadataDefault default metadata to be used by the automatic validation (where no explicit values are given)
+ * @param job Job to be used by the [Store]
  * @param id id of this [Store]. Ids of [SubStore]s will be concatenated.
  */
 fun <D, T, M> storeOf(
     initialData: D,
     validation: Validation<D, T, M>,
     metadataDefault: T,
-    id: String = Id.next()
+    job: Job = Job(),
+    id: String = Id.next(),
 ): ValidatingStore<D, T, M> =
-    ValidatingStore(initialData, validation, metadataDefault, validateAfterUpdate = true, id)
+    ValidatingStore(initialData, validation, metadataDefault, job, validateAfterUpdate = true, id)
 
 /**
  * Convenience function to create a simple [ValidatingStore] without any metadata and handlers.
@@ -117,14 +118,54 @@ fun <D, T, M> storeOf(
  *
  * @param initialData first current value of this [Store]
  * @param validation [Validation] instance to use at the data on this [Store].
+ * @param job Job to be used by the [Store]
  * @param id id of this [Store]. Ids of [SubStore]s will be concatenated.
  */
 fun <D, M> storeOf(
     initialData: D,
     validation: Validation<D, Unit, M>,
-    id: String = Id.next()
+    job: Job,
+    id: String = Id.next(),
 ): ValidatingStore<D, Unit, M> =
-    ValidatingStore(initialData, validation, Unit, validateAfterUpdate = true, id)
+    ValidatingStore(initialData, validation, Unit, job, validateAfterUpdate = true, id)
+
+/**
+ * Convenience function to create a simple [ValidatingStore] without any handlers, etc.
+ *
+ * The created [Store] validates its model after every update automatically.
+ *
+ * @param initialData first current value of this [Store]
+ * @param validation [Validation] instance to use at the data on this [Store].
+ * @param metadataDefault default metadata to be used by the automatic validation (where no explicit values are given)
+ * @param job Job to be used by the [Store]
+ * @param id id of this [Store]. Ids of [SubStore]s will be concatenated.
+ */
+fun <D, T, M> WithJob.storeOf(
+    initialData: D,
+    validation: Validation<D, T, M>,
+    metadataDefault: T,
+    job: Job = this.job,
+    id: String = Id.next(),
+): ValidatingStore<D, T, M> =
+    ValidatingStore(initialData, validation, metadataDefault,  job, validateAfterUpdate = true, id)
+
+/**
+ * Convenience function to create a simple [ValidatingStore] without any metadata and handlers.
+ *
+ * The created [Store] validates its model after every update automatically.
+ *
+ * @param initialData first current value of this [Store]
+ * @param validation [Validation] instance to use at the data on this [Store].
+ * @param job Job to be used by the [Store]
+ * @param id id of this [Store]. Ids of [SubStore]s will be concatenated.
+ */
+fun <D, M> WithJob.storeOf(
+    initialData: D,
+    validation: Validation<D, Unit, M>,
+    job: Job = this.job,
+    id: String = Id.next(),
+): ValidatingStore<D, Unit, M> =
+    ValidatingStore(initialData, validation, Unit, job, validateAfterUpdate = true, id)
 
 /**
  * Finds all corresponding [ValidationMessage]s to this [Store].

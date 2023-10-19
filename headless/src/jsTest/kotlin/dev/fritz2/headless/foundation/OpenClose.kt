@@ -17,7 +17,7 @@ class OpenCloseTest {
     fun testOpenClose() = runTest {
 
         val id = Id.next()
-        val openClose = object : OpenClose() {}
+        val openClose = object : OpenClose(), WithJob by this {}
         val state = storeOf(false)
         openClose.openState(state)
 
@@ -48,7 +48,7 @@ class OpenCloseTest {
         assertEquals("false", div.getAttribute("open"), "after second toggle")
     }
 
-    class OpenCloseTest : OpenClose() {
+    class OpenCloseTest(withJob: WithJob) : OpenClose(), WithJob by withJob {
 
         val id = Id.next()
 
@@ -68,7 +68,7 @@ class OpenCloseTest {
 
     @Test
     fun testOpenCloseFunctions() = runTest {
-        val openClose = OpenCloseTest()
+        val openClose = OpenCloseTest(this)
 
         render {
             openClose.create(this)

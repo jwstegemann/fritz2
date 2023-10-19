@@ -5,10 +5,11 @@ import dev.fritz2.core.placeholder
 import dev.fritz2.core.render
 import dev.fritz2.core.values
 import dev.fritz2.remote.http
+import kotlinx.coroutines.Job
 
 fun main() {
 
-    val userStore = object : RootStore<String>("") {
+    val userStore = object : RootStore<String>("", job = Job()) {
 
         val users = http("https://reqres.in/api/users")
 

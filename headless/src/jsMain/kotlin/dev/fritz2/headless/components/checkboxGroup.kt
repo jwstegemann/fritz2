@@ -160,11 +160,12 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
                     withKeyboardNavigation = false
                     toggleEvent = changes
                 }
-                value.handler?.invoke(value.data.flatMapLatest { value ->
+                value.handler?.invoke(this, value.data.flatMapLatest { value ->
                     toggleEvent.map { if (value.contains(option)) value - option else value + option }
                 })
                 if (withKeyboardNavigation) {
                     value.handler?.invoke(
+                        this,
                         value.data.flatMapLatest { value ->
                             keydowns.filter { shortcutOf(it) == Keys.Space }.map {
                                 it.stopImmediatePropagation()

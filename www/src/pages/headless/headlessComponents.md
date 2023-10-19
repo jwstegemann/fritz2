@@ -365,7 +365,7 @@ Summing up, this special property allows the user to expose and manage their dat
 reduced boilerplate code.
 
 ```kotlin
-val name = storeOf("fritz2")
+val name = storeOf("fritz2", job = Job())
 
 inputField {
 
@@ -444,7 +444,7 @@ someCoponent {
 }
 
 // ... or with dynamic content:
-val content = storeOf<String>(/* some initial value */)
+val content = storeOf<String>(/* some initial value */, job = Job())
 someComponent {
     label(content.data)
 }

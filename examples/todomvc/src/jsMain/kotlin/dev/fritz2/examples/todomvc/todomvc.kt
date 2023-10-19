@@ -4,6 +4,7 @@ import dev.fritz2.core.*
 import dev.fritz2.routing.routerOf
 import kotlinx.browser.localStorage
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.get
 
@@ -20,7 +21,7 @@ const val persistencePrefix = "todos"
 val router = routerOf("all")
 
 @ExperimentalStdlibApi
-object ToDoListStore : RootStore<List<ToDo>>(emptyList(), id = persistencePrefix) {
+object ToDoListStore : RootStore<List<ToDo>>(emptyList(), id = persistencePrefix, job = Job()) {
 
     private val query = handle {
         buildList {

@@ -35,7 +35,19 @@ fun <T> flowOnceOf(value: T) = OnlyOnceFlow(value)
  */
 interface Handler<A> {
     val process: (Flow<A>, Job) -> Unit
+
+    /**
+     * Calls this handler exactly once.
+     *
+     * @param data parameter forwarded to the handler
+     */
+    operator fun invoke(data: A) = this.process(flowOnceOf(data), Job())
 }
+
+/**
+ * Calls this handler exactly once.
+ */
+operator fun Handler<Unit>.invoke() = this.process(flowOnceOf(Unit), Job())
 
 /**
  * Defines, how to handle actions in your [Store]. Each Handler accepts actions of a defined type.

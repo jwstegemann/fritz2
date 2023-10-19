@@ -38,8 +38,9 @@ abstract class AbstractSwitch<C : HTMLElement>(
         attr(Aria.checked, enabled.asString())
         attr(Aria.invalid, "true".whenever(value.hasError))
         attr("tabindex", "0")
-        value.handler?.invoke(value.data.flatMapLatest { state -> clicks.map { !state } })
+        value.handler?.invoke(this, value.data.flatMapLatest { state -> clicks.map { !state } })
         value.handler?.invoke(
+            this,
             value.data.flatMapLatest { state ->
                 keydowns.filter { shortcutOf(it) == Keys.Space }.map {
                     it.stopImmediatePropagation()
@@ -174,7 +175,7 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
     ): Tag<CL> {
         addComponentStructureInfo("switchLabel", this@switchLabel.scope, this)
         return tag(this, classes, "$componentId-label", scope, content).apply {
-            value.handler?.invoke(value.data.flatMapLatest { state -> clicks.map { !state } })
+            value.handler?.invoke(this, value.data.flatMapLatest { state -> clicks.map { !state } })
         }.also { label = it }
     }
 
