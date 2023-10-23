@@ -172,9 +172,11 @@ individual states.
 For our example, we only need one store which we declare with the `storeOf` factory.
 
 ```kotlin
+render {
     // a store can be created anywhere in your application
     // pass some data as initial state to it
     val store = storeOf("Hello, fritz2!")
+}
 ```
 
 Once you have created the store, it can be used for...
@@ -270,8 +272,10 @@ We have one last basic concept to show you. In addition to reactive state handli
 Every store has an `id` property which is implicitly initialized with a random value when no parameter is passed:
 
 ```kotlin
-val storeWithExplicitId = storeOf("Data", id = "42")
-val storeWithRandomId = storeOf("Data") // id is created by `Id.next()`
+render {
+    val storeWithExplicitId = storeOf("Data", id = "42")
+    val storeWithRandomId = storeOf("Data") // id is created by `Id.next()` factory
+}
 ```
 
 This *id* is useful for linking data to the semantically corresponding part of the UI. Since the store holds the
