@@ -8,43 +8,6 @@ plugins {
     signing
 }
 
-// consider moving to idiomatic solution of gradle for dependency sharing once it is ready:
-// https://docs.gradle.org/current/userguide/platforms.html
-//extra.apply {
-//    // core
-//    set("kotlinVersion", "1.9.0")
-//    set("kspVersion", "1.9.0-1.0.13")
-//    set("coroutinesVersion", "1.6.4")
-//    set("serializationVersion", "1.4.0")
-//
-//    // test-server
-//    set("ktorVersion", "2.2.2")
-//    set("logbackVersion", "1.4.5")
-//
-//    // lenses-annotation-processor
-//    set("kotlinpoetVersion", "1.14.1")
-//    set("compileTestingVersion", "1.5.0")
-//    set("autoServiceVersion", "1.0.1")
-//    set("junitJupiterParamsVersion", "5.8.2")
-//    set("assertJVersion", "3.23.1")
-//
-//    // npm
-//    set("floatingui", "1.5.1")
-//    set("scroll-into-view-if-needed", "2.2.29")
-//
-//    // tailwind
-//    set("tailwindcss", "3.2.1")
-//    set("tailwindcss/forms", "0.5.3")
-//
-//    // webpack
-//    set("postcss", "8.4.17")
-//    set("postcss-loader", "7.0.1")
-//    set("autoprefixer", "10.4.12")
-//    set("css-loader", "6.7.1")
-//    set("style-loader", "3.3.1")
-//    set("cssnano", "5.1.13")
-//}
-
 allprojects {
     //manage common setting and dependencies
     repositories {
