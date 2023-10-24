@@ -39,7 +39,7 @@ kotlin {
         }
         val commonMain by getting {
             dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:${rootProject.extra["coroutinesVersion"]}")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:_")
             }
         }
         val commonTest by getting {
