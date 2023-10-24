@@ -8,4 +8,9 @@ config.set({
             flags: ['--disable-web-security']
         }
     },
+    client: {
+        mocha: {
+            timeout: "15s"
+        }
+    }
 });

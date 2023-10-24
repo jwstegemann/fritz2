@@ -2,6 +2,7 @@ package dev.fritz2.core
 
 import dev.fritz2.runTest
 import kotlinx.browser.document
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
@@ -21,9 +22,9 @@ class StoreTests {
         val id2 = Id.next()
         val buttonId = Id.next()
 
-        val store2 = object : RootStore<Int>(0) {}
+        val store2 = object : RootStore<Int>(0, job = Job()) {}
 
-        val store1 = object : RootStore<String>("start") {
+        val store1 = object : RootStore<String>("start", job = Job()) {
 
             val finish = handleAndEmit<Int> {
                 emit(5)
@@ -73,9 +74,9 @@ class StoreTests {
         val id3 = Id.next()
         val buttonId = Id.next()
 
-        val s3 = object : RootStore<String>("s3.start") {}
+        val s3 = object : RootStore<String>("s3.start", job = Job()) {}
 
-        val s2 = object : RootStore<String>("s2.start") {
+        val s2 = object : RootStore<String>("s2.start", job = Job()) {
             val finish = handleAndEmit<String, String> { _, action ->
                 emit("s2.finish")
                 action
@@ -86,7 +87,7 @@ class StoreTests {
             }
         }
 
-        val s1 = object : RootStore<String>("s1.start") {
+        val s1 = object : RootStore<String>("s1.start", job = Job()) {
 
             val finish = handleAndEmit<String> {
                 emit("s1.finish")
@@ -144,7 +145,7 @@ class StoreTests {
 
         val startValue = "start"
 
-        val store = object : RootStore<String>(startValue) {
+        val store = object : RootStore<String>(startValue, job = Job()) {
             override fun errorHandler(cause: Throwable) {
                 errorHandlerResult = cause.message.orEmpty()
             }
@@ -222,7 +223,7 @@ class StoreTests {
 
     @Test
     fun testMapNullResultsInSpecifiedDefaultValueWhenCalledOnNullContainingStore() {
-        val rootStore = storeOf<String?>(null)
+        val rootStore = storeOf<String?>(null, job = Job())
         val expected = "Foo"
 
         val resultStore = rootStore.mapNull(expected)

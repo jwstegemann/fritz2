@@ -44,7 +44,7 @@ For selecting or deselecting, a `Tag` must be created using `checkboxGroupOption
 // some domain type for this example, a collection to choose from, and an external store
 data class Newsletter(val id: Int, val title: String, val description: String, val users: Int)
 val mailingList = listOf<Newsletter>(/* ... */)
-val subscriptions = storeOf(emptyList<Newsletter>())
+val subscriptions = storeOf(emptyList<Newsletter>(), job = Job())
 
 checkboxGroup<HTMLFieldSetElement, Newsletter>(tag = RenderContext::fieldset) {
     // set up (two-way) data binding

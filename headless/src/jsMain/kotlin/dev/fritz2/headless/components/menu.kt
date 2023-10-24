@@ -5,6 +5,7 @@ import dev.fritz2.headless.foundation.*
 import dev.fritz2.headless.foundation.utils.scrollintoview.HeadlessScrollOptions
 import dev.fritz2.headless.foundation.utils.scrollintoview.scrollIntoView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
@@ -31,7 +32,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
 
     internal data class MenuEntry(val disabled: Boolean, val character: Char?)
 
-    private val items = object : RootStore<List<MenuEntry>>(emptyList()) {
+    private val items = object : RootStore<List<MenuEntry>>(emptyList(), job = Job()) {
         val addItem = handle<MenuEntry> { old, entry -> old + entry }
         val setCharacter = handle<Pair<Int, Char?>> { old, (index, c) ->
             old.mapIndexed { i, o -> if (i == index) o.copy(character = c) else o }

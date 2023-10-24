@@ -1,3 +1,5 @@
+import org.gradle.internal.impldep.org.joda.time.Duration
+
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
@@ -37,6 +39,7 @@ kotlin {
         }
         val commonMain by getting {
             dependencies {
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:${rootProject.extra["coroutinesVersion"]}")
             }
         }
         val commonTest by getting {
@@ -55,7 +58,6 @@ kotlin {
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:_")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:_")
             }
         }

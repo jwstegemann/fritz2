@@ -4,6 +4,7 @@ import dev.fritz2.core.*
 import dev.fritz2.history.history
 import dev.fritz2.tracking.tracker
 import kotlinx.browser.window
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -15,7 +16,7 @@ val numberFormat = lensOf(Int::toString, String::toInt)
 
 const val personPrefix = "dev.fritz2.examples.masterdetail.person"
 
-object MasterStore : RootStore<List<Person>>(emptyList()) {
+object MasterStore : RootStore<List<Person>>(emptyList(), job = Job()) {
 
     val query = handle {
         buildList {
@@ -38,7 +39,7 @@ object MasterStore : RootStore<List<Person>>(emptyList()) {
     }
 }
 
-object DetailStore : RootStore<Person>(Person()) {
+object DetailStore : RootStore<Person>(Person(), job = Job()) {
 
     val running = tracker()
     val history = history<Person>(10, synced = true)

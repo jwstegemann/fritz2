@@ -3,18 +3,19 @@ package dev.fritz2.examples.nestedmodel
 import dev.fritz2.core.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLDivElement
 
 
-object PersonStore : RootStore<Person>(Person(), id = "person") {
+object PersonStore : RootStore<Person>(Person(), id = "person", job = Job()) {
     val save = handleAndEmit<Person> { p ->
         emit(p)
         p
     }
 }
 
-object PersonListStore : RootStore<List<Person>>(emptyList(), id = "list") {
+object PersonListStore : RootStore<List<Person>>(emptyList(), id = "list", job = Job()) {
     private val add: SimpleHandler<Person> = handle { list, person ->
         list + person
     }

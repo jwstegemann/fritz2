@@ -25,7 +25,7 @@ enum class Severity {
  * @param message contains the message
  * @param details optional details for extending the message
  */
-open class ComponentValidationMessage(
+data class ComponentValidationMessage(
     override val path: String,
     val severity: Severity,
     val message: String,

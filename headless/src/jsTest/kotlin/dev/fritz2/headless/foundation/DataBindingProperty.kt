@@ -66,7 +66,7 @@ class DataBindingPropertyTest {
     fun testDataBindingPropertyWithStore() = runTest {
         val id = Id.next()
         val msgs = Id.next()
-        val state = storeOf(false, validation, id)
+        val state = storeOf(false, validation = validation, id = id)
         val prop = DatabindingProperty<Boolean>()
         prop(state)
 
@@ -93,7 +93,7 @@ class DataBindingPropertyTest {
         assertEquals("false", ul.getAttribute("hasError"))
         assertEquals(0, ul.childElementCount)
 
-        prop.handler?.invoke(flowOf(true))
+        prop.handler?.invoke(this, flowOf(true))
         delay(100)
         assertEquals("true", div.getAttribute("state"))
         assertEquals("true", div.getAttribute("prop"))

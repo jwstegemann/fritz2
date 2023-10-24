@@ -22,7 +22,7 @@ class SwitchTest {
     fun testSwitch() = runTest {
         val name = "switch"
         val componentId = "$name-${Id.next()}"
-        val componentState = storeOf(TestModel(), TestModel.validation).map(TestModel.switch)
+        val componentState = storeOf(TestModel(), validation = TestModel.validation).map(TestModel.switch)
 
         render {
             switchWithLabel("classes", componentId, { set(scopeTestKey, scopeTestValue) }, RenderContext::button) {

@@ -15,7 +15,7 @@ private data class ToastSlice(
     val content: RenderContext.() -> Tag<HTMLElement>
 )
 
-private object ToastStore : RootStore<List<ToastSlice>>(emptyList()) {
+private object ToastStore : RootStore<List<ToastSlice>>(emptyList(), job = Job()) {
 
     val add = handle<ToastSlice> { toasts, toast -> toasts + toast }
     val remove = handle<String> { toasts, id -> toasts.filterNot { it.id == id } }

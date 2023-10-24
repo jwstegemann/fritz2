@@ -44,7 +44,7 @@ For selecting, a `Tag` must be created using `radioGroupOptionToggle`.
 // some domain type for this example, a collection to choose from, and an external store
 data class Plan(val name: String, val ram: String, val cpus: String, val disk: String, val price: String)
 val plans = listOf<Plan>(/* ... */)
-val choice = storeOf<Plan?>(null)
+val choice = storeOf<Plan?>(null, job = Job())
 
 radioGroup<HTMLFieldSetElement, Plan?>(tag = RenderContext::fieldset) {
     // set up (two-way) data binding

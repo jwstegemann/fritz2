@@ -17,23 +17,26 @@ import org.w3c.dom.events.Event
  * Creates a new simple [String] based [Router]
  *
  * @param default default route
+ * @param job Job to be used by the [Router]
  */
-fun routerOf(default: String = ""): Router<String> = Router(StringRoute(default))
+fun routerOf(default: String = "", job: Job = Job()): Router<String> = Router(StringRoute(default), job)
 
 /**
  * Creates a new [Map] based [Router]
  *
  * @param default default route
+ * @param job Job to be used by the [Router]
  */
-fun routerOf(default: Map<String, String> = emptyMap()) = MapRouter(default)
+fun routerOf(default: Map<String, String> = emptyMap(), job: Job = Job()) = MapRouter(default, job)
 
 /**
  * Creates a new type based [Router].
  * Therefore, the given type must implement the [Route] interface.
  *
  * @param default default route
+ * @param job Job to be used by the [Router]
  */
-fun <T> routerOf(default: Route<T>): Router<T> = Router(default)
+fun <T> routerOf(default: Route<T>, job: Job = Job()): Router<T> = Router(default, job)
 
 /**
  * Router register the event-listener for hashchange-event and
@@ -42,16 +45,16 @@ fun <T> routerOf(default: Route<T>): Router<T> = Router(default)
  *
  * @param T type to marshal and unmarshal
  * @property defaultRoute default route to use when page is called and no hash is set
+ * @param job Job to be used by the [Router]
  */
 open class Router<T>(
     private val defaultRoute: Route<T>,
+    override val job: Job
 ) : Store<T> {
 
     override val id: String = ""
 
     override val path: String = ""
-
-    override val job: Job = Job()
 
     private val state: MutableStateFlow<T> = MutableStateFlow(defaultRoute.default)
 
@@ -99,9 +102,10 @@ open class Router<T>(
  * Represents the current [Route] as [Map] of [String]s.
  *
  * @param defaultRoute default [Route] to start with.
+ * @param job Job to be used by the [Router]
  */
-open class MapRouter(defaultRoute: Map<String, String> = emptyMap()) :
-    Router<Map<String, String>>(MapRoute(defaultRoute)) {
+open class MapRouter(defaultRoute: Map<String, String> = emptyMap(), job: Job) :
+    Router<Map<String, String>>(MapRoute(defaultRoute), job) {
 
     /**
      * Selects with the given [key] a [Pair] of the value

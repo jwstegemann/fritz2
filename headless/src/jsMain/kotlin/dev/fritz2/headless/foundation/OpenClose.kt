@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.merge
  * - [closeOnEscape]
  * - [closeOnBlur]
  */
-abstract class OpenClose {
+abstract class OpenClose: WithJob {
 
     val openState = DatabindingProperty<Boolean>()
 
@@ -31,19 +31,19 @@ abstract class OpenClose {
 
     val close by lazy {
         SimpleHandler<Unit> { data, _ ->
-            openState.handler?.invoke(data.map { false })
+            openState.handler?.invoke(this, data.map { false })
         }
     }
 
     val open by lazy {
         SimpleHandler<Unit> { data, _ ->
-            openState.handler?.invoke(data.map { true })
+            openState.handler?.invoke(this, data.map { true })
         }
     }
 
     val toggle by lazy {
         SimpleHandler<Unit> { data, _ ->
-            openState.handler?.invoke(openState.data.flatMapLatest { state ->
+            openState.handler?.invoke(this, openState.data.flatMapLatest { state ->
                 data.map {
                     !state
                 }
@@ -57,7 +57,7 @@ abstract class OpenClose {
      * `button` element behave natively.
      */
     protected fun Tag<*>.toggleOnClicksEnterAndSpace() {
-        openState.handler?.invoke(openState.data.flatMapLatest { state ->
+        openState.handler?.invoke(this, openState.data.flatMapLatest { state ->
             merge(
                 clicks,
                 keydowns.filter { setOf(Keys.Space, Keys.Enter).contains(shortcutOf(it)) }

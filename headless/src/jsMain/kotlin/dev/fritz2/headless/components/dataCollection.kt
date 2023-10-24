@@ -4,6 +4,7 @@ import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.*
 import dev.fritz2.headless.foundation.utils.scrollintoview.*
 import kotlinx.browser.document
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.plus
@@ -55,7 +56,7 @@ class CollectionDataProperty<T> : Property<CollectionData<T>>() {
  *
  * Of course both can be omitted if no selection is needed.
  */
-class SelectionMode<T> {
+class SelectionMode<T>(override val job: Job) : WithJob {
     val single = DatabindingProperty<T?>()
     val multi = DatabindingProperty<List<T>>()
 
@@ -116,6 +117,7 @@ class SelectionMode<T> {
     fun sanitizeSelection(availableItems: Flow<List<T>>, data: CollectionData<T>) {
         if (single.isSet) {
             single.handler?.invoke(
+                this,
                 availableItems.flatMapLatest { items ->
                     single.data.map { current ->
                         if (items.any { data.isSame(current, it) }) current else null
@@ -124,6 +126,7 @@ class SelectionMode<T> {
             )
         } else {
             multi.handler?.invoke(
+                this,
                 availableItems.flatMapLatest { items ->
                     if (data.idProvider != null) {
                         val itemIds = items.map(data.idProvider).toHashSet()
@@ -190,7 +193,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
             list.indexOfFirst { id(it) == id(item) }
         } ?: list.indexOf(item)
 
-    private val sorting = storeOf<SortingOrder<T>?>(null)
+    private val sorting = storeOf<SortingOrder<T>?>(null, job)
     val sortBy = sorting.update
     val toggleSorting = sorting.handle<Sorting<T>> { old, newSorting ->
         if (old?.sorting == newSorting) {
@@ -205,7 +208,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         }
     }
 
-    private val filtering = storeOf<((List<T>) -> List<T>)?>(null)
+    private val filtering = storeOf<((List<T>) -> List<T>)?>(null, job)
     val filterBy = filtering.update
     fun filterByText(toString: (T) -> String = { it.toString() }) = filtering.handle<String> { _, text ->
         { it.filter { toString(it).lowercase().contains(text.lowercase()) } }
@@ -217,7 +220,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         } ?: SortDirection.NONE
     }
 
-    val selection = SelectionMode<T>()
+    val selection = SelectionMode<T>(job)
 
     inner class DataCollectionSortButton<CS : HTMLElement>(val sorting: Sorting<T>, tag: Tag<CS>) :
         Tag<CS> by tag {
@@ -353,7 +356,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
             }
         }.shareIn(MainScope() + job, SharingStarted.Eagerly, 1)
 
-        private val activeItem = storeOf<Pair<T, Boolean>?>(null)
+        private val activeItem = storeOf<Pair<T, Boolean>?>(null, job)
 
         fun render() {
             attr("tabindex", "0")

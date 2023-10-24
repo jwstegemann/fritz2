@@ -56,7 +56,7 @@ by typing them as CSV.
 But in order to further process these interests, it makes more sense to store them in a `List<Interest>`, so that will
 be the canonical state representation in our application:
 ```kotlin
-val interestsStore: Store<List<Interest>> = storeOf(emptyList())
+val interestsStore: Store<List<Interest>> = storeOf(emptyList(), job = Job())
 ```
 However, this representation does not fit the requirements of the specific UI-fragment - but no worries! Simply define 
 a `Lens` that does the mapping between the list and the `String` based CSV representation:
@@ -69,7 +69,7 @@ val interestLens: Lens<List<Interest>, String> = lensOf(
 
 Armed with this lens, we can map the interest-store and use the resulting store in the UI:
 ```kotlin
-val interestsStore: Store<List<Interest>> = storeOf(emptyList())
+val interestsStore: Store<List<Interest>> = storeOf(emptyList(), job = Job())
 
 val interestLens: Lens<List<Interest>, String> = lensOf(
     List<Interest>::joinToString,
@@ -193,7 +193,7 @@ data class Person(val name: Name, description: String) {
 }
 
 // ... you can create a root-store...
-val personStore = storeOf(Person(Name("first name", "last name"), "more text"))
+val personStore = storeOf(Person(Name("first name", "last name"), "more text"), job = Job())
 // ... and a derived store using the automatic generated lens-factory `Person.name()`
 val nameStore = personStore.map(Person.name())
 ```
@@ -232,7 +232,7 @@ data class Person(val name: String)
 
 //...
 
-val storedPerson = storeOf<Person?>(null)
+val storedPerson = storeOf<Person?>(null, job = Job())
 
 //...
 
@@ -260,7 +260,7 @@ After text is entered into and then removed from the input of the following exam
 `null`: 
 
 ```kotlin
-val nameStore = storeOf<String?>(null)
+val nameStore = storeOf<String?>(null, job = Job())
 
 render {
     input {
@@ -281,7 +281,7 @@ data class Person(val name: String?)
 
 //...
 
-val personStore = storeOf(Person(null))
+val personStore = storeOf(Person(null), job = Job())
 
 //...
 
@@ -378,7 +378,7 @@ object Formats {
 Now you can use the `Formats.date` lens for deriving stores:
 
 ```kotlin
-val personStore = storeOf<Person>(Person(LocalDate(1990, 1, 1)))
+val personStore = storeOf<Person>(Person(LocalDate(1990, 1, 1)), job = Job())
 
 val birthday: Store<String> = personStore.map(Person.birthday() + Formats.date)
 // or when an interim store is needed
@@ -424,7 +424,7 @@ store-mapping takes place under the hood: For each element of the original list,
 handling that element from the original store is created.
 
 ```kotlin
-val storedPersons: Store<List<Person>> = storeOf(listOf(Person(1, "fritz2", emptySet())))
+val storedPersons: Store<List<Person>> = storeOf(listOf(Person(1, "fritz2", emptySet())), job = Job())
 
 // needed for mapping an already mapped store to destructure the model further 
 val nameLens: Lens<Person, String> = lensOf("name", Person::name) { person, name -> person.copy(name = name) }
@@ -452,7 +452,7 @@ Tables with editable cells are a typical use case for `Store<List<T>>.renderEach
 Check out the boilerplate code that can be omitted in comparison to using the `Flow<List<T>>.renderEach`-function:
 
 ```kotlin
-val storedPersons: Store<List<Person>> = storeOf(listOf(Person(1, "fritz2", emptySet())))
+val storedPersons: Store<List<Person>> = storeOf(listOf(Person(1, "fritz2", emptySet())), job = Job())
 
 val nameLens: Lens<Person, String> = lensOf("name", Person::name) { person, name -> person.copy(name = name) }
 

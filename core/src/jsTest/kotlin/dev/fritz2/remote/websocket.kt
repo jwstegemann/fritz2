@@ -3,6 +3,7 @@ package dev.fritz2.remote
 import dev.fritz2.core.*
 import dev.fritz2.runTest
 import kotlinx.browser.document
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
@@ -147,7 +148,7 @@ class WebSocketTests {
     private val ageLens = lensOf("age", SocketPerson::age) { p, v -> p.copy(age = v) }
     private val idLens = lensOf("id", SocketPerson::_id) { p, v -> p.copy(_id = v) }
 
-    fun Store<SocketPerson>.syncWith(socket: Socket) {
+    fun WithJob.syncWith(store: Store<SocketPerson>, socket: Socket) {
         val session = socket.connect()
         var last: SocketPerson? = null
         apply {
@@ -155,9 +156,9 @@ class WebSocketTests {
                 val received = Json.decodeFromString(SocketPerson.serializer(), it)
                 last = received
                 received
-            } handledBy this@syncWith.update
+            } handledBy store.update
 
-            this@syncWith.data.drop(1) handledBy {
+            store.data.drop(1) handledBy {
                 if (last != it) session.send(Json.encodeToString(SocketPerson.serializer(), it))
             }
         }
@@ -174,13 +175,14 @@ class WebSocketTests {
 
         val socket = websocket.append("json")
 
-        val entityStore = object : RootStore<SocketPerson>(defaultPerson) {
+        val entityStore = object : RootStore<SocketPerson>(defaultPerson, job = Job()) {
             override fun errorHandler(cause: Throwable) {
                 fail(cause.message)
             }
 
             init {
-                syncWith(socket)
+                val store = this
+                runWithJob { syncWith(store, socket) }
             }
         }
 

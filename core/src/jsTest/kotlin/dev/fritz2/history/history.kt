@@ -5,6 +5,7 @@ import dev.fritz2.core.RootStore
 import dev.fritz2.core.render
 import dev.fritz2.runTest
 import kotlinx.browser.document
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlin.test.Test
@@ -24,7 +25,7 @@ class HistoryTests {
         fun getHistory() = document.getElementById(historyId)?.textContent
         fun getAvailable() = document.getElementById(availableId)?.textContent?.toBoolean()
 
-        val store = object : RootStore<String>("A") {
+        val store = object : RootStore<String>("A", job = Job()) {
             val hist = history()
         }
 
@@ -90,7 +91,7 @@ class HistoryTests {
 
         val histLength = 4
 
-        val store = object : RootStore<String>("") {
+        val store = object : RootStore<String>("", job = Job()) {
             val hist = history(histLength)
 
         }

@@ -2,7 +2,7 @@ package dev.fritz2.headless.components
 
 import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.*
-import kotlinx.browser.document
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
@@ -18,7 +18,7 @@ import org.w3c.dom.HTMLElement
  */
 class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
 
-    private class DisabledTabStore(initial: List<Boolean>) : RootStore<List<Boolean>>(initial) {
+    private class DisabledTabStore(initial: List<Boolean>, job: Job) : RootStore<List<Boolean>>(initial, job = job) {
         val addTab = handle { state -> state + false }
 
         fun disabledHandler(index: Int) = handle<Boolean> { state, disabled ->
@@ -26,7 +26,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
         }
     }
 
-    private val disabledTabs = DisabledTabStore(emptyList())
+    private val disabledTabs = DisabledTabStore(emptyList(), job)
     val value by lazy { DatabindingProperty<Int>() }
 
     /**
@@ -54,8 +54,9 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
 
     private val state by lazy { selected.combine(disabledTabs.data, ::Pair) }
 
-    private infix fun <T> Flow<T>.handledBy(handler: (Int, T, List<Boolean>) -> Int): Unit? =
+    private fun <T> Flow<T>.handledBy(withJob: WithJob, handler: (Int, T, List<Boolean>) -> Int): Unit? =
         value.handler?.invoke(
+            withJob,
             state.flatMapLatest { (currentIndex, disabledTabs) ->
                 this.map { nextIndex ->
                     if (disabledTabs.all { it }) -1 else handler(currentIndex, nextIndex, disabledTabs)
@@ -108,7 +109,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
         attr("id", componentId)
         // We need to emit all internal changes to the outside for realising two-way data binding!
         // This includes the automatic correction by `selectDefaultTab` of `selected` setup.
-        selected handledBy ::selectDefaultTab
+        selected.handledBy(this, ::selectDefaultTab)
     }
 
     inner class TabList<CL : HTMLElement>(tag: Tag<CL>) : Tag<CL> by tag {
@@ -137,17 +138,17 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
                         event.preventDefault()
                     }
                 }
-            } handledBy withActiveUpdates(::nextByKeys)
+            }.handledBy(this, withActiveUpdates(::nextByKeys))
 
             keydowns.filter { setOf(Keys.Home, Keys.PageUp).contains(shortcutOf(it)) }.map {
                 it.stopImmediatePropagation()
                 it.preventDefault()
-            } handledBy withActiveUpdates(::firstByKey)
+            }.handledBy(this, withActiveUpdates(::firstByKey))
 
             keydowns.filter { setOf(Keys.End, Keys.PageDown).contains(shortcutOf(it)) }.map {
                 it.stopImmediatePropagation()
                 it.preventDefault()
-            } handledBy withActiveUpdates(::lastByKey)
+            }.handledBy(this, withActiveUpdates(::lastByKey))
         }
 
         inner class Tab<CT : HTMLElement>(
@@ -164,7 +165,7 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
                 attr("tabindex", selected.map { if (it == index) "0" else "-1" })
                 attr(Aria.selected, selected.map { it == index }.asString())
                 attr(Aria.controls, selected.map { if (it == index) panelId(index) else null })
-                clicks.map { index } handledBy withActiveUpdates(::nextByClick)
+                clicks.map { index }.handledBy(this, withActiveUpdates(::nextByClick))
                 active.filter { it } handledBy { domNode.focus() }
                 blurs.map { null } handledBy isActive.update
             }

@@ -71,7 +71,7 @@ In addition, a disclosure itself offers a `close` handler for closing, which can
 some closing event. Imagine some custom close-button element for that purpose.
 
 ```kotlin
-val toggle = storeOf(true) // show Panel at start
+val toggle = storeOf(true, job = Job()) // show Panel at start
 
 disclosure {
     

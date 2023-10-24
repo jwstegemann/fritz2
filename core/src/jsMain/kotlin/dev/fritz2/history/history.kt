@@ -1,6 +1,8 @@
 package dev.fritz2.history
 
 import dev.fritz2.core.Store
+import dev.fritz2.core.WithJob
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -12,9 +14,10 @@ import kotlinx.coroutines.flow.map
  *
  * @param capacity max number of entries in history
  * @param initialValue initial content of the history
+ * @param job Job to be used by the [History]
  */
-fun <T> history(capacity: Int = 0, initialValue: List<T> = emptyList()) =
-    History(capacity, initialValue)
+fun <T> WithJob.history(capacity: Int = 0, initialValue: List<T> = emptyList(), job: Job = this.job) =
+    History(capacity, initialValue, job)
 
 /**
  * factory-method to create a [History] synced with the given [Store],
@@ -23,24 +26,26 @@ fun <T> history(capacity: Int = 0, initialValue: List<T> = emptyList()) =
  * @receiver [Store] to sync with
  * @param capacity max number of entries in history
  * @param initialEntries initial entries in history
+ * @param job Job to be used by the [History]
  * @param synced if true, the history will sync with store updates
  */
-fun <D> Store<D>.history(capacity: Int = 0, initialEntries: List<D> = emptyList(), synced: Boolean = true) =
-    History(capacity, initialEntries).apply {
-        if(synced) this@history.data.handledBy { push(it) }
+fun <D> Store<D>.history(capacity: Int = 0, initialEntries: List<D> = emptyList(), job: Job = this.job, synced: Boolean = true) =
+    History(capacity, initialEntries, job).apply {
+        if (synced) this@history.data handledBy { push(it) }
     }
-
 
 /**
  * Keeps track of historical values (i.e. of a [Store]) and allows you to navigate back in history
  *
  * @param capacity max number of entries in history
  * @param initialEntries initial entries in history
+ * @param job Job to be used by the [History]
  */
 class History<T>(
     private val capacity: Int,
     initialEntries: List<T>,
-) {
+    override val job: Job
+) : WithJob {
     init {
         require(initialEntries.size <= capacity) {
             "history: initialEntries size of ${initialEntries.size} is greater then capacity of $capacity"

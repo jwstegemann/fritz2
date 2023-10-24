@@ -2,6 +2,7 @@ package dev.fritz2.core
 
 import dev.fritz2.runTest
 import kotlinx.browser.document
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -16,7 +17,7 @@ class HandlersTests {
 
     @Test
     fun testSimpleHandler() = runTest {
-        val store = object : RootStore<Int>(0) {
+        val store = object : RootStore<Int>(0, job = Job()) {
             override fun errorHandler(cause: Throwable) {
                 fail(cause.message)
             }
@@ -77,7 +78,7 @@ class HandlersTests {
         val resultId = Id.next()
         val buttonId = Id.next()
 
-        val store = object : RootStore<String>("start") {
+        val store = object : RootStore<String>("start", job = Job()) {
             var countHandlerCalls = 0
 
             val addADot = handle { model ->
@@ -128,7 +129,7 @@ class HandlersTests {
         var busyFlag = true
         val storeForCanceling = storeOf(false)
 
-        val heavyWork = object : RootStore<Boolean>(false) {
+        val heavyWork = object : RootStore<Boolean>(false, job = Job()) {
             val doWork = handle {
                 storeForCanceling.update(true)
                 do {

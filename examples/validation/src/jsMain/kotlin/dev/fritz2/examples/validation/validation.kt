@@ -1,8 +1,10 @@
 package dev.fritz2.examples.validation
 
 import dev.fritz2.core.*
-import dev.fritz2.validation.*
+import dev.fritz2.validation.ValidatingStore
+import dev.fritz2.validation.valid
 import kotlinx.browser.document
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.dom.addClass
@@ -10,14 +12,14 @@ import kotlinx.dom.removeClass
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.get
 
-object PersonListStore : RootStore<List<Person>>(emptyList()) {
+object PersonListStore : RootStore<List<Person>>(emptyList(), job = Job()) {
     val add = handle<Person> { list, person ->
         list + person
     }
 }
 
 object PersonStore : ValidatingStore<Person, Unit, Message>(
-    Person(), personValidator, metadataDefault = Unit, id = Person.id
+    Person(), personValidator, Unit, Job(), id = Person.id
 ) {
     val save = handle { person ->
         if (validate(person, Unit).valid) {
@@ -234,24 +236,23 @@ fun main() {
                 table()
             }
         }
-    }
 
+        // adding bootstrap css classes to the validated elements
+        PersonStore.messages.valid.combine(PersonStore.messages) { isValid, msgs ->
+            // cleanup validation
+            cleanUpValMessages()
 
-    // adding bootstrap css classes to the validated elements
-    PersonStore.messages.valid.combine(PersonStore.messages) { isValid, msgs ->
-        // cleanup validation
-        cleanUpValMessages()
-
-        console.log("$isValid, ${msgs.joinToString { it.path }}")
-        // add messages to input groups only if there were errors
-        if (!isValid) msgs else emptyList()
-    } handledBy { messages ->
-        for (msg in messages) {
-            val element = document.getElementById(msg.path)
-            element?.addClass(msg.status.inputClass)
-            val message = document.getElementById("${msg.path}-message")
-            message?.addClass(msg.status.messageClass)
-            message?.textContent = msg.text
+            console.log("$isValid, ${msgs.joinToString { it.path }}")
+            // add messages to input groups only if there were errors
+            if (!isValid) msgs else emptyList()
+        } handledBy { messages ->
+            for (msg in messages) {
+                val element = document.getElementById(msg.path)
+                element?.addClass(msg.status.inputClass)
+                val message = document.getElementById("${msg.path}-message")
+                message?.addClass(msg.status.messageClass)
+                message?.textContent = msg.text
+            }
         }
     }
 }

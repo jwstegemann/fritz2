@@ -42,12 +42,13 @@ data class Person(
 The simplest way to create a store is the `storeOf` factory:
 
 ```kotlin
-// a store can be created anywhere in your application.
-// pass some data as initial state into it:
-val storedInterest: Store<Interest> = storeOf(Interest.Programming)
-
-// a store can manage any complex type `T`
-val storedPerson: Store<Person> = storeOf(Person(1, "fritz2", 3, listOf(Interest.Programming)))
+render {
+    // create a `Store` and pass some data as initial state into it:
+    val storedInterest: Store<Interest> = storeOf(Interest.Programming)
+    
+    // a store can manage any complex type `T`
+    val storedPerson: Store<Person> = storeOf(Person(1, "fritz2", 3, listOf(Interest.Programming)))
+}
 ```
 
 Once you have created the store, it can be used for...
@@ -65,9 +66,9 @@ You can use this handler to conveniently implement _two-way data binding_ by usi
 of an `input`-`Tag`, for example:
 
 ```kotlin
-val store: Store<String> = storeOf("")
-
 render {
+    val store: Store<String> = storeOf("")
+
     input {
         // react to data changes and update the UI
         value(store.data)
@@ -91,20 +92,26 @@ help you to extract data from an event or to control event-processing.
 In order to extend a store with custom handlers or data-flows, you can create your own store-object:
 ```kotlin
 // use `RootStore` as base class - it implements all the functions you will rely on. 
-val storedInterests = object : RootStore<List<Interest>>(emptyList()) {
+val storedInterests = object : RootStore<List<Interest>>(emptyList(), job = Job()) {
     // fill with custom functionality
 }
 ```
 
 Of course, it is also possible to declare a class and create the object later:
 ```kotlin
-class InterestsStore(initial: List<Interest> = emptyList()) : RootStore<List<Interest>>(initial) {
+class InterestsStore(initial: List<Interest> = emptyList()) : RootStore<List<Interest>>(initial, job = Job()) {
     // fill with custom functionality
 }
 
 // use it
 val storedInterests = InterestsStore()
 ```
+
+:::info
+Don't get disturbed by the `job = Job()`-parameter inside the constructor of a `RootStore`! This is a crucial need in
+order to integrate stores into the reactive rendering patterns of fritz2. Just accept it right now. There are dedicated
+upcoming sections, that explain how to deal with this parameter in different contexts.
+:::
 
 ### Custom Handler
 
@@ -123,7 +130,7 @@ The resulting lambda function inside the `handle` factory then has the following
 We can determine the new state by adding the new `Interest` to the existing list:
 
 ```kotlin
-val storedInterests = object : RootStore<List<Interest>>(emptyList()) {
+val storedInterests = object : RootStore<List<Interest>>(emptyList(), job = Job()) {
 
     val add: Handler<Interest> = handle { currentState: List<Interest>, action: Interest ->
         if(currentState.contains(action)) currentState else currentState + action
@@ -161,7 +168,7 @@ mapping, filtering, sorting, or other operations without immediately rendering t
 Say you want to list the interests grouped by some criteria (which in real world applications should be part of the
 model). Add a `Flow`-property to your store that does the filtering and mapping...
 ```kotlin
-val storedInterests = object : RootStore<List<Interest>>(emptyList()) {
+val storedInterests = object : RootStore<List<Interest>>(emptyList(), job = Job()) {
     
     val noneProgramming: Flow<List<Interest>> = data // use the standard `data`-property as base
         .filter { interest -> interest.any { it == Interest.History || it == Interest.Sports } }
@@ -266,7 +273,7 @@ First we need a store for a `List<Person>` where we can create the needed handle
 render all persons:
 
 ```kotlin
-val storedPersons = object : RootStore<List<Person>>(emptyList()) {
+val storedPersons = object : RootStore<List<Person>>(emptyList(), job = Job()) {
     // here we will place our custom handlers
 }
 
@@ -303,7 +310,7 @@ In our case the type `T` of the store is `List<Person>`, but as action, a single
 `Person`-object will do. 
 
 ```kotlin
-val storedPersons = object : RootStore<List<Person>>(emptyList()) {
+val storedPersons = object : RootStore<List<Person>>(emptyList(), job = Job()) {
 
     val addPerson: Handler<Person> = handle { persons, newPerson ->
         //                 ^^^^^^^            ^^^^^^^  ^^^^^^^^^
@@ -323,7 +330,7 @@ with information from the action, and then deciding to change the state or keep 
 Here's a UI that uses this handler:
 
 ```kotlin
-val storedPersons = object : RootStore<List<Person>>(emptyList()) {
+val storedPersons = object : RootStore<List<Person>>(emptyList(), job = Job()) {
     val addPerson: Handler<Person> = handle { persons, newPerson ->
         if (persons.any { it.id == newPerson.id }) persons else persons + newPerson
     }
@@ -361,7 +368,7 @@ For simple cases like this, a `Pair` is a sufficient choice to group the informa
 create a (data) class or any other kotlin feature that fits.
 
 ```kotlin
-val storedPersons = object : RootStore<List<Person>>(emptyList()) {
+val storedPersons = object : RootStore<List<Person>>(emptyList(), job = Job()) {
     val addPerson: Handler<Person> = {...}
 
     val addInterest: Handler<Pair<Int, Interest>> = handle { persons, (idForUpdate, newInterest) ->
@@ -403,7 +410,7 @@ not need any action parameter at all.
 fritz2 offers a special variant for cases like this, where the action type is `Unit`.
 
 ```kotlin
-val storedPersons = object : RootStore<List<Person>>(emptyList()) {
+val storedPersons = object : RootStore<List<Person>>(emptyList(), job = Job()) {
     val addPerson: Handler<Person> = {...}
     val addInterest: Handler<Pair<Int, Interest>> = {...}
 
@@ -437,7 +444,7 @@ There are other use-cases where the access to the old state is definitely needed
 
 Just to show you the final result en block:
 ```kotlin
-val storedPersons = object : RootStore<List<Person>>(emptyList()) {
+val storedPersons = object : RootStore<List<Person>>(emptyList(), job = Job()) {
 
     val addPerson: Handler<Person> = handle { persons, newPerson ->
         if (persons.any { it.id == newPerson.id }) persons else persons + newPerson
@@ -524,6 +531,25 @@ section {
 }
 ```
 
+As typical use case consider some event that should trigger more than one handler, often from different stores:
+```kotlin
+// imagine one store for a `List<Person>` and one boolean store, that  
+showSection.renderIf({it}) {
+    section {
+        button {
+            +"Remove Fritz"
+            clicks.map { 1 } handledBy { id ->
+                // call arbitrary handlers (or any other code!)
+                // this is guaranteed to be executed as a whole, even if the re-redendering is triggered first!
+                storedPersons.removePerson(id)
+                showSection.update(false)
+            }
+        }
+    }
+}
+```
+
+
 ### Extend None Custom (Local) Stores 
 
 Sometimes creating a [custom store](#custom-stores) is a bit overkill, or it's simply more feasible to rely on 
@@ -533,7 +559,7 @@ In those cases - often in some small local code area - it is totally fine to cus
 `storeOf`-factory.
 
 ```kotlin
-val storedPerson = storeOf(Person(1, "fritz2", emptySet()))
+val storedPerson = storeOf(Person(1, "fritz2", emptySet()), job = Job())
 
 // define handler on some store object
 val addInterest = storedPerson.handle<Interest> { person, interest ->
@@ -557,11 +583,11 @@ Most real-world applications contain multiple stores which need to be linked to 
 To make your stores interconnect, fritz2 allows calling `Handlers` of others stores directly with or
 without a parameter.
 ```kotlin
-object SaveStore : RootStore<String>("") {
+object SaveStore : RootStore<String>("", job = Job()) {
     val save = handle<String> { _, data -> data }
 }
 
-object InputStore : RootStore<String>("") { 
+object InputStore : RootStore<String>("", job = Job()) { 
     val input = handle<String> { _, input ->
         SaveStore.save(input) // call other store`s handler
         input // do not forget to return the new store state
@@ -569,7 +595,149 @@ object InputStore : RootStore<String>("") {
 }
 ```
 
+Another common pattern is to connect different stores inside the `init`-block of a `Store`:
+```kotlin
+object SaveStore : RootStore<String>("", job = Job()) {
+    val save = handle<String> { _, data -> data }
+}
+
+object InputStore : RootStore<String>("", job = Job()) {
+    
+    init {
+        data handledBy SaveStore.save
+        // call any arbitrary number of connections
+    }
+}
+```
+
 Have a look at our [nested model](/examples/nestedmodel) example too.
+
+### Dealing with Jobs of Stores aka Lifecycle Patterns
+
+We already have teased the yet mysterious `job`-parameter, every `RootStore` needs inside its constructor. Now that we
+have introduced the key features of stores, it is time to learn about the *lifecycle* of stores.
+
+This is an important aspect, as it might lead to *memory leaks* if applied in a wrong way.
+
+We won't discuss the `Job` type in depth here, as it is simply some type of the 
+[Coroutine](https://kotlinlang.org/docs/coroutines-basics.html#an-explicit-job)-abstraction.
+
+Just accept, that a `Job` allows fritz2 to start and also *terminate* all reactive actions inside its range.
+That are:
+- all reactive renderings, that is all UI portions created inside some `render*()` call
+- `Store`s through their `Flow`s and `Handler`s
+
+In contrast to stores, you already have learned in the former chapter about 
+[HTML Rendering](/docs/render/#reactive-rendering) that there is no need for a `job`-parameter for the different 
+variants of the `render`-functions. Inside those, there are `Job`s created, but this is done by fritz2 internally.
+Those jobs are completely managed in a user agnostic way, which is good, as it reduces complexity (and in fact this
+is the foundation of all fritz2's reactive "magic"!)
+
+The situation is different for stores!
+
+In contrast to the whole rendering, which in the end simply creates a *tree* of DOM-nodes, where the mount-points
+as anchor for the reactive parts are integrated, stores conceptually do not form any similar data structure as a whole!
+
+Application data is simple often totally unrelated to each other, and it is much easier to focus on a specific aspect
+of a domain to model data. So there is no good reason to manage all those different kind of data within one 
+root-structure.
+
+That is why fritz2's `Store`s do not force you, to group all your data into one big artificial model.
+
+But this freedom comes at a price: The job-handling cannot be managed automatically by the framework.
+
+But this is as so bad, as it sounds!
+
+There are basically two different kind of stores, which you have to deal with:
+- Global application stores, that exist for the whole lifetime of an application.
+- Local stores that exist only within some reactively rendered UI-portion.
+
+And job-handling for both types is really easy!
+
+#### Global Stores
+
+Often applications have one or more global `Store`s, that hold all kind of data needed to "drive" the overall 
+application. Imagine the current user, his authorities, user specific preferences but also maybe domain data, that
+represents the core content of your application like a customer of a CRM-application.
+
+Those data could and should be stored in application wide `Store`s at a global level.
+
+The most common use case is to define a `Store`-object that directly derives from `RootStore` - but any other construct
+is also suitable!
+
+For those cases simply create *one* new `Job` inside the constructor:
+```kotlin
+val storedInterests = object : RootStore<List<Interest>>(emptyList(), job = Job()) {
+    //                                                                ^^^^^^^^^^^
+    //                                                                only one new job-object is created!
+}
+```
+
+There is nothing special to it: There is only one object created in memory for the new `Job`. It will never get stopped
+by fritz2 and therefore the job will run forever. Don't be afraid to simply create new Jobs for those without 
+any "management" by yourself. Those global stores are intended to run for as long as the application runs. 
+So there is no need to "stop" or "cancel" them in any way.
+
+It does not matter, if you have only one or some dozens of those stores!
+
+The factory function `storeOf` also needs the `job`-parameter if called globally (to be precise: outside
+any `WithJob`-context):
+```kotlin
+val storedInterests = storeOf<List<Interest>>(emptyList(), job = Job())
+```
+
+#### Local Stores as Part of Reactive Rendering
+
+On the other hand, there are `Store`s that handle data, that is only needed inside some limited, reactively rendered
+UI-portion and should exist only for same time as the surrounding `RenderContext` exists. Those kind of stores
+should always be properly destroyed, if the surrounding `RenderContext` gets destroyed by some re-rendering action.
+
+In order to achieve this behaviour, we can simply rely on the already *managed* `Job`-object of the surrounding
+`RenderContext` and pass that to the local store:
+```kotlin
+// some global store:
+val storedFruits = storeOf<List<String>>(listOf("apple", "banana", "raspberry"), job = Job())
+
+render {
+    storedFruits.data.renderEach { fruit -> // a new `RenderContext` is created here
+        // some local store, tight to its reactively rendered context!
+        val editStore = storeOf(false) // Look carefully: No explicit `job`-parameter needed!
+        
+        // further UI code...
+        editStore.data.render { isEditable ->
+            if(isEditable) ...
+            else ...
+        }
+    }
+}
+```
+Pay attention to the `storeOf`-factory function! This is an overloaded, convenience variant, that is defined onto
+some `WithJob`-receiver. As the name suggests, `WithJob` holds some job, in this case the job of the `RenderContext`,
+that implements `WithJob`-interface. So the job of the created store is automatically "shared" with the surrounding, 
+reactive context.
+
+:::info
+Always strive to use the `Job` of a surrounding `RenderContext` for locally defined `Store`s. Those jobs are *managed*
+properly by fritz2, so the application behaves in a deterministic way and memory leaks are prevented.
+:::
+
+If you need to create a custom local `Store` without the use of the factory function, you can also grab the 
+correct `Job` from the surrounding `RenderContext`:
+```kotlin
+render {
+    storedFruits.data.renderEach { fruit -> 
+        // a new `RenderContext` is created here, remember it "has" a `job` property you can reuse!
+        
+        val editStore = object : RootStore<Boolean>(false, job = job) {
+            //                                                   ^^^
+            //                                                   refer to the nearest receiving RenderContext
+            //                                                   and grab its job. You could also choose more
+            //                                                   precisely by refering to the labeled name:
+            //                                                   `this@renderEach.job`.
+        }
+    }
+}
+```
 
 ### History in Stores
 
@@ -579,7 +747,7 @@ undo-function, or maybe just for debugging...
 fritz2 offers a `history` factory to do so.
 
 ```kotlin
-val store = object : RootStore<String>("") {
+val store = object : RootStore<String>("", job = Job()) {
     val history = history()
 }
 ```
@@ -598,7 +766,7 @@ or by using `current` attribute which returns a `List<T>`. For your convenience,
 
 For a store with a minimal undo function, just write:
 ```kotlin
-val storedData = object : RootStore<String>("") {
+val storedData = object : RootStore<String>("", job = Job()) {
     val hist = history()
 
     // your handlers go here (add history.clear() here if suitable)
@@ -631,7 +799,7 @@ informed that something is going on.
 In fritz2, you can use the `tracker` factory to implement this:
 
 ```kotlin
-val storedData = object : RootStore<String>("") {
+val storedData = object : RootStore<String>("", job = Job()) {
     val tracking = tracker()
 
     val save = handle { model ->
@@ -672,7 +840,7 @@ Create such a handler by calling the `handleAndEmit<T>()` function instead of th
 offered data type to the type brackets:
 
 ```kotlin
-val personStore = object : RootStore<Person>(Person(...)) {
+val personStore = object : RootStore<Person>(Person(...), job = Job()) {
     val save = handleAndEmit<Person> { person ->
         emit(person) // emits current person
         Person(...) // return a new empty person (set as new store state)
@@ -684,7 +852,7 @@ Another store can be set up to handle this `Person` by connecting the handlers:
 ```kotlin
 val personStore = ... //see above
 
-val personListStore = object : RootStore<List<Person>>(emptyList<Person>()) {
+val personListStore = object : RootStore<List<Person>>(emptyList<Person>(), job = Job()) {
     val add = handle<Person> { list, person ->
        console.log("add new person: $person")
        list + person
@@ -709,11 +877,43 @@ If you need a handler's code to be executed whenever the model is changed, use t
 `data` Flow to skip the value used on store creation:
 
 ```kotlin
-val store = object : RootStore<String>("initial") { // "initial" is on the flow unless it's dropped
+val store = object : RootStore<String>("initial", job = Job()) { // "initial" is on the flow unless it's dropped
     init {
         data.drop(1) handledBy {
             console.log("model changed to: $it") // start logging with the first real value change
         }
     }
+}
+```
+
+### Externalize initial Store Interactions
+
+For large applications it might be possible, that there is some rather complex setup necessary to connect the main
+application store with lots of smaller, but subdomain specific stores. As described within the 
+[section](/docs/createstores/#connecting-stores-to-each-other) about store connections, often the `init`-block 
+of a store is a good place to setup the whole interaction.
+
+If those initialization expressions grow too large, it is a good advice to use `private` methods to organize those
+expressions in a useful manner.
+
+But sometimes there is the need to really move those calls into some place outside the `Store`-object.
+
+But the 'handledBy'-functions within a `RootStore` is `protected` and can therefore only be used within the `RootStore` 
+itself or any derived custom store-implementation. A `RootStore` as receiver - e.g. using extension functions or 
+apply/run - is not sufficient!
+
+If you explicitly want to use the store-job outside the `RootStore`, you have to create an extension function 
+with `WithJob` receiver an call that function within the `RootStore` wrapped with the new `runWithJob`-function.
+
+Example:
+```kotlin
+object MyStore : RootStore<String>("", job = Job()){
+    init {
+        runWithJob{ myFunction() }
+    }
+}
+
+fun WithJob.myFunction() {
+    flowOf("ABC") handledBy MyStore.update
 }
 ```

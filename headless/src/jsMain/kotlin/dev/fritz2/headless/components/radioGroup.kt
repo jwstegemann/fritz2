@@ -40,6 +40,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         label?.let { attr(Aria.labelledby, it.id) }
         if (withKeyboardNavigation) {
             value.handler?.invoke(
+                this,
                 value.data.flatMapLatest { option ->
                     keydowns.mapNotNull { event ->
                         when (shortcutOf(event)) {
@@ -182,7 +183,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
                     withKeyboardNavigation = false
                     toggleEvent = changes
                 }
-                value.handler?.invoke(toggleEvent.map { option })
+                value.handler?.invoke(this, toggleEvent.map { option })
                 active handledBy {
                     if (it && domNode != document.activeElement) {
                         domNode.focus()
