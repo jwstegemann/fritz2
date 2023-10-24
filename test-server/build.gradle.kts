@@ -28,11 +28,12 @@ dependencies {
 }
 
 tasks.register<com.github.psxpaul.task.JavaExecFork>("start") {
+
     classpath = sourceSets.main.map { it.runtimeClasspath }.get()
     main = application.mainClass.get()
-    workingDir = buildDir
-    standardOutput = "$buildDir/server.log"
-    errorOutput = "$buildDir/error.log"
+    workingDir = layout.buildDirectory.asFile.get()
+    standardOutput = "$workingDir/server.log"
+    errorOutput = "$workingDir/error.log"
     stopAfter = project(":core").tasks["check"]
     waitForPort = 3000
 }
