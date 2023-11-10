@@ -44,8 +44,8 @@ The same works for `POST` and all other HTTP methods - just use different parame
 
 The remote service is primarily designed for use in your `Store`'s `Handler`s when exchanging data with the backend. 
 
-Here is a short example which uses [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization) and
-the fritz2-[serialization](https://central.sonatype.com/artifact/dev.fritz2/serialization) module to handle the returning JSON:
+Here is a short example which uses fritz2-[serialization](https://central.sonatype.com/artifact/dev.fritz2/serialization) 
+module to handle the returning JSON:
 ```kotlin
 @Serializable
 data class Planet(val name: String)
