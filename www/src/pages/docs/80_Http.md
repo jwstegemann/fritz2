@@ -33,15 +33,19 @@ different results:
 * `formData(): FormData`
 * `json(): Any?`
 
+Or you can use the fritz2-[serialization](https://central.sonatype.com/artifact/dev.fritz2/serialization)
+module, which contains a few helper functions for easy interoperability
+with [`kotlinx.serialization`](https://kotlinlang.org/api/kotlinx.serialization/).
+
 If your request was not successful (`Response.ok` property returns `false` according to the
-[fetch](https://developer.mozilla.org/en-US/docs/Web/API/Response/ok) API), a `FetchException` will be thrown.
+[fetch](https://developer.mozilla.org/en-US/docs/Web/API/Response/ok) API).
 
 The same works for `POST` and all other HTTP methods - just use different parameters for the body to send.
 
 The remote service is primarily designed for use in your `Store`'s `Handler`s when exchanging data with the backend. 
 
 Here is a short example which uses [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization) and
-the fritz2 [serialization](https://central.sonatype.com/artifact/dev.fritz2/serialization) module to handle the returning JSON:
+the fritz2-[serialization](https://central.sonatype.com/artifact/dev.fritz2/serialization) module to handle the returning JSON:
 ```kotlin
 @Serializable
 data class Planet(val name: String)
