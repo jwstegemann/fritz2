@@ -21,6 +21,7 @@ include(
     "headless",
     "headless-demo",
     "snippets",
+    "serialization",
     // examples:
     ":examples:gettingstarted",
     ":examples:nestedmodel",
