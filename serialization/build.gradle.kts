@@ -5,12 +5,12 @@ plugins {
 
 kotlin {
     jvm()
-    js(BOTH).browser { }
+    js().browser { }
     sourceSets {
         val jsMain by getting {
             dependencies {
                 api(project(":core"))
-                api("org.jetbrains.kotlinx:kotlinx-serialization-json:${rootProject.extra["serializationVersion"]}")
+                api("org.jetbrains.kotlinx:kotlinx-serialization-json:_")
             }
         }
     }
