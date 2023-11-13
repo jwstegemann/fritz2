@@ -15,19 +15,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK 12
+      - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: 17
 
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
       - name: Set up Nodejs 16
         uses: actions/setup-node@v3
         with:
           node-version: 16
-
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -59,7 +59,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up JDK 12
+      - name: Set up JDK
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
