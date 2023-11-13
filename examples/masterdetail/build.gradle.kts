@@ -18,7 +18,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":core"))
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${rootProject.ext["serializationVersion"]}")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:_")
             }
         }
         val jvmMain by getting {

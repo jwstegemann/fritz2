@@ -7,12 +7,12 @@ plugins {
 
 kotlin {
     jvm()
-    js(BOTH).browser {
-        testTask {
+    js(IR).browser {
+        testTask(Action {
             //running test-server in background
             dependsOn(":test-server:start")
             // see "karma.config.d" folder for customizing karma
-        }
+        })
         // just to have a place to copy it from...
         /*
         runTask {
@@ -39,7 +39,7 @@ kotlin {
         }
         val commonMain by getting {
             dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:${rootProject.extra["coroutinesVersion"]}")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:_")
             }
         }
         val commonTest by getting {
@@ -52,12 +52,13 @@ kotlin {
         }
         val jsMain by getting {
             dependencies {
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:_")
             }
         }
         val jsTest by getting {
             dependencies {
                 implementation(kotlin("test-js"))
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${rootProject.extra["serializationVersion"]}")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:_")
             }
         }
     }

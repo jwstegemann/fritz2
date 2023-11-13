@@ -101,7 +101,7 @@ const tailwind = {
 // webpack tailwind css settings
 ((config) => {
     ((config) => {
-        let entry = config.output.path + '/../processedResources/js/main/' + mainCssFile;
+        let entry = config.output.path + '/../../../processedResources/js/main/' + mainCssFile;
         config.entry.main.push(entry);
         config.module.rules.push({
             test: /\.css$/,

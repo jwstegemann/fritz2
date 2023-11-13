@@ -4,7 +4,7 @@ plugins {
 
 kotlin {
     jvm()
-    js(BOTH).browser {
+    js(IR).browser {
         testTask {
             useKarma {
 //                useSafari()
@@ -44,8 +44,8 @@ kotlin {
         }
         val jsMain by getting {
             dependencies {
-                api(npm("@floating-ui/dom", rootProject.extra["floatingui"] as String))
-                api(npm("scroll-into-view-if-needed", rootProject.extra["scroll-into-view-if-needed"] as String))
+                api(npm("@floating-ui/dom","_"))
+                api(npm("scroll-into-view-if-needed", "_"))
             }
         }
         val jsTest by getting {

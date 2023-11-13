@@ -39,7 +39,6 @@ publishing {
             val isRelease = System.getenv("GITHUB_EVENT_NAME").equals("release", true)
 
             url = uri(if (isRelease && !version.toString().endsWith("SNAPSHOT")) releaseUrl else snapshotUrl)
-            println("publish artifacts to: $url")
 
             credentials {
                 username = System.getenv("OSSRH_USERNAME")
