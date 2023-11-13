@@ -5,7 +5,7 @@ plugins {
 
 kotlin {
     jvm()
-    js().browser { }
+    js(IR).browser { }
     sourceSets {
         val jsMain by getting {
             dependencies {
