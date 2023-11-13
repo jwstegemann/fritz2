@@ -9,9 +9,9 @@ import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.ShadowRoot
 
-@JsModule("@mat3e-ux/stars")
-@JsNonModule
-external object Stars
+// needed for importing external WebComponents
+@JsName("require")
+external fun import(module: String): dynamic
 
 class M3Stars(job: Job, scope: Scope) : HtmlTag<HTMLElement>("m3-stars", job = job, scope = scope) {
     fun max(value: Flow<Int>) = attr("max", value.asString())
@@ -83,5 +83,34 @@ object WeatherCard : WebComponent<HTMLDivElement>() {
 }
 
 fun main() {
+    import("@mat3e-ux/stars")
     registerWebComponent("weather-card", WeatherCard, "city")
+
+    val cityStore = storeOf("Braunschweig", Job())
+
+    render("#target") {
+        // show weather-card WebComponent
+        custom("weather-card") {
+            attr("city", cityStore.data)
+        }
+
+        // input to change observed weather-card attribute `city`
+        div("form-group mt-4") {
+            label {
+                +"City"
+                `for`("city")
+            }
+            input("form-control", id = "city") {
+                type("text")
+                value(cityStore.data)
+            }.changes.values() handledBy cityStore.update
+            span("form-text text-muted small") {
+                +"Will change observed "
+                i { + "city"}
+                +" attribute of "
+                i { +"weather-card" }
+                +" WebComponent"
+            }
+        }
+    }
 }
