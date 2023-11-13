@@ -24,10 +24,10 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Set up Nodejs 16
+      - name: Set up Nodejs
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -51,7 +51,7 @@ jobs:
 
       - name: Build with 11ty
         working-directory: ./www
-        run: npm install && npm run build
+        run: export NODE_OPTIONS=--openssl-legacy-provider && npm install && npm run build
 
   update_api:
     runs-on: ubuntu-latest

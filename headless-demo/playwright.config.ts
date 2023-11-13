@@ -39,7 +39,7 @@ const config: PlaywrightTestConfig = {
         /* Base URL to use in actions like `await page.goto('/')`. */
         //baseURL: 'https://next.fritz2.dev/headless-demo/',
         /* Uncomment this to test local running demos as testing base - needs a `build` before */
-        baseURL: url.pathToFileURL(path.join(__dirname, 'build/distributions/index.html')).toString(),
+        baseURL: url.pathToFileURL(path.join(__dirname, 'build/dist/js/productionExecutable/index.html')).toString(),
         /* Uncomment this to test local running demos as testing base - runs slower, but makes sense for debugging */
         //baseURL: 'http://localhost:8080/',
 

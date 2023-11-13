@@ -30,7 +30,7 @@ module.exports = (config) => {
         .map(dir => (
             {
                 route: '/examples/' + dir.name,
-                dir: path.join('../examples/', dir.name, '/build/distributions')
+                dir: path.join('../examples/', dir.name, '/build/dist/js/productionExecutable')
             }
         ))
 
@@ -39,11 +39,11 @@ module.exports = (config) => {
         serveStatic: [
             {
                 route: '/headless-demo',
-                dir: '../headless-demo/build/distributions'
+                dir: '../headless-demo/build/dist/js/productionExecutable'
             },
             {
                 route: '/snippets',
-                dir: '../snippets/build/distributions'
+                dir: '../snippets/build/dist/js/productionExecutable'
             },
             {
                 route: '/api',
