@@ -43,7 +43,7 @@ jobs:
 
       - name: Build Webpage
         working-directory: ./www
-        run: npm install && npm run build
+        run: export NODE_OPTIONS=--openssl-legacy-provider && npm install && npm run build
 
       - name: Copy api docs to webpage
         run: mkdir -p ./www/_site/api && cp -r ./api/* ./www/_site/api
