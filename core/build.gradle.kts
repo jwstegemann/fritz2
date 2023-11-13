@@ -1,5 +1,3 @@
-import org.gradle.internal.impldep.org.joda.time.Duration
-
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
