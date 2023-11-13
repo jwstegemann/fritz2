@@ -22,10 +22,10 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Set up Nodejs 16
+      - name: Set up Nodejs 20
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -44,17 +44,17 @@ jobs:
         run: mkdir -p ./www/_site/api && cp -r ./api/* ./www/_site/api
 
       - name: Copy headless-demo files to webpage
-        run: mkdir -p ./www/_site/headless-demo && cp ./headless-demo/build/distributions/* ./www/_site/headless-demo
+        run: mkdir -p ./www/_site/headless-demo && cp ./headless-demo/build/dist/js/productionExecutable/* ./www/_site/headless-demo
 
       - name: Copy snippets files to webpage
-        run: mkdir -p ./www/_site/snippets && cp ./snippets/build/distributions/* ./www/_site/snippets
+        run: mkdir -p ./www/_site/snippets && cp ./snippets/build/dist/js/productionExecutable/* ./www/_site/snippets
 
       - name: Copy example distributions to webpage
         run: >
           for directory in `ls ./examples/* -d`; do
             name=`basename $directory`;
             mkdir -p ./www/_site/examples/$name;
-            cp ./examples/$name/build/distributions/* ./www/_site/examples/$name;
+            cp ./examples/$name/build/dist/js/productionExecutable/* ./www/_site/examples/$name;
           done
 
       - name: Deploy to GitHub Pages
