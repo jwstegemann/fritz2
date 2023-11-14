@@ -66,6 +66,11 @@ listbox<String> {
 }
 ```
 
+::: info
+**Beware:** to include a `portalRoot()`-call at the end of your initial `RenderContext` as explained 
+[here](/headless/#portalling).
+:::
+
 ## Styling the active or selected Item 
 
 A `listboxItem` has two special states:
