@@ -52,6 +52,11 @@ popOver {
 }
 ```
 
+::: info
+**Beware:** to include a `portalRoot()`-call at the end of your initial `RenderContext` as explained
+[here](/headless/#portalling).
+:::
+
 ## Open State
 
 PopOver is an [`OpenClose` component](#closable-content---openclose). There are different `Flow`s and `Handler`

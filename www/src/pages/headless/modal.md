@@ -53,6 +53,11 @@ modal {
 }
 ```
 
+::: info
+**Beware:** to include a `portalRoot()`-call at the end of your initial `RenderContext` as explained
+[here](/headless/#portalling).
+:::
+
 ## Focus Management
 
 In order to prevent interaction with the rest of the application via keyboard interaction, the modal dialog uses a

@@ -39,6 +39,11 @@ toast("default") {
 ```
 
 ::: info
+**Beware:** to include a `portalRoot()`-call at the end of your initial `RenderContext` as explained
+[here](/headless/#portalling).
+:::
+
+::: info
 Please note that the functionality of the headless toast component is intentionally limited.
 Consider using another component (e.g. [data collection](/headless/datacollection)) for more complex uses cases like
 filtering or sorting the toast list, or displaying more complex data.
