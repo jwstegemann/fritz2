@@ -10,7 +10,7 @@ kotlin {
         val jsMain by getting {
             dependencies {
                 api(project(":core"))
-                api("org.jetbrains.kotlinx:kotlinx-serialization-json:_")
+                api(KotlinX.serialization.json)
             }
         }
     }

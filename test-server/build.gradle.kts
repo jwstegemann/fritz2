@@ -9,21 +9,19 @@ application {
 }
 
 repositories {
-    mavenLocal()
-//    maven { url = uri("https://kotlin.bintray.com/ktor") }
+    mavenCentral()
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
-    implementation(kotlin("reflect"))
-    implementation(kotlin("stdlib-jdk8"))
-    implementation("io.ktor:ktor-server-core:_")
-    implementation("io.ktor:ktor-server-netty:_")
-    implementation("io.ktor:ktor-server-call-logging-jvm:_")
-    implementation("io.ktor:ktor-server-auth-jvm:_")
-    implementation("io.ktor:ktor-server-content-negotiation:_")
-    implementation("io.ktor:ktor-serialization-jackson:_")
-    implementation("io.ktor:ktor-server-websockets-jvm:_")
+    implementation(Kotlin.stdlib)
+    implementation(Kotlin.stdlib.jdk8)
+    implementation(Ktor.server.core)
+    implementation(Ktor.server.netty)
+    implementation(Ktor.server.callLogging)
+    implementation(Ktor.server.auth)
+    implementation(Ktor.server.contentNegotiation)
+    implementation(Ktor.plugins.serialization.jackson)
+    implementation(Ktor.server.websockets)
     implementation("ch.qos.logback:logback-classic:_")
 }
 
