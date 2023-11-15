@@ -18,7 +18,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":core"))
-                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.2.1")
+                implementation(KotlinX.datetime)
             }
         }
         val jvmMain by getting {

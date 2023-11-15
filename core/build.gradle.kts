@@ -37,26 +37,26 @@ kotlin {
         }
         val commonMain by getting {
             dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:_")
+                api(KotlinX.coroutines.core)
             }
         }
         val commonTest by getting {
             dependencies {
-                implementation(kotlin("test"))
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-junit"))
-                implementation(kotlin("test-annotations-common"))
+                implementation(Kotlin.test)
+                implementation(Kotlin.test.common)
+                implementation(Kotlin.test.junit)
+                implementation(Kotlin.test.annotationsCommon)
             }
         }
         val jsMain by getting {
             dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:_")
+                api(KotlinX.coroutines.core)
             }
         }
         val jsTest by getting {
             dependencies {
-                implementation(kotlin("test-js"))
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:_")
+                implementation(Kotlin.test.js)
+                implementation(KotlinX.serialization.json)
             }
         }
     }

@@ -22,7 +22,7 @@ kotlin {
             dependencies {
                 api(kotlin("stdlib"))
                 api(project(":core"))
-                implementation("com.squareup:kotlinpoet:_")
+                implementation(Square.kotlinPoet)
                 implementation("com.squareup:kotlinpoet-ksp:_")
                 implementation("com.google.devtools.ksp:symbol-processing-api:_")
                 api(kotlin("reflect:_"))
@@ -33,9 +33,9 @@ kotlin {
 
         val jvmTest by getting {
             dependencies {
-                implementation(kotlin("test-junit5"))
-                implementation("org.junit.jupiter:junit-jupiter-params:_")
-                implementation("org.assertj:assertj-core:_")
+                implementation(Kotlin.test.junit5)
+                implementation(Testing.junit.jupiter.params)
+                implementation(Testing.assertj.core)
                 implementation("com.github.tschuchortdev:kotlin-compile-testing:_")
                 implementation("com.github.tschuchortdev:kotlin-compile-testing-ksp:_")
             }

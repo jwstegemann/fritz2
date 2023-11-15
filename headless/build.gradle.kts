@@ -50,7 +50,7 @@ kotlin {
         }
         val jsTest by getting {
             dependencies {
-                implementation(kotlin("test-js"))
+                implementation(Kotlin.test.js)
             }
         }
     }
