@@ -201,9 +201,9 @@ open class RootStore<D>(
     }
 
     /**
-     * Allows to use the [WithJob]-Context of this Store. Allows to run [handledBy] on the Store-Job
+     * Allows to use the [WithJob]-Context of this Store and to run [handledBy] on the Store-Job
      */
-    protected fun runWithJob(init: WithJob.() -> Unit) = withJob.init()
+    fun runWithJob(init: WithJob.() -> Unit) = withJob.init()
 
     /**
      * Connects a [Flow] to a [Handler].
