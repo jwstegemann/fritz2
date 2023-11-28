@@ -147,7 +147,7 @@ render { /* creates the initial `RenderContext` */
             +"Input"
             
             // set tag specific attributes - they are predefined for all HTML tags
-            // (the backticks are needed here as `for` is an identifier in Kotlin and thus the function call needs
+            // (the backticks are needed here because `for` is an identifier in Kotlin, so the function call needs
             // to be escaped)
             `for`("SomeId")
         }
@@ -262,7 +262,7 @@ button {
 
 The predefined `update` handler (which simply replaces the store's content with a new value) is often not sufficient
 for all use cases. So fritz2 allows the definition of custom handlers like the one above, which simply takes the old 
-state, capitalizes it and sets the result as new value.
+state, capitalizes it, and sets the result as new value.
 
 ### Identifying Data
 
@@ -274,7 +274,7 @@ Every store has an `id` property which is implicitly initialized with a random v
 ```kotlin
 render {
     val storeWithExplicitId = storeOf("Data", id = "42")
-    val storeWithRandomId = storeOf("Data") // id is created by `Id.next()` factory
+    val storeWithRandomId = storeOf("Data") // id is created by the `Id.next()` factory
 }
 ```
 
@@ -329,7 +329,7 @@ essentials of stores.
 
 This is the full source of the example above, including all styling to make it look like the screenshot.
 You can just copy and paste it into the vanilla 
-[tailwind template](https://github.com/jwstegemann/fritz2-tailwind-template) project, replacing the `main` function and 
+[tailwind template](https://github.com/jwstegemann/fritz2-tailwind-template) project, replacing the `main` function, and 
 then running the app.
 
 ```kotlin

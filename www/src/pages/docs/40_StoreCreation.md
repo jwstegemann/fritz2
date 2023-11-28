@@ -108,9 +108,9 @@ val storedInterests = InterestsStore()
 ```
 
 :::info
-Don't get disturbed by the `job = Job()`-parameter inside the constructor of a `RootStore`! This is a crucial need in
-order to integrate stores into the reactive rendering patterns of fritz2. Just accept it right now. There are dedicated
-upcoming sections, that explain how to deal with this parameter in different contexts.
+Don't be alarmed by the `job = Job()`-parameter inside the constructor of a `RootStore`. This is a crucial parameter
+needed to integrate stores into the reactive rendering patterns of fritz2 - just accept it for now. There are dedicated
+upcoming doc sections which explain how to deal with this parameter in different contexts.
 :::
 
 ### Custom Handler
@@ -531,7 +531,7 @@ section {
 }
 ```
 
-As typical use case consider some event that should trigger more than one handler, often from different stores:
+As a typical use case, consider an event that triggers more than one handler, often from different stores:
 ```kotlin
 // imagine one store for a `List<Person>` and one boolean store, that  
 showSection.renderIf({it}) {
@@ -595,7 +595,7 @@ object InputStore : RootStore<String>("", job = Job()) {
 }
 ```
 
-Another common pattern is to connect different stores inside the `init`-block of a `Store`:
+Another common pattern is connecting different stores inside the `init`-block of a `Store`:
 ```kotlin
 object SaveStore : RootStore<String>("", job = Job()) {
     val save = handle<String> { _, data -> data }
@@ -614,71 +614,69 @@ Have a look at our [nested model](/examples/nestedmodel) example too.
 
 ### Dealing with Jobs of Stores aka Lifecycle Patterns
 
-We already have teased the yet mysterious `job`-parameter, every `RootStore` needs inside its constructor. Now that we
+We already teased the mysterious `job`-parameter which every `RootStore` needs inside its constructor. Now that we
 have introduced the key features of stores, it is time to learn about the *lifecycle* of stores.
 
-This is an important aspect, as it might lead to *memory leaks* if applied in a wrong way.
+This is an important aspect, as it might lead to *memory leaks* if applied the wrong way.
 
-We won't discuss the `Job` type in depth here, as it is simply some type of the 
+We won't discuss the `Job` type in depth here, as it is simply a type of the 
 [Coroutine](https://kotlinlang.org/docs/coroutines-basics.html#an-explicit-job)-abstraction.
+For the context of this doc, just understand that a `Job` allows fritz2 to start and also *terminate* all reactive 
+actions inside its range.
 
-Just accept, that a `Job` allows fritz2 to start and also *terminate* all reactive actions inside its range.
-That are:
+Those are:
 - all reactive renderings, that is all UI portions created inside some `render*()` call
 - `Store`s through their `Flow`s and `Handler`s
 
-In contrast to stores, you already have learned in the former chapter about 
-[HTML Rendering](/docs/render/#reactive-rendering) that there is no need for a `job`-parameter for the different 
-variants of the `render`-functions. Inside those, there are `Job`s created, but this is done by fritz2 internally.
-Those jobs are completely managed in a user agnostic way, which is good, as it reduces complexity (and in fact this
-is the foundation of all fritz2's reactive "magic"!)
+In contrast to stores, there is no need for a `job`-parameter for the different variants of the `render`-functions, 
+which you already read about in chapter [HTML Rendering](/docs/render/#reactive-rendering). There, jobs are created
+by fritz2 internally.
+They are managed in a completely user agnostic way, which reduces complexity (and is in fact the foundation of all 
+fritz2's reactive "magic").
 
-The situation is different for stores!
+The situation is different for stores.
 
-In contrast to the whole rendering, which in the end simply creates a *tree* of DOM-nodes, where the mount-points
-as anchor for the reactive parts are integrated, stores conceptually do not form any similar data structure as a whole!
+Rendering simply creates a tree of DOM-nodes with mount-points which act as anchors for the reactive parts. 
+Stores conceptually do not form any similar data structure as a whole.
 
-Application data is simple often totally unrelated to each other, and it is much easier to focus on a specific aspect
-of a domain to model data. So there is no good reason to manage all those different kind of data within one 
+Application data is often unrelated to each other, and it is much easier to focus on a specific aspect
+of a domain to model data. So there is no good reason to manage all those different kinds of data within one 
 root-structure.
+That is why fritz2's `Store`s do not force you to group all your data into one big artificial model.
 
-That is why fritz2's `Store`s do not force you, to group all your data into one big artificial model.
+This freedom comes at a price: The job-handling cannot be managed automatically by the framework.
+This is however not as bad as it sounds.
 
-But this freedom comes at a price: The job-handling cannot be managed automatically by the framework.
-
-But this is as so bad, as it sounds!
-
-There are basically two different kind of stores, which you have to deal with:
-- Global application stores, that exist for the whole lifetime of an application.
+There are basically two different kind of stores which you have to deal with:
+- Global application stores that exist for the lifetime of an application.
 - Local stores that exist only within some reactively rendered UI-portion.
 
-And job-handling for both types is really easy!
+Job-handling for both types is really easy!
 
 #### Global Stores
 
-Often applications have one or more global `Store`s, that hold all kind of data needed to "drive" the overall 
-application. Imagine the current user, his authorities, user specific preferences but also maybe domain data, that
-represents the core content of your application like a customer of a CRM-application.
+Often applications have one or more global `Store`s which hold all kinds of data needed to drive the 
+application. Imagine the current user, his authorities, user specific preferences, and possibly domain data, representing
+the core content of your application - the customer of a CRM-application.
 
 Those data could and should be stored in application wide `Store`s at a global level.
 
-The most common use case is to define a `Store`-object that directly derives from `RootStore` - but any other construct
-is also suitable!
+The most common use case is to define a `Store`-object that directly derives from `RootStore`, but any other construct
+is also suitable.
 
 For those cases simply create *one* new `Job` inside the constructor:
 ```kotlin
 val storedInterests = object : RootStore<List<Interest>>(emptyList(), job = Job()) {
     //                                                                ^^^^^^^^^^^
-    //                                                                only one new job-object is created!
+    //                                                                only one new job-object is needed
 }
 ```
 
 There is nothing special to it: There is only one object created in memory for the new `Job`. It will never get stopped
-by fritz2 and therefore the job will run forever. Don't be afraid to simply create new Jobs for those without 
-any "management" by yourself. Those global stores are intended to run for as long as the application runs. 
-So there is no need to "stop" or "cancel" them in any way.
+by fritz2 and will therefore run forever. Don't be afraid to simply create new Jobs here without 
+any management. Those global stores are intended to run for as long as the application runs. 
+So there is no need to stop or cancel them, no matter whether you have one or dozens of these.
 
-It does not matter, if you have only one or some dozens of those stores!
 
 The factory function `storeOf` also needs the `job`-parameter if called globally (to be precise: outside
 any `WithJob`-context):
@@ -688,11 +686,11 @@ val storedInterests = storeOf<List<Interest>>(emptyList(), job = Job())
 
 #### Local Stores as Part of Reactive Rendering
 
-On the other hand, there are `Store`s that handle data, that is only needed inside some limited, reactively rendered
-UI-portion and should exist only for same time as the surrounding `RenderContext` exists. Those kind of stores
-should always be properly destroyed, if the surrounding `RenderContext` gets destroyed by some re-rendering action.
+On the other hand, there are `Store`s that handle data which is only needed inside a limited, reactively rendered
+UI-portion and which should exist only while the surrounding `RenderContext` exists. Those kinds of stores
+should always be properly destroyed when the surrounding `RenderContext` gets destroyed by a re-rendering action.
 
-In order to achieve this behaviour, we can simply rely on the already *managed* `Job`-object of the surrounding
+In order to achieve this behaviour, we can simply rely on the already managed `Job`-object of the surrounding
 `RenderContext` and pass that to the local store:
 ```kotlin
 // some global store:
@@ -711,13 +709,13 @@ render {
     }
 }
 ```
-Pay attention to the `storeOf`-factory function! This is an overloaded, convenience variant, that is defined onto
-some `WithJob`-receiver. As the name suggests, `WithJob` holds some job, in this case the job of the `RenderContext`,
-that implements `WithJob`-interface. So the job of the created store is automatically "shared" with the surrounding, 
-reactive context.
+Pay attention to the `storeOf`-factory function! This is an overloaded convenience variant defined onto
+a `WithJob`-receiver. As the name suggests, `WithJob` holds a job, in this case the job of the `RenderContext`,
+which implements `WithJob`-interface. This way, the job of the created store is automatically shared with the 
+surrounding reactive context.
 
 :::info
-Always strive to use the `Job` of a surrounding `RenderContext` for locally defined `Store`s. Those jobs are *managed*
+Always strive to use the `Job` of a surrounding `RenderContext` for locally defined `Store`s. Those jobs are managed
 properly by fritz2, so the application behaves in a deterministic way and memory leaks are prevented.
 :::
 
@@ -886,24 +884,20 @@ val store = object : RootStore<String>("initial", job = Job()) { // "initial" is
 }
 ```
 
-### Externalize initial Store Interactions
+### Externalize Initial Store Interactions
 
-For large applications it might be possible, that there is some rather complex setup necessary to connect the main
-application store with lots of smaller, but subdomain specific stores. As described within the 
-[section](/docs/createstores/#connecting-stores-to-each-other) about store connections, often the `init`-block 
+Large applications sometimes include a rather complex setup necessary to connect the main
+application store with lots of smaller subdomain-specific stores. As described within the 
+[section](/docs/createstores/#connecting-stores-to-each-other) about store connections, the `init`-block 
 of a store is a good place to setup the whole interaction.
 
-If those initialization expressions grow too large, it is a good advice to use `private` methods to organize those
-expressions in a useful manner.
-
-But sometimes there is the need to really move those calls into some place outside the `Store`-object.
-
-But the 'handledBy'-functions within a `RootStore` is `protected` and can therefore only be used within the `RootStore` 
-itself or any derived custom store-implementation. A `RootStore` as receiver - e.g. using extension functions or 
-apply/run - is not sufficient!
-
+If those init expressions grow too large, it is good practice to use `private` methods to organize them in a useful 
+manner. 
+But whaf if they need to be moved out of the `Store`-object? The 'handledBy'-function within a `RootStore` is 
+`protected` and can therefore only be used within the `RootStore` itself or any derived custom store-implementation. 
+A `RootStore` as receiver - e.g. using extension functions or apply/run - is not sufficient,
 If you explicitly want to use the store-job outside the `RootStore`, you have to create an extension function 
-with `WithJob` receiver an call that function within the `RootStore` wrapped with the new `runWithJob`-function.
+with an `WithJob` receiver and call that function within the `RootStore` wrapped with the new `runWithJob`-function.
 
 Example:
 ```kotlin
