@@ -1,15 +1,12 @@
 package dev.fritz2.core
 
+import dev.fritz2.renderWithJob
 import dev.fritz2.runTest
 import kotlinx.browser.document
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
-import org.w3c.dom.HTMLDivElement
-import org.w3c.dom.HTMLParagraphElement
-import org.w3c.dom.HTMLSpanElement
-import org.w3c.dom.asList
+import kotlinx.coroutines.flow.*
+import org.w3c.dom.*
 import kotlin.test.*
 
 
@@ -103,6 +100,7 @@ class TagTests {
         fun getSpanText(id: String) = (document.getElementById(id) as HTMLSpanElement).textContent
         fun getStaticSpan(id: String) =
             document.getElementById(id)!!.firstChild as HTMLSpanElement
+
         fun getStaticTextNode(id: String) = document.getElementById(id)!!.firstChild!!.firstChild
 
         data class Model(val static: String, val reactive: String)
@@ -136,7 +134,7 @@ class TagTests {
         assertEquals("RC-4", getSpanText(idValueReactive))
         val firstRenderedSpanCheck = getStaticTextNode(idMain)
         assertSame(firstRenderedSpan, firstRenderedSpanCheck)
-        assertEquals("fritz",  getStaticSpan(idMain).textContent)
+        assertEquals("fritz", getStaticSpan(idMain).textContent)
 
         // update with new value should trigger re-render
         store.update(Model("fritz2", "1.0-FINAL"))
@@ -264,6 +262,131 @@ class TagTests {
             assertEquals("li", element.localName)
             assertEquals(testClasses.joinToString(separator = " "), element.className, "wrong classes for $i")
         }
+    }
+
+    @Test
+    fun testStaticClassNameIsAppliedImmediately() = runTest {
+        renderWithJob {
+            div("ctor", id = Id.next()) {
+                className("immediately").also {
+                    assertEquals("ctor immediately", domNode.className)
+                }
+            }
+        }
+    }
+
+    @Test
+    fun testClassNameWithInitialValue() = runTest {
+
+        val testId = Id.next()
+        val gate = storeOf(false)
+
+        val document = renderWithJob {
+            div("ctor", id = testId) {
+                className("fixed")
+                className(gate.data.transform { if (it) emit("visible") }, "invisible").also {
+                    // ensure initial class names are really applied *immediately*
+                    assertEquals("ctor fixed invisible", domNode.className)
+                }
+            }
+        }
+
+        delay(50)
+
+        val element = document.domNode.firstChild!! as HTMLDivElement
+
+        assertEquals(testId, element.id)
+        assertEquals("div", element.localName)
+        assertEquals("ctor fixed invisible", element.className)
+
+        gate.update(true)
+        delay(50)
+        assertEquals("ctor fixed visible", element.className)
+    }
+
+    @Test
+    fun testClassNameWithGenericFlowAndInitialValue() = runTest {
+
+        val testId = Id.next()
+        val gate = storeOf(false)
+        val statesToNames = mapOf(0 to "initial", 1 to "changed", 2 to "another")
+        val state = storeOf(-1)
+
+        val document = renderWithJob {
+            div("ctor", id = testId) {
+                className("fixed")
+                className(gate.data.transform { if (it) emitAll(state.data) }, 0) { statesToNames[it]!! }.also {
+                    // ensure initial class names are really applied *immediately*
+                    assertEquals("ctor fixed initial", domNode.className)
+                }
+            }
+        }
+
+        delay(50)
+
+        val element = document.domNode.firstChild!! as HTMLDivElement
+
+        assertEquals(testId, element.id)
+        assertEquals("div", element.localName)
+        assertEquals("ctor fixed initial", element.className)
+
+        // after initialization step, we allow state changes to appear within `className.value`
+        gate.update(true)
+
+        state.update(1)
+        delay(50)
+        assertEquals("ctor fixed changed", element.className)
+
+        state.update(2)
+        delay(50)
+        assertEquals("ctor fixed another", element.className)
+    }
+
+    @Test
+    fun testMultipleClassNameWithGenericFlowAndInitialValue() = runTest {
+
+        val testId = Id.next()
+        val gate = storeOf(false)
+        val fonts = mapOf(-1 to "none", 0 to "small", 1 to "medium", 2 to "large")
+        val stateOfFont = storeOf(-1)
+        val stateOfColor = storeOf("green")
+
+        val document = renderWithJob {
+            div("ctor", id = testId) {
+                className("fixed")
+                className(gate.data.transform { if (it) emitAll(stateOfFont.data) }, 0) { fonts[it]!! }.also {
+                    // ensure initial class names are really applied *immediately*
+                    assertEquals("ctor fixed small", domNode.className)
+                }
+                className(gate.data.transform { if (it) emitAll(stateOfColor.data) }, "red").also {
+                    // ensure initial class names are really applied *immediately*
+                    assertEquals("ctor fixed small red", domNode.className)
+                }
+            }
+        }
+
+        delay(50)
+
+        val element = document.domNode.firstChild!! as HTMLDivElement
+
+        assertEquals(testId, element.id)
+        assertEquals("div", element.localName)
+        assertEquals("ctor fixed small red", element.className)
+
+        // after initialization step, we allow state changes to appear within `className.value`
+        gate.update(true)
+
+        delay(50)
+        assertEquals("ctor fixed none green", element.className)
+
+        stateOfFont.update(1)
+        delay(50)
+        assertEquals("ctor fixed medium green", element.className)
+
+        stateOfFont.update(2)
+        stateOfColor.update("cyan")
+        delay(50)
+        assertEquals("ctor fixed large cyan", element.className)
     }
 
     @Test

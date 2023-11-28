@@ -73,7 +73,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
         "$componentId-items",
         scope,
         this@PopOver.opened,
-        reference = button,
+        reference = button ?: button {  },
         ariaHasPopup = Aria.HasPopup.dialog
     )
 

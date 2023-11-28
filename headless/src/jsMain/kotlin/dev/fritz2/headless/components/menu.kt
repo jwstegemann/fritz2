@@ -103,7 +103,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
         "$componentId-items",
         scope,
         this@Menu.opened,
-        reference = button,
+        reference = button ?: button {  },
         ariaHasPopup = Aria.HasPopup.menu
     ) {
 

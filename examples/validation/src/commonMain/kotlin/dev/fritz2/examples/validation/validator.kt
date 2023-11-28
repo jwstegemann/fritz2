@@ -3,10 +3,7 @@ package dev.fritz2.examples.validation
 import dev.fritz2.core.Lens
 import dev.fritz2.validation.ValidationMessage
 import dev.fritz2.validation.validation
-import kotlinx.datetime.Clock
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.todayAt
+import kotlinx.datetime.*
 
 enum class Status(val inputClass: String, val messageClass: String) {
     Valid("is-valid", "valid-feedback"),
@@ -34,7 +31,7 @@ val personValidator = validation<Person, Message> { inspector ->
 
     // validate the birthday
     val birthday = inspector.map(Person.birthday())
-    val today = Clock.System.todayAt(TimeZone.currentSystemDefault())
+    val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
     when {
         birthday.data == LocalDate(1900, 1, 1) -> {
             add(Message(Person.id + birthday.path, Status.Invalid, "Please provide a birthday"))
