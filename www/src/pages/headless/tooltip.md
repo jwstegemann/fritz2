@@ -37,8 +37,8 @@ describe - either directly or using a scope-method like `apply`.
 :::
 
 ::: info
-**Beware:** to include a `portalRoot()`-call at the end of your initial `RenderContext` as explained
-[here](/headless/#portalling).
+Do not forget to include a `portalRoot()`-call at the end of your initial `RenderContext` as explained
+[here](/headless/#portalling)!
 :::
 
 ## Transitions

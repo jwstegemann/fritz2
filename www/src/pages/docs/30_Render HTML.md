@@ -64,7 +64,7 @@ of every fritz2 application; they provide the current value in a reactive way an
 
 :::info
 The store creation and its core functionalities will be explained in-depth in [chapter](/docs/createstores). 
-So do not care about the details, the relevant facts you need to understand this chapter are explained here. 
+So do not fret about the details - the facts relevant to understanding this chapter are explained here. 
 :::
 
 The store's `data`-property offers a `Flow` of the stored value `T`. To reactively bind this value to the DOM, 
@@ -874,7 +874,7 @@ render {
 }
 ```
 
-Of course, you can also use a subtype of `RenderContext`, like a certain `Tag`, as receiver if you want to limit the 
+Of course, you can also use a subtype of `RenderContext`, like a `Tag`, as receiver if you want to limit the 
 usage of your component to this parent type.
 
 Using plain functions, it's also straight forward to parametrize your component:
