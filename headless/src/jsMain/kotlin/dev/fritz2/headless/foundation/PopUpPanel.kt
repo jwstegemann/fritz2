@@ -50,7 +50,7 @@ abstract class PopUpPanel<C : HTMLElement>(
     private val fullWidth: Boolean = true,
     private val reference: Tag<HTMLElement>?,
     private val ariaHasPopup: String,
-    tag: Tag<C> = tagFactory(renderContext, classes(classes, POPUP_HIDDEN_CLASSES), id, scope) {},
+    tag: Tag<C> = tagFactory(renderContext, classes, id, scope) {},
     private val config: ComputePositionConfig = obj {}
 ) : Tag<C> by tag, ComputePositionConfig by config {
 
@@ -271,14 +271,15 @@ abstract class PopUpPanel<C : HTMLElement>(
                 opened.transform {
                     if (it) {
                         computePosition()
-                        emit(POPUP_VISIBLE_CLASSES)
+                        emit(true)
                         this@PopUpPanel.waitForAnimation()
                     } else {
                         this@PopUpPanel.waitForAnimation()
-                        emit(POPUP_HIDDEN_CLASSES)
+                        emit(false)
                     }
-                }
-            )
+                },
+                false
+            ) { isOpen -> if (isOpen) POPUP_VISIBLE_CLASSES else POPUP_HIDDEN_CLASSES }
         }
     }
 }

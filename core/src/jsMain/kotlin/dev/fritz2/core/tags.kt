@@ -3,7 +3,9 @@ package dev.fritz2.core
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.plus
 import kotlinx.dom.clear
 import org.w3c.dom.Element
 import org.w3c.dom.Node
@@ -140,31 +142,35 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, WithEvents<E> {
     }
 
     /**
-     * adds a [String] of class names to the classes attribute of this [Tag]
-     */
-    fun addToClasses(classesToAdd: String)
-
-    /**
-     * adds a [Flow] of class names to the classes attribute of this [Tag]
-     */
-    fun addToClasses(classesToAdd: Flow<String>)
-
-    /**
-     * Sets the *class* attribute.
+     * Adds a [String] of class names to the classes attribute of this [Tag]
      *
      * @param value as [String]
      */
-    fun className(value: String) {
-        addToClasses(value)
-    }
+    fun className(value: String)
 
     /**
-     * Sets the *class* attribute.
+     * Adds a [Flow] of class names to the classes attribute of this [Tag]
      *
      * @param value [Flow] with [String]
      */
-    fun className(value: Flow<String>) {
-        addToClasses(value)
+    fun className(value: Flow<String>, initial: String = "")
+
+    /**
+     * Uses a [Flow] of [T] to create some class names by a [transform] lambda expression and add them to the classes
+     * attribute of the [Tag].
+     *
+     * In order to set some classes *immediately*, you must provide some initial [T], which is used to create the
+     * initial classes value with the [transform] lambda.
+     *
+     * Use this function, to avoid flickering effects on reactively based styling!
+     *
+     * @param value a [Flow] of [T] that provide the parameter for the [transform] lambda
+     * @param initial some [T] that should be used as initial state in order to generate and add class names
+     * immediately without waiting for the first value of the [Flow]
+     * @param transform a lambda expression, which finally creates class names by passing one [T]
+     */
+    fun <T> className(value: Flow<T>, initial: T, transform: (T) -> String) {
+        className(value.map(transform), transform(initial))
     }
 
     /**
@@ -173,7 +179,7 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, WithEvents<E> {
      * @param values as [List] of [String]s
      */
     fun classList(values: List<String>) {
-        addToClasses(values.joinToString(" "))
+        className(values.joinToString(" "))
     }
 
     /**
@@ -182,7 +188,7 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, WithEvents<E> {
      * @param values [Flow] with [List] of [String]s
      */
     fun classList(values: Flow<List<String>>) {
-        addToClasses(values.map { it.joinToString(" ") })
+        className(values.map { it.joinToString(" ") })
     }
 
     /**
@@ -192,7 +198,7 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, WithEvents<E> {
      * @param values as [Map] with key to set and corresponding values to decide
      */
     fun classMap(values: Map<String, Boolean>) {
-        addToClasses(values.filter { it.value }.keys.joinToString(" "))
+        className(values.filter { it.value }.keys.joinToString(" "))
     }
 
     /**
@@ -202,7 +208,7 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, WithEvents<E> {
      * @param values [Flow] of [Map] with key to set and corresponding values to decide
      */
     fun classMap(values: Flow<Map<String, Boolean>>) {
-        addToClasses(values.map { map -> map.filter { it.value }.keys.joinToString(" ") })
+        className(values.map { map -> map.filter { it.value }.keys.joinToString(" ") })
     }
 
     /**
@@ -362,27 +368,37 @@ open class HtmlTag<out E : Element>(
         return element
     }
 
-    private var className: String? = baseClass
-    private var classFlow: Flow<String>? = null
-
-    private fun updateClasses() {
-        if (classFlow == null) {
-            attr("class", className)
-        } else if (className == null) {
-            attr("class", classFlow!!)
-        } else {
-            attr("class", classFlow!!.map { classes(className, it) })
-        }
+    /**
+     * This [MutableStateFlow] acts as a backing field for all class names. It holds arbitrary [List]s of
+     * [StateFlow]s, in which each portion of class names get managed. So multiple calls of any [className] variant
+     * can be merged in one central place and mounted into the [Tag]s `class` attribute only once.
+     */
+    private val classesStateFlow by lazy {
+        MutableStateFlow<List<StateFlow<String>>>(listOfNotNull(baseClass?.let { MutableStateFlow(it) }))
+            .also { classesFlowList ->
+                attr("class", classesFlowList.flatMapLatest { styleFlows -> combine(styleFlows) { classes(*it) } })
+            }
     }
 
-    override fun addToClasses(classesToAdd: String) {
-        className = classes(className, classesToAdd)
-        updateClasses()
+    /**
+     * small utility function to create the classes [String] from the current values of the [StateFlow]s.
+     *
+     * This function is used to create the *initial* class name values, that should get applied *immediately*
+     * to the domnode.
+     */
+    private fun buildClasses() = classes(*classesStateFlow.value.map { it.value }.toTypedArray())
+
+    override fun className(value: String) {
+        classesStateFlow.value += MutableStateFlow(value)
+        // this ensures that the set state gets applied *immediately* without `Flow`-"delay"!
+        attr("class", buildClasses())
     }
 
-    override fun addToClasses(classesToAdd: Flow<String>) {
-        classFlow = if (classFlow == null) classesToAdd else classFlow!!.combine(classesToAdd) { a, b -> classes(a, b) }
-        updateClasses()
+    override fun className(value: Flow<String>, initial: String) {
+        classesStateFlow.value += value.stateIn(MainScope() + job, SharingStarted.Eagerly, initial)
+        // this ensures that the set state gets applied *immediately* without `Flow`-"delay"!
+        //  in this case, the `initial` value gets applied as "promised".
+        attr("class", buildClasses())
     }
 
     internal inner class AnnexContext : RenderContext {
