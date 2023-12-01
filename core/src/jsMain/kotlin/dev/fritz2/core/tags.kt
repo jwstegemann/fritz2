@@ -156,21 +156,21 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, WithEvents<E> {
     fun className(value: Flow<String>, initial: String = "")
 
     /**
-     * Uses a [Flow] of [T] to create some class names by a [generate] lambda expression and add them to the classes
+     * Uses a [Flow] of [T] to create some class names by a [transform] lambda expression and add them to the classes
      * attribute of the [Tag].
      *
      * In order to set some classes *immediately*, you must provide some initial [T], which is used to create the
-     * initial classes value with the [generate] lambda.
+     * initial classes value with the [transform] lambda.
      *
      * Use this function, to avoid flickering effects on reactively based styling!
      *
-     * @param value a [Flow] of [T] that provide the parameter for the [generate] lambda
+     * @param value a [Flow] of [T] that provide the parameter for the [transform] lambda
      * @param initial some [T] that should be used as initial state in order to generate and add class names
      * immediately without waiting for the first value of the [Flow]
-     * @param generate a lambda expression, which finally creates class names by passing one [T]
+     * @param transform a lambda expression, which finally creates class names by passing one [T]
      */
-    fun <T> className(value: Flow<T>, initial: T, generate: (T) -> String) {
-        className(value.map(generate), generate(initial))
+    fun <T> className(value: Flow<T>, initial: T, transform: (T) -> String) {
+        className(value.map(transform), transform(initial))
     }
 
     /**

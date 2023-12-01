@@ -641,19 +641,19 @@ You would have to think about also changing the `initial = "..."`-parameter, whi
 That is why there is another `className`-function variant, which might better fit for more complex or volatile
 initial class name values:
 ```kotlin
-fun <T> className(value: Flow<T>, initial: T, generate: (T) -> String): Unit
+fun <T> className(value: Flow<T>, initial: T, transform: (T) -> String): Unit
 ```
 
 This function takes three parameters in order to solve the above problem:
 - `value` is just some `Flow`, that provides arbitrary values `T`. This can be simply some `Flow<Boolean>` but also
 combinations or any other needed type can be provided.
 - `initial` some value of `T`, which represents the initial state, that should get applied immediately.
-- `generate` some lambda expression, that uses one value of `T` in order to generate the appropriate class names for
+- `transform` some lambda expression, that uses one value of `T` in order to generate the appropriate class names for
 this specific value.
 
-The above problem is now solved by this function, as the `generate`-expression is the *single source of truth* of all
-class names. At first the `initial`-parameter is passed to the `generate`-expression to create the initial class names,
-that are applied immediately. Further on, each value appearing on the `value`-`Flow` will also be used with `generate`
+The above problem is now solved by this function, as the `transform`-expression is the *single source of truth* of all
+class names. At first the `initial`-parameter is passed to the `transform`-expression to create the initial class names,
+that are applied immediately. Further on, each value appearing on the `value`-`Flow` will also be used with `transform`
 to create the appropriate class names.
 
 ```kotlin
