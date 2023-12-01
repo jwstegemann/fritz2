@@ -3,7 +3,9 @@ package dev.fritz2.core
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.plus
 import kotlinx.dom.clear
 import org.w3c.dom.Element
 import org.w3c.dom.Node
@@ -393,9 +395,7 @@ open class HtmlTag<out E : Element>(
     }
 
     override fun className(value: Flow<String>, initial: String) {
-        val flow = MutableStateFlow(initial)
-        value handledBy { flow.value = it }
-        classesStateFlow.value += flow
+        classesStateFlow.value += value.stateIn(MainScope() + job, SharingStarted.Eagerly, initial)
         // this ensures that the set state gets applied *immediately* without `Flow`-"delay"!
         //  in this case, the `initial` value gets applied as "promised".
         attr("class", buildClasses())
