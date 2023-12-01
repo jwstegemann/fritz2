@@ -368,37 +368,33 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
                 focusouts
             ).map { null } handledBy activeItem.update
 
-            items.flatMapLatest { list ->
-                activeItem.data.flatMapLatest { current ->
-                    val index = indexOfItem(list, current?.first)
-                    keydowns.mapNotNull { event ->
-                        when (shortcutOf(event)) {
-                            Keys.ArrowUp -> list.getOrNull(max(index - 1, 0))
-                            Keys.ArrowDown -> list.getOrNull(min(index + 1, list.size - 1))
-                            Keys.Home -> list.firstOrNull()
-                            Keys.End -> list.lastOrNull()
-                            else -> null
-                        }?.let {
-                            event.preventDefault()
-                            event.stopImmediatePropagation()
-                            it to true
-                        }
-                    }
+            keydowns.mapNotNull { event ->
+                val current = activeItem.current
+                val list = items.first()
+                val index = indexOfItem(list, current?.first)
+                when (shortcutOf(event)) {
+                    Keys.ArrowUp -> list.getOrNull(max(index - 1, 0))
+                    Keys.ArrowDown -> list.getOrNull(min(index + 1, list.size - 1))
+                    Keys.Home -> list.firstOrNull()
+                    Keys.End -> list.lastOrNull()
+                    else -> null
+                }?.let {
+                    event.preventDefault()
+                    event.stopImmediatePropagation()
+                    it to true
                 }
+
             } handledBy activeItem.update
 
             if (selection.isSet) {
                 data.value?.let {
-                    selection.selectItem(items.flatMapLatest {
-                        activeItem.data.flatMapLatest { current ->
-                            keydowns.filter {
-                                setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it))
-                            }.mapNotNull { event ->
-                                current?.first?.also {
-                                    event.preventDefault()
-                                    event.stopImmediatePropagation()
-                                }
-                            }
+                    selection.selectItem(keydowns.filter {
+                        setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it))
+                    }.mapNotNull { event ->
+                        val current = activeItem.current
+                        current?.first?.also {
+                            event.preventDefault()
+                            event.stopImmediatePropagation()
                         }
                     }.distinctUntilChanged(), it)
                     selection.sanitizeSelection(filteredItems, it)
