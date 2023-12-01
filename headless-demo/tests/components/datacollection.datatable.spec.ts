@@ -274,6 +274,7 @@ test.describe('To', () => {
         await page.mouse.move(selectedBox.x + 10, selectedBox.y + 10, {steps: 100})
         await expect(startingRow).toHaveAttribute("data-datatable-active", "true")
         await page.mouse.click(selectedBox.x + 10, selectedBox.y + 10, {delay: 200})
+        await expect(startingRow).toHaveAttribute('data-datatable-selected', 'true')
 
         for (let i = 0; i < 4; i++) {
             await page.keyboard.press("ArrowDown", {delay: 1000})
@@ -286,6 +287,7 @@ test.describe('To', () => {
          * Need test for "scrollUp"
          */
         const tableBox = await table.boundingBox()
+        await expect(currentRow).toHaveAttribute("data-datatable-active", "true");
         const currentRowBox = await currentRow.boundingBox()
         expect(currentRowBox.y).toBeLessThanOrEqual(tableBox.y + tableBox.height / 2)
         expect(currentRowBox.y + currentRowBox.height).toBeGreaterThanOrEqual(tableBox.y + tableBox.height / 2)

@@ -4,7 +4,6 @@ import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.*
 import dev.fritz2.headless.foundation.utils.scrollintoview.HeadlessScrollOptions
 import dev.fritz2.headless.foundation.utils.scrollintoview.scrollIntoView
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
