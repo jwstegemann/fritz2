@@ -555,7 +555,7 @@ render {
 Use this one-liner to add styling and meaning to your elements by using semantic CSS class-names. Also, it keeps your
 code clean when using CSS frameworks like Bootstrap, Tailwind, etc.
 
-There is also the `className`-function which can also be used for setting static classes:
+Additionally, the `className`-function can be used to set static classes:
 
 ```kotlin
 render {
@@ -583,7 +583,7 @@ render {
 }
 ```
 
-You can also combine all of these approaches with arbitrary usages of `className`-variants, to handle different aspects
+You can also combine all of these approaches with arbitrary usages of `className`-variants to handle different aspects
 separately:
 
 ```kotlin
@@ -603,21 +603,21 @@ render {
 }
 ```
 
-Beware that the first value of a `Flow` might take some time to be consumed and therefore applied to the `class` 
-attribute of a tag. This could lead to *flicker effects*, for example with floating elements, that should only become
-visible if activated. The following sections explains, how to overcome such unwanted effets.
+Keep in mind that the first value of a `Flow` might take some time to be consumed and applied to the `class` 
+attribute of a tag. This could lead to flicker effects, for example with floating elements which only become
+visible when activated. The following section explains how to overcome these effets.
 
-### Avoid Flicker Effects with Reactive Styling
+### Avoid Flicker Effects With Reactive Styling
 
-In order to avoid flicker effects caused by the delay of the first value becoming available on the flow, you must 
-provide some initial value, that can be applied immediately within the rendering process.
+In order to avoid flicker effects caused by the delay of the first value becoming available on the flow, an initial 
+value must be provided to be applied immediately within the rendering process.
 
-The already shown `className`-function offers such an optional parameter, when looking at its complete signature:
+The previously discussed `className`-function offers an `initial` parameter:
 ```kotlin
 fun className(value: Flow<String>, initial: String): Unit
 ```
 
-For single classes or short class name groups, you can simply pass the appropriate initial classnames as second 
+For single classes or short class name groups, simply pass the appropriate initial classnames as second 
 parameter:
 ```kotlin
 render {
@@ -635,25 +635,25 @@ render {
 }
 ```
 
-For simple use cases this is fine, but imagine someone changes the classnames for the initial state.
-You would have to think about also changing the `initial = "..."`-parameter, which can easily be overseen.
+For simple use cases this is fine, as long as the classnames for the initial state remain unchanged.
+Otherwise the `initial = "..."`-parameter would also have to be changed, which can easily be overlooked.
 
-That is why there is another `className`-function variant, which might better fit for more complex or volatile
+That's why there is another `className`-function variant which might be better suited for more complex or volatile
 initial class name values:
 ```kotlin
 fun <T> className(value: Flow<T>, initial: T, transform: (T) -> String): Unit
 ```
 
 This function takes three parameters in order to solve the above problem:
-- `value` is just some `Flow`, that provides arbitrary values `T`. This can be simply some `Flow<Boolean>` but also
-combinations or any other needed type can be provided.
-- `initial` some value of `T`, which represents the initial state, that should get applied immediately.
-- `transform` some lambda expression, that uses one value of `T` in order to generate the appropriate class names for
+- `value` is a `Flow` which provides arbitrary values of `T`. This can be a simple `Flow<Boolean>`, but also
+combinations or any other type can be provided.
+- `initial`: a value of `T` representing the initial state to be applied immediately.
+- `transform`: a lambda expression which uses one value of `T` in order to generate the appropriate class names for
 this specific value.
 
-The above problem is now solved by this function, as the `transform`-expression is the *single source of truth* of all
-class names. At first the `initial`-parameter is passed to the `transform`-expression to create the initial class names,
-that are applied immediately. Further on, each value appearing on the `value`-`Flow` will also be used with `transform`
+The above problem is now solved by this function as the `transform`-expression is the *single source of truth* of all
+class names. First, the `initial`-parameter is passed to the `transform`-expression to create the initial class names 
+which are immediately applied. Further on, each value appearing on the `value`-`Flow` will be used with `transform`
 to create the appropriate class names.
 
 ```kotlin
@@ -759,12 +759,12 @@ render {
 ### Avoid Unsound Values with Reactive Attributes
 
 As the first value of a `Flow` might appear some time after the DOM portion of some tag is already rendered, it is
-possible, that the initial value of an attribute is not set or set with the wrong value. This could already lead to
-further unwanted side effects, if other behaviour or redering is derived by those attributes. Think of a falsy
-enabled `disabled` attribute of some `input` element for example.
+possible that the initial value of an attribute is not set or set with the wrong value. This could lead to
+further unwanted side effects if other behaviour or rendering is derived by those attributes. Think of a falsely
+enabled `disabled` attribute of an `input` element, for example.
 
-To immediately set any attribute like, the respective attribute-method must simply be called twice: First with the
-static value that should be set immediately, then with the `Flow` that provides the dynamic values:
+To immediately set any attribute, the respective attribute-method is simply called twice: First with the
+static value to be set immediately, then with the `Flow` providing the dynamic values:
 
 ```kotlin
 val disabled: Flow<Boolean> = ...
