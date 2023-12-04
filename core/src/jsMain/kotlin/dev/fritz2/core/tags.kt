@@ -159,15 +159,15 @@ interface Tag<out E : Element> : RenderContext, WithDomNode<E>, WithEvents<E> {
      * Uses a [Flow] of [T] to create some class names by a [transform] lambda expression and add them to the classes
      * attribute of the [Tag].
      *
-     * In order to set some classes *immediately*, you must provide some initial [T], which is used to create the
+     * In order to set some classes immediately, you must provide an initial [T] which is used to create the
      * initial classes value with the [transform] lambda.
      *
-     * Use this function, to avoid flickering effects on reactively based styling!
+     * Use this function to avoid flickering effects on reactively based styling!
      *
-     * @param value a [Flow] of [T] that provide the parameter for the [transform] lambda
-     * @param initial some [T] that should be used as initial state in order to generate and add class names
+     * @param value a [Flow] of [T] that provides the parameter for the [transform] lambda
+     * @param initial a [T] to be used as initial state in order to generate and add class names
      * immediately without waiting for the first value of the [Flow]
-     * @param transform a lambda expression, which finally creates class names by passing one [T]
+     * @param transform a lambda expression which finally creates class names by passing one [T]
      */
     fun <T> className(value: Flow<T>, initial: T, transform: (T) -> String) {
         className(value.map(transform), transform(initial))
@@ -370,8 +370,8 @@ open class HtmlTag<out E : Element>(
 
     /**
      * This [MutableStateFlow] acts as a backing field for all class names. It holds arbitrary [List]s of
-     * [StateFlow]s, in which each portion of class names get managed. So multiple calls of any [className] variant
-     * can be merged in one central place and mounted into the [Tag]s `class` attribute only once.
+     * [StateFlow]s which manage each portion of class names. This way, multiple calls of any [className] variant
+     * can be merged in one central place and must be mounted into the [Tag]s `class` attribute only once.
      */
     private val classesStateFlow by lazy {
         MutableStateFlow<List<StateFlow<String>>>(listOfNotNull(baseClass?.let { MutableStateFlow(it) }))
@@ -381,23 +381,23 @@ open class HtmlTag<out E : Element>(
     }
 
     /**
-     * small utility function to create the classes [String] from the current values of the [StateFlow]s.
+     * Small utility function to create the classes [String] from the current values of the [StateFlow]s.
      *
-     * This function is used to create the *initial* class name values, that should get applied *immediately*
+     * This function is used to create the initial class name values to be applied immediately
      * to the domnode.
      */
     private fun buildClasses() = classes(*classesStateFlow.value.map { it.value }.toTypedArray())
 
     override fun className(value: String) {
         classesStateFlow.value += MutableStateFlow(value)
-        // this ensures that the set state gets applied *immediately* without `Flow`-"delay"!
+        // this ensures that the set state is applied *immediately* without `Flow`-"delay"
         attr("class", buildClasses())
     }
 
     override fun className(value: Flow<String>, initial: String) {
         classesStateFlow.value += value.stateIn(MainScope() + job, SharingStarted.Eagerly, initial)
-        // this ensures that the set state gets applied *immediately* without `Flow`-"delay"!
-        //  in this case, the `initial` value gets applied as "promised".
+        // this ensures that the set state is applied *immediately* without `Flow`-"delay".
+        // in this case, the `initial` value gets applied as "promised".
         attr("class", buildClasses())
     }
 
