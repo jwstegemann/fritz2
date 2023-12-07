@@ -8,6 +8,7 @@ import dev.fritz2.validation.test.*
 import kotlinx.browser.document
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLSpanElement
 import kotlin.test.Test
@@ -81,7 +82,7 @@ class ValidationJSTests {
     }
 
     @Test
-    fun testSubStoreValidation() = runTest {
+    fun testValidationWithSubTreeFiltering() = runTest {
 
         val store: ValidatingStore<Car, Unit, Message> =
             storeOf(Car("car", Color(120, 120, 120)), validation = Car.validator)
@@ -103,32 +104,33 @@ class ValidationJSTests {
                     colorStore.data.map { "${it.r}, ${it.g}, ${it.b}" }.renderText()
                 }
                 div(id = idMessagesIntermediateLevel) {
-                    colorStore.messages<Message>()?.renderEach(Message::path, into = this) {
+                    colorStore.messagesOfSubTree<Message>()?.renderEach(Message::path, into = this) {
                         p {
                             +it.text
                         }
                     }
                 }
                 div(id = idPathIntermediateLevel) {
-                    colorStore.messages<Message>()?.map { messages -> messages.all { it.path.startsWith(".color") } }
+                    colorStore.messagesOfSubTree<Message>()
+                        ?.map { messages -> messages.all { it.path.startsWith(".color") } }
                         ?.renderText(into = this)
                 }
                 div(id = idMessagesR) {
-                    rColorStore.messages<Message>()?.renderEach(Message::path, into = this) {
+                    rColorStore.messagesOfSubTree<Message>()?.renderEach(Message::path, into = this) {
                         p {
                             +it.path
                         }
                     }
                 }
                 div(id = idMessagesG) {
-                    gColorStore.messages<Message>()?.renderEach(Message::path, into = this) {
+                    gColorStore.messagesOfSubTree<Message>()?.renderEach(Message::path, into = this) {
                         p {
                             +it.path
                         }
                     }
                 }
                 div(id = idMessagesB) {
-                    bColorStore.messages<Message>()?.renderEach(Message::path, into = this) {
+                    bColorStore.messagesOfSubTree<Message>()?.renderEach(Message::path, into = this) {
                         p {
                             +it.path
                         }
@@ -178,6 +180,7 @@ data class Bar(val foo: String, val foobar: String) {
         val foobarLens = lensOf("foobar", Bar::foobar) { p, v -> p.copy(foobar = v) }
 
         val validate: Validation<Bar, Unit, Message> = validation { inspector ->
+            add(Message(inspector.path, "bar ist falsch"))
             add(Message(inspector.map(fooLens).path, "foo ist falsch"))
             add(Message(inspector.map(foobarLens).path, "foobar ist falsch"))
         }
@@ -201,6 +204,69 @@ data class Foo(val foo: String, val foobar: String, val bar: Bar) {
 class MessageFilterTests {
 
     @Test
+    fun testMessagesWithoutFilterExpressionOnlyMatchesExactlyFittingPathes() = runTest {
+        val initial = Foo("", "", Bar("", ""))
+        val store = storeOf(initial, validation = Foo.validate)
+        store.update(initial.copy(foo = "a"))
+
+        val id = Id.next()
+        render {
+            span(id = id) {
+                store.map(Foo.barLens).messages<Message>()
+                    ?.mapNotNull { messages -> messages.joinToString { it.text } }
+                    ?.renderText()
+            }
+        }
+
+        delay(100)
+        val span = document.getElementById(id) as HTMLSpanElement
+        assertEquals("bar ist falsch", span.textContent)
+    }
+
+    @Test
+    fun testMessagesOfSubTreeMatchesAllSubPathes() = runTest {
+        val initial = Foo("", "", Bar("", ""))
+        val store = storeOf(initial, validation = Foo.validate)
+        store.update(initial.copy(foo = "a"))
+
+        val id = Id.next()
+        render {
+            span(id = id) {
+                store.map(Foo.barLens).messagesOfSubTree<Message>()?.mapNotNull { it.size.toString() }?.renderText()
+            }
+        }
+
+        delay(100)
+        val span = document.getElementById(id) as HTMLSpanElement
+        assertEquals("3", span.textContent)
+    }
+
+    @Test
+    fun testMessagesRespectFilterExpression() = runTest {
+        val initial = Foo("", "", Bar("", ""))
+        val store = storeOf(initial, validation = Foo.validate)
+        store.update(initial.copy(foo = "a"))
+
+        val id = Id.next()
+        render {
+            span(id = id) {
+                // 4
+                store.map(Foo.barLens).messages<Message> { it.text.contains("foo") }
+                    ?.mapNotNull { it.size.toString() }
+                    ?.renderText()
+                // 0
+                store.map(Foo.barLens).messages<Message> { it.text.contains("richtig") }
+                    ?.mapNotNull { it.size.toString() }
+                    ?.renderText()
+            }
+        }
+
+        delay(100)
+        val span = document.getElementById(id) as HTMLSpanElement
+        assertEquals("40", span.textContent)
+    }
+
+    @Test
     fun testOverlappingFieldnamesDoNotMatchEachOthersPathes() = runTest {
         val initial = Foo("", "", Bar("", ""))
         val store = storeOf(initial, validation = Foo.validate)
@@ -220,21 +286,21 @@ class MessageFilterTests {
         render {
             span(id = id) {
                 // 1
-                store.map(Foo.fooLens).messages<Message>()?.map { it.size.toString() }?.renderText()
+                store.map(Foo.fooLens).messagesOfSubTree<Message>()?.map { it.size.toString() }?.renderText()
                 // 1
-                store.map(Foo.foobarLens).messages<Message>()?.map { it.size.toString() }?.renderText()
+                store.map(Foo.foobarLens).messagesOfSubTree<Message>()?.map { it.size.toString() }?.renderText()
                 // 2
-                store.map(Foo.barLens).messages<Message>()?.map { it.size.toString() }?.renderText()
+                store.map(Foo.barLens).messagesOfSubTree<Message>()?.map { it.size.toString() }?.renderText()
                 // 1
-                store.map(Foo.fooLens).messages<Message>()?.map { it.size.toString() }?.renderText()
+                store.map(Foo.fooLens).messagesOfSubTree<Message>()?.map { it.size.toString() }?.renderText()
                 // 1
-                store.map(Foo.fooLens).messages<Message>()?.map { it.size.toString() }?.renderText()
+                store.map(Foo.fooLens).messagesOfSubTree<Message>()?.map { it.size.toString() }?.renderText()
             }
         }
 
         delay(100)
         val span = document.getElementById(id) as HTMLSpanElement
-        assertEquals("11211", span.textContent)
+        assertEquals("11311", span.textContent)
     }
 }
 
