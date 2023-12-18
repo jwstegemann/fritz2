@@ -42,15 +42,19 @@ private data class PortalContainer<C : HTMLElement>(
  *
  * @see portal
  */
-fun RenderContext.portalRoot(): RenderContext {
+fun RenderContext.portalRoot(scopeContext: (ScopeContext.() -> Unit) = {}): RenderContext {
     addComponentStructureInfo(portalRootId, this.scope, this)
-    register(PortalRenderContext) {}
+    register(PortalRenderContext.withScope(scopeContext + scope)) {}
     return PortalRenderContext
 }
 
 internal object PortalRenderContext : HtmlTag<HTMLDivElement>("div", portalRootId, null, Job(), Scope()) {
 
+    var scopeContext: ScopeContext.() -> Unit = {}
 
+    fun withScope(scopeContext: ScopeContext.() -> Unit): PortalRenderContext = apply {
+        this.scopeContext = scopeContext + scope
+    }
 
     init {
         attr(Aria.live, "polite")
@@ -92,7 +96,7 @@ fun <C : HTMLElement> RenderContext.portal(
         PortalContainer(
             classes = classes,
             id = portalId,
-            scope = scope,
+            scope = scope + this.scope,
             tag = tag,
             reference = reference?.mountPoint(),
             content = content
