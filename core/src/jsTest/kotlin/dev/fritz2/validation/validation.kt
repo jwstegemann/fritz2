@@ -104,33 +104,33 @@ class ValidationJSTests {
                     colorStore.data.map { "${it.r}, ${it.g}, ${it.b}" }.renderText()
                 }
                 div(id = idMessagesIntermediateLevel) {
-                    colorStore.messagesOfSubTree<Message>()?.renderEach(Message::path, into = this) {
+                    colorStore.messagesOfSubModel<Message>()?.renderEach(Message::path, into = this) {
                         p {
                             +it.text
                         }
                     }
                 }
                 div(id = idPathIntermediateLevel) {
-                    colorStore.messagesOfSubTree<Message>()
+                    colorStore.messagesOfSubModel<Message>()
                         ?.map { messages -> messages.all { it.path.startsWith(".color") } }
                         ?.renderText(into = this)
                 }
                 div(id = idMessagesR) {
-                    rColorStore.messagesOfSubTree<Message>()?.renderEach(Message::path, into = this) {
+                    rColorStore.messagesOfSubModel<Message>()?.renderEach(Message::path, into = this) {
                         p {
                             +it.path
                         }
                     }
                 }
                 div(id = idMessagesG) {
-                    gColorStore.messagesOfSubTree<Message>()?.renderEach(Message::path, into = this) {
+                    gColorStore.messagesOfSubModel<Message>()?.renderEach(Message::path, into = this) {
                         p {
                             +it.path
                         }
                     }
                 }
                 div(id = idMessagesB) {
-                    bColorStore.messagesOfSubTree<Message>()?.renderEach(Message::path, into = this) {
+                    bColorStore.messagesOfSubModel<Message>()?.renderEach(Message::path, into = this) {
                         p {
                             +it.path
                         }
@@ -232,7 +232,7 @@ class MessageFilterTests {
         val id = Id.next()
         render {
             span(id = id) {
-                store.map(Foo.barLens).messagesOfSubTree<Message>()?.mapNotNull { it.size.toString() }?.renderText()
+                store.map(Foo.barLens).messagesOfSubModel<Message>()?.mapNotNull { it.size.toString() }?.renderText()
             }
         }
 
@@ -286,15 +286,15 @@ class MessageFilterTests {
         render {
             span(id = id) {
                 // 1
-                store.map(Foo.fooLens).messagesOfSubTree<Message>()?.map { it.size.toString() }?.renderText()
+                store.map(Foo.fooLens).messagesOfSubModel<Message>()?.map { it.size.toString() }?.renderText()
                 // 1
-                store.map(Foo.foobarLens).messagesOfSubTree<Message>()?.map { it.size.toString() }?.renderText()
+                store.map(Foo.foobarLens).messagesOfSubModel<Message>()?.map { it.size.toString() }?.renderText()
                 // 2
-                store.map(Foo.barLens).messagesOfSubTree<Message>()?.map { it.size.toString() }?.renderText()
+                store.map(Foo.barLens).messagesOfSubModel<Message>()?.map { it.size.toString() }?.renderText()
                 // 1
-                store.map(Foo.fooLens).messagesOfSubTree<Message>()?.map { it.size.toString() }?.renderText()
+                store.map(Foo.fooLens).messagesOfSubModel<Message>()?.map { it.size.toString() }?.renderText()
                 // 1
-                store.map(Foo.fooLens).messagesOfSubTree<Message>()?.map { it.size.toString() }?.renderText()
+                store.map(Foo.fooLens).messagesOfSubModel<Message>()?.map { it.size.toString() }?.renderText()
             }
         }
 

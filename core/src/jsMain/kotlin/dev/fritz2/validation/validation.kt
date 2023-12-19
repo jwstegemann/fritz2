@@ -233,6 +233,6 @@ fun <M : ValidationMessage> Store<*>.messages(): Flow<List<M>>? = messages { mes
  * Be aware that the  filtering is based upon the correct usage of [Store.path]'s field. This can be reliably achieved
  * by using [dev.fritz2.core.Inspector]s and their mappings for creating the correct path values.
  */
-fun <M : ValidationMessage> Store<*>.messagesOfSubTree(): Flow<List<M>>? = messages { message ->
+fun <M : ValidationMessage> Store<*>.messagesOfSubModel(): Flow<List<M>>? = messages { message ->
     message.path == path || message.path.startsWith("$path.")
 }
