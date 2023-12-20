@@ -49,8 +49,6 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         }
     }
 
-    private val state by lazy { activeIndex.data.combine(entries.data, ::Pair) }
-
     fun render() {
         attr("id", componentId)
         opened.drop(1).filter { !it } handledBy {
@@ -207,9 +205,11 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             label?.let { attr(Aria.labelledby, it.id) }
             attr(Aria.activedescendant, activeIndex.data.map { if (it == -1) null else "$componentId-item-$it" })
 
-            state.flatMapLatest { (currentIndex, entries) ->
-                keydowns.mapNotNull { event ->
-                    when (shortcutOf(event)) {
+
+            keydowns.mapNotNull { event ->
+                val currentIndex = activeIndex.current
+                val entries = entries.current
+                when (shortcutOf(event)) {
                         Keys.ArrowUp -> nextItem(currentIndex, Direction.Previous, entries)
                         Keys.ArrowDown -> nextItem(currentIndex, Direction.Next, entries)
                         Keys.Home -> firstItem(entries)
@@ -220,37 +220,33 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
                             event.preventDefault()
                             event.stopImmediatePropagation()
                         }
-                    }
                 }
             } handledBy activeIndex.update
 
-            entries.data.flatMapLatest { entries ->
-                keydowns.mapNotNull { event ->
-                    if (!Keys.NamedKeys.contains(event.key)) {
-                        event.preventDefault()
-                        event.stopImmediatePropagation()
-                        event.key.first().lowercaseChar()
-                    } else null
-                }
-                    .mapNotNull { c ->
-                        if (c.isLetterOrDigit()) itemByCharacter(entries, c)
-                        else null
-                    }
+            keydowns.mapNotNull { event ->
+                if (!Keys.NamedKeys.contains(event.key)) {
+                    event.preventDefault()
+                    event.stopImmediatePropagation()
+                    event.key.first().lowercaseChar()
+                } else null
+            }.mapNotNull { c ->
+                if (c.isLetterOrDigit()) itemByCharacter(entries.current, c)
+                else null
             } handledBy activeIndex.update
 
             value.handler?.invoke(
                 this,
-                state.flatMapLatest { (currentIndex, entries) ->
-                    keydowns.filter {
-                        setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it))
-                    }.mapNotNull {
-                        if (currentIndex == -1 || entries[currentIndex].disabled) {
-                            null
-                        } else {
-                            it.preventDefault()
-                            it.stopImmediatePropagation()
-                            entries[currentIndex].value
-                        }
+                keydowns.filter {
+                    setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it))
+                }.mapNotNull {
+                    val currentIndex = activeIndex.current
+                    val entries = entries.current
+                    if (currentIndex == -1 || entries[currentIndex].disabled) {
+                        null
+                    } else {
+                        it.preventDefault()
+                        it.stopImmediatePropagation()
+                        entries[currentIndex].value
                     }
                 }
             )

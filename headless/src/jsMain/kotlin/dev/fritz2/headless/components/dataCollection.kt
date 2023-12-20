@@ -6,6 +6,7 @@ import dev.fritz2.headless.foundation.utils.scrollintoview.*
 import kotlinx.browser.document
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.NonCancellable.isActive
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.plus
 import org.w3c.dom.HTMLButtonElement
@@ -422,11 +423,8 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
                     data.value?.let { selection.selectItem(clicks.map { item }, it) }
                 }
 
-                active.flatMapLatest { isActive ->
-                    mousemoves.mapNotNull {
-                        if (!isActive) (item to false)
-                        else null
-                    }
+                mousemoves.mapNotNull {
+                    if (!active.first()) (item to false) else null
                 } handledBy activeItem.update
 
                 if (scrollIntoView.isSet) {

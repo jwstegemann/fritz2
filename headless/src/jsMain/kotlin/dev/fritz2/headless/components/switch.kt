@@ -2,10 +2,7 @@ package dev.fritz2.headless.components
 
 import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import org.w3c.dom.*
 
 /**
@@ -38,16 +35,15 @@ abstract class AbstractSwitch<C : HTMLElement>(
         attr(Aria.checked, enabled.asString())
         attr(Aria.invalid, "true".whenever(value.hasError))
         attr("tabindex", "0")
-        value.handler?.invoke(this, value.data.flatMapLatest { state -> clicks.map { !state } })
+        value.handler?.invoke(this, clicks.map { !value.data.first() })
         value.handler?.invoke(
             this,
-            value.data.flatMapLatest { state ->
-                keydowns.filter { shortcutOf(it) == Keys.Space }.map {
-                    it.stopImmediatePropagation()
-                    it.preventDefault()
-                    !state
-                }
-            })
+            keydowns.filter { shortcutOf(it) == Keys.Space }.map {
+                it.stopImmediatePropagation()
+                it.preventDefault()
+                !value.data.first()
+            }
+        )
     }
 
     /**
@@ -175,7 +171,7 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
     ): Tag<CL> {
         addComponentStructureInfo("switchLabel", this@switchLabel.scope, this)
         return tag(this, classes, "$componentId-label", scope, content).apply {
-            value.handler?.invoke(this, value.data.flatMapLatest { state -> clicks.map { !state } })
+            value.handler?.invoke(this, clicks.map { !value.data.first() })
         }.also { label = it }
     }
 
