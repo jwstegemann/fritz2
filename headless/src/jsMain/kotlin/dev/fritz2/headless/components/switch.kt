@@ -171,7 +171,7 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
     ): Tag<CL> {
         addComponentStructureInfo("switchLabel", this@switchLabel.scope, this)
         return tag(this, classes, "$componentId-label", scope, content).apply {
-            value.handler?.invoke(this, clicks.map { !value.data.first() })
+            value.handler?.invoke(this, clicks.onEach { it.preventDefault() }.map { !value.data.first() })
         }.also { label = it }
     }
 
