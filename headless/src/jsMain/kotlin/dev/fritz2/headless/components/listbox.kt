@@ -164,7 +164,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
     ) = listboxValidationMessages(classes, scope, RenderContext::div, initialize)
 
     inner class ListboxItems<CI : HTMLElement>(
-        val renderContext: RenderContext,
+        renderContext: RenderContext,
         tagFactory: TagFactory<Tag<CI>>,
         classes: String?,
         scope: ScopeContext.() -> Unit

@@ -25,17 +25,19 @@ class MountTargetNotFoundException(message: String) : Exception(message)
  * @param selector [query selector](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector)
  * of the element to mount to
  * @param override if true all child elements are removed before rendering
+ * @param scope scope for tag
  * @param content [RenderContext] for rendering the data to the DOM
  * @throws MountTargetNotFoundException if target element with [selector] not found
  */
 fun render(
     selector: String,
     override: Boolean = true,
+    scope: (ScopeContext.() -> Unit) = {},
     content: RenderContext.() -> Unit
 ) {
     document.querySelector(selector)?.let { parentElement ->
         if (parentElement is HTMLElement) {
-            render(parentElement, override, content)
+            render(parentElement, override, scope, content)
         } else MountTargetNotFoundException("element with id=$selector is not an HTMLElement")
     } ?: throw MountTargetNotFoundException("html document contains no element with id=$selector")
 }
@@ -46,11 +48,13 @@ fun render(
  * @param targetElement [HTMLElement] to mount to, default is *document.body*
  * @param override if true all child elements are removed before rendering
  * @param content [RenderContext] for rendering the data to the DOM
+ * @param scope scope for tag
  * @throws MountTargetNotFoundException if [targetElement] not found
  */
 fun render(
     targetElement: HTMLElement? = document.body,
     override: Boolean = true,
+    scope: (ScopeContext.() -> Unit) = {},
     content: RenderContext.() -> Unit
 ) {
     //add style sheet containing mount-point-class
@@ -61,7 +65,10 @@ fun render(
 
         val mountPoint = object : RenderContext, MountPointImpl() {
             override val job = Job()
-            override val scope: Scope = Scope().also { scope -> scope[MOUNT_POINT_KEY] = this }
+            override val scope: Scope = ScopeContext(Scope()).also {
+                scope(it)
+                it.set(MOUNT_POINT_KEY, this)
+            }.scope
 
             override fun <N : Node, W : WithDomNode<N>> register(element: W, content: (W) -> Unit): W {
                 content(element)
