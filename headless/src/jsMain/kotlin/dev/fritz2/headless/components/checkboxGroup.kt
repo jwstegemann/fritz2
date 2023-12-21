@@ -167,9 +167,8 @@ class CheckboxGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: Str
                     value.handler?.invoke(
                         this,
                         keydowns.filter { shortcutOf(it) == Keys.Space }
+                            .stopImmediatePropagation().preventDefault()
                             .map {
-                                it.stopImmediatePropagation()
-                                it.preventDefault()
                                 val value = value.data.first()
                                 if (value.contains(option)) value - option else value + option
                         })

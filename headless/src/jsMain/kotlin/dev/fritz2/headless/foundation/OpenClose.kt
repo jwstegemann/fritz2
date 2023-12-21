@@ -50,7 +50,7 @@ abstract class OpenClose: WithJob {
      */
     protected fun Tag<*>.toggleOnClicksEnterAndSpace() {
         merge(clicks, keydowns.filter { setOf(Keys.Space, Keys.Enter).contains(shortcutOf(it)) })
-            .onEach { it.preventDefault() }.onEach { it.stopPropagation() } handledBy toggle
+            .preventDefault().stopPropagation() handledBy toggle
     }
 
     /**
