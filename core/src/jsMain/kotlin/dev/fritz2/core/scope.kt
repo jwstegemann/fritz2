@@ -206,3 +206,9 @@ operator fun (ScopeContext.() -> Unit).plus(scope: Scope): ScopeContext.() -> Un
     scope.keys.map { it.unsafeCast<Key<Any>>() }
         .forEach { key -> scope[key]?.let { set(key, it) } }
 }
+
+operator fun Scope.plus(scope: ScopeContext.() -> Unit): ScopeContext.() -> Unit = {
+    keys.map { it.unsafeCast<Key<Any>>() }
+        .forEach { key -> get(key)?.let { set(key, it) } }
+    scope.invoke(this)
+}

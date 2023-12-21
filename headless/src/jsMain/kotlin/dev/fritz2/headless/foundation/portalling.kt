@@ -96,7 +96,7 @@ fun <C : HTMLElement> RenderContext.portal(
         PortalContainer(
             classes = classes,
             id = portalId,
-            scope = scope + this.scope,
+            scope = this.scope + scope,
             tag = tag,
             reference = reference?.mountPoint(),
             content = content

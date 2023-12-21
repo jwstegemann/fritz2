@@ -48,6 +48,7 @@ fun render(
  * @param targetElement [HTMLElement] to mount to, default is *document.body*
  * @param override if true all child elements are removed before rendering
  * @param content [RenderContext] for rendering the data to the DOM
+ * @param scope scope for tag
  * @throws MountTargetNotFoundException if [targetElement] not found
  */
 fun render(
