@@ -251,9 +251,7 @@ fun Tag<HTMLElement>.trapFocusWhenever(
         }
     }
     trapFocusOn(
-        sharedCondition.flatMapLatest { isActive ->
-            keydowns.filter { isActive && setOf(Keys.Tab, Keys.Shift + Keys.Tab).contains(shortcutOf(it)) }
-        }
+        keydowns.filter { sharedCondition.first() && setOf(Keys.Tab, Keys.Shift + Keys.Tab).contains(shortcutOf(it)) }
     )
     restoreFocusOnDemandFromWhenever(
         sharedCondition.filter { it }.map { focusedElementBeforeTrap }
