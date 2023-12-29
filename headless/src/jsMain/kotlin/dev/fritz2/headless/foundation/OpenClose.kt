@@ -1,11 +1,8 @@
 package dev.fritz2.headless.foundation
 
 import dev.fritz2.core.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.*
+import org.w3c.dom.Node
 
 /**
  * Base class that provides all functionality needed for components, that have some "open" and "close" state of
@@ -85,7 +82,7 @@ abstract class OpenClose: WithJob {
     protected fun Tag<*>.closeOnBlur() {
         openState.data.flatMapLatest { isOpen ->
             Window.clicks.filter { event ->
-                isOpen && event.composedPath().none { it == this }
+                isOpen && !domNode.contains(event.target as? Node) && event.composedPath().none { it == this }
             }
         } handledBy close
     }
