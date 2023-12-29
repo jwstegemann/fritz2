@@ -2,9 +2,12 @@ package dev.fritz2.headless.components
 
 import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.*
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.Node
 
 /**
  * This class provides the building blocks to implement a popover.
@@ -97,7 +100,14 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
                 initialize()
                 render()
                 closeOnEscape()
-                closeOnBlur()
+                // We have to check for nested portals here, so we can't use OpenClose's closeOnBlur()
+                openState.data.flatMapLatest { isOpen ->
+                    Window.clicks.filter { event ->
+                        isOpen && !domNode.contains(event.target as? Node)
+                                && getChildren().none { it.contains(event.target as? Node) }
+                                && event.composedPath().none { it == this }
+                    }
+                } handledBy close
             }
         }
     }

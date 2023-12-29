@@ -1,6 +1,7 @@
 package dev.fritz2.headless.foundation
 
 import dev.fritz2.core.*
+import dev.fritz2.headless.foundation.PopUpPanelSize.*
 import dev.fritz2.headless.foundation.utils.floatingui.core.ComputePositionConfig
 import dev.fritz2.headless.foundation.utils.floatingui.core.ComputePositionReturn
 import dev.fritz2.headless.foundation.utils.floatingui.core.Middleware
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.Node
 
 /**
  * Enum-Class to set the width of the Popup to
@@ -56,7 +58,17 @@ abstract class PopUpPanel<C : HTMLElement>(
     private val config: ComputePositionConfig = obj {}
 ) : Tag<C> by tag, ComputePositionConfig by config {
 
+    fun getChildren(): Set<Node> = buildSet {
+        var children = parents.filterValues { it == domNode }.keys
+        while (children.isNotEmpty()) {
+            addAll(children)
+            children = parents.filterValues { it in children }.keys
+        }
+    }
+
     companion object {
+        private var parents = emptyMap<Node, Node?>()
+
         private const val FRITZ2_POPUP_HIDDEN = "fritz2-popup-hidden"
         private const val FRITZ2_POPUP_VISIBLE = "fritz2-popup-visible"
 
@@ -247,6 +259,20 @@ abstract class PopUpPanel<C : HTMLElement>(
 
             beforeUnmount { _,_-> cleanup.invoke() }
 
+            afterMount { _, _ ->
+                var parent: Node? = reference.domNode
+                while (parent != null) {
+                    if (parent in parents) break
+                    parent = parent.parentNode
+                }
+                parents = parents + (domNode to parent)
+                beforeUnmount { _, _ ->
+                    parents = parents
+                        .filterKeys { it != domNode }
+                        .mapValues { (_, parent) -> parent.takeIf { it != domNode } }
+                }
+            }
+
             popupDiv.apply {
                 attr("data-popup-placement", computedPosition.map { it.placement ?: "" })
                 inlineStyle(computedPosition.map {
@@ -261,6 +287,7 @@ abstract class PopUpPanel<C : HTMLElement>(
                     ).joinToString("; ")
                 })
             }
+
 
             reference.apply {
                 attr(Aria.labelledby, reference.id)
