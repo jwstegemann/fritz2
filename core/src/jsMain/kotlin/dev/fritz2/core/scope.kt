@@ -195,3 +195,20 @@ class ScopeContext(private var current: Scope) {
         current[key] = value
     }
 }
+
+operator fun (ScopeContext.() -> Unit).plus(plus: ScopeContext.() -> Unit): ScopeContext.() -> Unit = {
+    this@plus.invoke(this)
+    plus.invoke(this)
+}
+
+operator fun (ScopeContext.() -> Unit).plus(scope: Scope): ScopeContext.() -> Unit = {
+    this@plus.invoke(this)
+    scope.keys.map { it.unsafeCast<Key<Any>>() }
+        .forEach { key -> scope[key]?.let { set(key, it) } }
+}
+
+operator fun Scope.plus(scope: ScopeContext.() -> Unit): ScopeContext.() -> Unit = {
+    keys.map { it.unsafeCast<Key<Any>>() }
+        .forEach { key -> get(key)?.let { set(key, it) } }
+    scope.invoke(this)
+}

@@ -17,9 +17,9 @@ fun <T> runTest(block: suspend WithJob.() -> T): dynamic = MainScope().promise {
     job.cancelAndJoin()
 }
 
-fun WithJob.renderWithJob(content: RenderContext.() -> Unit) {
+fun WithJob.renderWithJob(content: RenderContext.() -> Unit) : HtmlTag<HTMLDivElement> =
     HtmlTag<HTMLDivElement>("div", job = job, scope = Scope()).apply(content)
-}
+
 
 fun <T> checkSingleFlow(
     done: CompletableDeferred<Boolean> = CompletableDeferred(),

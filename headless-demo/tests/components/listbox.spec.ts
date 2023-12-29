@@ -17,61 +17,60 @@ test.beforeEach(async ({page}) => {
 
 test.describe('To open and close a listBox', () => {
 
-    async function createLocators(page: Page): Promise<[Locator, Locator, Locator]> {
+    async function createLocators(page: Page): Promise<[Locator, Locator]> {
         const btn = page.locator("#starwars-button")
         const listBoxItems = page.locator("#starwars-items")
-        const popupDiv = listBoxItems.locator("xpath=..")
-        return [btn, popupDiv, listBoxItems]
+        return [btn, listBoxItems]
     }
 
-    async function assertListBoxIsOpen(btn: Locator, popupDiv: Locator) {
-        await expect(popupDiv).toBeVisible();
+    async function assertListBoxIsOpen(btn: Locator, popupRoot: Locator) {
+        await expect(popupRoot).toBeVisible();
         await expect(btn).toHaveAttribute("aria-expanded", "true")
     }
 
-    async function assertListBoxIsClosed(btn: Locator, popupDiv: Locator) {
-        await expect(popupDiv).toBeHidden();
+    async function assertListBoxIsClosed(btn: Locator, popupRoot: Locator) {
+        await expect(popupRoot).toBeHidden();
         await expect(btn).toHaveAttribute("aria-expanded", "false")
     }
 
     test('click twice on the listBoxButton', async ({page}) => {
-        const [btn, popupDiv, listBoxItems] = await createLocators(page)
+        const [btn, listBoxItems] = await createLocators(page)
 
         await btn.focus()
-        await assertListBoxIsClosed(btn, popupDiv)
+        await assertListBoxIsClosed(btn, listBoxItems)
 
         await btn.click();
-        await assertListBoxIsOpen(btn, popupDiv, listBoxItems)
+        await assertListBoxIsOpen(btn, listBoxItems)
 
         await btn.click();
-        await assertListBoxIsClosed(btn, popupDiv)
+        await assertListBoxIsClosed(btn, listBoxItems)
     });
 
     test('click on the listBoxButton first and then click outside of the listBoxItems', async ({page}) => {
-        const [btn, popupDiv, listBoxItems] = await createLocators(page)
+        const [btn, listBoxItems] = await createLocators(page)
 
         await btn.focus()
-        await assertListBoxIsClosed(btn, popupDiv)
+        await assertListBoxIsClosed(btn, listBoxItems)
 
         await btn.click();
-        await assertListBoxIsOpen(btn, popupDiv, listBoxItems)
+        await assertListBoxIsOpen(btn, listBoxItems)
 
         await page.mouse.click(0, 0)
-        await assertListBoxIsClosed(btn, popupDiv)
+        await assertListBoxIsClosed(btn, listBoxItems)
     });
 
     for (const key of ["Enter", "Space"]) {
         test(`focus the listBoxButton and press ${key} then press Escape`, async ({page}) => {
-            const [btn, popupDiv, listBoxItems] = await createLocators(page)
+            const [btn, listBoxItems] = await createLocators(page)
 
             await btn.focus()
-            await assertListBoxIsClosed(btn, popupDiv)
+            await assertListBoxIsClosed(btn, listBoxItems)
 
             await page.press("#starwars-button", key)
-            await assertListBoxIsOpen(btn, popupDiv, listBoxItems)
+            await assertListBoxIsOpen(btn, listBoxItems)
 
             await page.press("#starwars-items", "Escape")
-            await assertListBoxIsClosed(btn, popupDiv)
+            await assertListBoxIsClosed(btn, listBoxItems)
         });
     }
 
@@ -82,13 +81,13 @@ test.describe('To open and close a listBox', () => {
             await expect(page.locator("#" + itemId)).toHaveAttribute("data-listbox-selected", "false")
         }
 
-        const [btn, popupDiv, listBoxItems] = await createLocators(page)
+        const [btn,  listBoxItems] = await createLocators(page)
 
         await btn.focus()
-        await assertListBoxIsClosed(btn, popupDiv)
+        await assertListBoxIsClosed(btn, listBoxItems)
 
         await btn.click();
-        await assertListBoxIsOpen(btn, popupDiv, listBoxItems)
+        await assertListBoxIsOpen(btn, listBoxItems)
 
         const item4 = page.locator("#starwars-item-4")
         const item = await item4.boundingBox()
@@ -187,9 +186,9 @@ test.describe("Navigating", () => {
         });
     }
 
-    for(const data of [
-        {shortcut:"Home", target: "first", id: "1"},
-        {shortcut:"End", target: "last", id: "7"}
+    for (const data of [
+        {shortcut: "Home", target: "first", id: "1"},
+        {shortcut: "End", target: "last", id: "7"}
     ]) {
         test(`by pressing "${data.shortcut}" will jump to ${data.target} item`, async ({page}) => {
             const btn = page.locator("#starwars-button")

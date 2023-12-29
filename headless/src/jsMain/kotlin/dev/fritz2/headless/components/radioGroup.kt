@@ -3,10 +3,7 @@ package dev.fritz2.headless.components
 import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.*
 import kotlinx.browser.document
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.*
 import org.w3c.dom.*
 
 /**
@@ -41,18 +38,17 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         if (withKeyboardNavigation) {
             value.handler?.invoke(
                 this,
-                value.data.flatMapLatest { option ->
-                    keydowns.mapNotNull { event ->
-                        when (shortcutOf(event)) {
-                            Keys.ArrowDown -> options.rotateNext(option)
-                            Keys.ArrowUp -> options.rotatePrevious(option)
-                            else -> null
-                        }.also {
-                            if (it != null) {
-                                event.stopImmediatePropagation()
-                                event.preventDefault()
-                                isActive.update(it)
-                            }
+                keydowns.mapNotNull { event ->
+                    val option = value.data.first()
+                    when (shortcutOf(event)) {
+                        Keys.ArrowDown -> options.rotateNext(option)
+                        Keys.ArrowUp -> options.rotatePrevious(option)
+                        else -> null
+                    }.also {
+                        if (it != null) {
+                            event.stopImmediatePropagation()
+                            event.preventDefault()
+                            isActive.update(it)
                         }
                     }
                 })

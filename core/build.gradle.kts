@@ -1,5 +1,3 @@
-import org.gradle.internal.impldep.org.joda.time.Duration
-
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
@@ -7,12 +5,12 @@ plugins {
 
 kotlin {
     jvm()
-    js(BOTH).browser {
-        testTask {
+    js(IR).browser {
+        testTask(Action {
             //running test-server in background
             dependsOn(":test-server:start")
             // see "karma.config.d" folder for customizing karma
-        }
+        })
         // just to have a place to copy it from...
         /*
         runTask {
@@ -39,25 +37,26 @@ kotlin {
         }
         val commonMain by getting {
             dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-core:${rootProject.extra["coroutinesVersion"]}")
+                api(KotlinX.coroutines.core)
             }
         }
         val commonTest by getting {
             dependencies {
-                implementation(kotlin("test"))
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-junit"))
-                implementation(kotlin("test-annotations-common"))
+                implementation(Kotlin.test)
+                implementation(Kotlin.test.common)
+                implementation(Kotlin.test.junit)
+                implementation(Kotlin.test.annotationsCommon)
             }
         }
         val jsMain by getting {
             dependencies {
+                api(KotlinX.coroutines.core)
             }
         }
         val jsTest by getting {
             dependencies {
-                implementation(kotlin("test-js"))
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${rootProject.extra["serializationVersion"]}")
+                implementation(Kotlin.test.js)
+                implementation(KotlinX.serialization.json)
             }
         }
     }

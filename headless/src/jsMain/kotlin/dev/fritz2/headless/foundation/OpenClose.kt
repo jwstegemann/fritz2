@@ -2,6 +2,7 @@ package dev.fritz2.headless.foundation
 
 import dev.fritz2.core.*
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.*
 import org.w3c.dom.Node
 
 /**
@@ -40,11 +41,7 @@ abstract class OpenClose: WithJob {
 
     val toggle by lazy {
         SimpleHandler<Unit> { data, _ ->
-            openState.handler?.invoke(this, openState.data.flatMapLatest { state ->
-                data.map {
-                    !state
-                }
-            })
+            openState.handler?.invoke(this, data.map { !opened.first() })
         }
     }
 
@@ -54,15 +51,8 @@ abstract class OpenClose: WithJob {
      * `button` element behave natively.
      */
     protected fun Tag<*>.toggleOnClicksEnterAndSpace() {
-        openState.handler?.invoke(this, openState.data.flatMapLatest { state ->
-            merge(
-                clicks,
-                keydowns.filter { setOf(Keys.Space, Keys.Enter).contains(shortcutOf(it)) }
-            ).map {
-                it.preventDefault()
-                !state
-            }
-        })
+        merge(clicks, keydowns.filter { setOf(Keys.Space, Keys.Enter).contains(shortcutOf(it)) })
+            .preventDefault().stopPropagation() handledBy toggle
     }
 
     /**
@@ -70,9 +60,7 @@ abstract class OpenClose: WithJob {
      * should be closed by pressing the *Escape* key.
      */
     protected fun Tag<*>.closeOnEscape() {
-        openState.data.flatMapLatest { isOpen ->
-            Window.keydowns.filter { isOpen && shortcutOf(it) == Keys.Escape }
-        } handledBy close
+        Window.keydowns.filter { opened.first() && shortcutOf(it) == Keys.Escape } handledBy close
     }
 
     /**
@@ -80,11 +68,7 @@ abstract class OpenClose: WithJob {
      * should be closed on clicking to somewhere outside the panel.
      */
     protected fun Tag<*>.closeOnBlur() {
-        openState.data.flatMapLatest { isOpen ->
-            Window.clicks.filter { event ->
-                isOpen && !domNode.contains(event.target as? Node) && event.composedPath().none { it == this }
-            }
-        } handledBy close
+        Window.clicks.filter { event -> opened.first() && !domNode.contains(event.target as? Node) && event.composedPath().none { it == this } } handledBy close
     }
 
 }

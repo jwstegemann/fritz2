@@ -36,6 +36,11 @@ parent in the DOM. Therefore, call it on the result of the factory function used
 describe - either directly or using a scope-method like `apply`.
 :::
 
+::: info
+Do not forget to include a `portalRoot()`-call at the end of your initial `RenderContext` as explained
+[here](/headless/#portalling)!
+:::
+
 ## Transitions
 
 Showing and hiding the tooltip can easily be animated with the help of `transition`:

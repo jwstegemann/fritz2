@@ -1,7 +1,6 @@
 package dev.fritz2.headless.foundation
 
 import dev.fritz2.core.*
-import dev.fritz2.headless.foundation.PopUpPanelSize.*
 import dev.fritz2.headless.foundation.utils.floatingui.core.ComputePositionConfig
 import dev.fritz2.headless.foundation.utils.floatingui.core.ComputePositionReturn
 import dev.fritz2.headless.foundation.utils.floatingui.core.Middleware
@@ -16,7 +15,7 @@ import dev.fritz2.headless.foundation.utils.floatingui.utils.StrategyValues
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
-import org.w3c.dom.HTMLDivElement
+import kotlinx.coroutines.flow.transform
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node
 
@@ -52,9 +51,7 @@ abstract class PopUpPanel<C : HTMLElement>(
     private val fullWidth: Boolean = true,
     private val reference: Tag<HTMLElement>?,
     private val ariaHasPopup: String,
-    private val popupDiv: Tag<HTMLDivElement> = //never add other classes to popupDiv, they will be overridden
-        renderContext.div(POPUP_HIDDEN_CLASSES) {},
-    tag: Tag<C> = tagFactory(popupDiv, classes, id, scope) {},
+    tag: Tag<C> = tagFactory(renderContext, classes, id, scope) {},
     private val config: ComputePositionConfig = obj {}
 ) : Tag<C> by tag, ComputePositionConfig by config {
 
@@ -179,7 +176,6 @@ abstract class PopUpPanel<C : HTMLElement>(
             }""".trimIndent(),
                     """.$FRITZ2_POPUP_VISIBLE {
                 visibility: visible;
-                z-index: 30;
             }""".trimIndent(),
                     """.$FRITZ2_POPUP_HIDDEN {
                 visibility: hidden;
@@ -240,7 +236,7 @@ abstract class PopUpPanel<C : HTMLElement>(
             addMiddleware(arrow { element = domNode })
             addMiddleware(offset(5))
             inlineStyle(computedPosition.mapNotNull { it.middlewareData?.arrow }
-                    .map { "left: ${it.x}px; top: ${it.y}px;" })
+                .map { "left: ${it.x}px; top: ${it.y}px;" })
         }
     }
 
@@ -248,16 +244,20 @@ abstract class PopUpPanel<C : HTMLElement>(
         if (reference != null) {
 
             val computePosition = {
-                computePosition(reference.domNode, popupDiv.domNode, config)
-                        .then { computedPositionStore.update(it) }
+                computePosition(reference.domNode, domNode, config)
+                    .then { computedPositionStore.update(it) }
             }
 
-            val cleanup =
-                    autoUpdate(reference.domNode, popupDiv.domNode, options = obj { animationFrame = true },
-                            update = { computePosition() })
+            val cleanup = autoUpdate(
+                reference.domNode,
+                domNode,
+                options = obj { animationFrame = true },
+                update = { computePosition() }
+            )
+
             afterMount { _, _ -> computePosition() }
 
-            beforeUnmount { _,_-> cleanup.invoke() }
+            beforeUnmount { _, _ -> cleanup.invoke() }
 
             afterMount { _, _ ->
                 var parent: Node? = reference.domNode
@@ -273,21 +273,18 @@ abstract class PopUpPanel<C : HTMLElement>(
                 }
             }
 
-            popupDiv.apply {
-                attr("data-popup-placement", computedPosition.map { it.placement ?: "" })
-                inlineStyle(computedPosition.map {
-                    listOfNotNull(
-                            "position: ${it.strategy}", "left: ${it.x}px", "top: ${it.y}px",
-                            when (size) {
-                                PopUpPanelSize.Min -> "min-width: ${reference.domNode.offsetWidth}px"
-                                PopUpPanelSize.Max -> "max-width: ${reference.domNode.offsetWidth}px"
-                                PopUpPanelSize.Exact -> "width: ${reference.domNode.offsetWidth}px"
-                                PopUpPanelSize.None -> null
-                            }
-                    ).joinToString("; ")
-                })
-            }
-
+            attr("data-popup-placement", computedPosition.map { it.placement ?: "" })
+            inlineStyle(computedPosition.map {
+                listOfNotNull(
+                    "position: ${it.strategy}", "left: ${it.x}px", "top: ${it.y}px",
+                    when (size) {
+                        PopUpPanelSize.Min -> "min-width: ${reference.domNode.offsetWidth}px"
+                        PopUpPanelSize.Max -> "max-width: ${reference.domNode.offsetWidth}px"
+                        PopUpPanelSize.Exact -> "width: ${reference.domNode.offsetWidth}px"
+                        PopUpPanelSize.None -> null
+                    }
+                ).joinToString("; ")
+            })
 
             reference.apply {
                 attr(Aria.labelledby, reference.id)
@@ -295,16 +292,19 @@ abstract class PopUpPanel<C : HTMLElement>(
                 attrIfNotSet(Aria.haspopup, ariaHasPopup)
             }
 
-            opened handledBy {
-                if (it) {
-                    computePosition()
-                    popupDiv.domNode.className = POPUP_VISIBLE_CLASSES
-                    this@PopUpPanel.waitForAnimation()
-                } else {
-                    this@PopUpPanel.waitForAnimation()
-                    popupDiv.domNode.className = POPUP_HIDDEN_CLASSES
-                }
-            }
+            className(
+                opened.transform {
+                    if (it) {
+                        computePosition()
+                        emit(true)
+                        this@PopUpPanel.waitForAnimation()
+                    } else {
+                        this@PopUpPanel.waitForAnimation()
+                        emit(false)
+                    }
+                },
+                false
+            ) { isOpen -> if (isOpen) POPUP_VISIBLE_CLASSES else POPUP_HIDDEN_CLASSES }
         }
     }
 }

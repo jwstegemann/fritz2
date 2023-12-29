@@ -103,7 +103,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
         "$componentId-items",
         scope,
         this@Menu.opened,
-        reference = button,
+        reference = button ?: button {  },
         ariaHasPopup = Aria.HasPopup.menu
     ) {
 
@@ -132,41 +132,39 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
             attrIfNotSet("tabindex", "0")
             attr("role", Aria.Role.menu)
 
-            state.flatMapLatest { (currentIndex, items) ->
-                keydowns.mapNotNull { event ->
-                    when (shortcutOf(event)) {
-                        Keys.ArrowUp -> nextItem(currentIndex, Direction.Previous, items)
-                        Keys.ArrowDown -> nextItem(currentIndex, Direction.Next, items)
-                        Keys.Home -> firstItem(items)
-                        Keys.End -> lastItem(items)
-                        else -> null
-                    }.also {
-                        if (it != null) {
-                            event.stopImmediatePropagation()
-                            event.preventDefault()
-                        }
+            keydowns.mapNotNull { event ->
+                val currentIndex = activeIndex.current
+                val items = items.current
+                when (shortcutOf(event)) {
+                    Keys.ArrowUp -> nextItem(currentIndex, Direction.Previous, items)
+                    Keys.ArrowDown -> nextItem(currentIndex, Direction.Next, items)
+                    Keys.Home -> firstItem(items)
+                    Keys.End -> lastItem(items)
+                    else -> null
+                }.also {
+                    if (it != null) {
+                        event.stopImmediatePropagation()
+                        event.preventDefault()
                     }
                 }
             } handledBy activeIndex.update
 
-            items.data.flatMapLatest { items ->
-                keydowns
-                    .mapNotNull { e -> if (e.key.length == 1) e.key.first().lowercaseChar() else null }
-                    .mapNotNull { c ->
-                        if (c.isLetterOrDigit()) itemByCharacter(items, c)
-                        else null
-                    }
-            } handledBy activeIndex.update
+            keydowns
+                .mapNotNull { e -> if (e.key.length == 1) e.key.first().lowercaseChar() else null }
+                .mapNotNull { c ->
+                    if (c.isLetterOrDigit()) itemByCharacter(items.current, c)
+                    else null
+                } handledBy activeIndex.update
 
-            state.flatMapLatest { (currentIndex, disabled) ->
-                keydowns.filter { setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it)) }.mapNotNull {
-                    if (currentIndex == -1 || disabled[currentIndex].disabled) {
-                        null
-                    } else {
-                        it.preventDefault()
-                        it.stopImmediatePropagation()
-                        currentIndex
-                    }
+            keydowns.filter { setOf(Keys.Enter, Keys.Space).contains(shortcutOf(it)) }.mapNotNull {
+                val currentIndex = activeIndex.current
+                val disabled = items.current
+                if (currentIndex == -1 || disabled[currentIndex].disabled) {
+                    null
+                } else {
+                    it.preventDefault()
+                    it.stopImmediatePropagation()
+                    currentIndex
                 }
             } handledBy selections.update
 

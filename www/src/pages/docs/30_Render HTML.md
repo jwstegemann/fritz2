@@ -64,7 +64,7 @@ of every fritz2 application; they provide the current value in a reactive way an
 
 :::info
 The store creation and its core functionalities will be explained in-depth in [chapter](/docs/createstores). 
-So do not care about the details, the relevant facts you need to understand this chapter are explained here. 
+So do not fret about the details - the facts relevant to understanding this chapter are explained here. 
 :::
 
 The store's `data`-property offers a `Flow` of the stored value `T`. To reactively bind this value to the DOM, 
@@ -555,6 +555,17 @@ render {
 Use this one-liner to add styling and meaning to your elements by using semantic CSS class-names. Also, it keeps your
 code clean when using CSS frameworks like Bootstrap, Tailwind, etc.
 
+Additionally, the `className`-function can be used to set static classes:
+
+```kotlin
+render {
+    div {
+        className("some-static-css-class")
+        button(id = "someId")
+    }
+}
+```
+
 To reactively change the styling of a rendered element, you can add dynamic classes by assigning a `Flow` of strings to
 the `className`-attribute (like with any other attribute).
 
@@ -567,6 +578,93 @@ render {
             if (it) "enabled-css-class"
             else "disabled-css-class"
         })
+        +"Some important content"
+    }
+}
+```
+
+You can also combine all of these approaches with arbitrary usages of `className`-variants to handle different aspects
+separately:
+
+```kotlin
+render {
+    val enabled = storeOf(true)
+    val readonly = storeOf(true)
+
+    div("common-css-class") {
+        className("some-other-static-class")
+        className(enabled.data.map {
+            if (it) "enabled-css-class" 
+            else "disabled-css-class"
+        })
+        className(readonly.data.map { if(it) "readonly-csss-class" else "" })
+        +"Some important content"
+    }
+}
+```
+
+Keep in mind that the first value of a `Flow` might take some time to be consumed and applied to the `class` 
+attribute of a tag. This could lead to flicker effects, for example with floating elements which only become
+visible when activated. The following section explains how to overcome these effets.
+
+### Avoid Flicker Effects With Reactive Styling
+
+In order to avoid flicker effects caused by the delay of the first value becoming available on the flow, an initial 
+value must be provided to be applied immediately within the rendering process.
+
+The previously discussed `className`-function offers an `initial` parameter:
+```kotlin
+fun className(value: Flow<String>, initial: String): Unit
+```
+
+For single classes or short class name groups, simply pass the appropriate initial classnames as second 
+parameter:
+```kotlin
+render {
+    val enabled = storeOf(true)
+
+    div("common-css-class") {
+        className(enabled.data.map {
+                if (it) "enabled-css-class"
+                else "disabled-css-class"
+            },
+            initial = "enabled-css-class"
+        )
+        +"Some important content"
+    }
+}
+```
+
+For simple use cases this is fine, as long as the classnames for the initial state remain unchanged.
+Otherwise the `initial = "..."`-parameter would also have to be changed, which can easily be overlooked.
+
+That's why there is another `className`-function variant which might be better suited for more complex or volatile
+initial class name values:
+```kotlin
+fun <T> className(value: Flow<T>, initial: T, transform: (T) -> String): Unit
+```
+
+This function takes three parameters in order to solve the above problem:
+- `value` is a `Flow` which provides arbitrary values of `T`. This can be a simple `Flow<Boolean>`, but also
+combinations or any other type can be provided.
+- `initial`: a value of `T` representing the initial state to be applied immediately.
+- `transform`: a lambda expression which uses one value of `T` in order to generate the appropriate class names for
+this specific value.
+
+The above problem is now solved by this function as the `transform`-expression is the *single source of truth* of all
+class names. First, the `initial`-parameter is passed to the `transform`-expression to create the initial class names 
+which are immediately applied. Further on, each value appearing on the `value`-`Flow` will be used with `transform`
+to create the appropriate class names.
+
+```kotlin
+render {
+    val enabled = storeOf(true)
+
+    div("common-css-class") {
+        className(enabled.data, initial = true) {
+            if (it) "enabled-css-class"
+            else "disabled-css-class"
+        }
         +"Some important content"
     }
 }
@@ -656,6 +754,23 @@ render {
         }
     }
 }
+```
+
+### Avoid Unsound Values with Reactive Attributes
+
+As the first value of a `Flow` might appear some time after the DOM portion of some tag is already rendered, it is
+possible that the initial value of an attribute is not set or set with the wrong value. This could lead to
+further unwanted side effects if other behaviour or rendering is derived by those attributes. Think of a falsely
+enabled `disabled` attribute of an `input` element, for example.
+
+To immediately set any attribute, the respective attribute-method is simply called twice: First with the
+static value to be set immediately, then with the `Flow` providing the dynamic values:
+
+```kotlin
+val disabled: Flow<Boolean> = ...
+
+attr("disabled", "false")
+attr("disabled", disabled) // the first value of the `Flow` will override the static value set before.
 ```
 
 ### Minimize DOM Structure Changes within Reactive Updates: Precise Rendering
@@ -874,7 +989,7 @@ render {
 }
 ```
 
-Of course, you can also use a subtype of `RenderContext`, like a certain `Tag`, as receiver if you want to limit the 
+Of course, you can also use a subtype of `RenderContext`, like a `Tag`, as receiver if you want to limit the 
 usage of your component to this parent type.
 
 Using plain functions, it's also straight forward to parametrize your component:
@@ -943,19 +1058,6 @@ render {
         +"Important content"
     }
 }
-```
-
-### Avoid Flicker Effects with Reactive Styling
-
-To immediately set any attribute like initial CSS classes (for example to avoid flicker effects caused by the delay
-of the first value becoming available on the flow), the respective attribute-method must be called twice.
-First with the static value that should be set immediately, then with the `Flow` that provides the dynamic values:
-
-```kotlin
-val visibility: Flow<String> = ...
-
-className("invisible")
-className(visibility)
 ```
 
 ## Advanced Topics

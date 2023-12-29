@@ -33,32 +33,46 @@ different results:
 * `formData(): FormData`
 * `json(): Any?`
 
+Or you can use the fritz2-[serialization](https://central.sonatype.com/artifact/dev.fritz2/serialization)
+module, which contains a few helper functions for easy interoperability
+with [`kotlinx.serialization`](https://kotlinlang.org/api/kotlinx.serialization/).
+
 If your request was not successful (`Response.ok` property returns `false` according to the
-[fetch](https://developer.mozilla.org/en-US/docs/Web/API/Response/ok) API), a `FetchException` will be thrown.
+[fetch](https://developer.mozilla.org/en-US/docs/Web/API/Response/ok) API).
 
 The same works for `POST` and all other HTTP methods - just use different parameters for the body to send.
 
-The remote service is primarily designed for use in your `Store`'s `Handler`s when 
-exchanging data with the backend. 
-Here is a short example which uses 
-[https://github.com/Kotlin/kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization)
-to parse the returning JSON:
-```kotlin
-val swapiStore = object : RootStore<String>("", job = Job()) {
+The remote service is primarily designed for use in your `Store`'s `Handler`s when exchanging data with the backend. 
 
+Here is a short example which uses fritz2-[serialization](https://central.sonatype.com/artifact/dev.fritz2/serialization) 
+module to handle the returning JSON:
+```kotlin
+@Serializable
+data class Planet(val name: String)
+
+val swapiStore = object : RootStore<String>("", job = Job()) {
+    
     private val api = http("https://swapi.dev/api")
         .acceptJson()
         .contentType("application/json")
-
+        
     val planetName = handle<Int> { _, num ->
         val resp = api.get("planets/$num")
-        if (resp.ok)
-            Json.parseToJsonElement(resp.body())
-                .jsonObject["name"]?.jsonPrimitive?.content ?: throw NoSuchElementException()
-        else throw IllegalArgumentException()
+        require(resp.ok)
+        resp.decoded<Planet>().name
     }
 }
-``` 
+```
+::: warning
+For performance reasons the [serialization](https://central.sonatype.com/artifact/dev.fritz2/serialization) module 
+does **not** convert values to string using
+[`encodeToString`](https://kotlinlang.org/api/kotlinx.serialization/kotlinx-serialization-core/kotlinx.serialization/encode-to-string.html)
+and [`decodeFromString`](https://kotlinlang.org/api/kotlinx.serialization/kotlinx-serialization-core/kotlinx.serialization/decode-from-string.html).
+Values are instead turned into "native" JavaScript objects using
+[`encodeToDynamic`](https://kotlinlang.org/api/kotlinx.serialization/kotlinx-serialization-json/kotlinx.serialization.json/encode-to-dynamic.html)
+and [`decodeFromDynamic`](https://kotlinlang.org/api/kotlinx.serialization/kotlinx-serialization-json/kotlinx.serialization.json/decode-from-dynamic.html),
+which work natively with the Fetch API used by `dev.fritz2.remote`.
+:::
 
 You can use this `Handler` like any other to handle `Flow`s of actions:
 

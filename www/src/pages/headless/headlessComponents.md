@@ -548,28 +548,10 @@ and `tooltip`. If your are using one of these components, you have only to rende
 
 For custom components you have to wrap your render code with a `portal` like this:
 ```kotlin
-fun Tag<HTMLElement>.myCustomOverlay() = portal(zIndex = 100) {
+fun Tag<HTMLElement>.myCustomOverlay() = portal { close: suspend (Unit) -> Unit -> // a handler to close the portal 
     // ...
 }
 ```
 
-::: info
-Since such order of the floating panel are controlled using ``z-index``, we have set different z-indices for the 
-Headless-Components.
-
-These are defined as constants as:
-```
-/**
- * Z-Index used for Portalled-Modals
- */
-const val PORTALLING_MODAL_ZINDEX = 10
-/**
- * Z-Index used for Portalled-Popups
- */
-const val PORTALLING_POPUP_ZINDEX = 30
-/**
- * Z-Index used for Portalled-Toasts
- */
-const val PORTALLING_TOAST_ZINDEX = 50
-```
-:::
+Beware that there is no [z-index](https://developer.mozilla.org/en-US/docs/Web/CSS/z-index) handling managed by the 
+portal mechanism - following the zen of headless, the portalling is totally styling agnostic. 

@@ -17,10 +17,19 @@ Then activate this as default shell for 11ty:
 npm config set script-shell "C:\\Program Files\\git\\bin\\bash.exe"
 ```
 
+### Enable legacy OpenSSL provider
+
 If running 11ty locally fails it might be because the current OpenSSL version is unsupported.
 In that case, run the following command before starting running 11ty locally:
+
+On Windows:
 ```
 set NODE_OPTIONS=--openssl-legacy-provider 
+```
+
+On Unix:
+```
+export NODE_OPTIONS=--openssl-legacy-provider
 ```
 
 ## Run locally

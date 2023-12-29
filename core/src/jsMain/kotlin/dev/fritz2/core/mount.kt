@@ -126,8 +126,9 @@ internal class MountContext<T : HTMLElement>(
     override val domNode: HTMLElement = target.domNode
     override val id = target.id
     override val baseClass = target.baseClass
-    override fun addToClasses(classesToAdd: String) = target.addToClasses(classesToAdd)
-    override fun addToClasses(classesToAdd: Flow<String>) = target.addToClasses(classesToAdd)
+    override fun className(value: String) = target.className(value)
+    override fun className(value: Flow<String>, initial: String) = target.className(value, initial)
+
     override val annex: RenderContext = target.annex
 
     override val scope: Scope = Scope(mountScope).apply { set(MOUNT_POINT_KEY, this@MountContext) }
@@ -257,7 +258,12 @@ private fun insertOrAppend(target: Node, child: Node, index: Int) {
  * @param element from type [WithDomNode]
  * @param index place to insert or append
  */
-private suspend inline fun insert(target: Node, mountPoints: MutableMap<Node, MountPointImpl>, element: WithDomNode<*>, index: Int) {
+private suspend inline fun insert(
+    target: Node,
+    mountPoints: MutableMap<Node, MountPointImpl>,
+    element: WithDomNode<*>,
+    index: Int
+) {
     insertOrAppend(target, element.domNode, index)
     mountPoints[element.domNode]?.runAfterMounts()
 }
@@ -269,7 +275,12 @@ private suspend inline fun insert(target: Node, mountPoints: MutableMap<Node, Mo
  * @param elements [List] of [WithDomNode]s elements to insert
  * @param index place to insert or append
  */
-private suspend inline fun insertMany(target: Node, mountPoints: MutableMap<Node, MountPointImpl>, elements: List<WithDomNode<*>>, index: Int) {
+private suspend inline fun insertMany(
+    target: Node,
+    mountPoints: MutableMap<Node, MountPointImpl>,
+    elements: List<WithDomNode<*>>,
+    index: Int
+) {
     val f = document.createDocumentFragment()
     for (child in elements) {
         f.append(child.domNode)

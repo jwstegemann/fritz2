@@ -6,6 +6,14 @@ pluginManagement {
 }
 rootProject.name = "fritz2"
 
+plugins {
+    id("de.fayard.refreshVersions") version "0.60.3"
+}
+
+refreshVersions {
+}
+
+
 include(
     "core",
     "lenses-annotation-processor",
@@ -13,6 +21,7 @@ include(
     "headless",
     "headless-demo",
     "snippets",
+    "serialization",
     // examples:
     ":examples:gettingstarted",
     ":examples:nestedmodel",

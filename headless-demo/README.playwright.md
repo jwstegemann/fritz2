@@ -8,7 +8,7 @@ Please follow their installation instructions.
 To run the tests just type:
 
 ```text
-npx playwright test    
+npx playwright test
 ```
 
 *BEWARE*: If there are local changes to test, remember to configure the ``baseURL`` appropriately in the 

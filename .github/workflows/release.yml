@@ -8,12 +8,16 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - name: Set up JDK 12
-        uses: actions/setup-java@v1
+      - name: Set up JDK
+        uses: actions/setup-java@v3
         with:
-          java-version: 12
+          distribution: 'temurin'
+          java-version: 17
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -26,10 +30,10 @@ jobs:
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
 
-      - name: Set up Nodejs 16
-        uses: actions/setup-node@v2
+      - name: Set up Nodejs
+        uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
 
       - name: Generating API docs
         run: ./gradlew dokkaHtmlMultiModule
@@ -39,23 +43,23 @@ jobs:
 
       - name: Build Webpage
         working-directory: ./www
-        run: npm install && npm run build
+        run: export NODE_OPTIONS=--openssl-legacy-provider && npm install && npm run build
 
       - name: Copy api docs to webpage
         run: mkdir -p ./www/_site/api && cp -r ./api/* ./www/_site/api
 
       - name: Copy headless-demo files to webpage
-        run: mkdir -p ./www/_site/headless-demo && cp ./headless-demo/build/distributions/* ./www/_site/headless-demo
+        run: mkdir -p ./www/_site/headless-demo && cp ./headless-demo/build/dist/js/productionExecutable/* ./www/_site/headless-demo
 
       - name: Copy snippets files to webpage
-        run: mkdir -p ./www/_site/snippets && cp ./snippets/build/distributions/* ./www/_site/snippets
+        run: mkdir -p ./www/_site/snippets && cp ./snippets/build/dist/js/productionExecutable/* ./www/_site/snippets
 
       - name: Copy example distributions to webpage
         run: >
           for directory in `ls ./examples/* -d`; do
             name=`basename $directory`;
             mkdir -p ./www/_site/examples/$name;
-            cp ./examples/$name/build/distributions/* ./www/_site/examples/$name;
+            cp ./examples/$name/build/dist/js/productionExecutable/* ./www/_site/examples/$name;
           done
 
       - name: Releasing www page

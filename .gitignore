@@ -11,3 +11,4 @@ api/package-list
 
 # macOS-specific:
 .DS_Store
+test-server/bin

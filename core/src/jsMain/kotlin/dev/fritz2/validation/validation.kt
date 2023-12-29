@@ -147,7 +147,7 @@ fun <D, T, M> WithJob.storeOf(
     job: Job = this.job,
     id: String = Id.next(),
 ): ValidatingStore<D, T, M> =
-    ValidatingStore(initialData, validation, metadataDefault,  job, validateAfterUpdate = true, id)
+    ValidatingStore(initialData, validation, metadataDefault, job, validateAfterUpdate = true, id)
 
 /**
  * Convenience function to create a simple [ValidatingStore] without any metadata and handlers.
@@ -168,12 +168,14 @@ fun <D, M> WithJob.storeOf(
     ValidatingStore(initialData, validation, Unit, job, validateAfterUpdate = true, id)
 
 /**
- * Finds all corresponding [ValidationMessage]s to this [Store].
+ * Finds all corresponding [ValidationMessage]s to this [Store] which satisfy the [filterPredicate]-expression.
  *
  * Be aware that the  filtering is based upon the correct usage of [Store.path]'s field. This can be reliably achieved
  * by using [dev.fritz2.core.Inspector]s and their mappings for creating the correct path values.
+ *
+ * @param filterPredicate expression to filter messages.
  */
-fun <M : ValidationMessage> Store<*>.messages(): Flow<List<M>>? =
+fun <M : ValidationMessage> Store<*>.messages(filterPredicate: (M) -> Boolean): Flow<List<M>>? =
     when (this) {
         is ValidatingStore<*, *, *> -> {
             try {
@@ -190,10 +192,7 @@ fun <M : ValidationMessage> Store<*>.messages(): Flow<List<M>>? =
             }
             if (store is ValidatingStore<*, *, *>) {
                 try {
-                    store.messages.map {
-                        it.unsafeCast<List<M>>()
-                            .filter { m -> m.path == this.path || m.path.startsWith("${this.path}.") }
-                    }
+                    store.messages.map { it.unsafeCast<List<M>>().filter(filterPredicate) }
                 } catch (e: Exception) {
                     null
                 }
@@ -202,3 +201,38 @@ fun <M : ValidationMessage> Store<*>.messages(): Flow<List<M>>? =
 
         else -> null
     }
+
+/**
+ * Finds all exactly corresponding [ValidationMessage]s to this [Store], which means all messages, which have exactly
+ * the same path as the [Store].
+ *
+ * Be aware that the  filtering is based upon the correct usage of [Store.path]'s field. This can be reliably achieved
+ * by using [dev.fritz2.core.Inspector]s and their mappings for creating the correct path values.
+ */
+fun <M : ValidationMessage> Store<*>.messages(): Flow<List<M>>? = messages { message -> message.path == path }
+
+/**
+ * Finds all corresponding [ValidationMessage]s to this [Store], which means all messages, that fit exactly with their
+ * path or which are sub-elements of this [Store]s data model.
+ *
+ * Consider the following example:
+ * ```
+ * Store path = ".person.address"
+ *
+ * // included
+ * ".person.address"
+ * ".person.address.street"
+ * ".person.address.city"
+ * ".person.address.coordinates.altitude"
+ *
+ * // not included
+ * - ".person.addresses"
+ * - ".person.other"
+ * ```
+ *
+ * Be aware that the  filtering is based upon the correct usage of [Store.path]'s field. This can be reliably achieved
+ * by using [dev.fritz2.core.Inspector]s and their mappings for creating the correct path values.
+ */
+fun <M : ValidationMessage> Store<*>.messagesOfSubModel(): Flow<List<M>>? = messages { message ->
+    message.path == path || message.path.startsWith("$path.")
+}

@@ -147,7 +147,7 @@ render { /* creates the initial `RenderContext` */
             +"Input"
             
             // set tag specific attributes - they are predefined for all HTML tags
-            // (the backticks are needed here as `for` is an identifier in Kotlin and thus the function call needs
+            // (the backticks are needed here because `for` is an identifier in Kotlin, so the function call needs
             // to be escaped)
             `for`("SomeId")
         }
@@ -172,9 +172,11 @@ individual states.
 For our example, we only need one store which we declare with the `storeOf` factory.
 
 ```kotlin
+render {
     // a store can be created anywhere in your application
     // pass some data as initial state to it
     val store = storeOf("Hello, fritz2!")
+}
 ```
 
 Once you have created the store, it can be used for...
@@ -260,7 +262,7 @@ button {
 
 The predefined `update` handler (which simply replaces the store's content with a new value) is often not sufficient
 for all use cases. So fritz2 allows the definition of custom handlers like the one above, which simply takes the old 
-state, capitalizes it and sets the result as new value.
+state, capitalizes it, and sets the result as new value.
 
 ### Identifying Data
 
@@ -270,8 +272,10 @@ We have one last basic concept to show you. In addition to reactive state handli
 Every store has an `id` property which is implicitly initialized with a random value when no parameter is passed:
 
 ```kotlin
-val storeWithExplicitId = storeOf("Data", id = "42")
-val storeWithRandomId = storeOf("Data") // id is created by `Id.next()`
+render {
+    val storeWithExplicitId = storeOf("Data", id = "42")
+    val storeWithRandomId = storeOf("Data") // id is created by the `Id.next()` factory
+}
 ```
 
 This *id* is useful for linking data to the semantically corresponding part of the UI. Since the store holds the
@@ -325,7 +329,7 @@ essentials of stores.
 
 This is the full source of the example above, including all styling to make it look like the screenshot.
 You can just copy and paste it into the vanilla 
-[tailwind template](https://github.com/jwstegemann/fritz2-tailwind-template) project, replacing the `main` function and 
+[tailwind template](https://github.com/jwstegemann/fritz2-tailwind-template) project, replacing the `main` function, and 
 then running the app.
 
 ```kotlin
