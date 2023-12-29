@@ -376,7 +376,9 @@ open class HtmlTag<out E : Element>(
     private val classesStateFlow by lazy {
         MutableStateFlow<List<StateFlow<String>>>(listOfNotNull(baseClass?.let { MutableStateFlow(it) }))
             .also { classesFlowList ->
-                attr("class", classesFlowList.flatMapLatest { styleFlows -> combine(styleFlows) { classes(*it) } })
+                attr("class", classesFlowList.flatMapLatest { styleFlows ->
+                    combine(styleFlows) { joinClasses(*it) }
+                })
             }
     }
 
@@ -386,7 +388,7 @@ open class HtmlTag<out E : Element>(
      * This function is used to create the initial class name values to be applied immediately
      * to the domnode.
      */
-    private fun buildClasses() = classes(*classesStateFlow.value.map { it.value }.toTypedArray())
+    private fun buildClasses() = joinClasses(*classesStateFlow.value.map { it.value }.toTypedArray())
 
     override fun className(value: String) {
         classesStateFlow.value += MutableStateFlow(value)

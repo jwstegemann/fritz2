@@ -247,7 +247,7 @@ fun RenderContext.gridListDemo(amount: Int) {
                         tag = RenderContext::li
                     ) {
                         className(selected.combine(active) { sel, act ->
-                            classes(
+                            joinClasses(
                                 if (act) "ring-4 ring-primary-600" else "",
                                 if (sel) "bg-primary-700 text-primary-100" else "bg-primary-200 text-primary-900"
                             )

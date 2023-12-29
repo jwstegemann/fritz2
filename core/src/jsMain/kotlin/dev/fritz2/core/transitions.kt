@@ -60,12 +60,12 @@ class Transition(
             val transition = payload.unsafeCast<Transition?>()
             if (transition?.enter != null) {
                 val classes = target.domNode.getAttribute("class").orEmpty()
-                target.domNode.setAttribute("class", classes(classes, transition.enterStart))
+                target.domNode.setAttribute("class", joinClasses(classes, transition.enterStart))
                 kotlinx.browser.window.awaitAnimationFrame()
                 kotlinx.browser.window.awaitAnimationFrame()
                 target.domNode.setAttribute(
                     "class",
-                    classes(classes, transition.enter, transition.enterEnd)
+                    joinClasses(classes, transition.enter, transition.enterEnd)
                 )
                 target.waitForAnimation()
                 target.domNode.setAttribute("class", classes)
@@ -144,14 +144,14 @@ fun Tag<HTMLElement>.transition(on: Flow<Boolean>, transition: Transition) {
             emit(transition.enterStart.orEmpty())
             kotlinx.browser.window.awaitAnimationFrame()
             kotlinx.browser.window.awaitAnimationFrame()
-            emit(classes(transition.enter, transition.enterEnd))
+            emit(joinClasses(transition.enter, transition.enterEnd))
             waitForAnimation()
             emit("")
         } else {
-            emit(classes(transition.leaveStart))
+            emit(joinClasses(transition.leaveStart))
             kotlinx.browser.window.awaitAnimationFrame()
             kotlinx.browser.window.awaitAnimationFrame()
-            emit(classes(transition.leave, transition.leaveEnd))
+            emit(joinClasses(transition.leave, transition.leaveEnd))
             waitForAnimation()
             emit("")
         }

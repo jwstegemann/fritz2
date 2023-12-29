@@ -327,7 +327,7 @@ fun <C : HTMLElement> RenderContext.menu(
     initialize: Menu<C>.() -> Unit
 ): Tag<C> {
     addComponentStructureInfo("menu", this@menu.scope, this)
-    return tag(this, classes(classes, "relative"), id, scope) {
+    return tag(this, joinClasses(classes, "relative"), id, scope) {
         Menu(this, id).run {
             initialize(this)
             render()

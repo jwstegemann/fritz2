@@ -425,7 +425,7 @@ fun <T, C : HTMLElement> RenderContext.listbox(
     initialize: Listbox<T, C>.() -> Unit
 ): Tag<C> {
     addComponentStructureInfo(Listbox.COMPONENT_NAME, this@listbox.scope, this)
-    return tag(this, classes(classes, "relative"), id, scope) {
+    return tag(this, joinClasses(classes, "relative"), id, scope) {
         Listbox<T, C>(this, id).run {
             initialize(this)
             render()

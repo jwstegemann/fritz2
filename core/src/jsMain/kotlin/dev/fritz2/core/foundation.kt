@@ -119,7 +119,14 @@ fun addGlobalStyles(css: List<String>) {
  * Joins all given [classes] strings to one html-class-attribute [String]
  * by filtering all out which are null or blank.
  */
-fun classes(vararg classes: String?): String =
+@Deprecated("Use joinClassNames instead", ReplaceWith("joinClasses(classes)"))
+fun classes(vararg classes: String?): String = joinClasses(*classes)
+
+/**
+ * Joins all given [classes] strings to one html-class-attribute [String]
+ * by filtering all out which are null or blank.
+ */
+fun joinClasses(vararg classes: String?): String =
     classes.filter { !it.isNullOrBlank() }.joinToString(" ")
 
 /**
