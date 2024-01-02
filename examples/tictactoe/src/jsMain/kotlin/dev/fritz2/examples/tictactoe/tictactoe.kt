@@ -1,9 +1,6 @@
 package dev.fritz2.examples.tictactoe
 
-import dev.fritz2.core.RenderContext
-import dev.fritz2.core.RootStore
-import dev.fritz2.core.render
-import dev.fritz2.core.viewBox
+import dev.fritz2.core.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.map
 
@@ -63,8 +60,13 @@ fun main() {
                 }
                 div("row") {
                     gameStore.field.renderEach { cell ->
-                        div("col-4 border d-flex justify-content-center align-items-center") {
-                            inlineStyle("height: 10rem; background-color: ${if (cell.isInWinningGroup) "green" else "white"};")
+                        div(
+                            classes(
+                                "col-4 border d-flex justify-content-center align-items-center",
+                                if (cell.isInWinningGroup) "bg-success" else "bg-white"
+                            )
+                        ) {
+                            inlineStyle("height: 10rem;")
                             if (cell.symbol.isNotBlank()) {
                                 if (cell.symbol == "X") xIcon() else circleIcon()
                             }
