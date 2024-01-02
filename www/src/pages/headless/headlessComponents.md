@@ -507,18 +507,19 @@ in order to influence the positioning of the content:
 | Scope property | Typ                 | Description                                                                                                                                                         |
 |----------------|---------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `size`         | `PopUpPanelSize`    | Defines the width restrictions of the building block, e.g. `PopUpPanelSize.Min`, `PopUpPanelSize.Max`, etc.                                                         |
-| `placement`    | `Placement`         | Defines the position of the building block, e.g. `Placement.top`, `Placement.bottomRight`, etc.                                                                     |
+| `placement`    | `PlacementValues`   | Defines the position of the building block, e.g. `PlacementValues.top`, `PlacementValues.bottom`, etc.                                                              |
 | `strategy`     | `Strategy`          | Determines whether the block should be positioned `absolute` (default) or `fixed`.                                                                                  |
 | `middleware`   | `Array<Middleware>` | Middleware are plain objects that modify the positioning coordinates in some fashion, or provide useful data for rendering, as calculated by the positioning cycle. |
 
 In addition, an arrow can be added pointing to the reference element. By default, the arrow is 8 pixels wide and
-inherits the background color of the panel. It can be styled as usual:
+inherits the background color of the panel. You are recommended to only change its `width` or `height` by providing
+any valid CSS expression for that for its `size`parameter. Alongside of changing the size, you usually also have to 
+adapt the `offset` too, so there is also a parameter to provide the value in pixels:
 
 ```kotlin
-popOverPanel {
+popOverPanel("bg-gray-200") {
     //...
-    
-    arrow("h-3 w-3 bg-white")
+    arrow("h-3 w-3", 8) // w-3 -> 12px in tailwindcss, use at least the half of the arrow size for the offset
 }
 ```
 

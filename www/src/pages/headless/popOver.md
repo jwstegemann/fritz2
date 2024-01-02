@@ -100,8 +100,8 @@ as a reference element:
 
 ```kotlin
 popOverPanel {
-    placement = Placement.Bottom
-    distance = 20
+    placement = PlacementValues.bottom
+    addMiddleware(offset(20))
     
     //...
 }
@@ -119,10 +119,11 @@ popOverPanel {
 }
 ```
 
-By default, the arrow is 8 pixels wide and inherits the background-color from the `popOverPanel` but it can easily be styled by adding classes:
+By default, the arrow is 8 pixels wide and inherits the background-color from the `popOverPanel` its size and offset can
+be adapted:
 
 ```kotlin
-arrow("h-3 w-3 bg-white")
+arrow("h-3 w-3", 8)
 ```
 
 

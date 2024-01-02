@@ -4,9 +4,15 @@ package dev.fritz2.headlessdemo.components
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.transition
 import dev.fritz2.headless.components.popOver
+import dev.fritz2.headless.foundation.PopUpPanelSize
+import dev.fritz2.headless.foundation.utils.floatingui.core.Middleware
+import dev.fritz2.headless.foundation.utils.floatingui.core.MiddlewareReturn
+import dev.fritz2.headless.foundation.utils.floatingui.core.MiddlewareState
 import dev.fritz2.headless.foundation.utils.floatingui.core.middleware.offset
 import dev.fritz2.headless.foundation.utils.floatingui.utils.PlacementValues
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
+import kotlin.js.Promise
 
 
 fun RenderContext.popOverDemo() {

@@ -192,8 +192,8 @@ as a reference element:
 
 ```kotlin
 listboxItems {
-    placement = Placement.Top
-    distance = 20
+    placement = PlacementValues.top
+    addMiddleware(offset(20))
     
     characters.forEach { (entry, disabledState) ->
         listboxItem(entry) {

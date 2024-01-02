@@ -74,8 +74,8 @@ button {
 }.tooltip {
     + "some description"
 
-    placement = Placement.Top
-    distance = 20
+    placement = PlacementValues.top
+    addMiddleware(offset(20))
 }
 ```
 
@@ -92,11 +92,11 @@ button {
 }
 ```
 
-By default, the arrow is 8 pixels wide and inherits the background-color from the `tooltip` but it can easily be styled
-by added classes:
+By default, the arrow is 8 pixels wide and inherits the background-color from the `tooltip` but its size and offset can
+be adapted:
 
 ```kotlin
-arrow("h-3 w-3 bg-white")
+arrow("h-3 w-3", 8)
 ```
 
 

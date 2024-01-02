@@ -173,8 +173,8 @@ as a reference element:
 
 ```kotlin
 menuItems {
-    placement = Placement.Top
-    distance = 20
+    placement = PlacementValues.top
+    addMiddleware(offset(20))
     
     menuItem {
         //...
