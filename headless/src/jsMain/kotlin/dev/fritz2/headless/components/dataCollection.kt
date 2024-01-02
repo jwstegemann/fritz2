@@ -83,21 +83,19 @@ class SelectionMode<T>(override val job: Job) : WithJob {
     fun selectItem(itemToSelect: Flow<T>, data: CollectionData<T>) {
         if (single.isSet) {
             single.handler?.let {
-                it(single.data.flatMapLatest { current ->
-                    itemToSelect.map { item ->
-                        if (data.isSame(current, item)) null else item
-                    }
+                it(itemToSelect.map { item ->
+                    val current = single.data.first()
+                    if (data.isSame(current, item)) null else item
                 })
             }
         } else {
             multi.handler?.let {
-                it(multi.data.flatMapLatest { current ->
-                    itemToSelect.map { item ->
-                        data.idProvider?.let { id ->
-                            if (current.any { id(it) == id(item) }) current.filter { id(it) != id(item) }
-                            else current + item
-                        } ?: if (current.contains(item)) current - item else current + item
-                    }
+                it(itemToSelect.map { item ->
+                    val current = multi.data.first()
+                    data.idProvider?.let { id ->
+                        if (current.any { id(it) == id(item) }) current.filter { id(it) != id(item) }
+                        else current + item
+                    } ?: if (current.contains(item)) current - item else current + item
                 })
             }
         }
