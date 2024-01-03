@@ -126,8 +126,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
             super.render()
             trapFocusWhenever(opened)
 
-            closeOnEscape()
-            closeOnBlur()
+            closeOnDismiss()
 
             attrIfNotSet("tabindex", "0")
             attr("role", Aria.Role.menu)

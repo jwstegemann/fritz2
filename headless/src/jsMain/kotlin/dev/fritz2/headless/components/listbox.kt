@@ -196,8 +196,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             super.render()
             trapFocusWhenever(opened)
 
-            closeOnEscape()
-            closeOnBlur()
+            closeOnDismiss()
 
             attrIfNotSet("tabindex", "0")
             attr("role", Aria.Role.listbox)

@@ -2,7 +2,6 @@ package dev.fritz2.headless.foundation
 
 import dev.fritz2.core.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.flow.*
 import org.w3c.dom.Node
 
 /**
@@ -51,8 +50,7 @@ abstract class OpenClose: WithJob {
      * `button` element behave natively.
      */
     protected fun Tag<*>.toggleOnClicksEnterAndSpace() {
-        merge(clicks, keydowns.filter { setOf(Keys.Space, Keys.Enter).contains(shortcutOf(it)) })
-            .preventDefault().stopPropagation() handledBy toggle
+        merge(clicks, keydowns.filter { setOf(Keys.Space, Keys.Enter).contains(shortcutOf(it)) }) handledBy toggle
     }
 
     /**
