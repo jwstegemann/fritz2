@@ -29,7 +29,7 @@ private data class PortalContainer<C : HTMLElement>(
     val remove = PortalStack.handle { list -> list.filterNot { it.portalId == portalId } }
 
     fun render(ctx: RenderContext) =
-        tag(ctx, classes, id, scope) {
+        tag(ctx, classes, id, scope + { ctx.scope[MOUNT_POINT_KEY]?.let { set(MOUNT_POINT_KEY, it) } }) {
             content.invoke(this) { remove.invoke() }
             reference?.beforeUnmount(this, null) { _, _ -> remove.invoke() }
         }
@@ -60,7 +60,9 @@ internal object PortalRenderContext : HtmlTag<HTMLDivElement>("div", portalRootI
         attr(Aria.live, "polite")
 
         PortalStack.data.distinctUntilChangedBy { it.map { it.portalId } }
-            .renderEach(PortalContainer<*>::portalId, into = this) { it.render(this) }
+            .renderEach(PortalContainer<*>::portalId, into = this) {
+                it.render(this)
+            }
 
         MainScope().launch {
             delay(500)
