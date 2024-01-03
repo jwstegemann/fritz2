@@ -88,7 +88,7 @@ internal abstract class MountPointImpl : MountPoint, WithJob {
     }
 }
 
-internal val MOUNT_POINT_KEY = Scope.Key<MountPoint>("MOUNT_POINT")
+val MOUNT_POINT_KEY = Scope.Key<MountPoint>("MOUNT_POINT")
 
 /**
  * Allows to access the nearest [MountPoint] from any [WithScope]

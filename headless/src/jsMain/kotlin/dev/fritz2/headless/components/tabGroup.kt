@@ -52,16 +52,14 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
 
     private val isActive: Store<Int?> = storeOf(null)
 
-    private val state by lazy { selected.combine(disabledTabs.data, ::Pair) }
-
     private fun <T> Flow<T>.handledBy(withJob: WithJob, handler: (Int, T, List<Boolean>) -> Int): Unit? =
         value.handler?.invoke(
             withJob,
-            state.flatMapLatest { (currentIndex, disabledTabs) ->
-                this.map { nextIndex ->
-                    if (disabledTabs.all { it }) -1 else handler(currentIndex, nextIndex, disabledTabs)
-                }
-            })
+            this.map { nextIndex ->
+                val currentIndex = selected.first()
+                if (disabledTabs.current.all { it }) -1 else handler(currentIndex, nextIndex, disabledTabs.current)
+            }
+        )
 
     private fun <T> withActiveUpdates(decorated: (Int, T, List<Boolean>) -> Int): (Int, T, List<Boolean>) -> Int =
         { currentIndex, payload, disabledTabs ->
