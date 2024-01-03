@@ -2,6 +2,7 @@ package dev.fritz2.headless.foundation
 
 import dev.fritz2.core.*
 import kotlinx.coroutines.flow.*
+import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.Node
 
 /**
@@ -50,7 +51,13 @@ abstract class OpenClose: WithJob {
      * `button` element behave natively.
      */
     protected fun Tag<*>.toggleOnClicksEnterAndSpace() {
-        merge(clicks, keydowns.filter { setOf(Keys.Space, Keys.Enter).contains(shortcutOf(it)) }) handledBy toggle
+        // If the wrapped element is a button, click events are already triggered by the Enter and Space keys.
+        val events = if (domNode is HTMLButtonElement) {
+            clicks
+        } else {
+            merge(clicks, keydowns.filter { setOf(Keys.Space, Keys.Enter).contains(shortcutOf(it)) })
+        }
+        events handledBy toggle
     }
 
     /**
