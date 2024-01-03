@@ -3,7 +3,7 @@ package dev.fritz2.headless.components
 import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.*
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.first
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
@@ -101,12 +101,11 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
                 render()
                 closeOnEscape()
                 // We have to check for nested portals here, so we can't use OpenClose's closeOnBlur()
-                openState.data.flatMapLatest { isOpen ->
-                    Window.clicks.filter { event ->
-                        isOpen && !domNode.contains(event.target as? Node)
-                                && getChildren().none { it.contains(event.target as? Node) }
-                                && event.composedPath().none { it == this }
-                    }
+                Window.clicks.filter { event ->
+                    openState.data.first()
+                            && !domNode.contains(event.target as? Node)
+                            && getChildren().none { it.contains(event.target as? Node) }
+                            && event.composedPath().none { it == this }
                 } handledBy close
             }
         }

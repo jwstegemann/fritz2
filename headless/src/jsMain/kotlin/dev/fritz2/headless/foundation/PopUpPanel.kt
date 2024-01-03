@@ -266,11 +266,12 @@ abstract class PopUpPanel<C : HTMLElement>(
                     parent = parent.parentNode
                 }
                 parents = parents + (domNode to parent)
-                beforeUnmount { _, _ ->
-                    parents = parents
-                        .filterKeys { it != domNode }
-                        .mapValues { (_, parent) -> parent.takeIf { it != domNode } }
-                }
+            }
+
+            beforeUnmount { _, _ ->
+                parents = parents
+                    .filterKeys { it != domNode }
+                    .mapValues { (_, parent) -> parent.takeIf { it != domNode } }
             }
 
             attr("data-popup-placement", computedPosition.map { it.placement ?: "" })
