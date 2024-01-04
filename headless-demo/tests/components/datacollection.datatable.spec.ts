@@ -112,7 +112,7 @@ test.describe('Navigating', () => {
 
     }
 
-    async function nameSelect(name: string, page: Page) {
+    async function nameSelected(name: string, page: Page) {
 
         const result = page.locator('#result');
         const nameDiv = page.locator("id=" + name)
@@ -136,34 +136,34 @@ test.describe('Navigating', () => {
             await dataTableState(page)
 
             /* This test is slow on webkit here a delay to wait for this click*/
-            await page.mouse.click(0, 0, {delay: 1000})
+            await page.mouse.click(0, 0)
 
-            await page.mouse.move(selectedBox2.x + selectedBox2.width / 2, selectedBox2.y + selectedBox2.height / 2, {steps: 100});
-            await page.mouse.click(selectedBox2.x + selectedBox2.width / 2, selectedBox2.y + selectedBox2.height / 2, {delay: 1000});
+            await page.mouse.move(selectedBox2.x + selectedBox2.width / 2, selectedBox2.y + selectedBox2.height / 2);
+            await page.mouse.click(selectedBox2.x + selectedBox2.width / 2, selectedBox2.y + selectedBox2.height / 2);
 
             /* We will place delay on all press actions (ArrowUp, ArrowDown, Enter, Space) */
-            await selected2.press('ArrowDown', {delay: 1000})
+            await selected2.press('ArrowDown')
             await nameActive("Prof. Alberto Kraushaar B.A.", page)
 
-            await nameDiv1.press(key, {delay: 1000})
-            await nameSelect("Prof. Alberto Kraushaar B.A.", page)
+            await nameDiv1.press(key)
+            await nameSelected("Prof. Alberto Kraushaar B.A.", page)
 
-            await nameDiv1.press('ArrowDown', {delay: 1000})
+            await nameDiv1.press('ArrowDown')
             await nameActive("Monique Riehl", page)
 
-            await nameDiv2.press(key, {delay: 1000})
-            await nameSelect("Monique Riehl", page)
+            await nameDiv2.press(key)
+            await nameSelected("Monique Riehl", page)
 
-            await nameDiv2.press(key, {delay: 1000})
+            await nameDiv2.press(key)
             await nameActive("Monique Riehl", page)
 
-            await nameDiv2.press('ArrowUp', {delay: 1000})
-            await nameSelect("Prof. Alberto Kraushaar B.A.", page)
+            await nameDiv2.press('ArrowUp')
+            await nameSelected("Prof. Alberto Kraushaar B.A.", page)
 
-            await nameDiv1.press(key, {delay: 1000})
+            await nameDiv1.press(key)
             await nameActive("Prof. Alberto Kraushaar B.A.", page)
 
-            await nameDiv1.press('ArrowUp', {delay: 1000})
+            await nameDiv1.press('ArrowUp')
             await expect(selected2).toHaveAttribute("data-datatable-selected", "false")
             await expect(selected2).toHaveAttribute("data-datatable-active", "true")
 
@@ -184,25 +184,25 @@ test.describe('Navigating', () => {
         await dataTableState(page)
 
         /* Same delays as previous test */
-        await page.mouse.click(0, 0, {delay: 1000})
+        await page.mouse.click(0, 0)
 
         await page.mouse.move(selectedBox1.x + selectedBox1.width / 2, selectedBox1.y + selectedBox1.height / 2, {steps: 100});
-        await page.mouse.click(selectedBox1.x + selectedBox1.width / 2, selectedBox1.y + selectedBox1.height / 2, {delay: 1000});
+        await page.mouse.click(selectedBox1.x + selectedBox1.width / 2, selectedBox1.y + selectedBox1.height / 2);
 
         await page.mouse.move(selectedBox2.x + selectedBox2.width / 2, selectedBox2.y + selectedBox2.height / 2, {steps: 100});
-        await page.mouse.click(selectedBox2.x + selectedBox2.width / 2, selectedBox2.y + selectedBox2.height / 2, {delay: 1000});
+        await page.mouse.click(selectedBox2.x + selectedBox2.width / 2, selectedBox2.y + selectedBox2.height / 2);
 
-        await selected2.press('Home', {delay: 1000})
+        await selected2.press('Home')
         await nameActive("Hansgeorg Kranz", page)
 
-        await selected1.press('Enter', {delay: 1000})
-        await nameSelect("Hansgeorg Kranz", page)
+        await selected1.press('Enter')
+        await nameSelected("Hansgeorg Kranz", page)
 
-        await selected1.press('End', {delay: 1000})
+        await selected1.press('End')
         await nameActive("Dr. Igor Steckel MBA.", page)
 
-        await nameDiv.press('Enter', {delay: 1000})
-        await nameSelect("Dr. Igor Steckel MBA.", page)
+        await nameDiv.press('Enter')
+        await nameSelected("Dr. Igor Steckel MBA.", page)
 
     });
 

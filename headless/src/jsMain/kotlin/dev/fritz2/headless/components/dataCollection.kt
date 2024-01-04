@@ -6,7 +6,6 @@ import dev.fritz2.headless.foundation.utils.scrollintoview.*
 import kotlinx.browser.document
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.NonCancellable.isActive
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.plus
 import org.w3c.dom.HTMLButtonElement
@@ -85,6 +84,7 @@ class SelectionMode<T>(override val job: Job) : WithJob {
             single.handler?.let {
                 it(itemToSelect.map { item ->
                     val current = single.data.first()
+                    console.log("selectItem: current:", current)
                     if (data.isSame(current, item)) null else item
                 })
             }
@@ -92,6 +92,7 @@ class SelectionMode<T>(override val job: Job) : WithJob {
             multi.handler?.let {
                 it(itemToSelect.map { item ->
                     val current = multi.data.first()
+                    console.log("selectItem: current:", current)
                     data.idProvider?.let { id ->
                         if (current.any { id(it) == id(item) }) current.filter { id(it) != id(item) }
                         else current + item
@@ -193,7 +194,10 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
         } ?: list.indexOf(item)
 
     private val sorting = storeOf<SortingOrder<T>?>(null, job)
-    val sortBy = sorting.update
+
+    @Suppress("unused")
+    val sortBy: Handler<SortingOrder<T>?> = sorting.update
+    
     val toggleSorting = sorting.handle<Sorting<T>> { old, newSorting ->
         if (old?.sorting == newSorting) {
             val newDirection = when (old.direction) {
@@ -208,7 +212,10 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
     }
 
     private val filtering = storeOf<((List<T>) -> List<T>)?>(null, job)
-    val filterBy = filtering.update
+    
+    @Suppress("unused")
+    val filterBy: Handler<((List<T>) -> List<T>)?> = filtering.update
+    
     fun filterByText(toString: (T) -> String = { it.toString() }) = filtering.handle<String> { _, text ->
         { it.filter { toString(it).lowercase().contains(text.lowercase()) } }
     }
@@ -395,7 +402,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
                             event.preventDefault()
                             event.stopImmediatePropagation()
                         }
-                    }.distinctUntilChanged(), it)
+                    }, it)
                     selection.sanitizeSelection(filteredItems, it)
                 }
             }
@@ -403,6 +410,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
 
         inner class DataCollectionItem<CI : HTMLElement>(
             private val item: T,
+            @Suppress("unused")
             val collectionItemId: String?,
             tag: Tag<CI>
         ) : Tag<CI> by tag {
