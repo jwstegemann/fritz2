@@ -828,6 +828,67 @@ If you want your tracking to continue instead, just handle exceptions within the
 
 ## Advanced Topics
 
+### Use Store's Current Value Correctly - Bypass Complex Flow-Operations
+
+Sometimes there is the need to access some `Store`'s current value in a safe but easy way. That is, why its API offers
+a property called `current`, which allows exactly to safely get its value at that one moment of access.
+
+Typical use cases are the mapping of `Flow`s, often event based flows, that should be mapped to some store's content
+or where the content is needed for some further processing.
+
+Consider some panel, that can be opened and closed by some button click. In order to toggle it, you must manipulate
+some state holding store:
+```kotlin
+val toggle = storeOf(false) // `false`-> closed, `true` -> open
+
+button {
+    +"Toggle"
+    clicks.map { !toggle.current } handledBy toggle.update
+    //                  ^^^^^^^
+    //                  get current value of the store to process it inside some flow-mapping
+}
+
+// finally render the panel depending on the state
+toggle.data.renderIf({ it }) {
+    div {
+        // ...
+    }
+}
+```
+
+The key aspect is found inside the `clicks`-event handling: The event itself is not really useful. It is just needed
+to get some `Flow` that listens to the click events and emit new values each time a user clicks the button. But in order
+to toggle the state, we need to access the store's value, where `current` comes into play!
+
+But to solve this without the `current`-property, we would have to apply typical
+`Flow`-[combining functions](https://kotlinlang.org/docs/flow.html#composing-multiple-flows),
+like `combine`, `flatMapLatest` and so on. So imagine a solution without `current`:
+```kotlin
+button {
+    +"Toggle"
+    clicks.combine(state.data) { _, value -> !value } handledBy state.update
+}
+```
+
+This looks far more complicated and clutters the UI code.
+
+::: warning
+**Beware:** There are many situations, where using `current` is just false. Applying it in inappropriate situations
+might lead to subtle and hard to find errors!
+
+Never use `current` inside some `render`-function body for example!
+:::
+
+In order to use `current` in the right situations, just follow this rule of thumb:
+
+::: info
+Use `current` only in code blocks, that are executed within some **reactive** scope!
+That is, only in some intermediate `Flow`-operations or inside some `Handler` code for example.
+:::
+
+You can find typical examples for using `current` inside of the fritz2 [headless-components](/headless), for example
+in `Listbox`'s implementation that deals with `KeyEvents`. Similar examples can be found in other headless components.
+
 ### EmittingHandler - Observer Pattern for Handlers
 
 In cases where you don't know which `Handler` of another store will handle the data exposed by your handler, you can use
