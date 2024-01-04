@@ -20,6 +20,16 @@ npx playwright test
     baseURL: 'http://localhost:8080/',
 ```
 
+## View Reports from GitHub Builds
+
+- go to the `Summary`-page of some build-action
+- scroll down to the `Artifacts` section
+- download the Zip-Archive
+- extract the archive locally into some folder
+- execute the following command:
+  ```bash
+  npx playwright show-report {name-of-the-extracted-folder}
+  ```
 
 ## General Design Principles
 
