@@ -145,30 +145,30 @@ test.describe('Navigating', () => {
 
             const selectedBox2 = await selected2.boundingBox()
             await page.mouse.move(selectedBox2.x + selectedBox2.width / 2, selectedBox2.y + selectedBox2.height / 2, {steps: 100});
-            await page.mouse.click(selectedBox2.x + selectedBox2.width / 2, selectedBox2.y + selectedBox2.height / 2, {delay: 1000});
+            await page.mouse.click(selectedBox2.x + selectedBox2.width / 2, selectedBox2.y + selectedBox2.height / 2);
 
-            await selected2.press('ArrowDown', {delay: 1000})
+            await selected2.press('ArrowDown')
             await nameActive("Prof. Alberto Kraushaar B.A.", page)
 
-            await nameDiv1.press(key, {delay: 1000})
+            await nameDiv1.press(key)
             await nameSelect("Prof. Alberto Kraushaar B.A.", page)
 
-            await nameDiv1.press('ArrowDown', {delay: 1000})
+            await nameDiv1.press('ArrowDown')
             await nameActive("Monique Riehl", page)
 
-            await nameDiv2.press(key, {delay: 1000})
+            await nameDiv2.press(key)
             await nameSelect("Monique Riehl", page)
 
-            await nameDiv2.press(key, {delay: 1000})
+            await nameDiv2.press(key)
             await nameActive("Monique Riehl", page)
 
-            await nameDiv2.press('ArrowUp', {delay: 1000})
+            await nameDiv2.press('ArrowUp')
             await nameSelect("Prof. Alberto Kraushaar B.A.", page)
 
-            await nameDiv1.press(key, {delay: 1000})
+            await nameDiv1.press(key)
             await nameActive("Prof. Alberto Kraushaar B.A.", page)
 
-            await nameDiv1.press('ArrowUp', {delay: 1000})
+            await nameDiv1.press('ArrowUp')
             await expect(selected2).toHaveAttribute("data-datatable-selected", "false")
             await expect(selected2).toHaveAttribute("data-datatable-active", "true")
 
