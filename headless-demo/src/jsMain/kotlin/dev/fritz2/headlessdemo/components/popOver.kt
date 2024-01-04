@@ -4,15 +4,9 @@ package dev.fritz2.headlessdemo.components
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.transition
 import dev.fritz2.headless.components.popOver
-import dev.fritz2.headless.foundation.PopUpPanelSize
-import dev.fritz2.headless.foundation.utils.floatingui.core.Middleware
-import dev.fritz2.headless.foundation.utils.floatingui.core.MiddlewareReturn
-import dev.fritz2.headless.foundation.utils.floatingui.core.MiddlewareState
 import dev.fritz2.headless.foundation.utils.floatingui.core.middleware.offset
 import dev.fritz2.headless.foundation.utils.floatingui.utils.PlacementValues
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
-import kotlin.js.Promise
 
 
 fun RenderContext.popOverDemo() {
@@ -91,16 +85,48 @@ fun RenderContext.popOverDemo() {
                         }
                     }
                 }
-
             }
-            div("flow-root p-4 transition duration-150 ease-in-out bg-primary-100") {
-                span("flex items-center") {
-                    span("text-sm font-medium text-primary-900") {
-                        +"Advice"
+            div("flex justify-between gap-4 items-center p-4 transition duration-150 ease-in-out bg-primary-100") {
+                div {
+                    span("flex items-center") {
+                        span("text-sm font-medium text-primary-900") {
+                            +"Advice"
+                        }
+                    }
+                    span("block text-sm text-primary-800") {
+                        +"Start using a powerful tech-stack for beautiful, modern SPAs."
                     }
                 }
-                span("block text-sm text-primary-800") {
-                    +"Start using a powerful tech-stack for beautiful, modern SPAs."
+                popOver(id = "innerPopOver") {
+                    popOverButton(
+                        """flex items-center justify-center flex-shrink-0 w-6 h-6 sm:h-8 sm:w-8 p-1 
+                        | rounded-lg 
+                        | bg-primary-100""".trimMargin()
+                    ) {
+                        icon("w-8 h-8 text-primary-600", content = HeroIcons.question_mark_circle)
+                    }
+                    popOverPanel(
+                        """z-30 max-w-sm lg:max-w-3xl px-0  
+                        | bg-white overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5
+                        | focus:outline-none
+                        """.trimMargin()
+                    ) {
+                        placement = PlacementValues.bottomStart
+                        addMiddleware(offset(5))
+
+                        transition(
+                            opened,
+                            "transition ease-out duration-200",
+                            "opacity-0 translate-y-1",
+                            "opacity-100 translate-y-0",
+                            "transition ease-in duration-150",
+                            "opacity-100 translate-y-0",
+                            "opacity-0 translate-y-1"
+                        )
+                        span("p-4 block text-sm text-primary-800") {
+                            +"We hope this was helpful to you."
+                        }
+                    }
                 }
             }
         }
