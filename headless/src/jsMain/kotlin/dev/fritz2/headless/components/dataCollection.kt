@@ -84,7 +84,6 @@ class SelectionMode<T>(override val job: Job) : WithJob {
             single.handler?.let {
                 it(itemToSelect.map { item ->
                     val current = single.data.first()
-                    console.log("selectItem: current:", current)
                     if (data.isSame(current, item)) null else item
                 })
             }
@@ -92,7 +91,6 @@ class SelectionMode<T>(override val job: Job) : WithJob {
             multi.handler?.let {
                 it(itemToSelect.map { item ->
                     val current = multi.data.first()
-                    console.log("selectItem: current:", current)
                     data.idProvider?.let { id ->
                         if (current.any { id(it) == id(item) }) current.filter { id(it) != id(item) }
                         else current + item
