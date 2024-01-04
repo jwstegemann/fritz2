@@ -69,9 +69,7 @@ abstract class PopUpPanel<C : HTMLElement>(
     }
 
     /**
-     * Combines the behavior of [OpenClose]'s [closeOnBlur][OpenClose.closeOnBlur] and
-     * [closeOnEscape][OpenClose.closeOnEscape] utilities and extends the logic so that clicks inside nested
-     * [PopUpPanel]s don't close this pop-over.
+     * Closes the [PopUpPanel] when dismissed, i.e. by clicking outside the element or pressing the Escape key.
      */
     fun OpenClose.closeOnDismiss() {
         merge(
@@ -81,7 +79,7 @@ abstract class PopUpPanel<C : HTMLElement>(
                         && getChildren().none { it.contains(event.target as? Node) }
                         && event.composedPath().none { it == this }
             },
-            Window.keydowns.filter { event -> opened.first() && shortcutOf(event) == Keys.Escape }
+            Window.keydowns.filter { opened.first() && shortcutOf(it) == Keys.Escape }
         ) handledBy close
     }
 

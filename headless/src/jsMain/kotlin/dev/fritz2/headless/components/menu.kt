@@ -43,8 +43,6 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
         }
     }
 
-    private val state by lazy { activeIndex.data.combine(items.data, ::Pair) }
-
     @OptIn(ExperimentalCoroutinesApi::class)
     private val selections = storeOf(-1)
 
@@ -73,7 +71,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
             if (!openState.isSet) openState(storeOf(false))
             content()
             attr(Aria.expanded, opened.asString())
-            toggleOnClicksEnterAndSpace()
+            activations.preventDefault().stopPropagation() handledBy toggle
         }.also { button = it }
     }
 
@@ -92,7 +90,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
     }
 
     inner class MenuItems<CI : HTMLElement>(
-        val renderContext: RenderContext,
+        renderContext: RenderContext,
         tagFactory: TagFactory<Tag<CI>>,
         classes: String?,
         scope: ScopeContext.() -> Unit
