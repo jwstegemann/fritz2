@@ -86,3 +86,70 @@ test.describe('Pressing on Tab', () => {
     }
 
 });
+
+test.describe(`Nested popover`, () => {
+
+    test(`Opening the inner popover does not close outer popover`, async ({page}) => {
+        const outerBtn = page.locator('#popOver-button');
+        const outerItems = page.locator('#popOver-items');
+        const innerBtn = page.locator('#innerPopOver-button');
+        const innerItems = page.locator('#innerPopOver-items');
+
+        await outerBtn.click();
+        await innerBtn.click();
+
+        await expect(outerItems).toBeVisible();
+        await expect(innerItems).toBeVisible();
+    });
+
+    test(`Clicking inside the inner popover does not close the outer popover`, async ({page}) => {
+        const outerBtn = page.locator('#popOver-button');
+        const outerItems = page.locator('#popOver-items');
+        const innerBtn = page.locator('#innerPopOver-button');
+        const innerItems = page.locator('#innerPopOver-items');
+
+        await outerBtn.click();
+        await expect(outerItems).toBeVisible();
+
+        await innerBtn.click();
+        await expect(innerItems).toBeVisible();
+
+        await innerItems.click();
+        await expect(innerItems).toBeVisible();
+        await expect(outerItems).toBeVisible();
+    });
+
+    test(`Clicking inside the outer popover closes the inner popover`, async ({page}) => {
+        const outerBtn = page.locator('#popOver-button');
+        const outerItems = page.locator('#popOver-items');
+        const innerBtn = page.locator('#innerPopOver-button');
+        const innerItems = page.locator('#innerPopOver-items');
+
+        await outerBtn.click();
+        await expect(outerItems).toBeVisible();
+
+        await innerBtn.click();
+        await expect(innerItems).toBeVisible();
+
+        await outerItems.click();
+        await expect(innerItems).not.toBeVisible();
+    });
+
+    test(`Closing the outer popover closes the inner popover too`, async ({page}) => {
+        const outerBtn = page.locator('#popOver-button');
+        const outerItems = page.locator('#popOver-items');
+        const innerBtn = page.locator('#innerPopOver-button');
+        const innerItems = page.locator('#innerPopOver-items');
+
+        await outerBtn.click();
+        await expect(outerItems).toBeVisible();
+
+        await innerBtn.click();
+        await expect(innerItems).toBeVisible();
+
+        await outerBtn.click();
+        await expect(outerItems).not.toBeVisible();
+        await expect(innerItems).not.toBeVisible();
+    });
+
+});

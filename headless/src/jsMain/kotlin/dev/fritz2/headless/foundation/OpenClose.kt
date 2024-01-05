@@ -2,6 +2,8 @@ package dev.fritz2.headless.foundation
 
 import dev.fritz2.core.*
 import kotlinx.coroutines.flow.*
+import org.w3c.dom.HTMLButtonElement
+import org.w3c.dom.events.Event
 
 /**
  * Base class that provides all functionality needed for components, that have some "open" and "close" state of
@@ -12,12 +14,6 @@ import kotlinx.coroutines.flow.*
  *
  * Typical examples of [OpenClose] based components are modal dialogs or all popup-components, that appear and
  * disappear based upon user interaction.
- *
- * There are some protected functions in order to configure the appropriate actions for opening and closing based
- * upon user interaction like pressing some keys or clicking with the mouse:
- * - [toggleOnClicksEnterAndSpace]
- * - [closeOnEscape]
- * - [closeOnBlur]
  */
 abstract class OpenClose: WithJob {
 
@@ -44,29 +40,15 @@ abstract class OpenClose: WithJob {
     }
 
     /**
-     * Use this function on [Tag]s, that should trigger the component to open or to close in order to enable
-     * keyboard support. Applying this function will toggle the state by the keys `Space` and `Enter` like a
-     * `button` element behave natively.
+     * Combines all events relevant for toggling an element that implements the [OpenClose] behavior. By default, these
+     * events are clicking the left mouse button or pressing the Enter or Space keys.
      */
-    protected fun Tag<*>.toggleOnClicksEnterAndSpace() {
-        merge(clicks, keydowns.filter { setOf(Keys.Space, Keys.Enter).contains(shortcutOf(it)) })
-            .preventDefault().stopPropagation() handledBy toggle
+    internal val Tag<*>.activations: Flow<Event> get() {
+        // If the wrapped element is a button, click events are already triggered by the Enter and Space keys.
+        return if (domNode is HTMLButtonElement) {
+            clicks
+        } else {
+            keydowns.filter { shortcutOf(it) in listOf(Keys.Space, Keys.Enter) }
+        }
     }
-
-    /**
-     * Apply this function on the panel representing [Tag] of the [OpenClose] implementing component, if the panel
-     * should be closed by pressing the *Escape* key.
-     */
-    protected fun Tag<*>.closeOnEscape() {
-        Window.keydowns.filter { opened.first() && shortcutOf(it) == Keys.Escape } handledBy close
-    }
-
-    /**
-     * Apply this function on the panel representing [Tag] of the [OpenClose] implementing component, if the panel
-     * should be closed on clicking to somewhere outside the panel.
-     */
-    protected fun Tag<*>.closeOnBlur() {
-        Window.clicks.filter { event -> opened.first() && event.composedPath().none { it == this } } handledBy close
-    }
-
 }

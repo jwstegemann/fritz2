@@ -1,6 +1,7 @@
 package dev.fritz2.headless.foundation
 
 import dev.fritz2.core.*
+import dev.fritz2.headless.foundation.PopUpPanelSize.*
 import dev.fritz2.headless.foundation.utils.floatingui.core.ComputePositionConfig
 import dev.fritz2.headless.foundation.utils.floatingui.core.ComputePositionReturn
 import dev.fritz2.headless.foundation.utils.floatingui.core.Middleware
@@ -12,11 +13,9 @@ import dev.fritz2.headless.foundation.utils.floatingui.dom.computePosition
 import dev.fritz2.headless.foundation.utils.floatingui.obj
 import dev.fritz2.headless.foundation.utils.floatingui.utils.PlacementValues
 import dev.fritz2.headless.foundation.utils.floatingui.utils.StrategyValues
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.flow.transform
+import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.Node
 
 /**
  * Enum-Class to set the width of the Popup to
@@ -54,7 +53,39 @@ abstract class PopUpPanel<C : HTMLElement>(
     private val config: ComputePositionConfig = obj {}
 ) : Tag<C> by tag, ComputePositionConfig by config {
 
+    /**
+     * We keep track of all active [PopUpPanel] instances and associate it with its parent if it is contained in another
+     * [PopUpPanel]. This information is used to keep the pop-over opened even when click events originated from nested
+     * [PopUpPanel]s, which are usually portalled and not children in the DOM.
+     * This solution is heavily inspired by [Floating UI's `useDismiss()` hook](https://floating-ui.com/docs/useDismiss).
+     */
+    private fun getChildren(): Set<Node> = buildSet {
+        var children = childToParent.filterValues { it == domNode }.keys
+        while (children.isNotEmpty()) {
+            addAll(children)
+            children = childToParent.filterValues { it in children }.keys
+        }
+        if (reference != null) add(reference.domNode)
+    }
+
+    /**
+     * Closes the [PopUpPanel] when dismissed, i.e. by clicking outside the element or pressing the Escape key.
+     */
+    fun OpenClose.closeOnDismiss() {
+        merge(
+            Window.clicks.filter { event ->
+                opened.first()
+                        && !domNode.contains(event.target as? Node)
+                        && getChildren().none { it.contains(event.target as? Node) }
+                        && event.composedPath().none { it == this }
+            },
+            Window.keydowns.filter { opened.first() && shortcutOf(it) == Keys.Escape }
+        ) handledBy close
+    }
+
     companion object {
+        private var childToParent = emptyMap<Node, Node?>()
+
         private const val FRITZ2_POPUP_HIDDEN = "fritz2-popup-hidden"
         private const val FRITZ2_POPUP_VISIBLE = "fritz2-popup-visible"
 
@@ -268,6 +299,21 @@ abstract class PopUpPanel<C : HTMLElement>(
             afterMount { _, _ -> computePosition() }
 
             beforeUnmount { _, _ -> cleanup.invoke() }
+
+            afterMount { _, _ ->
+                var parent: Node? = reference.domNode
+                while (parent != null) {
+                    if (parent in childToParent) break
+                    parent = parent.parentNode
+                }
+                childToParent = childToParent + (domNode to parent)
+            }
+
+            beforeUnmount { _, _ ->
+                childToParent = childToParent
+                    .filterKeys { it != domNode }
+                    .mapValues { (_, parent) -> parent.takeIf { it != domNode } }
+            }
 
             attr("data-popup-placement", computedPosition.map { it.placement ?: "" })
             inlineStyle(computedPosition.map {

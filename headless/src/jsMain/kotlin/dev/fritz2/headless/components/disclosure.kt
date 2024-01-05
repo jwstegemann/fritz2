@@ -49,7 +49,7 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             content()
             attr(Aria.expanded, opened.asString())
             attr("tabindex", "0")
-            toggleOnClicksEnterAndSpace()
+            activations.preventDefault().stopPropagation() handledBy toggle
         }.also { button = it }
     }
 
@@ -69,7 +69,7 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
 
     inner class DisclosurePanel<CP : HTMLElement>(tag: Tag<CP>) : Tag<CP> by tag {
         fun render() {
-            button?.let { button -> button.attr(Aria.controls, id.whenever(opened)) }
+            button?.attr(Aria.controls, id.whenever(opened))
         }
 
         /**
