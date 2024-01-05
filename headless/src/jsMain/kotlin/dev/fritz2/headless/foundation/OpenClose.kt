@@ -51,36 +51,4 @@ abstract class OpenClose: WithJob {
             keydowns.filter { shortcutOf(it) in listOf(Keys.Space, Keys.Enter) }
         }
     }
-
-//    /**
-//     * Use this function on [Tag]s, that should trigger the component to open or to close in order to enable
-//     * keyboard support. Applying this function will toggle the state by the keys `Space` and `Enter` like a
-//     * `button` element behave natively.
-//     */
-//    protected fun Tag<*>.toggleOnClicksEnterAndSpace() {
-//        // If the wrapped element is a button, click events are already triggered by the Enter and Space keys.
-//        val events = if (domNode is HTMLButtonElement) {
-//            clicks
-//        } else {
-//            merge(clicks, keydowns.filter { setOf(Keys.Space, Keys.Enter).contains(shortcutOf(it)) })
-//        }
-//        events handledBy toggle
-//    }
-//
-//    /**
-//     * Apply this function on the panel representing [Tag] of the [OpenClose] implementing component, if the panel
-//     * should be closed by pressing the *Escape* key.
-//     */
-//    protected fun Tag<*>.closeOnEscape() {
-//        Window.keydowns.filter { opened.first() && shortcutOf(it) == Keys.Escape } handledBy close
-//    }
-//
-//    /**
-//     * Apply this function on the panel representing [Tag] of the [OpenClose] implementing component, if the panel
-//     * should be closed on clicking to somewhere outside the panel.
-//     */
-//    protected fun Tag<*>.closeOnBlur() {
-//        Window.clicks.filter { event -> opened.first() && !domNode.contains(event.target as? Node) && event.composedPath().none { it == this } } handledBy close
-//    }
-
 }
