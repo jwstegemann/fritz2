@@ -60,10 +60,10 @@ abstract class PopUpPanel<C : HTMLElement>(
      * This solution is heavily inspired by [Floating UI's `useDismiss()` hook](https://floating-ui.com/docs/useDismiss).
      */
     private fun getChildren(): Set<Node> = buildSet {
-        var children = parents.filterValues { it == domNode }.keys
+        var children = childToParent.filterValues { it == domNode }.keys
         while (children.isNotEmpty()) {
             addAll(children)
-            children = parents.filterValues { it in children }.keys
+            children = childToParent.filterValues { it in children }.keys
         }
         if (reference != null) add(reference.domNode)
     }
@@ -84,7 +84,7 @@ abstract class PopUpPanel<C : HTMLElement>(
     }
 
     companion object {
-        private var parents = emptyMap<Node, Node?>()
+        private var childToParent = emptyMap<Node, Node?>()
 
         private const val FRITZ2_POPUP_HIDDEN = "fritz2-popup-hidden"
         private const val FRITZ2_POPUP_VISIBLE = "fritz2-popup-visible"
@@ -303,14 +303,14 @@ abstract class PopUpPanel<C : HTMLElement>(
             afterMount { _, _ ->
                 var parent: Node? = reference.domNode
                 while (parent != null) {
-                    if (parent in parents) break
+                    if (parent in childToParent) break
                     parent = parent.parentNode
                 }
-                parents = parents + (domNode to parent)
+                childToParent = childToParent + (domNode to parent)
             }
 
             beforeUnmount { _, _ ->
-                parents = parents
+                childToParent = childToParent
                     .filterKeys { it != domNode }
                     .mapValues { (_, parent) -> parent.takeIf { it != domNode } }
             }
