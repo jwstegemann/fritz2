@@ -62,7 +62,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
     }
 
     inner class PopOverPanel<C : HTMLElement>(
-        val renderContext: RenderContext,
+        renderContext: RenderContext,
         tagFactory: TagFactory<Tag<C>>,
         classes: String?,
         scope: ScopeContext.() -> Unit
@@ -73,7 +73,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
         "$componentId-items",
         scope,
         this@PopOver.opened,
-        reference = button ?: button {  },
+        reference = button,
         ariaHasPopup = Aria.HasPopup.dialog
     )
 
