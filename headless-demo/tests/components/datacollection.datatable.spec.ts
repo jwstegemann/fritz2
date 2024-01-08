@@ -267,31 +267,23 @@ test.describe('To', () => {
     test('check if scrollIntoView() of Datatable is respected', async ({page}) => {
 
         const startingRow = page.locator('id=Caterina Scholtz');
-        const currentRow = page.locator('id=Cathrin Schomber B.A.');
-        const table = page.locator('#dataTable')
 
         const selectedBox = await startingRow.boundingBox()
         await page.mouse.move(selectedBox.x + 10, selectedBox.y + 10, {steps: 100})
         await expect(startingRow).toHaveAttribute("data-datatable-active", "true")
         await page.mouse.click(selectedBox.x + 10, selectedBox.y + 10, {delay: 200})
         await expect(startingRow).toHaveAttribute('data-datatable-selected', 'true')
+        let activeLocator = page.locator("[data-datatable-active=true]")
 
-        for (let i = 0; i < 4; i++) {
-            await page.keyboard.press("ArrowDown", {delay: 1000})
+        for (let i = 0; i < 9; i++) {
+            let activeText = await activeLocator.textContent()
+            await page.keyboard.press("ArrowDown")
+            await expect(activeLocator).not.toHaveText(activeText)
         }
 
-        /* 
-         * We will compare the height of center of table with the height of name 
-         * 
-         * Also consider that only the "scrollDown" is tested and not the "scrollUp"
-         * Need test for "scrollUp"
-         */
-        const tableBox = await table.boundingBox()
-        await expect(currentRow).toHaveAttribute("data-datatable-active", "true");
-        const currentRowBox = await currentRow.boundingBox()
-        expect(currentRowBox.y).toBeLessThanOrEqual(tableBox.y + tableBox.height / 2)
-        expect(currentRowBox.y + currentRowBox.height).toBeGreaterThanOrEqual(tableBox.y + tableBox.height / 2)
-
+        await expect(page.getByText("Geza Stey")).toBeInViewport()
+        await expect(activeLocator).toContainText("Geza Stey")
+        await expect(startingRow).not.toBeInViewport()
     });
 
 });

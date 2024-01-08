@@ -279,24 +279,22 @@ test.describe('To', () => {
         await page.mouse.click(0, 0, {delay: 1500})
 
         const startingCard = page.locator('id=Caterina Scholtz');
-        const currentCard = page.locator('id=Isabelle Fliegner-Köhler');
-        const table = page.locator('#gridList')
-
         const selectedBox = await startingCard.boundingBox()
         await page.mouse.move(selectedBox.x + 10, selectedBox.y + 10, {steps: 100})
         await expect(startingCard).toHaveAttribute("data-datatable-active", "true")
         await page.mouse.click(selectedBox.x + 10, selectedBox.y + 10, {delay: 200})
 
-        await page.keyboard.press('ArrowDown', {delay: 1000})
+        let activeLocator = page.locator("[data-datatable-active=true]")
 
-        /* We will compare the height of the table with the height of bottom of card name
-         *
-         * Also consider that only the "scrollDown" is tested and not the "scrollUp"
-         * Need test for "scrollUp"
-         */
-        const tableBox = await table.boundingBox()
-        const namebox1 = await currentCard.boundingBox()
-        expect(tableBox.y + tableBox.height).toBeCloseTo(namebox1.y + namebox1.height)
+        for (let i = 0; i < 9; i++) {
+            let activeText = await activeLocator.textContent()
+            await page.keyboard.press("ArrowDown")
+            await expect(activeLocator).not.toHaveText(activeText)
+        }
+
+        await expect(page.getByText("Geza Stey")).toBeInViewport()
+        await expect(activeLocator).toContainText("Geza Stey")
+        await expect(startingCard).not.toBeInViewport()
 
     });
 
