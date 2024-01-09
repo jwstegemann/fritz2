@@ -35,7 +35,7 @@ the<PublishingExtension>().apply {
     }
 
     publications.withType<MavenPublication>().configureEach {
-        artifact(tasks.getByName("dokkaJavadocJar"))
+        if(name == "jvm") artifact(tasks.getByName("dokkaJavadocJar"))
         pom {
             name.set("fritz2")
             description.set("Easily build reactive web-apps in Kotlin based on flows and coroutines")
