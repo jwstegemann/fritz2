@@ -209,16 +209,16 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
                 val currentIndex = activeIndex.current
                 val entries = entries.current
                 when (shortcutOf(event)) {
-                        Keys.ArrowUp -> nextItem(currentIndex, Direction.Previous, entries)
-                        Keys.ArrowDown -> nextItem(currentIndex, Direction.Next, entries)
-                        Keys.Home -> firstItem(entries)
-                        Keys.End -> lastItem(entries)
-                        else -> null
-                    }.also {
-                        if (it != null) {
-                            event.preventDefault()
-                            event.stopImmediatePropagation()
-                        }
+                    Keys.ArrowUp -> nextItem(currentIndex, Direction.Previous, entries)
+                    Keys.ArrowDown -> nextItem(currentIndex, Direction.Next, entries)
+                    Keys.Home -> firstItem(entries)
+                    Keys.End -> lastItem(entries)
+                    else -> null
+                }.also {
+                    if (it != null) {
+                        event.preventDefault()
+                        event.stopImmediatePropagation()
+                    }
                 }
             } handledBy activeIndex.update
 
@@ -247,7 +247,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
                         it.stopImmediatePropagation()
                         entries[currentIndex].value
                     }
-                }
+                }.onEach { close() }
             )
 
             opened.filter { it }.flatMapLatest {
@@ -288,7 +288,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
                             if (it.disabled) null
                             else it.value
                         }
-                    })
+                    }.onEach { close() })
 
                 value.data.map {} handledBy close
             }

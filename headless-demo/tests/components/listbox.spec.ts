@@ -81,7 +81,7 @@ test.describe('To open and close a listBox', () => {
             await expect(page.locator("#" + itemId)).toHaveAttribute("data-listbox-selected", "false")
         }
 
-        const [btn,  listBoxItems] = await createLocators(page)
+        const [btn, listBoxItems] = await createLocators(page)
 
         await btn.focus()
         await assertListBoxIsClosed(btn, listBoxItems)
@@ -224,6 +224,46 @@ test.describe("To select an item from a listBox open the listBoxItems", () => {
         await expect(btn).toHaveText("Han")
         await expect(listBoxItems).toHaveAttribute("aria-activedescendant", "starwars-item-3")
     });
+
+    [
+        {
+            name: 'click on item', selectAction: async (item: Locator) => {
+                await item.click()
+            }
+        },
+        {
+            name: 'pressing Enter', selectAction: async (item: Locator) => {
+                await item.hover()
+                await item.press("Enter")
+            }
+        },
+        {
+            name: 'presssing Space', selectAction: async (item: Locator) => {
+                await item.hover()
+                await item.press("Space")
+            }
+        },
+    ].forEach(({name, selectAction}) => {
+        test(`and select the same item twice by ${name} will close the listBox`, async ({page}) => {
+            const listBoxItems = page.locator("#starwars-items")
+            const result = page.locator('#result')
+            const han = listBoxItems.getByText("Han")
+
+            // first selection
+            await page.getByRole("button", {name: "Luke"}).click()
+            await expect(listBoxItems).toBeVisible()
+            await selectAction(han)
+            await expect(listBoxItems).toBeHidden()
+            await expect(result).toContainText("Han")
+
+            // second selection
+            await page.getByRole("button", {name: "Han"}).click()
+            await expect(listBoxItems).toBeVisible()
+            await selectAction(han)
+            await expect(listBoxItems).toBeHidden()
+            await expect(result).toContainText("Han")
+        })
+    })
 
     for (const key of ["Enter", "Space"]) {
         test(`then press ${key}`, async ({page}) => {
