@@ -4,7 +4,6 @@ apply(plugin = "maven-publish")
 apply(plugin = "signing")
 apply(plugin = "org.jetbrains.dokka")
 
-
 the<SigningExtension>().apply {
     val signingKey: String = System.getenv("GPG_SIGNING_KEY").orEmpty()
     val signingPassphrase: String = System.getenv("GPG_SIGNING_PASSPHRASE").orEmpty()
@@ -36,6 +35,7 @@ the<PublishingExtension>().apply {
     }
 
     publications.withType<MavenPublication>().configureEach {
+        artifact(tasks.getByName("dokkaJavadocJar"))
         pom {
             name.set("fritz2")
             description.set("Easily build reactive web-apps in Kotlin based on flows and coroutines")

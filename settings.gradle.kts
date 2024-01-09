@@ -13,7 +13,6 @@ plugins {
 refreshVersions {
 }
 
-
 include(
     "core",
     "lenses-annotation-processor",
