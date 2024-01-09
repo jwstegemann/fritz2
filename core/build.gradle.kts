@@ -1,16 +1,17 @@
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
+    id("org.jetbrains.dokka")
 }
 
 kotlin {
     jvm()
     js(IR).browser {
-        testTask(Action {
+        testTask {
             //running test-server in background
             dependsOn(":test-server:start")
             // see "karma.config.d" folder for customizing karma
-        })
+        }
         // just to have a place to copy it from...
         /*
         runTask {
@@ -60,6 +61,15 @@ kotlin {
             }
         }
     }
+}
+
+// Generates a javadoc jar from dokka html sources
+val dokkaJavadocJar by tasks.creating(Jar::class) {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "Assembles java doc to jar"
+    archiveClassifier.set("javadoc")
+    dependsOn(tasks.dokkaHtml)
+    from(tasks.dokkaHtml.flatMap { it.outputDirectory })
 }
 
 apply(from = "$rootDir/publishing.gradle.kts")
