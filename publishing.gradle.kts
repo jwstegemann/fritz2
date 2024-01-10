@@ -4,6 +4,20 @@ apply(plugin = "maven-publish")
 apply(plugin = "signing")
 apply(plugin = "org.jetbrains.dokka")
 
+// Workaround for Gradle issue
+// https://github.com/gradle/gradle/issues/26091
+tasks.withType<AbstractPublishToMaven>().configureEach {
+    dependsOn(tasks.withType<Sign>())
+}
+
+// Generates a javadoc jar from dokka html sources
+val javadocJar by tasks.creating(Jar::class) {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "Assembles java doc to jar"
+    archiveClassifier.set("javadoc")
+    from(tasks.named("dokkaHtml"))
+}
+
 the<SigningExtension>().apply {
     val signingKey: String = System.getenv("GPG_SIGNING_KEY").orEmpty()
     val signingPassphrase: String = System.getenv("GPG_SIGNING_PASSPHRASE").orEmpty()
@@ -25,7 +39,7 @@ the<PublishingExtension>().apply {
 
             url = uri(if (isRelease && !version.toString().endsWith("SNAPSHOT")) releaseUrl else snapshotUrl)
             // for local testing
-//            url = uri(layout.buildDirectory.dir("repo"))
+            // url = uri(layout.buildDirectory.dir("repo"))
 
             credentials {
                 username = System.getenv("OSSRH_USERNAME")
@@ -34,8 +48,9 @@ the<PublishingExtension>().apply {
         }
     }
 
-    publications.withType<MavenPublication>().configureEach {
-        if(name == "jvm") artifact(tasks.getByName("dokkaJavadocJar"))
+    publications.withType(MavenPublication::class) {
+        // javadoc jar is mandatory for publishing to MavenCentral
+        artifact(javadocJar)
         pom {
             name.set("fritz2")
             description.set("Easily build reactive web-apps in Kotlin based on flows and coroutines")
