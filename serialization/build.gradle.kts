@@ -8,6 +8,14 @@ kotlin {
     jvm()
     js(IR).browser { }
     sourceSets {
+        all {
+            languageSettings {
+                languageVersion = "2.0"
+                optIn("kotlin.ExperimentalStdlibApi")
+                optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
+            }
+        }
+
         jsMain {
             dependencies {
                 api(project(":core"))

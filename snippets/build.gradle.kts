@@ -9,10 +9,13 @@ kotlin {
 
     sourceSets {
         all {
-            languageSettings.apply {
+            languageSettings {
+                languageVersion = "2.0"
                 optIn("kotlin.ExperimentalStdlibApi")
+                optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
             }
         }
+
         jsMain {
             dependencies {
                 implementation(project(":core"))

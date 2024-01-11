@@ -168,7 +168,7 @@ open class RootStore<D>(
      *
      * Actual data therefore is derived by applying the updates on the internal channel one by one to get the next value.
      */
-    final override val data: Flow<D> = flow {
+    final override val data: Flow<D> = flow<Flow<D>> {
         try {
             activeFlows.incrementAndGet()
             emit(state)

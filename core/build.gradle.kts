@@ -15,7 +15,8 @@ kotlin {
     }
     sourceSets {
         all {
-            languageSettings.apply {
+            languageSettings {
+                languageVersion = "2.0"
                 optIn("kotlin.ExperimentalStdlibApi")
                 optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
                 optIn("kotlinx.coroutines.FlowPreview")
