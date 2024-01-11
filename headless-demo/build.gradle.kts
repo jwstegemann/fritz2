@@ -11,7 +11,8 @@ kotlin {
 
     sourceSets {
         all {
-            languageSettings.apply {
+            languageSettings{
+                languageVersion = "2.0"
                 optIn("kotlin.ExperimentalStdlibApi")
             }
         }

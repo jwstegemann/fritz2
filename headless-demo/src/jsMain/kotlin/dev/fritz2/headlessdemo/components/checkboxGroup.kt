@@ -18,6 +18,7 @@ fun RenderContext.checkboxGroupDemo() {
     val subscriptions = storeOf(emptyList<Newsletter>(), id = "checkboxGroup")
 
     div("max-w-sm") {
+        div { +"fff"}
         checkboxGroup<HTMLFieldSetElement, Newsletter>(tag = RenderContext::fieldset) {
             value(subscriptions)
             checkboxGroupLabel("py-2 sr-only", tag = RenderContext::legend) {

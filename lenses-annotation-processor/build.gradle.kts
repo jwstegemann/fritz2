@@ -19,6 +19,12 @@ kotlin {
         browser()
     }.binaries.executable()
     sourceSets {
+        all {
+            languageSettings {
+                languageVersion = "2.0"
+            }
+        }
+
         val jvmMain by getting {
             dependencies {
                 api(kotlin("stdlib"))
