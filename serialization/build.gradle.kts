@@ -8,7 +8,7 @@ kotlin {
     jvm()
     js(IR).browser { }
     sourceSets {
-        val jsMain by getting {
+        jsMain {
             dependencies {
                 api(project(":core"))
                 api(KotlinX.serialization.json)

@@ -15,17 +15,17 @@ kotlin {
     }.binaries.executable()
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(project(":core"))
                 implementation(KotlinX.serialization.json)
             }
         }
-        val jvmMain by getting {
+        jvmMain {
             dependencies {
             }
         }
-        val jsMain by getting {
+        jsMain {
             dependencies {
             }
         }
