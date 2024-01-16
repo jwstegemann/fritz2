@@ -13,7 +13,7 @@ kotlin {
                 optIn("kotlin.ExperimentalStdlibApi")
             }
         }
-        val jsMain by getting {
+        jsMain {
             dependencies {
                 implementation(project(":core"))
                 // tailwind

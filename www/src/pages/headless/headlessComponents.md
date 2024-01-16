@@ -41,7 +41,7 @@ In order to use headless components in your project, replace the dependency to t
 kotlin {
     // ...
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 // always add the dependency to headless in the commonMain section
                 implementation("dev.fritz2:headless:$fritz2Version")

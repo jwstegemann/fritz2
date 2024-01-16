@@ -15,21 +15,6 @@ kotlin {
 //                usePhantomJS()
             }
         }
-        // just to have a place to copy it from...
-        /*
-        runTask {
-            devServer?.apply {
-                port = 9000
-                proxy?.apply {
-                    put("/members", "http://localhost:8080")
-                    put("/chat", mapOf(
-                        "target" to "ws://localhost:8080",
-                        "ws" to true
-                    ))
-                }
-            }
-        }
-        */
     }
     sourceSets {
         all {
@@ -38,18 +23,18 @@ kotlin {
                 optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
             }
         }
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 api(project(":core"))
             }
         }
-        val jsMain by getting {
+        jsMain {
             dependencies {
                 api(npm("@floating-ui/dom","_"))
                 api(npm("scroll-into-view-if-needed", "_"))
             }
         }
-        val jsTest by getting {
+        jsTest {
             dependencies {
                 implementation(Kotlin.test.js)
             }

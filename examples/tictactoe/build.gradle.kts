@@ -12,21 +12,21 @@ kotlin {
     jvm() // needed for kspCommonMainMetadata
     js(IR) {
         browser {
-            webpackTask(Action {
+            webpackTask {
                 cssSupport {
                     enabled.set(true)
                 }
-            })
+            }
         }
     }.binaries.executable()
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(project(":core"))
             }
         }
-        val jsMain by getting {
+        jsMain {
             dependencies {
             }
         }

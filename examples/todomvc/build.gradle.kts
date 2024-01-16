@@ -16,12 +16,12 @@ kotlin {
     }.binaries.executable()
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(project(":core"))
             }
         }
-        val jsMain by getting {
+        jsMain {
             dependencies {
             }
         }
