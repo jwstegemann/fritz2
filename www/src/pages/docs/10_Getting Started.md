@@ -61,16 +61,9 @@ kotlin {
     }
 }
 
-/**
- * KSP support for Lens generation - start
- */
+// KSP support for Lens generation
 dependencies.kspCommonMainMetadata("dev.fritz2:lenses-annotation-processor:$fritz2Version")
 kotlin.sourceSets.commonMain { tasks.withType<KspTaskMetadata> { kotlin.srcDir(destinationDirectory) } }
-tasks.withType<KotlinCompilationTask<*>> { if (this !is KspTask) dependsOn(tasks.withType<KspTask>()) }
-tasks.withType<AbstractArchiveTask> { dependsOn(tasks.withType<KspTask>()) }
-/**
- * KSP support - end
- */
 ```
 
 ## Organize Your Code

@@ -36,13 +36,6 @@ kotlin {
     }
 }
 
-/**
- * KSP support - start
- */
+// KSP support for Lens generation
 dependencies.kspCommonMainMetadata(project(":lenses-annotation-processor"))
 kotlin.sourceSets.commonMain { tasks.withType<KspTaskMetadata> { kotlin.srcDir(destinationDirectory) } }
-tasks.withType<KotlinCompilationTask<*>> { if (this !is KspTask) dependsOn(tasks.withType<KspTask>()) }
-tasks.withType<AbstractArchiveTask> { dependsOn(tasks.withType<KspTask>()) }
-/**
- * KSP support - end
- */
