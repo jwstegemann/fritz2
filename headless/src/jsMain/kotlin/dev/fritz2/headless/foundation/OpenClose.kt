@@ -48,7 +48,7 @@ abstract class OpenClose: WithJob {
         return if (domNode is HTMLButtonElement) {
             clicks
         } else {
-            keydowns.filter { shortcutOf(it) in listOf(Keys.Space, Keys.Enter) }
+            merge(clicks, keydowns.filter { shortcutOf(it) in listOf(Keys.Space, Keys.Enter) })
         }
     }
 }
