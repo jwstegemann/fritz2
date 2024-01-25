@@ -281,7 +281,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
 
                 value.handler?.invoke(
                     this,
-                    mousedowns.mapNotNull { e ->
+                    clicks.mapNotNull { e ->
                         e.preventDefault()
                         e.stopImmediatePropagation()
                         entries.current[index].let {
