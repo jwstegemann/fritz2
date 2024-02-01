@@ -5,11 +5,34 @@ import dev.fritz2.headless.foundation.InitialFocus.*
 import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
+import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
 import kotlin.math.max
+
+
+/**
+ * Using fritz2 Event-Flows the calls for [preventDefault] and [stopImmediatePropagation] will be delayed slightly, so that
+ * the Browser might already perform the Tab Operation. To prevent this behaviour we have to use a plain JS Listener,
+ * which directly calls [preventDefault] and [stopImmediatePropagation]
+ */
+private val Tag<HTMLElement>.tabPress
+    get() = callbackFlow {
+        val listener = { event: Event ->
+            if (event is KeyboardEvent) {
+                if (setOf(Keys.Tab, Keys.Shift + Keys.Tab).contains(shortcutOf(event))) {
+                    event.preventDefault()
+                    event.stopImmediatePropagation()
+                    trySend(event)
+                }
+            }
+        }
+        domNode.addEventListener("keydown", listener)
+        awaitClose { domNode.removeEventListener("keydown", listener) }
+    }
 
 /*
  * The implementation of the focus management (especially the "trap") is heavily inspired and based upon the
@@ -202,7 +225,7 @@ enum class InitialFocus(val focus: Boolean) {
  */
 fun Tag<HTMLElement>.trapFocusInMountpoint(restoreFocus: Boolean = true, setInitialFocus: InitialFocus = TryToSet) {
     setInitialFocusOnDemandFromMountpoint(setInitialFocus)
-    trapFocusOn(keydowns.filter { setOf(Keys.Tab, Keys.Shift + Keys.Tab).contains(shortcutOf(it)) })
+    trapFocusOn(tabPress)
     restoreFocusOnDemandFromMountpoint(restoreFocus)
 }
 
@@ -250,9 +273,9 @@ fun Tag<HTMLElement>.trapFocusWhenever(
             setInitialFocusOnDemandFromWhenever(setInitialFocus)
         }
     }
-    trapFocusOn(
-        keydowns.filter { sharedCondition.first() && setOf(Keys.Tab, Keys.Shift + Keys.Tab).contains(shortcutOf(it)) }
-    )
+
+
+    trapFocusOn(sharedCondition.transform { if (it) emitAll(tabPress) })
     restoreFocusOnDemandFromWhenever(
         sharedCondition.filter { it }.map { focusedElementBeforeTrap }
             .combine(sharedCondition.map { !it && restoreFocus }, ::Pair)
