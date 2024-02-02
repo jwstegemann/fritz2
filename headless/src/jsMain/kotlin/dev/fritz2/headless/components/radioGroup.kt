@@ -137,6 +137,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
         private var toggle: Tag<HTMLElement>? = null
         private var label: Tag<HTMLElement>? = null
         private var descriptions: MutableList<Tag<HTMLElement>> = mutableListOf()
+        private var isFirst = false
 
         private val toggleId = "$optionId-toggle"
 
@@ -170,8 +171,11 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
                 content()
                 attr("role", Aria.Role.radio)
                 attr(Aria.checked, selected.asString())
-                attr("tabindex", selected.map { if (it) "0" else "-1" })
-                var toggleEvent: Listener<*, *> = clicks
+                tabIndex(combine(selected, value.data) { sel, data ->
+                    if (sel || (data == null && isFirst)) 0 else -1
+                })
+                var toggleEvent: Flow<*> =
+                    if (isFirst) merge(clicks, keydowns.filter { shortcutOf(it) == Keys.Space }) else clicks
                 if (domNode is HTMLInputElement) {
                     if (domNode.getAttribute("name") == null) {
                         attr("name", componentId)
@@ -269,6 +273,7 @@ class RadioGroup<C : HTMLElement, T>(tag: Tag<C>, private val explicitId: String
 
         init {
             options.add(option)
+            isFirst = options.size == 1
         }
     }
 
