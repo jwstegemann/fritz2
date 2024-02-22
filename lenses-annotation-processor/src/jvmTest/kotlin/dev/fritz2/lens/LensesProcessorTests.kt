@@ -308,19 +308,27 @@ class LensesProcessorTests {
 
     @ExperimentalPathApi
     @Test
-    fun `lenses ignore none ctor or private ctor properties`() {
+    fun `lenses ignore none ctor or private ctor properties, other annotations, delegated none ctor properties and functions in companion`() {
         val kotlinSource = SourceFile.kotlin(
             "dataClassesForLensesTests.kt", """
                 package dev.fritz2.lenstest
 
                 import dev.fritz2.core.Lenses
+                // should not disturb
+                import kotlinx.serialization.Serializable
+                import kotlinx.serialization.json.Json
 
                 @Lenses
+                @Serializable // should not disturb
                 data class Foo(val bar: Int, private val ignoredProp: Int) {
                 //                           ^^^^^^^
                 //                           private field -> no lens possible!
-                    companion object
+                    companion object {
+                        // should not disturb
+                        fun toJson(foo: Foo) = Json.decodeFromString(serializer(), foo)
+                    }
                     val ignored = bar + 1 // must not appear in lens!
+                    val ignoredDelegated by lazy { bar + 1 } // must not appear in lens!
                 }
             """
         )
