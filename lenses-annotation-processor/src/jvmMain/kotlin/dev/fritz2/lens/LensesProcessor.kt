@@ -35,10 +35,18 @@ class LensesProcessor(
 ) : SymbolProcessor {
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        val lensesAnnotated = resolver.getSymbolsWithAnnotation(Lenses::class.qualifiedName!!)
-        val unableToProcess = lensesAnnotated.filterNot { it.validate() }
+        val checkOnlyCtor: (KSNode?, KSNode) -> Boolean = { _, node ->
+            when (node) {
+                is KSClassDeclaration -> node.primaryConstructor?.validate() ?: false
+                else -> false
+            }
+        }
 
-        lensesAnnotated.filter { it is KSClassDeclaration && it.validate() }
+        val lensesAnnotated = resolver.getSymbolsWithAnnotation(Lenses::class.qualifiedName!!)
+
+        val unableToProcess = lensesAnnotated.filterNot { it.validate(checkOnlyCtor) }
+
+        lensesAnnotated.filter { it is KSClassDeclaration && it.validate(checkOnlyCtor) }
             .forEach { it.accept(LensesVisitor(), Unit) }
 
         return unableToProcess.toList()
