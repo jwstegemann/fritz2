@@ -275,7 +275,7 @@ fun Tag<HTMLElement>.trapFocusWhenever(
     }
 
 
-    trapFocusOn(sharedCondition.transform { if (it) emitAll(tabPress) })
+    trapFocusOn(sharedCondition.take(1).transform { if (it) emitAll(tabPress) })
     restoreFocusOnDemandFromWhenever(
         sharedCondition.filter { it }.map { focusedElementBeforeTrap }
             .combine(sharedCondition.map { !it && restoreFocus }, ::Pair)
