@@ -4,35 +4,14 @@ import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.InitialFocus.*
 import kotlinx.browser.document
 import kotlinx.browser.window
-import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.awaitAnimationFrame
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.plus
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLElement
-import org.w3c.dom.events.Event
 import org.w3c.dom.events.KeyboardEvent
 import kotlin.math.max
-
-
-/**
- * Using fritz2 Event-Flows the calls for [preventDefault] and [stopImmediatePropagation] will be delayed slightly, so that
- * the Browser might already perform the Tab Operation. To prevent this behaviour we have to use a plain JS Listener,
- * which directly calls [preventDefault] and [stopImmediatePropagation]
- */
-private val Tag<HTMLElement>.tabPress
-    get() = callbackFlow {
-        val listener = { event: Event ->
-            if (event is KeyboardEvent) {
-                if (setOf(Keys.Tab, Keys.Shift + Keys.Tab).contains(shortcutOf(event))) {
-                    event.preventDefault()
-                    event.stopImmediatePropagation()
-                    trySend(event)
-                }
-            }
-        }
-        domNode.addEventListener("keydown", listener)
-        awaitClose { domNode.removeEventListener("keydown", listener) }
-    }
 
 /*
  * The implementation of the focus management (especially the "trap") is heavily inspired and based upon the
@@ -207,6 +186,19 @@ enum class InitialFocus(val focus: Boolean) {
 }
 
 /**
+ * Creates a [Flow] of [KeyboardEvent]s only if `Tab` or `Shift + Tab` was pressed. This is needed for the focus-trap.
+ * If so, stops the propagation and any default behaviour.
+ */
+private val Tag<HTMLElement>.tabPress: Flow<KeyboardEvent>
+    get() = keydownsIf {
+        if (setOf(Keys.Tab, Keys.Shift + Keys.Tab).contains(shortcutOf(this))) {
+            preventDefault()
+            stopImmediatePropagation()
+            true
+        } else false
+    }.map { it }
+
+/**
  * This function enables a so called focus-trap. This enforces the specific behaviour within the receiver [Tag],
  * that switching the focus is only possible on elements that are inside the receiver. No other focusable elements
  * outside the enclosing container will get the focus.
@@ -275,7 +267,7 @@ fun Tag<HTMLElement>.trapFocusWhenever(
     }
 
 
-    trapFocusOn(sharedCondition.transform { if (it) emitAll(tabPress) })
+    trapFocusOn(sharedCondition.take(1).filter { it }.transform { emitAll(tabPress) })
     restoreFocusOnDemandFromWhenever(
         sharedCondition.filter { it }.map { focusedElementBeforeTrap }
             .combine(sharedCondition.map { !it && restoreFocus }, ::Pair)
@@ -298,8 +290,6 @@ private fun Tag<HTMLElement>.setInitialFocusOnDemandFromWhenever(setInitialFocus
 
 private fun Tag<HTMLElement>.trapFocusOn(tabEvents: Flow<KeyboardEvent>) {
     tabEvents handledBy { event ->
-        event.preventDefault()
-        event.stopImmediatePropagation()
         focusIn(
             domNode,
             if (shortcutOf(event).shift) FocusOptions(previous = true, wrapAround = true)
