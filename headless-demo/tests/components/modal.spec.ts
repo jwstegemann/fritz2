@@ -107,91 +107,91 @@ test.describe("Navigating", () => {
     
     test("through the options should work by modifier keys", async ({page}) => {
         
-        async function assertTabIsActive(btnItem: string) {
+        async function pressTab(btnItem: string) {
             await page.locator("#button-" + btnItem).press('Tab');
     
         }
 
-        async function assertShiftTabIsActive(btnItem: string) {
+        async function pressShiftTab(btnItem: string) {
             await page.locator("#button-" + btnItem).press('Shift+Tab');
         
         }
         
-        async function assertBtnItemIsActive(btnItem: string) {
+        async function assertButtonIsFocused(btnItem: string) {
             await expect(page.locator("#button-" + btnItem)).toBeFocused();
         
         }
        
-        await assertBtnItemIsActive("stay");
+        await assertButtonIsFocused("stay");
 
-        /* Perform many "Shift"s */
-        await assertTabIsActive("stay");
-        await assertBtnItemIsActive("cancel");
+        /* Perform many "Tab"s */
+        await pressTab("stay");
+        await assertButtonIsFocused("cancel");
 
-        await assertTabIsActive("cancel");
-        await assertBtnItemIsActive("close");
+        await pressTab("cancel");
+        await assertButtonIsFocused("close");
 
-        await assertTabIsActive("close");
-        await assertBtnItemIsActive("stay");
+        await pressTab("close");
+        await assertButtonIsFocused("stay");
 
         /* Perform many "Shift+Tab"s */
-        await assertShiftTabIsActive("stay");
-        await assertBtnItemIsActive("close");
+        await pressShiftTab("stay");
+        await assertButtonIsFocused("close");
 
-        await assertShiftTabIsActive("close");
-        await assertBtnItemIsActive("cancel");
+        await pressShiftTab("close");
+        await assertButtonIsFocused("cancel");
 
-        await assertShiftTabIsActive("cancel");
-        await assertBtnItemIsActive("stay");
+        await pressShiftTab("cancel");
+        await assertButtonIsFocused("stay");
     
     });
    
     test("through mixed actions of modifier keys", async ({page}) => {
-        async function assertTabIsActive(btnItem: string) {
+        async function pressTab(btnItem: string) {
             await page.locator("#button-" + btnItem).press('Tab');
         
         }
         
-        async function assertShiftTabIsActive(btnItem: string) {
+        async function pressShiftTab(btnItem: string) {
             await page.locator("#button-" + btnItem).press('Shift+Tab');
         
         }
         
-        async function assertBtnItemIsActive(btnItem: string) {
+        async function assertButtonIsFocused(btnItem: string) {
             await expect(page.locator("#button-" + btnItem)).toBeFocused();
         
         }
         
-        await assertBtnItemIsActive("stay");
+        await assertButtonIsFocused("stay");
 
         /* Perform 2 "Shift"s, 1 "Shift+Tab" and 2 "Shift"s */
-        await assertTabIsActive("stay");
-        await assertBtnItemIsActive("cancel");
+        await pressTab("stay");
+        await assertButtonIsFocused("cancel");
 
-        await assertTabIsActive("cancel");
-        await assertBtnItemIsActive("close");
+        await pressTab("cancel");
+        await assertButtonIsFocused("close");
 
-        await assertShiftTabIsActive("close");
-        await assertBtnItemIsActive("cancel");
+        await pressShiftTab("close");
+        await assertButtonIsFocused("cancel");
 
-        await assertTabIsActive("cancel");
-        await assertBtnItemIsActive("close");
+        await pressTab("cancel");
+        await assertButtonIsFocused("close");
 
-        await assertTabIsActive("close");
-        await assertBtnItemIsActive("stay");
+        await pressTab("close");
+        await assertButtonIsFocused("stay");
 
         /* Perform 2 "Shift+Tab"s and 2 "Shift"s */
-        await assertShiftTabIsActive("stay");
-        await assertBtnItemIsActive("close");
+        await pressShiftTab("stay");
+        await assertButtonIsFocused("close");
 
-        await assertShiftTabIsActive("close");
-        await assertBtnItemIsActive("cancel");
+        await pressShiftTab("close");
+        await assertButtonIsFocused("cancel");
 
-        await assertTabIsActive("cancel");
-        await assertBtnItemIsActive("close");
+        await pressTab("cancel");
+        await assertButtonIsFocused("close");
 
-        await assertTabIsActive("close");
-        await assertBtnItemIsActive("stay");
+        await pressTab("close");
+        await assertButtonIsFocused("stay");
     
     });
 
