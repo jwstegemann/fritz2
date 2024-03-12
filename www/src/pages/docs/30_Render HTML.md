@@ -257,15 +257,17 @@ As you already know, all [state handling](/docs/fundamentals/#state-handling) is
 Based upon the `data`-property, which provides a `Flow` of the store's generic data type, there are a variety of
 `render*`-functions which can be used to create *reactive* UIs:
 
-| Render-Function            | Additional parameters | Description                                                                                                                   | Default Tag |    
-|----------------------------|-----------------------|-------------------------------------------------------------------------------------------------------------------------------|-------------|
-| `Flow<T>.render`           | -                     | Creates a mount-point providing the whole store's data value `T` inside `content` expression                                  | `div`       |
-| `Flow<T>.renderIf`         | predicate             | Creates a mount-point providing the whole store's data value `T` inside `content` expression when `predicate` is `true`       | `div`       |
-| `Flow<T>.renderNotNull`    | -                     | Creates a mount-point providing the whole store's data value `T` inside `content` expression when `T` is not `null`           | `div`       |
-| `Flow<T>.renderIs`         | klass                 | Creates a mount-point providing the whole store's data value `T` inside `content` expression when `T` is of type `klass`      | `div`       |
-| `Flow<String>.renderText`  | -                     | Creates a mount-point creating a text-node                                                                                    | `span`      |
-| `Flow<List<T>>.renderEach` | -                     | Creates a mount-point optimizing changes by `T.equals`. Provides a `T` inside the `content` expression. Use for value objects | `div`       |
-| `Flow<List<T>>.renderEach` | idProvider            | Creates a mount-point optimizing changes by `idProvider`. Provides a `T` inside the `content` expression. Use for entities    | `div`       |
+| Render-Function             | Additional parameters | Description                                                                                                                   | Default Tag |    
+|-----------------------------|-----------------------|-------------------------------------------------------------------------------------------------------------------------------|-------------|
+| `Flow<T>.render`            | -                     | Creates a mount-point providing the whole store's data value `T` inside `content` expression                                  | `div`       |
+| `Flow<T>.renderIf`          | predicate             | Creates a mount-point providing the whole store's data value `T` inside `content` expression when `predicate` is `true`       | `div`       |
+| `Flow<Boolean>.renderTrue`  | -                     | Creates a mount-point rendering the `content` expression with no store data provided when the flow's value is `true`          | `div`       |
+| `Flow<Boolean>.renderFalse` | -                     | Creates a mount-point rendering the `content` expression with no store data provided when the flow's value is `false`         | `div`       |
+| `Flow<T>.renderNotNull`     | -                     | Creates a mount-point providing the whole store's data value `T` inside `content` expression when `T` is not `null`           | `div`       |
+| `Flow<T>.renderIs`          | klass                 | Creates a mount-point providing the whole store's data value `T` inside `content` expression when `T` is of type `klass`      | `div`       |
+| `Flow<String>.renderText`   | -                     | Creates a mount-point creating a text-node                                                                                    | `span`      |
+| `Flow<List<T>>.renderEach`  | -                     | Creates a mount-point optimizing changes by `T.equals`. Provides a `T` inside the `content` expression. Use for value objects | `div`       |
+| `Flow<List<T>>.renderEach`  | idProvider            | Creates a mount-point optimizing changes by `idProvider`. Provides a `T` inside the `content` expression. Use for entities    | `div`       |
 
 There is one more `renderEach` variant which is defined as an extension to a `Store` instead of a `Flow`.
 This special variant and its application are described in the 

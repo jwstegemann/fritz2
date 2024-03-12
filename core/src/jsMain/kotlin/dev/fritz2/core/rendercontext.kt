@@ -59,6 +59,44 @@ interface RenderContext : WithJob, WithScope {
     }
 
     /**
+     * Renders the data of a boolean [Flow] only if it's value is `true`.
+     *
+     * @receiver [Flow] containing the data
+     * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
+     * @param content [RenderContext] for rendering the data to the DOM
+     *
+     * @see renderIf
+     * @see renderFalse
+     */
+    fun Flow<Boolean>.renderTrue(
+        into: Tag<HTMLElement>? = null,
+        content: Tag<*>.() -> Unit
+    ) {
+        renderIf(predicate = { it }, into) { _ ->
+            content()
+        }
+    }
+
+    /**
+     * Renders the data of a boolean [Flow] only if it's value is `false`.
+     *
+     * @receiver [Flow] containing the data
+     * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
+     * @param content [RenderContext] for rendering the data to the DOM
+     *
+     * @see renderIf
+     * @see renderTrue
+     */
+    fun Flow<Boolean>.renderFalse(
+        into: Tag<HTMLElement>? = null,
+        content: Tag<*>.() -> Unit
+    ) {
+        renderIf(predicate = { !it }, into) { _ ->
+            content()
+        }
+    }
+
+    /**
      * Renders the non-null data of a [Flow].
      *
      * @receiver [Flow] containing the data

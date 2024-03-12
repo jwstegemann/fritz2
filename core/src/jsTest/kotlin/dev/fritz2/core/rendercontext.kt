@@ -97,6 +97,84 @@ class RenderContextTests {
     }
 
     @Test
+    fun testRenderIfTrueFunction() = runTest {
+        val store = storeOf(true)
+
+        val id = Id.next()
+        val expectedContentIfTrue = "rendered"
+        val expectedContentIfFalse = ""
+
+
+        render {
+            div(id = id) {
+                store.data.renderTrue(into = this) {
+                    +expectedContentIfTrue
+                }
+            }
+        }
+
+
+        delay(100)
+
+        val divContent = document.getElementById(id)?.textContent
+        assertEquals(
+            expected = expectedContentIfTrue,
+            actual = divContent,
+            message = "Content must be present"
+        )
+
+
+        store.update(false)
+        delay(100)
+
+        val divContentAfterUpdate = document.getElementById(id)?.textContent
+        assertEquals(
+            expected = expectedContentIfFalse,
+            actual = divContentAfterUpdate,
+            message = "Content must be absent"
+        )
+    }
+
+    @Test
+    fun testRenderIfFalseFunction() = runTest {
+        val store = storeOf(false)
+
+        val id = Id.next()
+        val expectedContentIfFalse = "rendered"
+        val expectedContentIfTrue = ""
+
+
+        render {
+            div(id = id) {
+                store.data.renderFalse(into = this) {
+                    +expectedContentIfFalse
+                }
+            }
+        }
+
+
+        delay(100)
+
+        val divContent = document.getElementById(id)?.textContent
+        assertEquals(
+            expected = expectedContentIfFalse,
+            actual = divContent,
+            message = "Content must be present"
+        )
+
+
+        store.update(true)
+        delay(100)
+
+        val divContentAfterUpdate = document.getElementById(id)?.textContent
+        assertEquals(
+            expected = expectedContentIfTrue,
+            actual = divContentAfterUpdate,
+            message = "Content must be absent"
+        )
+    }
+
+    @Test
     fun testRenderNotNullFunction() = runTest {
         val store = storeOf<String?>(null)
         val div1 = Id.next()
