@@ -59,7 +59,7 @@ interface RenderContext : WithJob, WithScope {
     }
 
     /**
-     * Renders the data of a boolean [Flow] only if it's value is `true`.
+     * Renders the data of a boolean [Flow] only if its value is `true`.
      *
      * @receiver [Flow] containing the data
      * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
@@ -78,7 +78,7 @@ interface RenderContext : WithJob, WithScope {
     }
 
     /**
-     * Renders the data of a boolean [Flow] only if it's value is `false`.
+     * Renders the data of a boolean [Flow] only if its value is `false`.
      *
      * @receiver [Flow] containing the data
      * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on

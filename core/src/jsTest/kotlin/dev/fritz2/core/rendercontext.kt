@@ -97,7 +97,7 @@ class RenderContextTests {
     }
 
     @Test
-    fun testRenderIfTrueFunction() = runTest {
+    fun testRenderTrueFunction() = runTest {
         val store = storeOf(true)
 
         val id = Id.next()
@@ -136,7 +136,7 @@ class RenderContextTests {
     }
 
     @Test
-    fun testRenderIfFalseFunction() = runTest {
+    fun testRenderFalseFunction() = runTest {
         val store = storeOf(false)
 
         val id = Id.next()
