@@ -28,7 +28,7 @@ class EventsTest {
             section {
                 input(id = inputId) {
                     value(store.data)
-                    changes.preventDefault().values() handledBy store.update
+                    changes { preventDefault() }.values() handledBy store.update
                     inputs.values() handledBy store.update
                 }
             }
@@ -69,10 +69,10 @@ class EventsTest {
         render {
             section {
                 div(id = resultId) {
-                    store.data.renderText()
+                    store.data.renderText(into = this)
                 }
                 button(id = buttonId) {
-                    clicks.preventDefault() handledBy store.addADot
+                    clicks { preventDefault() } handledBy store.addADot
                 }
             }
         }
@@ -317,7 +317,7 @@ class EventsTest {
 
         val pathSize = storeOf(0)
         val setSize = pathSize.handle<Int> { _, size ->
-            console.log("Store: $size\n");
+            console.log("Store: $size\n")
             size
         }
 
@@ -356,7 +356,6 @@ class EventsTest {
         assertEquals(1, wrapperDiv.getAttribute("path-size")?.toInt())
     }
 
-    @Ignore
     @Test
     fun testWindowListenerForStopImmediatePropagation() = runTest {
 
@@ -369,7 +368,7 @@ class EventsTest {
         val windowStore = object : RootStore<String>("", job = Job()) {}
 
         render {
-            Window.clicks.stopImmediatePropagation().map {
+            Window.clicks { stopImmediatePropagation() }.map {
                 windowEventText
             } handledBy windowStore.update
 
@@ -428,32 +427,25 @@ class EventsTest {
 
     @Test
     fun testEventCapturedStopPropagation() = runTest {
-
-        val outerId = Id.next()
         val innerId = Id.next()
-
-        val store = storeOf("")
-        val concat = store.handle<String> { self, input -> self + input }
+        var result = ""
 
         render {
-            div(id = outerId) {
-                attr("data-value", store.data)
-                clicksCaptured.stopPropagation().map { "o" } handledBy concat
+            div {
+                clicksCaptured { stopPropagation() } handledBy { result += "outer" }
+                clicks handledBy { result += "outer" }
 
                 div(id = innerId) {
-                    clicks.stopPropagation().map { "i" } handledBy concat
+                    clicks handledBy { result += "inner" }
                 }
             }
         }
 
         delay(100)
-        val outerDiv = document.getElementById(outerId).unsafeCast<HTMLDivElement>()
-        assertEquals("", outerDiv.getAttribute("data-value"))
-
         val innerDiv = document.getElementById(innerId).unsafeCast<HTMLDivElement>()
         innerDiv.click()
         delay(100)
-        assertEquals("o", outerDiv.getAttribute("data-value"))
+        assertEquals("outer", result)
     }
 
     @Test
@@ -488,31 +480,56 @@ class EventsTest {
 
     @Test
     fun testEventBubbledStopPropagation() = runTest {
-
-        val outerId = Id.next()
         val innerId = Id.next()
-
-        val store = storeOf("")
-        val concat = store.handle<String> { self, input -> self + input }
+        var result = ""
 
         render {
-            div(id = outerId) {
-                attr("data-value", store.data)
-                clicks.stopPropagation().map { "o" } handledBy concat
+            div {
+                +"outer div"
 
-                div(id = innerId) {
-                    clicks.stopPropagation().map { "i" } handledBy concat
+                clicks handledBy { result += "outer" }
+
+                button(id = innerId) {
+                    +"Button"
+                    type("button")
+
+                    clicks { stopPropagation() } handledBy { result += "in" }
+                    clicks handledBy { result += "side" }
                 }
             }
         }
 
         delay(100)
-        val outerDiv = document.getElementById(outerId).unsafeCast<HTMLDivElement>()
-        assertEquals("", outerDiv.getAttribute("data-value"))
-
         val innerDiv = document.getElementById(innerId).unsafeCast<HTMLDivElement>()
         innerDiv.click()
         delay(100)
-        assertEquals("i", outerDiv.getAttribute("data-value"))
+        assertEquals("inside", result)
+    }
+
+    @Test
+    fun testEventFactoryWithFilteringSelectorDropsUnwantedEvents() = runTest {
+        val tagId = Id.next()
+        var result = ""
+
+        val keysToProcess = "fritz2".map { shortcutOf(it.toString()) }.toSet()
+        val keyPool: List<String> = (('a'..'z') + ('0'..'9')).map(Char::toString)
+            // swap `i` with`r` to get the right sequence of keys pressed for our framework name ;-)
+            .map { if(it == "i") "r" else if(it == "r") "i" else it}
+
+        render {
+            div(id = tagId) {
+                keydownsIf { shortcutOf(this) in keysToProcess } handledBy { result += it.key }
+            }
+        }
+
+        delay(100)
+        val innerDiv = document.getElementById(tagId).unsafeCast<HTMLDivElement>()
+
+        keyPool.forEach { key ->
+            innerDiv.dispatchEvent(KeyboardEvent("keydown", KeyboardEventInit(key = key)))
+            delay(50)
+        }
+
+        assertEquals("fritz2", result)
     }
 }

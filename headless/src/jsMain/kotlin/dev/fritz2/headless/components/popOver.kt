@@ -43,7 +43,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
             if (!openState.isSet) openState(storeOf(false))
             content()
             attr(Aria.expanded, opened.asString())
-            activations handledBy toggle
+            activations() handledBy toggle
         }.also { button = it }
     }
 

@@ -76,7 +76,7 @@ class Listbox<T, C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             if (!openState.isSet) openState(storeOf(false))
             content()
             attr(Aria.expanded, opened.asString())
-            activations.preventDefault().stopPropagation() handledBy toggle
+            activations { preventDefault(); stopPropagation() } handledBy toggle
         }.also { button = it }
     }
 

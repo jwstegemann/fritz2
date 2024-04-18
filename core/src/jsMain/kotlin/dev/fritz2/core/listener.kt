@@ -1,10 +1,10 @@
 @file:Suppress("unused")
+
 package dev.fritz2.core
 
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import org.w3c.dom.*
 import org.w3c.dom.events.Event
@@ -12,89 +12,45 @@ import org.w3c.dom.events.EventTarget
 import org.w3c.files.FileList
 
 /**
- * Creates a [Listener] for the given [Event] type and [name].
+ * Creates a [Listener] for the given [Event] type and [eventName].
+ *
+ * @param eventName the [DOM-API name](https://developer.mozilla.org/en-US/docs/Web/API/Element#events) of an event.
+ * Can be a custom name.
+ * @param capture if `true`, activates capturing mode, else remains in `bubble` mode (default)
+ * @param selector optional lambda expression to select specific events with option to manipulate it
+ * (e.g. `preventDefault` or `stopPropagation`).
+ *
+ * @return a [Listener]-object, which is more or less a [Flow] of the specific `Event`-type.
  */
-fun <X : Event, T : EventTarget> T.subscribe(
-    name: String,
+fun <E : Event, T : EventTarget> T.subscribe(
+    eventName: String,
     capture: Boolean = false,
-    init: Event.() -> Unit = {}
-): Listener<X, T> =
-    Listener(callbackFlow {
-        val listener: (Event) -> Unit = {
-            try {
-                it.init()
-                trySend(it.unsafeCast<X>())
-            } catch (e: Exception) {
-                console.error("Unexpected event type while listening for `$name` event", e)
+    selector: E.() -> Boolean = { true }
+): Listener<E, T> =
+    Listener(
+        callbackFlow {
+            val listener: (E) -> Unit = {
+                try {
+                    if (it.selector()) trySend(it.unsafeCast<E>())
+                } catch (e: Exception) {
+                    console.error("Unexpected event type while listening for `$eventName` event", e)
+                }
             }
-        }
-        this@subscribe.addEventListener(name, listener, capture)
+            this@subscribe.addEventListener(eventName, listener.unsafeCast<Event.() -> Unit>(), capture)
 
-        awaitClose { this@subscribe.removeEventListener(name, listener, capture) }
-    }.filter { it.asDynamic().fritz2StopPropagation == undefined })
+            awaitClose { this@subscribe.removeEventListener(eventName, listener.unsafeCast<Event.() -> Unit>(), capture) }
+        }
+    )
 
 /**
  * Encapsulates the [Flow] of the [Event].
+ *
+ * Acts as a marker class in order to keep the type of the element, so we can offer dedicated methods to extract
+ * values from some specific events.
+ *
+ * @see [values]
  */
-class Listener<X: Event, out T: EventTarget>(private val events: Flow<X>): Flow<X> by events {
-
-    constructor(listener: Listener<X, T>) : this(listener.events)
-
-    /**
-     * Calls [Event.preventDefault] on the [Event]-flow.
-     */
-    fun preventDefault(): Listener<X, T> = Listener(this.events.map { it.preventDefault(); it })
-
-    /**
-     * Calls [Event.stopImmediatePropagation] on the [Event]-flow.
-     */
-    fun stopImmediatePropagation(): Listener<X, T> = Listener(this.events.map {
-        it.stopImmediatePropagation()
-        it.asDynamic().fritz2StopPropagation = true
-        it
-    })
-
-    /**
-     * Calls [Event.stopPropagation] on the [Event]-flow.
-     */
-    fun stopPropagation(): Listener<X, T> = Listener(this.events.map {
-        it.stopPropagation()
-        it.asDynamic().fritz2StopPropagation = true
-        it
-    })
-
-    /**
-     * Calls [Event.composedPath] on the [Event]-flow.
-     */
-    fun composedPath(): Flow<Array<EventTarget>> = this.events.map { it.composedPath() }
-
-}
-
-/**
- * Calls [Event.preventDefault] on the [Event]-flow.
- */
-fun <E: Event> Flow<E>.preventDefault(): Flow<E> = this.map { it.preventDefault(); it }
-/**
- * Calls [Event.stopImmediatePropagation] on the [Event]-flow.
- */
-fun <E: Event> Flow<E>.stopImmediatePropagation(): Flow<E> = this.map {
-    it.stopImmediatePropagation()
-    it.asDynamic().fritz2StopPropagation = true
-    it
-}
-/**
- * Calls [Event.stopPropagation] on the [Event]-flow.
- */
-fun <E: Event> Flow<E>.stopPropagation(): Flow<E> = this.map {
-    it.stopPropagation()
-    it.asDynamic().fritz2StopPropagation = true
-    it
-}
-/**
- * Calls [Event.composedPath] on the [Event]-flow.
- */
-fun <E: Event> Flow<E>.composedPath(): Flow<Array<EventTarget>> = this.map { it.composedPath() }
-
+value class Listener<X : Event, out T : EventTarget>(private val events: Flow<X>) : Flow<X> by events
 
 /**
  * Extracts the [HTMLInputElement.value] from the [Event.target].
@@ -103,7 +59,7 @@ fun Listener<*, HTMLInputElement>.values(): Flow<String> =
     this.map { it.target.unsafeCast<HTMLInputElement>().value }
 
 /**
- * Extracts the [HTMLInputElement.value] from the [Event.target].
+ * Extracts the [HTMLSelectElement.value] from the [Event.target].
  */
 fun Listener<*, HTMLSelectElement>.values(): Flow<String> =
     this.map { it.target.unsafeCast<HTMLSelectElement>().value }
@@ -115,7 +71,7 @@ fun Listener<*, HTMLFieldSetElement>.values(): Flow<String> =
     this.map { it.target.unsafeCast<HTMLInputElement>().value }
 
 /**
- * Extracts the [HTMLInputElement.value] from the [Event.target].
+ * Extracts the [HTMLTextAreaElement.value] from the [Event.target].
  */
 fun Listener<*, HTMLTextAreaElement>.values(): Flow<String> =
     this.map { it.target.unsafeCast<HTMLTextAreaElement>().value }

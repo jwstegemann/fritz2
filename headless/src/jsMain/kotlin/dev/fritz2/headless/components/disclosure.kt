@@ -12,7 +12,7 @@ import org.w3c.dom.HTMLElement
 /**
  * This class provides the building blocks to implement a disclosure.
  *
- * Use [disclosure] functions to create an instance, set up the needed [Hook]s or [Property]s and refine the
+ * Use [disclosure] functions to create an instance, set up the needed `Hook`s or `Property`s, and refine the
  * component by using the further factory methods offered by this class.
  *
  * For more information refer to the [official documentation](https://www.fritz2.dev/headless/disclosure)
@@ -49,7 +49,7 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             content()
             attr(Aria.expanded, opened.asString())
             attr("tabindex", "0")
-            activations.preventDefault().stopPropagation() handledBy toggle
+            activations { preventDefault(); stopPropagation() } handledBy toggle
         }.also { button = it }
     }
 

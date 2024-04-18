@@ -71,7 +71,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
             if (!openState.isSet) openState(storeOf(false))
             content()
             attr(Aria.expanded, opened.asString())
-            activations.preventDefault().stopPropagation() handledBy toggle
+            activations { preventDefault(); stopPropagation() } handledBy toggle
         }.also { button = it }
     }
 
@@ -101,7 +101,7 @@ class Menu<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenClose
         "$componentId-items",
         scope,
         this@Menu.opened,
-        reference = button ?: button {  },
+        reference = button ?: button { },
         ariaHasPopup = Aria.HasPopup.menu
     ) {
 

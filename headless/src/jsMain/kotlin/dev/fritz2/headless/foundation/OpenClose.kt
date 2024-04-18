@@ -15,7 +15,7 @@ import org.w3c.dom.events.Event
  * Typical examples of [OpenClose] based components are modal dialogs or all popup-components, that appear and
  * disappear based upon user interaction.
  */
-abstract class OpenClose: WithJob {
+abstract class OpenClose : WithJob {
 
     val openState = DatabindingProperty<Boolean>()
 
@@ -42,13 +42,22 @@ abstract class OpenClose: WithJob {
     /**
      * Combines all events relevant for toggling an element that implements the [OpenClose] behavior. By default, these
      * events are clicking the left mouse button or pressing the Enter or Space keys.
+     *
+     * @param init pass an optional lambda to execute event handling manipulations, like calling
+     * `stopPropagation` or alike
      */
-    internal val Tag<*>.activations: Flow<Event> get() {
+    internal fun Tag<*>.activations(init: Event.() -> Unit = {}): Flow<Event> =
         // If the wrapped element is a button, click events are already triggered by the Enter and Space keys.
-        return if (domNode is HTMLButtonElement) {
-            clicks
+        if (domNode is HTMLButtonElement) {
+            clicks { init() }
         } else {
-            merge(clicks, keydowns.filter { shortcutOf(it) in setOf(Keys.Space, Keys.Enter) })
+            merge(
+                clicks { init() },
+                keydownsIf {
+                    (shortcutOf(this) in setOf(Keys.Space, Keys.Enter)).also {
+                        if(it) init()
+                    }
+                })
         }
-    }
+
 }
