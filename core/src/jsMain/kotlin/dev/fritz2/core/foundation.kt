@@ -148,6 +148,7 @@ fun classes(vararg classes: String?): String = joinClasses(*classes)
  * )
  *
  * println(classes) // prints "class1"
+ * ```
  */
 fun joinClasses(vararg classes: String?): String =
     classes.filterNot(String?::isNullOrBlank).joinToString(separator = " ")
