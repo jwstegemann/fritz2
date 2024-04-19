@@ -114,8 +114,8 @@ tabGroup {
             tab {
                 // combine `selected` and `active`-Flow with `className` to react to state changes
                 className(selected.combine(active) { sel, act ->
-                    // use `classes` to attach both styling results
-                    classes(
+                    // use `joinClasses` to attach both styling results
+                    joinClasses(
                         if (sel == index) "bg-primary-800 text-white shadow-md"
                         else "text-primary-100 hover:bg-primary-900/[0.12]",
                         if (act) "ring-2 ring-white border-transparent" 

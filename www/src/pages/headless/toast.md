@@ -104,7 +104,7 @@ toast("default") {
 
     button {
         icon(
-            classes = "w-4 h-4 text-primary-900",
+            joinClasses = "w-4 h-4 text-primary-900",
             content = HeroIcons.x
         )
         clicks handledBy close // call close handler

@@ -109,8 +109,8 @@ radioGroup<HTMLFieldSetElement, Plan?>(tag = RenderContext::fieldset) {
             radioGroupOptionToggle {
                 // combine `selected` and `active`-Flow with `className` to react to state changes
                 className(selected.combine(active) { sel, act ->
-                    // use `classes` to attach both styling results
-                    classes(
+                    // use `joinClasses` to attach both styling results
+                    joinClasses(
                         if (sel) "bg-indigo-200" else "bg-white",
                         if (act) "ring-2 ring-indigo-500 border-transparent" else "border-gray-300"
                     )
