@@ -119,15 +119,38 @@ fun addGlobalStyles(css: List<String>) {
  * Joins all given [classes] strings to one html-class-attribute [String]
  * by filtering all out which are null or blank.
  */
-@Deprecated("Use joinClassNames instead", ReplaceWith("joinClasses(classes)"))
+@Deprecated("Use joinClassNames instead.", ReplaceWith("joinClasses(*classes)"))
 fun classes(vararg classes: String?): String = joinClasses(*classes)
 
 /**
- * Joins all given [classes] strings to one html-class-attribute [String]
- * by filtering all out which are null or blank.
+ * Joins all given [classes] strings to one html-class-attribute [String].
+ * Individual Strings that are null or blank are filtered out.
+ *
+ * __Examples__
+ *
+ * ```
+ * val classes = joinClasses(
+ *     "class1",
+ *     null,
+ *     "class2",
+ *     ""
+ * )
+ * println(classes) // prints "class1 class2"
+ * ```
+ *
+ * Using this function, it is also possible to conditionally construct classes strings without having
+ * to do dangerous string concatenation:
+ *
+ * ```
+ * val classes = joinClasses(
+ *    "class1",
+ *    "class2".takeIf { it.length > 10 }
+ * )
+ *
+ * println(classes) // prints "class1"
  */
 fun joinClasses(vararg classes: String?): String =
-    classes.filter { !it.isNullOrBlank() }.joinToString(" ")
+    classes.filterNot(String?::isNullOrBlank).joinToString(separator = " ")
 
 /**
  * Helper function to call a native js function with concrete return type [T]
