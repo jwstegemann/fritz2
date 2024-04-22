@@ -463,7 +463,7 @@ class DataCollection<T, C : HTMLElement>(tag: Tag<C>) : Tag<C> by tag {
 
             return tag(
                 this,
-                if (selection.isSet) classes(classes, "cursor-pointer") else classes,
+                if (selection.isSet) joinClasses(classes, "cursor-pointer") else classes,
                 itemId,
                 scope
             ) {

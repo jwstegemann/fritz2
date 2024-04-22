@@ -267,7 +267,7 @@ abstract class PopUpPanel<C : HTMLElement>(
      * @param offset the distance between the reference element and the panel in pixels. Defaults to `5`
      */
     fun arrow(size: String = "popup-arrow-default", offset: Int = 5) {
-        div(classes(size, "popup-arrow")) {
+        div(joinClasses(size, "popup-arrow")) {
             arrow = this
             addMiddleware(offset(offset))
             addMiddleware(arrow { element = domNode })

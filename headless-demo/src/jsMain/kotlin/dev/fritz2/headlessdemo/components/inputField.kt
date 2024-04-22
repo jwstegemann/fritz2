@@ -23,13 +23,13 @@ fun RenderContext.inputFieldDemo() {
                         | disabled:opacity-50""".trimMargin()
                 ) {
                     className(value.hasError.map {
-                        if (it) classes(
+                        if (it) joinClasses(
                             """border border-error-600 
                                 | text-error-800 placeholder:text-error-400
                                 | hover:border-error-800  
                                 | focus:outline-none focus:ring-4 focus:ring-error-600 focus:border-error-800""".trimMargin()
                         )
-                        else classes(
+                        else joinClasses(
                             """border border-primary-600 
                                 | text-primary-800 placeholder:text-slate-400
                                 | hover:border-primary-800  

@@ -61,7 +61,7 @@ fun main() {
                 div("row") {
                     gameStore.field.renderEach { cell ->
                         div(
-                            classes(
+                            joinClasses(
                                 "col-4 border d-flex justify-content-center align-items-center",
                                 if (cell.isInWinningGroup) "bg-success" else "bg-white"
                             )
