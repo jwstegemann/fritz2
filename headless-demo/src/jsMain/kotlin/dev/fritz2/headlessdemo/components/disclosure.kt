@@ -1,9 +1,8 @@
 package dev.fritz2.headlessdemo.components
 
-import dev.fritz2.core.RenderContext
-import dev.fritz2.core.href
-import dev.fritz2.core.transition
+import dev.fritz2.core.*
 import dev.fritz2.headless.components.disclosure
+import kotlinx.coroutines.flow.map
 
 fun RenderContext.disclosureDemo() {
     val faqs = listOf<Pair<String, RenderContext.() -> Unit>>(
@@ -53,10 +52,12 @@ fun RenderContext.disclosureDemo() {
                         dt("text-base") {
                             /* <!-- Expand/collapse question button --> */
                             disclosureButton(
-                                """relative z-10 flex justify-between items-start w-full my-2 p-4
-                                | bg-primary-800 rounded-lg hover:bg-primary-900 
-                                | text-left text-white 
-                                | focus:outline-none focus:ring-4 focus:ring-primary-600""".trimMargin()
+                                joinClasses(
+                                    "relative z-10 flex justify-between items-start w-full my-2 p-4",
+                                    "bg-primary-800 rounded-lg hover:bg-primary-900",
+                                    "text-left text-white",
+                                    "focus:outline-none focus:ring-4 focus:ring-primary-600",
+                                )
                             ) {
                                 span("font-medium") { +question }
                                 span("ml-6 h-7 flex items-center") {
@@ -74,12 +75,15 @@ fun RenderContext.disclosureDemo() {
                             tag = RenderContext::dd
                         ) {
                             transition(
-                                "transition duration-100 ease-out",
-                                "opacity-0 scale-y-95",
-                                "opacity-100 scale-y-100",
-                                "transition duration-100 ease-in",
-                                "opacity-100 scale-y-100",
-                                "opacity-0 scale-y-95"
+                                opened,
+                                enter = "transition duration-100 ease-out",
+                                enterStart = "opacity-0 scale-y-95",
+                                enterEnd = "opacity-100 scale-y-100",
+                                leave = "transition duration-100 ease-in",
+                                leaveStart = "opacity-100 scale-y-100",
+                                leaveEnd = "opacity-0 scale-y-95",
+                                hasLeftClasses = "hidden",
+                                initialClasses = "hidden"
                             )
                             div("text-base text-gray-700") { answer(this) }
                         }
