@@ -25,10 +25,10 @@ private object ToastStore : RootStore<List<ToastSlice>>(emptyList(), job = Job()
 
     init {
         // Close the most recent toast if escape is pressed:
-        Window.keydowns
-            .map { it to current }
-            .filter { (event, toasts) -> shortcutOf(event.key) == Keys.Escape && toasts.isNotEmpty() }
-            .map { (_, toasts) -> toasts.last().id } handledBy remove
+        Window.keydownsIf { shortcutOf(this) == Keys.Escape }
+            .map { current }
+            .filter { toasts -> toasts.isNotEmpty() }
+            .map { toasts -> toasts.last().id } handledBy remove
     }
 }
 

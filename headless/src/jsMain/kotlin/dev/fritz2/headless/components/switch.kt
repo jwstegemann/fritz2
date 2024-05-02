@@ -38,10 +38,13 @@ abstract class AbstractSwitch<C : HTMLElement>(
         value.handler?.invoke(this, clicks.map { !value.data.first() })
         value.handler?.invoke(
             this,
-            keydowns.filter { shortcutOf(it) == Keys.Space }
-                .stopImmediatePropagation()
-                .preventDefault()
-                .map { !value.data.first() }
+            keydownsIf {
+                if (shortcutOf(this) == Keys.Space) {
+                    stopImmediatePropagation()
+                    preventDefault()
+                    true
+                } else false
+            }.map { !value.data.first() }
         )
     }
 
@@ -170,7 +173,7 @@ class SwitchWithLabel<C : HTMLElement>(tag: Tag<C>, id: String?) :
     ): Tag<CL> {
         addComponentStructureInfo("switchLabel", this@switchLabel.scope, this)
         return tag(this, classes, "$componentId-label", scope, content).apply {
-            value.handler?.invoke(this, clicks.preventDefault().map { !value.data.first() })
+            value.handler?.invoke(this, clicks { preventDefault() }.map { !value.data.first() })
         }.also { label = it }
     }
 

@@ -1188,8 +1188,8 @@ render {
 
 ### Rendering on Stand-Alone Flows
 
-Coming soon
+Documentation coming soon
 
 ### Custom Tags / RenderContexts
 
-Coming soon 
+Documentation coming soon

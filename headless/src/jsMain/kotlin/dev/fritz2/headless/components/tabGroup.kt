@@ -138,16 +138,22 @@ class TabGroup<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag {
                 }
             }.handledBy(this, withActiveUpdates(::nextByKeys))
 
-            keydowns.filter { setOf(Keys.Home, Keys.PageUp).contains(shortcutOf(it)) }
-                .stopImmediatePropagation()
-                .preventDefault()
-                .map { }
+            keydownsIf {
+                if (setOf(Keys.Home, Keys.PageUp).contains(shortcutOf(this))) {
+                    stopImmediatePropagation()
+                    preventDefault()
+                    true
+                } else false
+            }.map { }
                 .handledBy(this, withActiveUpdates(::firstByKey))
 
-            keydowns.filter { setOf(Keys.End, Keys.PageDown).contains(shortcutOf(it)) }
-                .stopImmediatePropagation()
-                .preventDefault()
-                .map { }
+            keydownsIf {
+                if (setOf(Keys.End, Keys.PageDown).contains(shortcutOf(this))) {
+                    stopImmediatePropagation()
+                    preventDefault()
+                    true
+                } else false
+            }.map { }
                 .handledBy(this, withActiveUpdates(::lastByKey))
         }
 
