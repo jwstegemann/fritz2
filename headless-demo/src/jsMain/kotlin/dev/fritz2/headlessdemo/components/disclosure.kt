@@ -76,10 +76,10 @@ fun RenderContext.disclosureDemo() {
                         ) {
                             transition(
                                 opened,
-                                enter = "transition duration-100 ease-out",
+                                enter = "transition duration-300 ease-out",
                                 enterStart = "opacity-0 scale-y-95",
                                 enterEnd = "opacity-100 scale-y-100",
-                                leave = "transition duration-100 ease-in",
+                                leave = "transition duration-300 ease-in",
                                 leaveStart = "opacity-100 scale-y-100",
                                 leaveEnd = "opacity-0 scale-y-95",
                                 hasLeftClasses = "hidden",
