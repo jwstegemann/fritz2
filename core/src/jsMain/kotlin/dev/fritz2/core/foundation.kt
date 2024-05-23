@@ -119,14 +119,14 @@ fun addGlobalStyles(css: List<String>) {
  * Joins all given [classes] strings to one html-class-attribute [String]
  * by filtering all out which are null or blank.
  */
-@Deprecated("Use joinClassNames instead.", ReplaceWith("joinClasses(*classes)"))
+@Deprecated("Use joinClasses instead.", ReplaceWith("joinClasses(*classes)"))
 fun classes(vararg classes: String?): String = joinClasses(*classes)
 
 /**
  * Joins all given [classes] strings to one html-class-attribute [String].
  * Individual Strings that are null or blank are filtered out.
  *
- * __Examples__
+ * #### Examples
  *
  * ```
  * val classes = joinClasses(

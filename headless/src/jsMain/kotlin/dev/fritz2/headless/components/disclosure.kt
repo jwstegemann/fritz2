@@ -5,6 +5,8 @@ import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.OpenClose
 import dev.fritz2.headless.foundation.TagFactory
 import dev.fritz2.headless.foundation.addComponentStructureInfo
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
@@ -22,13 +24,9 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
     val componentId: String by lazy { id ?: Id.next() }
 
     private var button: Tag<HTMLElement>? = null
-    private var panel: (RenderContext.() -> Unit)? = null
 
     fun render() {
         attr("id", componentId)
-        opened.render {
-            if (it) panel?.invoke(this)
-        }
     }
 
     /**
@@ -68,6 +66,7 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
     }
 
     inner class DisclosurePanel<CP : HTMLElement>(tag: Tag<CP>) : Tag<CP> by tag {
+
         fun render() {
             button?.attr(Aria.controls, id.whenever(opened))
         }
@@ -119,12 +118,10 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         initialize: DisclosurePanel<CP>.() -> Unit
     ) {
         addComponentStructureInfo("disclosurePanel", this@disclosurePanel.scope, this)
-        panel = {
-            tag(this, classes, "$componentId-panel", scope) {
-                DisclosurePanel(this).run {
-                    initialize()
-                    render()
-                }
+        tag(this, classes, "$componentId-panel", scope) {
+            DisclosurePanel(this).run {
+                initialize()
+                render()
             }
         }
     }

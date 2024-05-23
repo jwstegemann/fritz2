@@ -4,8 +4,7 @@ package dev.fritz2.core
 
 import kotlinx.coroutines.await
 import kotlinx.coroutines.awaitAnimationFrame
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.transform
+import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node
 import kotlin.js.Promise
@@ -129,40 +128,113 @@ fun Tag<HTMLElement>.transition(
 
 
 /**
- * Applies a transition (enter and/or leave) to a [Tag] whenever a new value appears on a [Flow]
- * The enter-transition will be executed when `true` appears on the [Flow]
- * The leave-transition will be executed when `false` appears on the [Flow]
+ * Applies a transition (enter and/or leave) to a [Tag] whenever a new value appears on a [Flow].
+ *
+ * The enter-transition will be executed when `true` appears on the [Flow].
+ * The leave-transition will be executed when `false` appears on the [Flow].
+ *
  * Processing of further operations will not wait for the animation to finish.
+ *
+ *
+ * #### Fine-grained control
+ *
+ * For special use cases, [afterLeaveClasses] and/or [initialClasses] can be applied. Setting them is useful in cases
+ * where fine-grained control over the transition is needed and the required classes cannot be set via [Tag.className]
+ * due to timing problems.
+ *
+ * One example would be a use-case where hiding an element via CSS is combined with a transition that should be executed
+ * right before the element is hidden. Since the display property cannot be animated via CSS, the hidden class has to be
+ * manually applied after the transition has finished. In this case, using two separate calls to [Tag.className] and
+ * [transition] would lead to a race-condition.
+ *
+ * Example to hide/show an element with a transition using Tailwind CSS:
+ * ```
+ * val opened = storeOf(false)
+ * div {
+ *     // initially hidden, faded in and out via the transition
+ *     transition(
+ *         on = opened,
+ *         transition = Transition(...),
+ *         hasLeftClasses = "hidden",
+ *         initialClasses = "hidden"
+ *     )
+ * }
+ * ```
+ *
  *
  * @param on [Flow] to trigger the transition
  * @param transition definition of enter- and leave-transition
+ * @param afterLeaveClasses Classes that should be present whenever the leave animation has been executed.
+ * Present until the next enter transition is executed.
+ * @param initialClasses Classes that should initially be present, before any transition has been executed.
+ *
  * @receiver the [Tag] the transition will be applied to
  */
-fun Tag<HTMLElement>.transition(on: Flow<Boolean>, transition: Transition) {
-    className(on.transform {
-        if (it) {
-            emit(transition.enterStart.orEmpty())
-            kotlinx.browser.window.awaitAnimationFrame()
-            kotlinx.browser.window.awaitAnimationFrame()
-            emit(joinClasses(transition.enter, transition.enterEnd))
+fun Tag<HTMLElement>.transition(
+    on: Flow<Boolean>,
+    transition: Transition,
+    afterLeaveClasses: String? = null,
+    initialClasses: String? = null
+) {
+    className(
+        on.drop(
+            // If initial classes are provided: Drop first element (initial class is set via the `initial` parameter
+            // of the `joinClasses` function instead):
+            if (initialClasses == null) 0 else 1
+        ).transform { isEntering ->
+            val (start, trans, end, afterEnd) = with(transition) {
+                if (isEntering) arrayOf(enterStart, enter, enterEnd, "")
+                else arrayOf(leaveStart, leave, leaveEnd, afterLeaveClasses)
+            }
+            emit(joinClasses(start))
             waitForAnimation()
-            emit("")
-        } else {
-            emit(joinClasses(transition.leaveStart))
-            kotlinx.browser.window.awaitAnimationFrame()
-            kotlinx.browser.window.awaitAnimationFrame()
-            emit(joinClasses(transition.leave, transition.leaveEnd))
+            emit(joinClasses(trans, end))
             waitForAnimation()
-            emit("")
-        }
-    })
+            emit(joinClasses(afterEnd))
+        },
+        initial = joinClasses(initialClasses)
+    )
 }
 
 /**
- * Applies a transition (enter and/or leave) to a [Tag] whenever a new value appears on a [Flow]
- * The enter-transition will be executed when `true` appears on the [Flow]
- * The leave-transition will be executed when `false` appears on the [Flow]
+ * Applies a transition (enter and/or leave) to a [Tag] whenever a new value appears on a [Flow].
+ *
+ * The enter-transition will be executed when `true` appears on the [Flow].
+ * The leave-transition will be executed when `false` appears on the [Flow].
+ *
  * Processing of further operations will not wait for the animation to finish.
+ *
+ *
+ * #### Fine-grained control
+ *
+ * For special use cases, [afterLeaveClasses] and/or [initialClasses] can be applied. Setting them is useful in cases
+ * where fine-grained control over the transition is needed and the required classes cannot be set via [Tag.className]
+ * due to timing problems.
+ *
+ * One example would be a use-case where hiding an element via CSS is combined with a transition that should be executed
+ * right before the element is hidden. Since the display property cannot be animated via CSS, the hidden class has to be
+ * manually applied after the transition has finished. In this case, using two separate calls to [Tag.className] and
+ * [transition] would lead to a race-condition.
+ *
+ * Example to hide/show an element with a transition using Tailwind CSS:
+ * ```
+ * val opened = storeOf(false)
+ * div {
+ *     // initially hidden, faded in and out via the transition
+ *     transition(
+ *         on = opened,
+ *         enter = "transition duration-100 ease-out",
+ *         enterStart = "opacity-0 scale-y-95",
+ *         enterEnd = "opacity-100 scale-y-100",
+ *         leave = "transition duration-100 ease-in",
+ *         leaveStart = "opacity-100 scale-y-100",
+ *         leaveEnd = "opacity-0 scale-y-95",
+ *         hasLeftClasses = "hidden",
+ *         initialClasses = "hidden"
+ *     )
+ * }
+ * ```
+ *
  *
  * @param on [Flow] to trigger the transition
  * @param enter mandatory classes to control the enter-transition.
@@ -171,6 +243,10 @@ fun Tag<HTMLElement>.transition(on: Flow<Boolean>, transition: Transition) {
  * @param leave mandatory classes to control the leave-transition.
  * @param leaveStart optional classes to define the starting point of the leave-transition
  * @param leaveEnd optional classes to define the end point of the leave-transition
+ * ram afterLeaveClasses Classes that should be present whenever the leave animation has been executed.
+ * Present until the next enter transition is executed.
+ * @param initialClasses Classes that should initially be present, before any transition has been executed.
+ *
  * @receiver the [Tag] the transition will be applied to
  */
 fun Tag<HTMLElement>.transition(
@@ -180,8 +256,11 @@ fun Tag<HTMLElement>.transition(
     enterEnd: String? = null,
     leave: String? = null,
     leaveStart: String? = null,
-    leaveEnd: String? = null
-) = transition(on, Transition(enter, enterStart, enterEnd, leave, leaveStart, leaveEnd))
+    leaveEnd: String? = null,
+    hasLeftClasses: String? = null,
+    initialClasses: String? = null
+) = transition(on, Transition(enter, enterStart, enterEnd, leave, leaveStart, leaveEnd), hasLeftClasses, initialClasses)
+
 
 /**
  * wait for a running animation on the DOM-Node to finish.
@@ -193,6 +272,3 @@ suspend fun WithDomNode<*>.waitForAnimation() {
         animationDone(domNode).await()
     }
 }
-
-
-

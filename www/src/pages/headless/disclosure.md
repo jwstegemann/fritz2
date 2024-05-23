@@ -21,43 +21,87 @@ by `disclosureButton` and a panel via `disclosurePanel`.
 The button serves as a control element for opening and closing the panel area. This is done by one
 Mouse click or the [[Space]] key if the button tag has focus.
 
+::: warning  
+__Important__  
+
+The headless disclosure only provides the logic to determine the state of the panel. The actual visibility
+of the panel must be implemented by the developer using CSS!
+
+The simplest way is to hide and show the panel via the `display` property.  
+
+For more in-depth information, see the section on [State-Dependent Styling](#state-dependent-styling).  
+:::
+
 ```kotlin
 disclosure {
     disclosureButton {
         +"When is being headless a good thing?"
     }
     disclosurePanel {
+        inlineStyle(opened.map {
+            if (it) "display: block;" else "display: none;"
+        })
         +"As foundation for web components!"
     }
 }
 ```
 
-## State depending Styling
+## State-Dependent Styling
 
 In order to design the styling or entire structures depending on the state of the disclosure, you can refer to the
 Boolean data stream `opened`.
 
-Typical patterns are use within `className` to set different CSS classes depending on state,
-or simply some conditional rendering.
+::: warning  
+As mentioned earlier, the disclosure not only _allows_ you to tp provide styling depending on the state, it also
+_requires_ you to do so.  
+:::
+
+This is due to the fact of the panel not rendering and removing itself from the DOM, but only hiding and showing it.
+Since fritz2 is framework-agnostic, it does not provide any styling or classes for that purpose.
+
+There are multiple reasons for this design decision:
+- Creating a mount-point is not related to styling, thus it can easily be done in headless. Hiding/showing an element 
+is - that's why it cannot be done in headless.
+- Leaving the entire styling (including the styles used for hiding/showing the element) to the implementor allows for 
+greater flexibility on how a concrete disclosure component might work.
+- By leaving the styling to the user, all styling can be applied in a single place whithout some internal mechanics
+working against you.
+
+Styling of the `opened` and `closed` states is not limited to just hiding or showing the panel. You are free to design
+the panel in any way you like. For example, the disclosure may be designed to behave more like a spoiler element
+that blurs its content when closed.
+
+In order to work with transitions, you can use the `transition` function. Because of the specific nature of the 
+disclosure component, you have to use a special overloaded version of the `transition` function, which essentially
+combines the `transition` function with the `inlineStyle` function. This enables you to define both the styling and the
+transition effect in one place, based on the `opened` state.
 
 ```kotlin
 disclosure {
-    disclosureButton {
-        +"When is being headless a good thing?"
-        
-        span("ml-6 h-7 flex items-center") {
-            // add some Icon that reflects the state visually
-            opened.render(into = this) {
-                svg("h-6 w-6 transform") {
-                    // change Icon depending on `opened` state
-                    if (it) content(HeroIcons.chevron_up)
-                    else content(HeroIcons.chevron_down)
-                }
+    disclosureButton("flex items-center gap-2") {
+        opened.render {
+            svg("h-6 w-6 transform") {
+                // change Icon depending on `opened` state
+                if (it) content(HeroIcons.chevron_up)
+                else content(HeroIcons.chevron_down)
             }
         }
+        +"When is being headless a good thing?"
     }
     disclosurePanel {
-        +"As foundation for web components!"
+        transition(
+            opened,
+            enter = "transition duration-250 ease-out",
+            enterStart = "opacity-0 scale-y-95",
+            enterEnd = "opacity-100 scale-y-100",
+            leave = "transition duration-250 ease-in",
+            leaveStart = "opacity-100 scale-y-100",
+            leaveEnd = "opacity-0 scale-y-95",
+            hasLeftClasses = "hidden",
+            initialClasses = "hidden"
+        )
+
+        +"As a foundation for web components!"
     }
 }
 ```
@@ -82,7 +126,12 @@ disclosure {
         +"When is being headless a good thing?"
     }
     disclosurePanel {
-        +"As foundation for web components!"
+        inlineStyle(opened.map {
+            if (it) "display: block;" else "display: none;"
+        })
+        
+        +"As a foundation for web components!"
+        
         button {
             +"Close"
             // use `close` Handler to explicitly close the panel from within
@@ -103,6 +152,9 @@ disclosure {
         +"When is being headless a good thing?"
     }
     disclosurePanel {
+        inlineStyle(opened.map {
+            if (it) "display: block;" else "display: none;"
+        })
         disclosureCloseButton {
             +"As foundation for web components!"
             +"Simply click or press Space to close."
