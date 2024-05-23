@@ -29,7 +29,7 @@ of the panel must be implemented by the developer using CSS!
 
 The simplest way is to hide and show the panel via the `display` property.  
 
-For more in-depth information, see the section on [State depending Styling](#state-depending-styling).  
+For more in-depth information, see the section on [State-Dependent Styling](#state-dependent-styling).  
 :::
 
 ```kotlin
@@ -46,7 +46,7 @@ disclosure {
 }
 ```
 
-## State depending Styling
+## State-Dependent Styling
 
 In order to design the styling or entire structures depending on the state of the disclosure, you can refer to the
 Boolean data stream `opened`.
