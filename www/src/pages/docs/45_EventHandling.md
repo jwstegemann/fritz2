@@ -14,7 +14,7 @@ eleventyNavigation:
 
 In fritz2, all HTML-Events are either encapsulated within a `Tag`-scope or within the special `Window`-object, which both
 offer access to all global events. A complete list can be found in the
-[events.kt](/blob/master/core/src/jsMain/kotlin/dev/fritz2/core/events.kt) file.
+[events.kt](https://github.com/jwstegemann/fritz2/blob/master/core/src/jsMain/kotlin/dev/fritz2/core/events.kt) file.
 
 The most important aspect to understand is that an event in fritz2 is just a type derived by `Flow`. You can
 use all events as the source of an action which should be handled by a handler-function.
@@ -352,10 +352,12 @@ common patterns relying on the standard Flow functions like `filter`, `map`, or 
 
 ```kotlin
 // Pattern #1: Only execute on specific shortcut:
-keydowns.events.filter { shortcutOf(it) == Keys.Shift + "K"}.map { /* further processing if needed */ } handledBy { /* ... */ }
+keydowns.events.filter { shortcutOf(it) == Keys.Shift + "K"}
+    .map { /* further processing if needed */ } handledBy { /* ... */ }
 
 // Variant of #1: Only execute the same for a set of shortcuts:
-keydowns.events.filter { shortcutOf(it) in setOf(Keys.Enter, Keys.Space) }.map { /* further processing if needed */ } handledBy { /* ... */ }
+keydowns.events.filter { shortcutOf(it) in setOf(Keys.Enter, Keys.Space) }
+    .map { /* further processing if needed */ } handledBy { /* ... */ }
 
 // Pattern #2: Handle a group of shortcuts with similar tasks (navigation for example)
 keydowns.events.mapNotNull{ event -> // better name "it" in order to reuse it
