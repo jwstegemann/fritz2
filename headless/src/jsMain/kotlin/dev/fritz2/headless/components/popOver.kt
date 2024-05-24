@@ -23,7 +23,6 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
 
     fun render() {
         attr("id", componentId)
-        trapFocusWhenever(opened)
     }
 
     /**
@@ -96,6 +95,7 @@ class PopOver<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, OpenCl
             PopOverPanel(this, tag, classes, scope).run {
                 initialize()
                 render()
+                trapFocusWhenever(opened)
                 closeOnDismiss()
             }
         }

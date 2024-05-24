@@ -78,6 +78,7 @@ fun isElementWithinFocusableElements(element: HTMLElement, container: HTMLElemen
 fun focusIn(container: HTMLElement, focusOptions: FocusOptions): FocusResult {
     console.log("Fokussiere node: ", container, " mit den Orpionen: ", focusOptions)
     val elements = getFocusableElements(container)
+    console.log("Elements: ${elements.joinToString("\n")}")
     val active = document.activeElement as HTMLElement
 
     val direction = if (focusOptions.next || focusOptions.first) Direction.Next
@@ -278,11 +279,21 @@ fun Tag<HTMLElement>.trapFocusWhenever(
 
 
     //trapFocusOn(combine(sharedCondition.filter { it }, tabPress) { cond, event -> TrapMode(cond, shortcutOf(event).shift) }.onEach {
+    /*
     trapFocusOn(sharedCondition.transform { cond ->
-        if (cond) emit(TrapMode(cond, shortcutOf(tabPress.first()).shift))
-    }.onEach {
-        console.log("mode: ", it)
-    }, "trapFocusWhenever")
+        if (cond) emitAll(tabPress.map { TrapMode(cond, shortcutOf(it).shift) })
+        else emit(TrapMode(active = false, backwards = false))
+    }
+     */
+    trapFocusOn(
+        sharedCondition.flatMapLatest { cond ->
+            if (cond) tabPress.map { TrapMode(cond, shortcutOf(it).shift) }
+            else flowOf(TrapMode(active = false, backwards = false))
+        }.onEach {
+            console.log("mode: ", it)
+        },
+        "trapFocusWhenever"
+    )
     restoreFocusOnDemandFromWhenever(
         sharedCondition.filter { it }.map { focusedElementBeforeTrap }
             .combine(sharedCondition.map { !it && restoreFocus }, ::Pair)
