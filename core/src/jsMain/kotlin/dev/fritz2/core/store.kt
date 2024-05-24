@@ -1,6 +1,7 @@
 package dev.fritz2.core
 
 import kotlinx.atomicfu.atomic
+import kotlinx.atomicfu.update
 import kotlinx.browser.window
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -144,8 +145,19 @@ open class RootStore<D>(
 ) : Store<D> {
     override val path: String = ""
 
-    private val state: MutableStateFlow<D> = MutableStateFlow(initialData)
+    private val state: MutableSharedFlow<D> = MutableSharedFlow()
     private val queue = Channel<Update<D>>(Channel.UNLIMITED)
+
+
+    // Holds the current value of the store
+    private val atomicCurrent = atomic(initialData)
+
+    /**
+     * Represents the current data of this [Store].
+     */
+    override val current: D
+        get() = atomicCurrent.value
+
 
     /**
      * [Job] used as parent job on all coroutines started in [Handler]s in the scope of this [Store]
@@ -154,7 +166,9 @@ open class RootStore<D>(
         activeJobs.incrementAndGet()
         queue.consumeEach { update ->
             try {
-                state.value = update(state.value)
+                val updatedValue = update(current)
+                atomicCurrent.value = updatedValue
+                state.emit(updatedValue)
             } catch (t: Throwable) {
                 errorHandler(t)
             }
@@ -170,6 +184,7 @@ open class RootStore<D>(
      */
     final override val data: Flow<D> = flow {
         try {
+            // FIXME: Emit the initial value
             activeFlows.incrementAndGet()
             emit(state)
             this@RootStore.job.join()
@@ -179,11 +194,6 @@ open class RootStore<D>(
         }
     }.flatMapLatest { it }
 
-    /**
-     * Represents the current data of this [Store].
-     */
-    override val current: D
-        get() = state.value
 
     /**
      * in a [RootStore] an [Update] is handled by applying it to the internal [StateFlow].
