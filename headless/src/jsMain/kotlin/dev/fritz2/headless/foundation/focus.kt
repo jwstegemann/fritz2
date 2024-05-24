@@ -76,9 +76,7 @@ fun isElementWithinFocusableElements(element: HTMLElement, container: HTMLElemen
     getFocusableElements(container).toSet().contains(element)
 
 fun focusIn(container: HTMLElement, focusOptions: FocusOptions): FocusResult {
-    console.log("Fokussiere node: ", container, " mit den Orpionen: ", focusOptions)
     val elements = getFocusableElements(container)
-    console.log("Elements: ${elements.joinToString("\n")}")
     val active = document.activeElement as HTMLElement
 
     val direction = if (focusOptions.next || focusOptions.first) Direction.Next
@@ -227,7 +225,7 @@ private val Tag<HTMLElement>.tabPress: Flow<KeyboardEvent>
  */
 fun Tag<HTMLElement>.trapFocusInMountpoint(restoreFocus: Boolean = true, setInitialFocus: InitialFocus = TryToSet) {
     setInitialFocusOnDemandFromMountpoint(setInitialFocus)
-    trapFocusOn(tabPress.transform { event -> emit(TrapMode(true, shortcutOf(event).shift)) }, "trapFocusInMountpoint")
+    trapFocusOn(tabPress.transform { event -> emit(TrapMode(true, shortcutOf(event).shift)) })
     restoreFocusOnDemandFromMountpoint(restoreFocus)
 }
 
@@ -268,7 +266,6 @@ fun Tag<HTMLElement>.trapFocusWhenever(
     val sharedCondition = condition.shareIn(MainScope() + job, SharingStarted.Eagerly, 1)
     var focusedElementBeforeTrap: Element? = null
     sharedCondition.distinctUntilChanged() handledBy {
-        console.log("Initialize: ", it, "setInitialFocus: ", setInitialFocus)
         if (it) {
             if (setInitialFocus != DoNotSet) {
                 focusedElementBeforeTrap = document.activeElement
@@ -277,23 +274,10 @@ fun Tag<HTMLElement>.trapFocusWhenever(
         }
     }
 
-
-    //trapFocusOn(combine(sharedCondition.filter { it }, tabPress) { cond, event -> TrapMode(cond, shortcutOf(event).shift) }.onEach {
-    /*
-    trapFocusOn(sharedCondition.transform { cond ->
-        if (cond) emitAll(tabPress.map { TrapMode(cond, shortcutOf(it).shift) })
-        else emit(TrapMode(active = false, backwards = false))
-    }
-     */
-    trapFocusOn(
-        sharedCondition.flatMapLatest { cond ->
-            if (cond) tabPress.map { TrapMode(cond, shortcutOf(it).shift) }
-            else flowOf(TrapMode(active = false, backwards = false))
-        }.onEach {
-            console.log("mode: ", it)
-        },
-        "trapFocusWhenever"
-    )
+    trapFocusOn(sharedCondition.flatMapLatest { cond ->
+        if (cond) tabPress.map { TrapMode(cond, shortcutOf(it).shift) }
+        else flowOf(TrapMode(active = false, backwards = false))
+    })
     restoreFocusOnDemandFromWhenever(
         sharedCondition.filter { it }.map { focusedElementBeforeTrap }
             .combine(sharedCondition.map { !it && restoreFocus }, ::Pair)
@@ -314,16 +298,13 @@ private fun Tag<HTMLElement>.setInitialFocusOnDemandFromWhenever(setInitialFocus
     }
 }
 
-private fun Tag<HTMLElement>.trapFocusOn(tabEvents: Flow<TrapMode>, source: String) {
+private fun Tag<HTMLElement>.trapFocusOn(tabEvents: Flow<TrapMode>) {
     tabEvents handledBy { mode ->
-        console.log("trapFocusOn: Komme von ", source, "mit mode: ", mode)
         if (mode.active) focusIn(
             domNode,
             if (mode.backwards) FocusOptions(previous = true, wrapAround = true)
             else FocusOptions(next = true, wrapAround = true)
-        ) else {
-            console.log("in trapFocusOn mode.active ist jetzt falsch")
-        }
+        )
     }
 }
 
