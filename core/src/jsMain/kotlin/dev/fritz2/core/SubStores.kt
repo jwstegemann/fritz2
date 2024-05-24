@@ -50,6 +50,7 @@ class SubStore<P, D>(
     /**
      * the current value of the [Store] is derived from the data of it's parent using the given [Lens].
      */
+    // TODO: Remove call to `distinctUntilChanged`
     override val data: Flow<D> = parent.data.map {
         lens.get(it)
     }.distinctUntilChanged()
