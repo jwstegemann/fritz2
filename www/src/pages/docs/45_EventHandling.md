@@ -269,7 +269,7 @@ render {
 ### Keyboard-Events and Shortcut-API
 
 fritz2 offers a handy shortcut API that allows easy combination of shortcuts with modifier shortcuts, constructing
-those from a KeyboardEvent, and also prevents meaningless combinations of different shortcuts:
+those from a `KeyboardEvent`, and also prevents meaningless combinations of different shortcuts:
 
 ```kotlin
 // Constructing a shortcut by hand
@@ -334,42 +334,42 @@ the matching shortcut with the Shift-Modifier:
 // Goal: Match upper case "K" (or to be more precise: "Shift + K")
 
 // Failing attempt
-keydowns.events.filter { shortcutOf(it) == shortcutOf("K") } handledBy { /* ... */ }
-//                       ^^^^^^^^^^^^^^    ^^^^^^^^^^^^^^^
-//                       |                 Shortcut(key = "K", shift = false, ...)
-//                       |                                     ^^^^^^^^^^^^
-//                       |                                 +-> will never match the event based shortcut!
-//                       |                                 |   the modifier for shift needs to be added!
-//                       Shortcut("K", shift = true, ...)--+
-//                       upper case "K" is (almost) always send with enabled shift modifier.
+keydownsIf { shortcutOf(it) == shortcutOf("K") } handledBy { /* ... */ }
+//           ^^^^^^^^^^^^^^    ^^^^^^^^^^^^^^^
+//           |                 Shortcut(key = "K", shift = false, ...)
+//           |                                     ^^^^^^^^^^^^
+//           |                                 +-> will never match the event based shortcut!
+//           |                                 |   the modifier for shift needs to be added!
+//           Shortcut("K", shift = true, ...)--+
+//           upper case "K" is (almost) always send with enabled shift modifier.
 
 // Working example
-keydowns.events.filter { shortcutOf(it) == Keys.Shift + "K" } handledBy { /* ... */ }
+keydownsIf { shortcutOf(it) == Keys.Shift + "K" } handledBy { /* ... */ }
 ```
 
 Since most of the time you will be using the keys within the handling of a `KeyboardEvent`, there are some
-common patterns relying on the standard Flow functions like `filter`, `map`, or `mapNotNull` to apply:
+common patterns to apply:
 
 ```kotlin
 // Pattern #1: Only execute on specific shortcut:
-keydowns.events.filter { shortcutOf(it) == Keys.Shift + "K"}
+keydownsIf { shortcutOf(this) == Keys.Shift + "K" }
     .map { /* further processing if needed */ } handledBy { /* ... */ }
 
 // Variant of #1: Only execute the same for a set of shortcuts:
-keydowns.events.filter { shortcutOf(it) in setOf(Keys.Enter, Keys.Space) }
+keydownsIf { shortcutOf(this) in setOf(Keys.Enter, Keys.Space) }
     .map { /* further processing if needed */ } handledBy { /* ... */ }
 
 // Pattern #2: Handle a group of shortcuts with similar tasks (navigation for example)
-keydowns.events.mapNotNull{ event -> // better name "it" in order to reuse it
-    when (shortcutOf(event)) {
-        Keys.ArrowDown -> // create / modify something to be handled
-        Keys.ArrowUp -> // 
-        Keys.Home -> // 
-        Keys.End -> // 
-        else -> null // all other key presses should be ignored, so return null to stop flow processing
-    }.also { if(it != null) event.preventDefault() // page itself should not scroll up or down! }
-    //          ^^^^^^^^^^
-    //          Only if a shortcut was matched
+keydownsIf {
+    when (shortcutOf(this)) {
+        Keys.ArrowDown -> /* create / modify something to be handled */ true
+        Keys.ArrowUp -> /* ... */ true 
+        Keys.Home -> /* ... */ true 
+        Keys.End -> /* ... */ true 
+        else -> false // all other key presses should be ignored, so return `false` to stop flow processing
+    }.also { if (it) event.preventDefault() // page itself should not scroll up or down! }
+    //           ^^
+    //           Only if a shortcut was matched
 } handledBy { /* ... */ }
 ```
 
@@ -445,8 +445,9 @@ div {
     button {
         +"Dispatch Event"
         clicks handledBy { this@div.domNode.dispatchEvent(myEvent) }
-        //  ^^^^^^                              ^^^^^^^^^^^^^
-        //  use another event to trigger        call DOM-API to dispatch the event
+        //  ^^^^^^                          ^^^^^^^^^^^^^
+        //  |                               call DOM-API to dispatch the event
+        //  use another event to trigger       
         //  the custom one - could also be
         //  based upon any other `Flow`-source`
     }
