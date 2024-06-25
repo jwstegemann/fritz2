@@ -41,10 +41,9 @@ class SubStore<P, D>(
 
     override val update = handle<D> { _, newValue -> newValue }
 
-    // TODO: Remove call to `distinctUntilChanged`
     override val data: Flow<D> = parent.data.map {
         lens.get(it)
-    }.distinctUntilChanged()
+    }
 
     override fun errorHandler(cause: Throwable) {
         parent.errorHandler(cause)

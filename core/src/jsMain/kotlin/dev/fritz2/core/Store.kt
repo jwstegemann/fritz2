@@ -197,10 +197,21 @@ open class RootStore<D>(
 
     /**
      * Emits a [Flow] with the current data of this [Store].
-     * The [Flow] internal data is only changed, when the value differs from the last one to avoid calculations
-     * and updates that are not necessary.
      *
-     * Actual data therefore is derived by applying the updates on the internal channel one by one to get the next value.
+     * The [Flow's][Flow] internal data is updated on _every_ update, ignoring whether it actually changed or not.
+     * Use [distinctUntilChanged][Flow.distinctUntilChanged] if duplicate calculations or rendering operations need to
+     * be avoided.
+     *
+     * Example:
+     * ```
+     * val store = storeOf(0)
+     * store.data.distinctUntilChanged().render { ... }
+     * //        ^^^^^^^^^^^^^^^^^^^^^^^
+     * //        ∟ explicitly avoid duplicate collection of values
+     * //          if needed
+     * ```
+     *
+     * The actual data is derived by applying the updates on the internal channel one by one to get the next value.
      */
     final override val data: Flow<D> = flow {
         try {
