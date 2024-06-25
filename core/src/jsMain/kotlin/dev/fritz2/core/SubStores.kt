@@ -14,42 +14,33 @@ class SubStore<P, D>(
 ) : Store<D> {
 
     /**
-     * [Job] used as parent job on all coroutines started in [Handler]s in the scope of this [Store]
+     * SubStores use their parent's job for all coroutines started via [Handlers][Handler] in their own scope.
      */
     override val job: Job = parent.job
 
     /**
-     * defines how to infer the id of the sub-part from the parent's id.
+     * SubStores derive their own id from their parent's and their own id.
      */
     override val id: String by lazy { "${parent.id}.${lens.id}".trimEnd('.') }
 
     /**
-     * defines how to infer the id of the sub-part from the parent's id.
+     *  SubStores derive their own path from their parent's path and their own [lens's][lens] id.
      */
     override val path: String by lazy { "${parent.path}.${lens.id}".trimEnd('.') }
 
-    /**
-     * represents the current value of the [Store]
-     */
     override val current: D
         get() = lens.get(parent.current)
 
     /**
-     * Since a [SubStore] is just a view on a [parent] [Store] holding the real value,
-     * it forwards the [Update] to it, using it's [Lens] to transform it.
+     * Since a [SubStore] is just a view on a [parent] [Store] holding the actual value,
+     * it forwards the [Update] to it  using its [lens] to transform it.
      */
     override suspend fun enqueue(update: Update<D>) {
         parent.enqueue { lens.apply(it, update) }
     }
 
-    /**
-     * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
-     */
     override val update = handle<D> { _, newValue -> newValue }
 
-    /**
-     * the current value of the [Store] is derived from the data of it's parent using the given [Lens].
-     */
     // TODO: Remove call to `distinctUntilChanged`
     override val data: Flow<D> = parent.data.map {
         lens.get(it)
@@ -58,7 +49,6 @@ class SubStore<P, D>(
     override fun errorHandler(cause: Throwable) {
         parent.errorHandler(cause)
     }
-
 }
 
 /**
