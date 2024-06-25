@@ -1,7 +1,6 @@
 package dev.fritz2.core
 
 import kotlinx.atomicfu.atomic
-import kotlinx.atomicfu.update
 import kotlinx.browser.window
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -145,7 +144,20 @@ open class RootStore<D>(
 ) : Store<D> {
     override val path: String = ""
 
-    private val state: MutableSharedFlow<D> = MutableSharedFlow()
+    /**
+     * Internal [MutableSharedFlow] which holds the Store's value.
+     *
+     * The provided initial value is _not_ emitted by this Flow!
+     * The initial value is included in the [data] Flow instead.
+     *
+     * __Important:__ Do _not_ use this Flow to manipulate the Store's value directly as the change would not be
+     * reflected elsewhere (e.g. in [current])!
+     *
+     * The intended way of updating the value is by queueing an update operation in the [queue].
+     * Use the [update] Handler for additional convenience.
+     */
+    private val state: MutableSharedFlow<D> = MutableSharedFlow(replay = 1)
+
     private val queue = Channel<Update<D>>(Channel.UNLIMITED)
 
 
@@ -184,9 +196,8 @@ open class RootStore<D>(
      */
     final override val data: Flow<D> = flow {
         try {
-            // FIXME: Emit the initial value
             activeFlows.incrementAndGet()
-            emit(state)
+            emit(state.onStart { emit(initialData) })
             this@RootStore.job.join()
             emit(emptyFlow())
         } finally {
