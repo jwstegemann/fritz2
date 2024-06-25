@@ -41,12 +41,16 @@ interface Store<D> {
     val data: Flow<D>
 
     /**
-     * represents the current value of the [Store]
+     * Returns the current value of the [Store].
+     *
+     * Note: Only use this property when explicitly needed.
+     * Most of the time, following the reactive approach via a combination of [data][dev.fritz2.core.Store.data] and
+     * [render][dev.fritz2.core.RenderContext.render] is the more suitable option.
      */
     val current: D
 
     /**
-     * a simple [SimpleHandler] that just takes the given action-value as the new value for the [Store].
+     * A simple [Handler] taking the given action-value as the new value for the [Store].
      */
     val update: Handler<D>
 
@@ -101,7 +105,7 @@ interface Store<D> {
     })
 
     /**
-     * factory method to create an [EmittingHandler] that does not take an action in it's [execute]-lambda.
+     * Factory method to create an [EmittingHandler] that does not take an action in it's [execute]-lambda.
      *
      * @param execute lambda that is executed for each event on the connected [Flow]. You can emit values from this lambda.
      */
@@ -161,12 +165,16 @@ open class RootStore<D>(
     private val queue = Channel<Update<D>>(Channel.UNLIMITED)
 
 
-    // Holds the current value of the store
+    /**
+     * Internal backing field of the [current] property needed for thread-safety reasons.
+     *
+     * __Important:__ Do _not_ use this field to manipulate the Store's current value directly as the change would
+     * not be reflected elsewhere (e.g. in the [data] flow)!
+     *
+     * The current value is automatically updated when an update operation is processed instead.
+     */
     private val atomicCurrent = atomic(initialData)
 
-    /**
-     * Represents the current data of this [Store].
-     */
     override val current: D
         get() = atomicCurrent.value
 
