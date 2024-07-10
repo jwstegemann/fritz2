@@ -370,7 +370,7 @@ class LensesProcessorTests {
                 import dev.fritz2.core.Lenses
 
                 @Lenses
-                data class Foo<T>(val bar: T) {
+                data class Foo<T>(val bar: T, val baz: String) {
                     companion object
                 }
 
@@ -394,6 +394,7 @@ class LensesProcessorTests {
                 |
                 |import dev.fritz2.core.Lens
                 |import dev.fritz2.core.lensOf
+                |import kotlin.String
                 |
                 |public fun <T> Foo.Companion.bar(): Lens<Foo<T>, T> = lensOf(
                 |    "bar",
@@ -401,7 +402,15 @@ class LensesProcessorTests {
                 |    { p, v -> p.copy(bar = v)}
                 |  )
                 |
-                |public fun <PARENT, T> Lens<PARENT, Foo<T>>.bar(): Lens<PARENT, T> = this + Foo<T>.bar()
+                |public fun <PARENT, T> Lens<PARENT, Foo<T>>.bar(): Lens<PARENT, T> = this + Foo.bar()
+                |
+                |public fun <T> Foo.Companion.baz(): Lens<Foo<T>, String> = lensOf(
+                |    "baz",
+                |    { it.baz },
+                |    { p, v -> p.copy(baz = v)}
+                |  )
+                |
+                |public fun <PARENT, T> Lens<PARENT, Foo<T>>.baz(): Lens<PARENT, String> = this + Foo.baz()
                 """.trimMargin()
             )
             softly.assertThat(
@@ -420,7 +429,7 @@ class LensesProcessorTests {
                 |    { p, v -> p.copy(foo = v)}
                 |  )
                 |
-                |public fun <PARENT, T, E> Lens<PARENT, Bar<T, E>>.foo(): Lens<PARENT, T> = this + Bar<T, E>.foo()
+                |public fun <PARENT, T, E> Lens<PARENT, Bar<T, E>>.foo(): Lens<PARENT, T> = this + Bar.foo()
                 |
                 |public fun <T, E> Bar.Companion.fooBar(): Lens<Bar<T, E>, E> = lensOf(
                 |    "fooBar",
@@ -428,8 +437,7 @@ class LensesProcessorTests {
                 |    { p, v -> p.copy(fooBar = v)}
                 |  )
                 |
-                |public fun <PARENT, T, E> Lens<PARENT, Bar<T, E>>.fooBar(): Lens<PARENT, E> = this +
-                |    Bar<T, E>.fooBar()
+                |public fun <PARENT, T, E> Lens<PARENT, Bar<T, E>>.fooBar(): Lens<PARENT, E> = this + Bar.fooBar()
                 """.trimMargin()
             )
         }
@@ -474,7 +482,7 @@ class LensesProcessorTests {
                 |    { p, v -> p.copy(item = v)}
                 |  )
                 |
-                |public fun <PARENT, T> Lens<PARENT, Data<T>>.item(): Lens<PARENT, T?> = this + Data<T>.item()
+                |public fun <PARENT, T> Lens<PARENT, Data<T>>.item(): Lens<PARENT, T?> = this + Data.item()
                 """.trimMargin()
             )
         }
