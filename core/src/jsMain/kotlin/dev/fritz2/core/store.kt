@@ -161,6 +161,9 @@ open class RootStore<D>(
      * Use the [update] Handler for additional convenience.
      */
     private val state: MutableSharedFlow<D> = MutableSharedFlow(replay = 1)
+    init {
+        state.tryEmit(initialData)
+    }
 
     private val queue = Channel<Update<D>>(Channel.UNLIMITED)
 
@@ -216,7 +219,7 @@ open class RootStore<D>(
     final override val data: Flow<D> = flow {
         try {
             activeFlows.incrementAndGet()
-            emit(state.onStart { emit(initialData) })
+            emit(state)
             this@RootStore.job.join()
             emit(emptyFlow())
         } finally {
