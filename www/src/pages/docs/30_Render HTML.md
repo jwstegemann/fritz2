@@ -672,6 +672,65 @@ render {
 }
 ```
 
+### Handle large Class Strings
+
+CSS classes strings can become very long and may exceed the limit of a code line. This is especially true when working
+with utility based CSS frameworks like [tailwindcss](https://tailwindcss.com/).
+
+For such situations you need to split up your string into feasible, shorter parts. For this use-case fritz2 offers 
+the dedicated function `joinClasses(vararg classes: String?): String`. This functions accepts an arbitrary 
+amount of `String`s and concatenates them together taking care of the needed white spaces:
+```kotlin
+// example uses tailwindcss classes
+render {
+    div(
+        joinClasses(
+            "relative z-10 flex justify-between items-start w-full my-2 p-4",
+            "bg-primary-800 rounded-lg hover:bg-primary-900",
+            "text-left text-white",
+            "focus:outline-none focus:ring-4 focus:ring-primary-600",
+        )
+    ) {
+        // some content
+    }
+}
+```
+
+Using this function, it is also possible to conditionally construct classes strings without having to do dangerous
+string concatenation:
+
+```kotlin
+val someState = ...
+
+val classes = joinClasses(
+    "class1",
+    "class2".takeIf { it.length > 10 },
+    when(someState) {
+        something.A -> "class3 class4 class5"
+        something.B -> "class5"
+        else -> "class6 class7"
+    }
+)
+```
+
+::: warning
+You may be tempted to use Kotlin's default [multiline strings](https://kotlinlang.org/docs/strings.html#multiline-strings),
+which is generally speaking totally ok. But be aware, that you have to deal with the correct handling of separating 
+white spaces by your own! This can be quite error-prone though:
+```kotlin
+"""grid grid-rows-3 grid-cols-[auto_1fr] gap-1 p-4
+   | text-base font-sans cursor-pointer rounded-md
+   |focus:outline-none focus-visible:ring-4 focus-visible:ring-primary-600""".trimMargin()
+//  ^
+//  Missing Space -> would lead to class with name `rounded-mdfocus:outline-none` which will 
+//                   lead to an error in appearance and might be hard to identify
+```
+
+A better approach could be the `joinToString`-Method of collection types, but it is unlikely that you already have
+those classes inside some collection, so you would have to create some collection in place first, which is quite
+expensive and ineffective.
+:::
+
 ### Apply Attributes to Your UI: Reactive or Static
 
 To create rich HTML interfaces, styling alone is not sufficient - you will need to use a variety of attributes.
