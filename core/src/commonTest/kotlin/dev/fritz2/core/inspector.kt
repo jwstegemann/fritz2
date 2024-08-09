@@ -7,13 +7,18 @@ class InspectorTests {
 
     data class Address(val street: String, val id: String = Id.next())
 
-    val streetLens = lensOf(Address::street.name, Address::street) { p, v -> p.copy(street = v) }
+    private val streetLens = lensOf(Address::street.name, Address::street)
 
-    data class Person(val name: String, val address: Address, val telephone: String? = null, val id: String = Id.next())
+    data class Person(
+        val name: String,
+        val address: Address,
+        val telephone: String? = null,
+        val id: String = Id.next()
+    )
 
-    val nameLens = lensOf(Person::name.name, Person::name) { p, v -> p.copy(name = v) }
-    val addressLens = lensOf(Person::address.name, Person::address) { p, v -> p.copy(address = v) }
-    val telephoneLens = lensOf(Person::telephone.name, Person::telephone) { p, v -> p.copy(telephone = v) }
+    private val nameLens = lensOf(Person::name.name, Person::name)
+    private val addressLens = lensOf(Person::address.name, Person::address)
+    private val telephoneLens = lensOf(Person::telephone.name, Person::telephone)
 
     @Test
     fun testInspectorPaths() {
@@ -72,8 +77,16 @@ class InspectorTests {
         assertEquals(personList[0].name, p1NameInspector.data, "sub sub model data for element not correct")
 
         val p1StreetInspector = p1Inspector.map(addressLens).map(streetLens)
-        assertEquals(".${personList[0].id}.address.street", p1StreetInspector.path, "sub sub sub model id for element not correct")
-        assertEquals(personList[0].address.street, p1StreetInspector.data, "sub sub sub model data for element not correct")
+        assertEquals(
+            ".${personList[0].id}.address.street",
+            p1StreetInspector.path,
+            "sub sub sub model id for element not correct"
+        )
+        assertEquals(
+            personList[0].address.street,
+            p1StreetInspector.data,
+            "sub sub sub model data for element not correct"
+        )
     }
 
     @Test
@@ -92,12 +105,24 @@ class InspectorTests {
             assertEquals(personList[i], it.data, "[$i] sub model data for element not correct")
 
             val p1NameInspector = it.map(nameLens)
-            assertEquals(".${personList[i].id}.name", p1NameInspector.path, "[$i] sub sub model id for element not correct")
+            assertEquals(
+                ".${personList[i].id}.name",
+                p1NameInspector.path,
+                "[$i] sub sub model id for element not correct"
+            )
             assertEquals(personList[i].name, p1NameInspector.data, "[$i] sub sub model data for element not correct")
 
             val p1StreetInspector = it.map(addressLens).map(streetLens)
-            assertEquals(".${personList[i].id}.address.street", p1StreetInspector.path, "[$i] sub sub sub model id for element not correct")
-            assertEquals(personList[i].address.street, p1StreetInspector.data, "[$i] sub sub sub model data for element not correct")
+            assertEquals(
+                ".${personList[i].id}.address.street",
+                p1StreetInspector.path,
+                "[$i] sub sub sub model id for element not correct"
+            )
+            assertEquals(
+                personList[i].address.street,
+                p1StreetInspector.data,
+                "[$i] sub sub sub model data for element not correct"
+            )
 
             i++
         }
@@ -123,7 +148,11 @@ class InspectorTests {
 
         val p1StreetInspector = p1Inspector.map(addressLens).map(streetLens)
         assertEquals(".0.address.street", p1StreetInspector.path, "sub sub sub model id for element not correct")
-        assertEquals(personList[0].address.street, p1StreetInspector.data, "sub sub sub model data for element not correct")
+        assertEquals(
+            personList[0].address.street,
+            p1StreetInspector.data,
+            "sub sub sub model data for element not correct"
+        )
     }
 
     @Test
@@ -146,8 +175,16 @@ class InspectorTests {
             assertEquals(personList[i].name, p1NameInspector.data, "[$i] sub sub model data for element not correct")
 
             val p1StreetInspector = it.map(addressLens).map(streetLens)
-            assertEquals(".$i.address.street", p1StreetInspector.path, "[$i] sub sub sub model id for element not correct")
-            assertEquals(personList[i].address.street, p1StreetInspector.data, "[$i] sub sub sub model data for element not correct")
+            assertEquals(
+                ".$i.address.street",
+                p1StreetInspector.path,
+                "[$i] sub sub sub model id for element not correct"
+            )
+            assertEquals(
+                personList[i].address.street,
+                p1StreetInspector.data,
+                "[$i] sub sub sub model data for element not correct"
+            )
 
             i++
         }
@@ -173,7 +210,11 @@ class InspectorTests {
 
         val p1StreetInspector = p1Inspector.map(addressLens).map(streetLens)
         assertEquals(".2.address.street", p1StreetInspector.path, "sub sub sub model id for element not correct")
-        assertEquals(personList[2]?.address?.street, p1StreetInspector.data, "sub sub sub model data for element not correct")
+        assertEquals(
+            personList[2]?.address?.street,
+            p1StreetInspector.data,
+            "sub sub sub model data for element not correct"
+        )
     }
 
     @Test
@@ -197,8 +238,16 @@ class InspectorTests {
             assertEquals(personList[i]?.name, p1NameInspector.data, "[$i] sub sub model data for element not correct")
 
             val p1StreetInspector = inspector.map(addressLens).map(streetLens)
-            assertEquals(".$i.address.street", p1StreetInspector.path, "[$i] sub sub sub model id for element not correct")
-            assertEquals(personList[i]?.address?.street, p1StreetInspector.data, "[$i] sub sub sub model data for element not correct")
+            assertEquals(
+                ".$i.address.street",
+                p1StreetInspector.path,
+                "[$i] sub sub sub model id for element not correct"
+            )
+            assertEquals(
+                personList[i]?.address?.street,
+                p1StreetInspector.data,
+                "[$i] sub sub sub model data for element not correct"
+            )
 
             i++
         }

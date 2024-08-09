@@ -22,7 +22,7 @@ interface Inspector<D> {
      * @param lens a [Lens] describing, of which part of your data
      * model you want to have the next [Inspector]
      */
-    fun <X> map(lens: Lens<D, X>): Inspector<X> = SubInspector(this, lens)
+    fun <X> map(lens: GetterLens<D, X>): Inspector<X> = SubInspector(this, lens)
 }
 
 
@@ -43,7 +43,7 @@ class RootInspector<T>(
  */
 class SubInspector<P, T>(
     val parent: Inspector<P>,
-    private val lens: Lens<P, T>
+    private val lens: GetterLens<P, T>
 ) : Inspector<T> {
 
     /**
