@@ -197,7 +197,7 @@ private class LensesVisitor(private val codeGenerator: CodeGenerator, private va
             }
         } else {
             logger.error(
-                "The companion object for data class $classDeclaration is missing!"
+                "The companion object for $classDeclaration is missing!"
                         + " Please define it to bypass this error."
             )
         }
