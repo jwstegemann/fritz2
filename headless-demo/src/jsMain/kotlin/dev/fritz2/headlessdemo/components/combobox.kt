@@ -232,20 +232,28 @@ fun RenderContext.comboboxDemo() {
         "Zimbabwe",
     )
 
-    val store = storeOf("ger")
+    val store = storeOf("")
 
     div("flex flex-col gap-4") {
         combobox<String, HTMLElement>("combobox-test", tag = RenderContext::div) {
+            items(items)
             value(store)
-            comboboxInput("p-2 border", tag = RenderContext::input) {
+
+            comboboxInput("p-2 border rounded bg-white", tag = RenderContext::input) {
             }
-            comboboxItems("p-2 bg-white rounded border shadow max-h-96 overflow-x-hidden overflow-y-auto", tag = RenderContext::div) {
-                for (item in items) {
+
+            comboboxItems(
+                "p-2 bg-white rounded border shadow max-h-96 overflow-x-hidden overflow-y-auto",
+                tag = RenderContext::div
+            ) {
+                this.items.renderEach { item ->
                     comboboxItem("p-2 hover:bg-primary-100 overflow-ellipsis", tag = RenderContext::p, item = item) {
-                        val split = item.split(Regex("(?<=($query))|(?=($query))"))
-                        for (segment in split) {
-                            span("font-bold".takeIf { segment.contentEquals(query) }) {
-                                +segment
+                        query.render { q ->
+                            val split = item.split(Regex("(?<=($q))|(?=($q))"))
+                            for (segment in split) {
+                                span("font-bold".takeIf { segment.contentEquals(q) }) {
+                                    +segment
+                                }
                             }
                         }
                     }

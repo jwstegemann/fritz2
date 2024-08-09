@@ -3,9 +3,13 @@ package dev.fritz2.headless.components
 import dev.fritz2.core.*
 import dev.fritz2.headless.foundation.*
 import dev.fritz2.headless.foundation.utils.floatingui.utils.PlacementValues
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.HTMLInputElement
+
+
+typealias ComboboxFilterFunction<T> = (List<T>, String) -> List<T>
+
 
 class Combobox<T, E : HTMLElement>(tag: Tag<E>, id: String?) : Tag<E> by tag, OpenClose() {
 
@@ -13,64 +17,88 @@ class Combobox<T, E : HTMLElement>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
     private val componentId: String by lazy { id ?: Id.next() }
 
 
-    val value: DatabindingProperty<T> = DatabindingProperty()
+    inner class ItemsProperty : Property<Flow<List<T>>>() {
+        operator fun invoke(filter: List<T>) {
+            value = flowOf(filter)
+        }
 
-    val valueFormat: (T) -> String = { it.toString() }
-
-
-    private data class RenderableItem<T>(
-        val item: T,
-        val index: Int,
-        private val renderFunction: RenderContext.(RenderableItem<T>, String) -> Tag<HTMLElement>
-    ) {
-        fun RenderContext.render(query: String) = renderFunction(this, this@RenderableItem, query)
+        operator fun invoke(filterFlow: Flow<List<T>>) {
+            value = filterFlow
+        }
     }
 
-    private var itemIndexCounter = 0
-    private val items = mutableListOf<RenderableItem<T>>()
+    val items: ItemsProperty = ItemsProperty()
+
+
+    val value: DatabindingProperty<T> = DatabindingProperty()
+
+
+    inner class FilterFunctionProperty : Property<Flow<ComboboxFilterFunction<T>>>() {
+        init {
+            value = flowOf { list, query ->
+                list.filter { item ->
+                    item.toString().contains(query, ignoreCase = true)
+                }
+            }
+        }
+
+        operator fun invoke(filter: ComboboxFilterFunction<T>) {
+            value = flowOf(filter)
+        }
+
+        operator fun invoke(filterFlow: Flow<ComboboxFilterFunction<T>>) {
+            value = filterFlow
+        }
+    }
+
+    val filterBy: FilterFunctionProperty = FilterFunctionProperty()
 
 
     private var input: Tag<HTMLInputElement>? = null
 
 
     private data class State<T>(
-        val query: String,
-        val items: List<RenderableItem<T>>,
-        val opened: Boolean
+        val items: List<T> = emptyList(),
+        val filter: ComboboxFilterFunction<T> = { l, _ -> l },
+        val query: String = "",
+        val opened: Boolean = false
     )
 
-    private val internalState = object : RootStore<State<T>>(
-        State(query = "", items = emptyList(), opened = false),
-        job
-    ) {
-        val setOpened: Handler<Boolean> = handle { current, opened ->
-            current.copy(
-                opened = opened,
-                items = current.items.takeIf { current.query.isNotEmpty() } ?: this@Combobox.items
-            )
+    private val internalState = object : RootStore<State<T>>(State(), job) {
+
+        val filteredItems: Flow<List<T>> = data.mapNotNull { state ->
+            if (state.opened) {
+                state.filter(
+                    when {
+                        state.query.isEmpty() -> state.items
+                        else -> state.items.take(100)
+                    },
+                    state.query
+                )
+            } else null
         }
 
+        val updateItems: Handler<List<T>> = handle { current, items ->
+            current.copy(items = items)
+        }
 
-        private fun filter(items: List<RenderableItem<T>>, query: String): List<RenderableItem<T>> =
-            items.filter { item -> valueFormat(item.item).contains(query, ignoreCase = true) }
+        val updateFilter: Handler<ComboboxFilterFunction<T>> = handle { current, filter ->
+            current.copy(filter = filter)
+        }
 
-        val query: Handler<String> = handle { current, query ->
-            val filtered = when {
-                query.startsWith(current.query) -> filter(current.items, query)
-                current.query.startsWith(query) -> filter(items, query)
-                else -> items
+        val updateQuery: EmittingHandler<String, String> = handleAndEmit { current, query ->
+            current.copy(query = query).also {
+                emit(query)
             }
-            current.copy(query = query, items = filtered)
         }
 
+        val setOpened: Handler<Boolean> = handle { current, opened ->
+            current.copy(opened = opened)
+        }
 
-        val select: EmittingHandler<RenderableItem<T>, T> = handleAndEmit { _, selection ->
-            State(
-                query = valueFormat(selection.item),
-                items = listOf(selection),
-                opened = false
-            ).also {
-                emit(selection.item)
+        val select: EmittingHandler<T, T> = handleAndEmit { current, selection ->
+            current.copy(query = "", opened = false).also {
+                emit(selection)
             }
         }
     }
@@ -85,12 +113,21 @@ class Combobox<T, E : HTMLElement>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
         classes: String? = null,
         scope: ScopeContext.() -> Unit = {},
         tag: TagFactory<Tag<EB>>,
+        itemFormat: (T) -> String = { it.toString() },
         initialize: Tag<EB>.() -> Unit
     ) {
         tag(this, classes, "$componentId-input", scope) {
-            value(internalState.data.map { it.query })
-            focusins handledBy open
-            inputs.values() handledBy internalState.query
+            value(
+                merge(
+                    internalState.select.map { itemFormat(it) },
+                    internalState.updateQuery
+                )
+            )
+            focusins handledBy {
+                open()
+                domNode.select()
+            }
+            inputs.values() handledBy internalState.updateQuery
             initialize()
         }.also {
             input = it
@@ -113,9 +150,17 @@ class Combobox<T, E : HTMLElement>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
         reference = this@Combobox.input,
         ariaHasPopup = Aria.HasPopup.listbox
     ) {
+        val items: Flow<List<T>> = internalState.filteredItems
+
+        private var indexCounter = 0
+        init {
+            items handledBy { indexCounter = 0 }
+        }
+
+        // TODO Expose active and selected states
         inner class ComboboxItem<EJ : HTMLElement>(
             tag: Tag<EJ>,
-            val query: String
+            val query: Flow<String>
         ) : Tag<EJ> by tag
 
         fun <EJ : HTMLElement> comboboxItem(
@@ -124,28 +169,13 @@ class Combobox<T, E : HTMLElement>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
             tag: TagFactory<Tag<EJ>>,
             item: T,
             initialize: ComboboxItem<EJ>.() -> Unit
-        ) {
-            val index = itemIndexCounter++
-            items += RenderableItem(item, index) { self, query ->
-                tag(this, classes, "$componentId-item-$index", scope) {
-                    with(ComboboxItem(this, query)) {
-                        clicks.map { self } handledBy internalState.select
-                        initialize()
-                    }
+        ): Tag<EJ> =
+            tag(this, classes, "$componentId-item-${indexCounter++}", scope) {
+                with(ComboboxItem(this, internalState.data.map { it.query })) {
+                    clicks.map { item } handledBy internalState.select
+                    initialize()
                 }
             }
-        }
-
-        override fun render() {
-            super.render()
-            internalState.data.render { (query, items, _) ->
-                items.forEach { item ->
-                    with(item) {
-                        render(query)
-                    }
-                }
-            }
-        }
     }
 
     fun <EI : HTMLElement> comboboxItems(
@@ -171,11 +201,15 @@ class Combobox<T, E : HTMLElement>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
             warnAboutMissingDatabinding(propertyName = "value", componentName = "combobox", componentId, domNode)
         }
 
+        items.value?.handledBy(internalState.updateItems)
+        filterBy.value?.handledBy(internalState.updateFilter)
+
+        // TODO Handle values from outside
+        //value.data.map { valueFormat(it) } handledBy internalState.updateQuery
+        value.handler?.invoke(this, internalState.select)
+
         opened handledBy internalState.setOpened
         openState.handler?.invoke(this, internalState.data.map { it.opened })
-
-        value.data.map { valueFormat(it) } handledBy internalState.query
-        value.handler?.invoke(this, internalState.select)
     }
 }
 
