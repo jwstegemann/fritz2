@@ -3,6 +3,7 @@ package dev.fritz2.headlessdemo.components
 import dev.fritz2.core.RenderContext
 import dev.fritz2.core.storeOf
 import dev.fritz2.headless.components.combobox
+import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLElement
 
 fun RenderContext.comboboxDemo() {
@@ -258,6 +259,14 @@ fun RenderContext.comboboxDemo() {
                         }
                     }
                 }
+            }
+        }
+
+        div("flex flex-wrap p-2 border rounded bg-white") {
+            items.take(10).forEach { item ->
+                button("underline") {
+                    +item
+                }.clicks.map { item } handledBy store.update
             }
         }
 

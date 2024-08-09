@@ -204,8 +204,7 @@ class Combobox<T, E : HTMLElement>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
         items.value?.handledBy(internalState.updateItems)
         filterBy.value?.handledBy(internalState.updateFilter)
 
-        // TODO Handle values from outside
-        //value.data.map { valueFormat(it) } handledBy internalState.updateQuery
+        value.data handledBy internalState.select
         value.handler?.invoke(this, internalState.select)
 
         opened handledBy internalState.setOpened
