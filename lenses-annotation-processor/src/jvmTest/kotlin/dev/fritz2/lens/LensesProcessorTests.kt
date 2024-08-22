@@ -44,6 +44,7 @@ class LensesProcessorTests {
         }
 
     @ExperimentalPathApi
+    @Suppress("UNUSED_PARAMETER")
     @DisplayName("validate lenses generation works on")
     @ParameterizedTest(name = "{index}: {0}")
     @MethodSource("createValidGeneratedLenses")
@@ -152,6 +153,7 @@ class LensesProcessorTests {
     }
 
     @ExperimentalPathApi
+    @Suppress("UNUSED_PARAMETER")
     @DisplayName("validate down-typing lens is generated for sealed parents")
     @ParameterizedTest(name = "{index}: {0}")
     @MethodSource("createValidGeneratedTypingLenses")
@@ -280,6 +282,7 @@ class LensesProcessorTests {
     }
 
     @ExperimentalPathApi
+    @Suppress("UNUSED_PARAMETER")
     @DisplayName("lenses will throw error if companion object is missing")
     @ParameterizedTest(name = "{index}: {0}")
     @MethodSource("createCodeWithoutCompanion")
@@ -293,6 +296,7 @@ class LensesProcessorTests {
     }
 
     @ExperimentalPathApi
+    @Suppress("UNUSED_PARAMETER")
     @ParameterizedTest(name = "{index}: {0} blocks generation")
     @MethodSource("getNameBlockingDataClasses")
     fun `lenses will throw error if lens fun's name is already in use`(
@@ -498,6 +502,7 @@ class LensesProcessorTests {
     }
 
     @ExperimentalPathApi
+    @Suppress("UNUSED_PARAMETER")
     @ParameterizedTest(name = "{index}: {0}")
     @MethodSource("getNoneImplementingSealedTypes")
     fun `warning occurs if there are no implementing children of a sealed base type`(
@@ -513,6 +518,7 @@ class LensesProcessorTests {
     }
 
     @ExperimentalPathApi
+    @Suppress("UNUSED_PARAMETER")
     @ParameterizedTest(name = "{index}: {0}")
     @MethodSource("getFalsyImplementingSealedChildren")
     fun `error occurs if not all implementing children of a sealed base type are data classes`(
