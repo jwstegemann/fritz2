@@ -445,10 +445,10 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
         classes: String? = null,
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<ER>>,
-        content: Tag<ER>.() -> Unit
+        initialize: Tag<ER>.() -> Unit
     ): Tag<ER> =
         tag(this, classes, "", scope) {
-            content()
+            initialize()
         }.also {
             panelReference = it
         }
