@@ -676,6 +676,9 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
 
                     initialize()
                 }
+
+                // for testing purposes only
+                domNode.setAttribute("data-combobox-item", "")
             }
         }
 

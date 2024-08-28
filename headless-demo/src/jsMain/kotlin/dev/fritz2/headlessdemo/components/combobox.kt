@@ -8,14 +8,21 @@ import kotlinx.coroutines.flow.map
 
 fun RenderContext.comboboxDemo() {
     val selectionStore = storeOf<Country?>(null)
+    val enableAutoselectStore = storeOf(false)
 
     div("max-w-96 flex flex-col gap-4") {
-        combobox<Country> {
+        combobox<Country>(id = "countries") {
             items(COUNTRY_LIST)
             itemFormat = Country::name
             value(selectionStore)
             filterBy(Country::name)
-            selectionStrategy.autoSelectMatch()
+
+            enableAutoselectStore.data handledBy {
+                if (it) selectionStrategy.autoSelectMatch()
+                else selectionStrategy.manual()
+            }
+
+            maximumDisplayedItems = 20
 
             comboboxLabel("sr-only") {
                 +"Select a Country"
@@ -102,7 +109,7 @@ fun RenderContext.comboboxDemo() {
                             }
                         }
                         if (truncated) {
-                            p("py-2 pl-10 pr-4 text-sm text-gray-400") {
+                            span("py-2 pl-10 pr-4 text-sm text-gray-400") {
                                 +"Refine your query for more results"
                             }
                         }
@@ -125,10 +132,24 @@ fun RenderContext.comboboxDemo() {
             }
         }
 
+        div("flex items-center gap-2") {
+            input("", id = "checkbox-enable-autoselect") {
+                type("checkbox")
+                checked(enableAutoselectStore.data)
+            }.clicks.map { !enableAutoselectStore.current } handledBy enableAutoselectStore.update
+
+            label {
+                `for`("checkbox-enable-autoselect")
+                +"Auto-select exact matches"
+            }
+        }
+
         result {
             p {
                 span("font-semibold") { +"Selected: " }
-                selectionStore.data.renderText()
+                span(id = "countries-selection") {
+                    selectionStore.data.renderText(into = this)
+                }
             }
         }
     }
