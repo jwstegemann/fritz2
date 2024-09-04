@@ -528,17 +528,18 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
             inputs.values() handledBy internalState.updateQuery
 
 
-            focuss handledBy {
+            focuss.filterNot { domNode.readOnly } handledBy {
                 open()
                 domNode.select()
             }
+
+            selects.filterNot { domNode.readOnly }.map { true } handledBy internalState.setOpened
+
 
             Window.keydowns.mapNotNull { event ->
                 if (internalState.current.opened && shortcutOf(event) == Keys.Tab) false
                 else null
             } handledBy internalState.setOpened
-
-            selects.map { true } handledBy internalState.setOpened
 
             handleKeyboardSelections()
 

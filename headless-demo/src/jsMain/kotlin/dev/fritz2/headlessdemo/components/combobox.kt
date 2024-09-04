@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.map
 
 fun RenderContext.comboboxDemo() {
     val selectionStore = storeOf<Country?>(null)
+    val readOnlyStore = storeOf(false)
     val enableAutoselectStore = storeOf(false)
 
     div("max-w-96 flex flex-col gap-4") {
@@ -41,7 +42,9 @@ fun RenderContext.comboboxDemo() {
                         "vui-label-4 p-0 focus:ring-transparent focus:shadow-none disabled:text-gray-400",
                         "text-ellipsis",
                     ),
-                ) { }
+                ) {
+                    readOnly(readOnlyStore.data)
+                }
 
                 icon("pl-2w-5 h-5", content = HeroIcons.selector).clicks handledBy open
             }
@@ -132,17 +135,8 @@ fun RenderContext.comboboxDemo() {
             }
         }
 
-        div("flex items-center gap-2") {
-            input("", id = "checkbox-enable-autoselect") {
-                type("checkbox")
-                checked(enableAutoselectStore.data)
-            }.clicks.map { !enableAutoselectStore.current } handledBy enableAutoselectStore.update
-
-            label {
-                `for`("checkbox-enable-autoselect")
-                +"Auto-select exact matches"
-            }
-        }
+        checkbox("Read-only", readOnlyStore, "checkbox-enable-readonly")
+        checkbox("Auto-select exact matches", enableAutoselectStore, "checkbox-enable-autoselect")
 
         result {
             p {
@@ -169,6 +163,21 @@ private fun RenderContext.quickSelectButton(country: Country, store: Store<Count
     button("p-2 bg-primary-500 hover:bg-primary-600 shadow rounded text-sm text-primary-900") {
         +country.name
     }.clicks.map { country } handledBy store.update
+}
+
+private fun RenderContext.checkbox(text: String, value: Store<Boolean>, testId: String) {
+    val id = Id.next()
+    div("flex items-center gap-2") {
+        input("", id = testId) {
+            type("checkbox")
+            checked(value.data)
+        }.clicks.map { !value.current } handledBy value.update
+
+        label {
+            `for`(testId)
+            +text
+        }
+    }
 }
 
 private data class Country(

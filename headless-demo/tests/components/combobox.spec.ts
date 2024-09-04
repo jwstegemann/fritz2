@@ -25,6 +25,15 @@ async function assertIsClosed(input: Locator, popupRoot: Locator) {
 }
 
 
+const clickInput = (page: Page) => page.locator("#countries-input").click();
+
+const clickOutside = (page: Page) => page.mouse.click(0, 0);
+
+const pressTab = (page: Page) => page.keyboard.down("Tab");
+
+const pressEscape = (page: Page) => page.keyboard.down("Escape");
+
+
 test("Dropdown is initially closed", async ({ page }) => {
     const [input, items] = await createLocators(page);
     await assertIsClosed(input, items);
@@ -32,15 +41,6 @@ test("Dropdown is initially closed", async ({ page }) => {
 
 
 test.describe("To open and close a combobox", () => {
-
-    const clickInput = (page: Page) => page.locator("#countries-input").click();
-
-    const clickOutside = (page: Page) => page.mouse.click(0, 0);
-
-    const pressTab = (page: Page) => page.keyboard.down("Tab");
-
-    const pressEscape = (page: Page) => page.keyboard.down("Escape");
-
 
     const testArgs = [
         {
@@ -87,6 +87,31 @@ test.describe("To open and close a combobox", () => {
         });
     }
 
+});
+
+test.describe("When the input is read-only", () => {
+
+    const selectInputText = async (page: Page) => page.locator("#countries-input").selectText();
+
+    for (const { desc, action } of [
+        {
+            desc: "focusing the input does not open the dropdown",
+            action: clickInput
+        },
+        {
+            desc: "selecting text does not open the dropdown",
+            action: selectInputText
+        },
+    ]) {
+        test(desc, async ({ page }) => {
+            const [input, items] = await createLocators(page);
+
+            await page.locator('#checkbox-enable-readonly').check();
+
+            await action(page);
+            await expect(items).not.toBeVisible();
+        })
+    }
 });
 
 test.describe("Activating an item", () => {
