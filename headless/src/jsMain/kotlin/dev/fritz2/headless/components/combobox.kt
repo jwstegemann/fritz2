@@ -528,7 +528,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
             inputs.values() handledBy internalState.updateQuery
 
 
-            focusins handledBy {
+            focuss handledBy {
                 open()
                 domNode.select()
             }
