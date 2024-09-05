@@ -213,17 +213,18 @@ comboboxItems {
 }
 ```
 
-The exact placement of the dropdown is determined based on a number of conditions:
+::: info
+In practice, the [`comboboxInput`](#comboboxinput) element might be wrapped in additional elements that are considered to be a part
+of it. Since by default the dropdown is positioned relative to the [`comboboxInput`](#comboboxinput) element, the dropdown may
+appear out of place. In those cases, the outermost wrapping element can be created via the
+[`comboboxPanelReference`](#comboboxpanelreference) brick to fix the positioning.
+:::
+
+The anchor element of the dropdown is determined based on a number of conditions:
 
 1) If a [`comboboxInput`](#comboboxinput) is present, the panel is placed relative to it.
 2) If a [`comboboxPanelReference`](#comboboxpanelreference) is present, it is _used as the reference instead_.
 3) Otherwise, the dropdown references a minimal fallback input element.
-
-::: info
-In practice, the [`comboboxInput`](#comboboxinput) element might be wrapped in additional elements (e.g. for styling
-reasons) that may cause the dropdown to appear out of place. In those cases, the outer most wrapping element can be
-created via the [`comboboxPanelReference`](#comboboxpanelreference) brick to fix the positioning.
-:::
 
 ## Validation
 

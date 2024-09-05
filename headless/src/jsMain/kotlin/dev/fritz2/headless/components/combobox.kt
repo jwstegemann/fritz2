@@ -435,8 +435,10 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
     /**
      * Factory function to create a [comboboxPanelReference].
      *
-     * This brick may be used to specify an alternative anchor for the combobox's dropdown. This may be useful when
-     * there are other decorative elements positioned around the input element.
+     * This brick may be used to specify an alternative anchor for the combobox's dropdown when other decorative
+     * elements are positioned around the actual input that are considered part of it.
+     *
+     * In those cases, the dropdown should position itself based on the wrapping element.
      *
      * For more information refer to the
      * [official documentation](https://www.fritz2.dev/headless/combobox/#comboboxItems)
@@ -456,8 +458,10 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
     /**
      * Factory function to create a [comboboxPanelReference] with an [HTMLDivElement] as default root [Tag].
      *
-     * This brick may be used to specify an alternative anchor for the combobox's dropdown. This is useful when
-     * there are other decorative elements positioned around the input element.
+     * This brick may be used to specify an alternative anchor for the combobox's dropdown when other decorative
+     * elements are positioned around the actual input that are considered part of it.
+     *
+     * In those cases, the dropdown should position itself based on the wrapping element.
      *
      * For more information refer to the
      * [official documentation](https://www.fritz2.dev/headless/combobox/#comboboxItems)
@@ -831,8 +835,11 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
  *     var inputDebounceMillis: Long = 50L
  *     var renderDebounceMillis: Long = 50L
  *
- *     comboboxPanelReference() { }
  *     comboboxInput() { }
+ *     comboboxPanelReference() {
+ *         // this brick is often used with a nested
+ *         // comboboxInput() { }
+ *     }
  *     comboboxLabel() { }
  *     comboboxItems() {
  *         // inherited by `PopUpPanel`
@@ -897,8 +904,11 @@ fun <E : HTMLElement, T> RenderContext.combobox(
  *     var inputDebounceMillis: Long = 50L
  *     var renderDebounceMillis: Long = 50L
  *
- *     comboboxPanelReference() { }
  *     comboboxInput() { }
+ *     comboboxPanelReference() {
+ *         // this brick is often used with a nested
+ *         // comboboxInput() { }
+ *     }
  *     comboboxLabel() { }
  *     comboboxItems() {
  *         // inherited by `PopUpPanel`
