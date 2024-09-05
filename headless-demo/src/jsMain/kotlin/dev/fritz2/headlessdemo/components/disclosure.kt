@@ -86,6 +86,7 @@ fun RenderContext.disclosureDemo() {
                                 initialClasses = "hidden"
                             )
                             div("text-base text-gray-700") { answer(this) }
+                            disclosureCloseButton { +"Close" }
                         }
                     }
                 }
