@@ -6,6 +6,11 @@ public final class dev/fritz2/core/CollectionLensSetException : java/lang/Except
 	public fun <init> (Ljava/lang/String;)V
 }
 
+public final class dev/fritz2/core/FlowsKt {
+	public static final fun whenever (Ljava/lang/Object;Lkotlinx/coroutines/flow/Flow;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun whenever (Lkotlinx/coroutines/flow/Flow;Lkotlinx/coroutines/flow/Flow;)Lkotlinx/coroutines/flow/Flow;
+}
+
 public final class dev/fritz2/core/Id {
 	public static final field INSTANCE Ldev/fritz2/core/Id;
 	public final fun next (I)Ljava/lang/String;
