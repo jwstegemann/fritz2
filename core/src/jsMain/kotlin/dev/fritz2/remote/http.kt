@@ -314,8 +314,10 @@ open class Request(
     fun contentType(value: String): Request = header("Content-Type", value)
 
     /**
-     * adds the basic [Authorization](https://developer.mozilla.org/en/docs/Web/HTTP/Headers/Authorization)
-     * header for the given username and password
+     * Adds the basic [Authorization](https://developer.mozilla.org/en/docs/Web/HTTP/Headers/Authorization)
+     * header for the given username and password.
+     *
+     * __Note__: Both [username] and [password] need to be encoded in an ascii-compatible encoding!
      *
      * @param username name of the user
      * @param password password of the user
