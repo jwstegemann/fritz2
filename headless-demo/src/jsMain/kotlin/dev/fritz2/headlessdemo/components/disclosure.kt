@@ -2,7 +2,6 @@ package dev.fritz2.headlessdemo.components
 
 import dev.fritz2.core.*
 import dev.fritz2.headless.components.disclosure
-import kotlinx.coroutines.flow.map
 
 fun RenderContext.disclosureDemo() {
     val faqs = listOf<Pair<String, RenderContext.() -> Unit>>(

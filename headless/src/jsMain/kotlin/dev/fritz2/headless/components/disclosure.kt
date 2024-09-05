@@ -5,8 +5,6 @@ import dev.fritz2.headless.foundation.Aria
 import dev.fritz2.headless.foundation.OpenClose
 import dev.fritz2.headless.foundation.TagFactory
 import dev.fritz2.headless.foundation.addComponentStructureInfo
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import org.w3c.dom.HTMLButtonElement
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
@@ -24,9 +22,13 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
     val componentId: String by lazy { id ?: Id.next() }
 
     private var button: Tag<HTMLElement>? = null
+    private var closeButton: Tag<HTMLElement>? = null
+    private var panel: Tag<HTMLElement>? = null
 
     fun render() {
         attr("id", componentId)
+        button?.attr(Aria.controls, panel?.id)
+        closeButton?.attr(Aria.controls, panel?.id)
     }
 
     /**
@@ -67,10 +69,6 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
 
     inner class DisclosurePanel<CP : HTMLElement>(tag: Tag<CP>) : Tag<CP> by tag {
 
-        fun render() {
-            button?.attr(Aria.controls, id.whenever(opened))
-        }
-
         /**
          * Factory function to create a [disclosureCloseButton].
          *
@@ -87,7 +85,7 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             return tag(this, classes, "$componentId-close-button", scope) {
                 content()
                 clicks handledBy close
-            }
+            }.also { closeButton = it }
         }
 
         /**
@@ -118,11 +116,8 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
         initialize: DisclosurePanel<CP>.() -> Unit
     ) {
         addComponentStructureInfo("disclosurePanel", this@disclosurePanel.scope, this)
-        tag(this, classes, "$componentId-panel", scope) {
-            DisclosurePanel(this).run {
-                initialize()
-                render()
-            }
+        panel = tag(this, classes, "$componentId-panel", scope) {
+            DisclosurePanel(this).run(initialize)
         }
     }
 
