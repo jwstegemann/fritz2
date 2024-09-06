@@ -7,7 +7,8 @@ package dev.fritz2.core
 annotation class Lenses
 
 /**
- * Describes a focus point into a data structure, i.e. a property of a given complex entity
+ * Describes a focus point into a data structure, i.e. a property of a given complex entity for read and write
+ * access.
  *
  * @property id identifies the focus of this lens
  */
@@ -37,9 +38,9 @@ interface Lens<P, T> {
      */
     suspend fun apply(parent: P, mapper: suspend (T) -> T): P = set(parent, mapper(get(parent)))
 
-
     /**
-     * appends to [Lens]es so that the resulting [Lens] points from the parent of the [Lens] this is called on to the target of [other]
+     * appends to [Lens]es so that the resulting [Lens] points from the parent of the [Lens] this is called on to
+     * the target of [other]
      *
      * @param other [Lens] to append to this one
      */
@@ -56,9 +57,11 @@ interface Lens<P, T> {
      */
     fun withNullParent(): Lens<P?, T> = object : Lens<P?, T> {
         override val id: String = this@Lens.id
+
         override fun get(parent: P?): T =
             if (parent != null) this@Lens.get(parent)
             else throw NullPointerException("get called with null parent on not-nullable lens@$id")
+
         override fun set(parent: P?, value: T): P? =
             if (parent != null) this@Lens.set(parent, value)
             else throw NullPointerException("set called with null parent on not-nullable lens@$id")
@@ -176,5 +179,5 @@ fun <K, V> lensForElement(key: K): Lens<Map<K, V>, V> = object : Lens<Map<K, V>,
 internal fun <T> defaultLens(id: String, default: T): Lens<T?, T> = object : Lens<T?, T> {
     override val id: String = id
     override fun get(parent: T?): T = parent ?: default
-    override fun set(parent: T?, value: T): T?  = value.takeUnless { it == default }
+    override fun set(parent: T?, value: T): T? = value.takeUnless { it == default }
 }
