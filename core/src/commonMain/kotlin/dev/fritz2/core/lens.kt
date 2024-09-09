@@ -7,6 +7,15 @@ package dev.fritz2.core
 annotation class Lenses
 
 /**
+ * Used by the fritz2 gradle-plugin to identify properties in sealed classes or interfaces, that should get ignored
+ * by the lens generation.
+ *
+ * Typical use case are const properties, that are overridden inside the data class body and not the ctor.
+ */
+@Target(AnnotationTarget.PROPERTY)
+annotation class NoLens
+
+/**
  * Describes a focus point into a data structure, i.e. a property of a given complex entity for read and write
  * access.
  *

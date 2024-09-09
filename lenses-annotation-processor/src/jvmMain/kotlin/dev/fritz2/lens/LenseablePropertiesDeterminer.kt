@@ -4,6 +4,7 @@ import com.google.devtools.ksp.getDeclaredProperties
 import com.google.devtools.ksp.isPublic
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSPropertyDeclaration
+import dev.fritz2.core.NoLens
 
 internal fun interface LenseablePropertiesDeterminer {
     fun determine(classDeclaration: KSClassDeclaration): List<KSPropertyDeclaration>
@@ -15,5 +16,8 @@ internal val determineLensablePropertiesInConstructor = LenseablePropertiesDeter
         .filter { it.isPublic() && allPublicCtorProps.contains(it.simpleName) }.toList()
 }
 internal val determineLensablePropertiesInBody = LenseablePropertiesDeterminer { classDeclaration ->
-    classDeclaration.getDeclaredProperties().filter { it.isPublic() }.toList()
+    classDeclaration.getDeclaredProperties()
+        .filter { it.isPublic() }
+        .filter { it.annotations.none { annotation -> annotation.shortName.asString() == NoLens::class.simpleName } }
+        .toList()
 }
