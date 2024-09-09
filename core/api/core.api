@@ -64,6 +64,9 @@ public final class dev/fritz2/core/LensKt {
 public abstract interface annotation class dev/fritz2/core/Lenses : java/lang/annotation/Annotation {
 }
 
+public abstract interface annotation class dev/fritz2/core/NoLens : java/lang/annotation/Annotation {
+}
+
 public final class dev/fritz2/core/RootInspector : dev/fritz2/core/Inspector {
 	public fun <init> (Ljava/lang/Object;)V
 	public fun getData ()Ljava/lang/Object;
