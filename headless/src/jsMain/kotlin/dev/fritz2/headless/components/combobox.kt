@@ -174,6 +174,12 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
      * > If you still need to use the default filter function it can explicitly be set via
      * > [filterBy.default][FilterFunctionProperty.default].
      *
+     * > __Important:__ The `filterBy` function handles the un-shortened, full amount of available items and is highly
+     * > time-critical!
+     * > Try to use efficient [Sequence]-based operations whenever possible. Functions like [fold][Sequence.fold] or
+     * > [sortedBy][Sequence.sortedBy] do still iterate over the whole Sequence internally, which is why they should
+     * > be used with caution here.
+     *
      * Example:
      * ```kotlin
      * data class Country(val code: String, val name: String)
@@ -194,31 +200,56 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
     val filterBy: FilterFunctionProperty = FilterFunctionProperty()
 
 
-    inner class SelectionStrategyProperty : Property<(Sequence<T>, String) -> QueryResult<T>>() {
+    inner class SelectionStrategyProperty : Property<(String, Sequence<T>) -> QueryResult<T>>() {
 
         private fun isExactMatch(item: T, query: String) =
             itemFormat(item).contentEquals(query, ignoreCase = true)
 
-        private fun buildItemListResult(itemSequence: Sequence<T>, query: String): QueryResult.ItemList<T> {
-            val (itemList, count) = itemSequence
-                .mapIndexed(::Item)
-                .fold(emptyList<Item<T>>() to 0) { (list, count), item ->
-                    (list + item) to (count + 1)
+        /**
+         * Helper function taking [n] elements from a [Sequence] and storing them in a [List].
+         *
+         * The result is a [Pair] consisting of the actual list an a [Boolean] indicating whether the original sequence
+         * had more than `n` elements, i.e. has been _truncated_ during the conversion.
+         *
+         * This function aims to be as performant as possible in the context of computing query results. In most other
+         * cases, a combination of vanilla Sequence functions is probably sufficient.
+         */
+        private fun <S> Sequence<S>.toListTruncating(n: Int): Pair<List<S>, Boolean> {
+            val iterator = this.iterator()
+            var count = 0
+            val list = buildList {
+                while (iterator.hasNext() && count++ < n) {
+                    add(iterator.next())
                 }
+            }
+            return list to iterator.hasNext()
+        }
 
+        /**
+         * Constructs an ordinary [QueryResult.ItemList] object from a given [itemSequence] and [query].
+         *
+         * > __Important:__ This function handles the un-shortened, full amount of available items and is highly
+         * > time-critical!
+         * > Try to use efficient [Sequence]-based operations whenever possible. Functions like [fold][Sequence.fold] or
+         * > [sortedBy][Sequence.sortedBy] do still iterate over the whole Sequence internally, which is why they should
+         * > be used with caution here.
+         */
+        private fun buildItemListResult(query: String, itemSequence: Sequence<T>): QueryResult.ItemList<T> {
+            val (resultList, truncated) = itemSequence.mapIndexed(::Item).toListTruncating(maximumDisplayedItems)
             return QueryResult.ItemList(
                 query,
-                itemList.take(maximumDisplayedItems),
-                truncated = count > maximumDisplayedItems
+                resultList,
+                truncated
             )
         }
 
-        private val autoSelectMatch: (Sequence<T>, String) -> QueryResult<T> = { itemSequence, query ->
-            when (val exactMatch = itemSequence.find { isExactMatch(it, query) }) {
-                null -> buildItemListResult(itemSequence, query)
-                else -> QueryResult.ExactMatch(exactMatch)
+        private val autoSelectMatch: (String, Sequence<T>) -> QueryResult<T> =
+            { query, itemSequence ->
+                when (val exactMatch = itemSequence.find { isExactMatch(it, query) }) {
+                    null -> buildItemListResult(query, itemSequence)
+                    else -> QueryResult.ExactMatch(exactMatch)
+                }
             }
-        }
 
 
         init {
@@ -234,8 +265,8 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
         }
 
 
-        internal fun buildResult(filteredItems: Sequence<T>, query: String): QueryResult<T> =
-            value!!.invoke(filteredItems, query)
+        internal fun buildResult(query: String, filteredItems: Sequence<T>): QueryResult<T> =
+            value!!.invoke(query, filteredItems)
     }
 
     /**
@@ -402,7 +433,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
             filterBy
                 .filter(items.asSequence(), query)
                 .let { itemSequence ->
-                    selectionStrategy.buildResult(itemSequence, query)
+                    selectionStrategy.buildResult(query, itemSequence)
                 }
 
         @OptIn(FlowPreview::class)

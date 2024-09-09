@@ -112,7 +112,7 @@ fun RenderContext.comboboxDemo() {
                             }
                         }
                         if (truncated) {
-                            span("py-2 pl-10 pr-4 text-sm text-gray-400") {
+                            div("py-2 pl-10 pr-4 text-sm text-gray-400") {
                                 +"Refine your query for more results"
                             }
                         }
