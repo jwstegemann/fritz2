@@ -136,7 +136,7 @@ fun RenderContext.comboboxDemo() {
         }
 
         checkbox("Read-only", readOnlyStore, "checkbox-enable-readonly")
-        checkbox("Auto-select exact matches", enableAutoselectStore, "checkbox-enable-autoselect")
+        checkbox("Auto-select exact matches (try 'oman')", enableAutoselectStore, "checkbox-enable-autoselect")
 
         result {
             p {

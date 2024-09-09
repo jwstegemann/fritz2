@@ -17,7 +17,7 @@ demoHeight: 25rem
 ## Basic Example
 
 A combo box is created by the factory function `fun <T> combobox()`. `T` is the data type of the choices to be offered,
-such as a domain data type like movie characters.
+such as a country.
 
 When the input created via `comboboxInput` is focused, a dropdown with suggestions is shown and updated as you
 type. When focused, the input shows the current input. Otherwise, the currently selected item is displayed.
@@ -29,17 +29,23 @@ but also emits the updated selection to the outside via a `Handler`.
 You can navigate within the selection list using the keyboard. By [[Enter]], [[Space]] or a mouse click an item is
 selected. If the combo box input loses focus or the user clicks outside the selection list, the dropdown is hidden.
 
-The selection dropdown is populated via the `comboboxItems` brick. Within the scope of this function, individual items
-can be rendered via the `comboboxItem` brick.  
-The combo box constantly evaluates which items to show based on the user's query. The results are emitted to the
+As typical use cases may offer thousands of items to choose from, the component reduces and filters those in order to
+support the visual recognition of a user down to a feasible size, which can be configured via `maximumDisplayedItems`.
+
+As a result, the combo box constantly evaluates which items to show based on the user's query. The results are emitted
+by the
 `results` Flow available in the scope of the items brick.  
 The intended pattern is to iterate over the results and re-render all of them when the results change.
+
+The selection dropdown is populated via the `comboboxItems` brick. Within the scope of this function, individual items
+can be rendered via the `comboboxItem` brick.
 
 ::: warning
 __Beware:__ Due to the inner workings of the combobox, rendering items via `renderEach` _does not work_ and results in
 undefined behavior!
 
-Instead, render the `results` Flow and render the list of items via a combination of `render` and `forEach`.
+Instead, apply an ordinary `render` on the `results`-flow and create the items via a `forEach`-call on the provided
+`List<T>`.
 :::
 
 ```kotlin
@@ -143,7 +149,7 @@ comboboxItems {
 ## Truncated result list
 
 The `results` Flow only displays a fixed number of items at a time, configured via the `maximumDisplayedItems` property.
-If more items match the given query than configured to be displayed, the `truncated` property available in the `results`
+If more items match the given query than configured to be displayed, the `truncated` flag available in the `results`
 Flow is set to `true` so an appropriate hint can be displayed.
 
 ```kotlin
@@ -214,10 +220,16 @@ comboboxItems {
 ```
 
 ::: info
-In practice, the [`comboboxInput`](#comboboxinput) element might be wrapped in additional elements that are considered to be a part
-of it. Since by default the dropdown is positioned relative to the [`comboboxInput`](#comboboxinput) element, the dropdown may
+In practice, the [`comboboxInput`](#comboboxinput) element might be wrapped in additional elements that are considered
+to be a part
+of it. Since by default the dropdown is positioned relative to the [`comboboxInput`](#comboboxinput) element, the
+dropdown may
 appear out of place. In those cases, the outermost wrapping element can be created via the
 [`comboboxPanelReference`](#comboboxpanelreference) brick to fix the positioning.
+
+In order to see an example of the `comboboxPanelReference` in action, have a look at the source code of the combobox
+demo
+within the `headless-demo` module. You can observe the consequences of removing and re-adding it there.
 :::
 
 The anchor element of the dropdown is determined based on a number of conditions:
@@ -269,7 +281,7 @@ Clicking on an item when the list is open selects it and closes the list.
 
 ## Performance
 
-The combo box component used a sepcific internal pipeline to filter and display the selection items:
+The combo box component uses a specific internal pipeline to filter and display the selection items:
 
 1) Retrieve the user's input
 2) _Debounce_
@@ -277,7 +289,7 @@ The combo box component used a sepcific internal pipeline to filter and display 
 4) _Debounce_
 5) Render matches
 
-The debouncing is in place because the above worklfow consists of two relatively expensive operations: _filtering_ and
+The debouncing is in place because the above workflow consists of two relatively expensive operations: _filtering_ and
 _rendering_.
 
 While typing, the query may be manipulated multiple times per second. In order for the filter function to run as few
@@ -325,8 +337,11 @@ combobox<T> {
     var inputDebounceMillis: Long = 50L
     var renderDebounceMillis: Long = 50L
 
-    comboboxPanelReference() { }
     comboboxInput() { }
+    comboboxPanelReference() {
+        // this brick is often used with a nested
+        // comboboxInput() { }
+    }
     comboboxLabel() { }
     comboboxItems() {
         // inherited by `PopUpPanel`
@@ -339,9 +354,9 @@ combobox<T> {
         val results: Flow<QueryResult.ItemList<T>>
 
         // state.render {
-        // for each QueryResult.ItemList<T>.Item<T> {
-        comboboxItem(Item<T>) { }
-        // }
+            // for each QueryResult.ItemList<T>.Item<T> {
+                comboboxItem(Item<T>) { }
+            // }
         // }
     }
     comboboxValidationMessages() {
@@ -382,13 +397,13 @@ Default-Tag: `div`
 
 ### comboboxInput
 
-Available in the scope of: `combobox`
+Available in the scope of: `combobox`, `comboboxPanelReference`
 
 Parameters: `classes`, `scope`, `initialize`
 
 ### comboboxLabel
 
-Available in the scope of: `combobox`
+Available in the scope of: `combobox`, `comboboxPanelReference`
 
 Parameters: `classes`, `scope`, `tag`, `initialize`
 
@@ -396,7 +411,7 @@ Default-Tag: `label`
 
 ### listboxValidationMessages
 
-Available in the scope of: `combobox`
+Available in the scope of: `combobox`, `comboboxPanelReference`
 
 Parameters: `classes`, `scope`, `tag`, `initialize`
 
