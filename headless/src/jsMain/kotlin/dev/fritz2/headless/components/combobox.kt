@@ -208,7 +208,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
         /**
          * Helper function taking [n] elements from a [Sequence] and storing them in a [List].
          *
-         * The result is a [Pair] consisting of the actual list an a [Boolean] indicating whether the original sequence
+         * The result is a [Pair] consisting of the actual list and a [Boolean] indicating whether the original sequence
          * had more than `n` elements, i.e. has been _truncated_ during the conversion.
          *
          * This function aims to be as performant as possible in the context of computing query results. In most other
