@@ -44,6 +44,12 @@ val pages: Map<String, Page> = mapOf(
             |complete with robust support for keyboard navigation.""".trimMargin(),
         RenderContext::listboxDemo
     ),
+    "combobox" to DemoPage(
+        "Headless ComboBox",
+        """Comboboxes are an easy way to build queryable dropdown lists with live-updated suggestions, complete with
+            | robust support for keyboard naigation.""".trimMargin(),
+        RenderContext::comboboxDemo
+    ),
     "menu" to DemoPage(
         "Headless Menu",
         """Menus offer an easy way to build custom, accessible dropdown components with robust support for keyboard

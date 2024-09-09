@@ -16,6 +16,7 @@ import dev.fritz2.headless.foundation.utils.floatingui.utils.StrategyValues
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLElement
 import org.w3c.dom.Node
+import org.w3c.dom.events.UIEvent
 
 /**
  * Enum-Class to set the width of the Popup to
@@ -68,10 +69,8 @@ abstract class PopUpPanel<C : HTMLElement>(
         if (reference != null) add(reference.domNode)
     }
 
-    /**
-     * Closes the [PopUpPanel] when dismissed, i.e. by clicking outside the element or pressing the Escape key.
-     */
-    fun OpenClose.closeOnDismiss() {
+
+    private val dismissals: Flow<UIEvent> by lazy {
         merge(
             Window.clicks.filter { event ->
                 opened.first()
@@ -80,8 +79,30 @@ abstract class PopUpPanel<C : HTMLElement>(
                         && event.composedPath().none { it == this }
             },
             Window.keydowns.filter { opened.first() && shortcutOf(it) == Keys.Escape }
-        ) handledBy close
+        )
     }
+
+    /**
+     * Executes the given [action] when the [PopUpPanel] is dismissed, i.e. by clicking outside the element or pressing
+     * the Escape key.
+     *
+     * @see closeOnDismiss
+     */
+    fun onDismiss(action: () -> Unit) {
+        dismissals handledBy {
+            action()
+        }
+    }
+
+    /**
+     * Closes the [PopUpPanel] when dismissed, i.e. by clicking outside the element or pressing the Escape key.
+     *
+     * @see onDismiss
+     */
+    fun OpenClose.closeOnDismiss() {
+        dismissals handledBy close
+    }
+
 
     companion object {
         private var childToParent = emptyMap<Node, Node?>()
