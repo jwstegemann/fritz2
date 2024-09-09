@@ -22,7 +22,11 @@ import org.w3c.xhr.ProgressEvent
 interface WithEvents<out T : EventTarget> {
 
     companion object {
+        private const val ABORT = "abort"
         private const val AFTERPRINT = "afterprint"
+        private const val ANIMATIONEND = "animationend"
+        private const val ANIMATIONITERATION = "animationiteration"
+        private const val ANIMATIONSTART = "animationstart"
         private const val BEFOREPRINT = "beforeprint"
         private const val BEFOREUNLOAD = "beforeunload"
         private const val BLUR = "blur"
@@ -43,6 +47,7 @@ interface WithEvents<out T : EventTarget> {
         private const val DROP = "drop"
         private const val DURATIONCHANGE = "durationchange"
         private const val ENDED = "ended"
+        private const val ERROR = "error"
         private const val FOCUS = "focus"
         private const val FOCUSIN = "focusin"
         private const val FOCUSOUT = "focusout"
@@ -96,11 +101,11 @@ interface WithEvents<out T : EventTarget> {
         private const val TOUCHEND = "touchend"
         private const val TOUCHMOVE = "touchmove"
         private const val TOUCHSTART = "touchstart"
+        private const val TRANSITIONEND = "transitionend"
         private const val UNLOAD = "unload"
         private const val VOLUMECHANGE = "volumechange"
         private const val WAITING = "waiting"
         private const val WHEEL = "wheel"
-        private const val ABORT = "abort"
     }
 
     /**
@@ -167,6 +172,81 @@ interface WithEvents<out T : EventTarget> {
      * @return a [Listener] that emits [Event]s on its [Flow]
      */
     fun afterprintsIf(selector: Event.() -> Boolean): Listener<Event, T> = subscribe(AFTERPRINT, selector = selector)
+
+    /**
+     * occurs when a CSS Animation has completed
+     */
+    val animationends: Listener<Event, T> get() = subscribe(ANIMATIONEND)
+
+    /**
+     * occurs when a CSS Animation has completed
+     *
+     * @param init expression to manipulate the event dispatching like calling `stopPropagation` or similar DOM-API.
+     *
+     * @return a [Listener] that emits [Event]s on its [Flow]
+     */
+    fun animationends(init: Event.() -> Unit): Listener<Event, T> = subscribe(ANIMATIONEND) { init(); true }
+
+    /**
+     * occurs when a CSS Animation has completed
+     *
+     * @param selector expression to evaluate, which specific event should be emitted to the [Flow]. It is also
+     * possible and encouraged to manipulate the event dispatching by calling `stopPropagation` or similar DOM-API.
+     *
+     * @return a [Listener] that emits [Event]s on its [Flow]
+     */
+    fun animationendsIf(selector: Event.() -> Boolean): Listener<Event, T> =
+        subscribe(ANIMATIONEND, selector = selector)
+
+    /**
+     * occurs when an iteration of a CSS Animation ends, and another one begins
+     */
+    val animationiterations: Listener<Event, T> get() = subscribe(ANIMATIONITERATION)
+
+    /**
+     * occurs when an iteration of a CSS Animation ends, and another one begins
+     *
+     * @param init expression to manipulate the event dispatching like calling `stopPropagation` or similar DOM-API.
+     *
+     * @return a [Listener] that emits [Event]s on its [Flow]
+     */
+    fun animationiterations(init: Event.() -> Unit): Listener<Event, T> = subscribe(ANIMATIONITERATION) { init(); true }
+
+    /**
+     * occurs when an iteration of a CSS Animation ends, and another one begins
+     *
+     * @param selector expression to evaluate, which specific event should be emitted to the [Flow]. It is also
+     * possible and encouraged to manipulate the event dispatching by calling `stopPropagation` or similar DOM-API.
+     *
+     * @return a [Listener] that emits [Event]s on its [Flow]
+     */
+    fun animationiterationsIf(selector: Event.() -> Boolean): Listener<Event, T> =
+        subscribe(ANIMATIONITERATION, selector = selector)
+
+    /**
+     * occurs when a CSS Animation has started
+     */
+    val animationstarts: Listener<Event, T> get() = subscribe(ANIMATIONSTART)
+
+    /**
+     * occurs when a CSS Animation has completed
+     *
+     * @param init expression to manipulate the event dispatching like calling `stopPropagation` or similar DOM-API.
+     *
+     * @return a [Listener] that emits [Event]s on its [Flow]
+     */
+    fun animationstarts(init: Event.() -> Unit): Listener<Event, T> = subscribe(ANIMATIONSTART) { init(); true }
+
+    /**
+     * occurs when a CSS Animation has started
+     *
+     * @param selector expression to evaluate, which specific event should be emitted to the [Flow]. It is also
+     * possible and encouraged to manipulate the event dispatching by calling `stopPropagation` or similar DOM-API.
+     *
+     * @return a [Listener] that emits [Event]s on its [Flow]
+     */
+    fun animationstartsIf(selector: Event.() -> Boolean): Listener<Event, T> =
+        subscribe(ANIMATIONSTART, selector = selector)
 
     /**
      * occurs when a page is about to be printed
@@ -661,6 +741,30 @@ interface WithEvents<out T : EventTarget> {
      * @return a [Listener] that emits [Event]s on its [Flow]
      */
     fun endedsIf(selector: Event.() -> Boolean): Listener<Event, T> = subscribe(ENDED, selector = selector)
+
+    /**
+     * occurs when a CSS Animation has completed
+     */
+    val errors: Listener<Event, T> get() = subscribe(ERROR)
+
+    /**
+     * occurs when there is an error while loading an external file (e.g. a document or an image).
+     *
+     * @param init expression to manipulate the event dispatching like calling `stopPropagation` or similar DOM-API.
+     *
+     * @return a [Listener] that emits [Event]s on its [Flow]
+     */
+    fun errors(init: Event.() -> Unit): Listener<Event, T> = subscribe(ERROR) { init(); true }
+
+    /**
+     * occurs when there is an error while loading an external file (e.g. a document or an image).
+     *
+     * @param selector expression to evaluate, which specific event should be emitted to the [Flow]. It is also
+     * possible and encouraged to manipulate the event dispatching by calling `stopPropagation` or similar DOM-API.
+     *
+     * @return a [Listener] that emits [Event]s on its [Flow]
+     */
+    fun errorsIf(selector: Event.() -> Boolean): Listener<Event, T> = subscribe(ERROR, selector = selector)
 
     /**
      * occurs when an element gets focus
@@ -1967,6 +2071,31 @@ interface WithEvents<out T : EventTarget> {
         subscribe(TOUCHSTART, selector = selector)
 
     /**
+     * occurs when a CSS transition has completed
+     */
+    val transitionends: Listener<Event, T> get() = subscribe(TRANSITIONEND)
+
+    /**
+     * occurs when a CSS transition has completed
+     *
+     * @param init expression to manipulate the event dispatching like calling `stopPropagation` or similar DOM-API.
+     *
+     * @return a [Listener] that emits [Event]s on its [Flow]
+     */
+    fun transitionends(init: Event.() -> Unit): Listener<Event, T> = subscribe(TRANSITIONEND) { init(); true }
+
+    /**
+     * occurs when a CSS transition has completed
+     *
+     * @param selector expression to evaluate, which specific event should be emitted to the [Flow]. It is also
+     * possible and encouraged to manipulate the event dispatching by calling `stopPropagation` or similar DOM-API.
+     *
+     * @return a [Listener] that emits [Event]s on its [Flow]
+     */
+    fun transitionendsIf(selector: Event.() -> Boolean): Listener<Event, T> =
+        subscribe(TRANSITIONEND, selector = selector)
+
+    /**
      * occurs once a page has unloaded (for <body>)
      */
     val unloads: Listener<Event, T> get() = subscribe(UNLOAD)
@@ -2112,6 +2241,84 @@ interface WithEvents<out T : EventTarget> {
      */
     fun afterprintsCapturedIf(selector: Event.() -> Boolean): Listener<Event, T> =
         subscribe(AFTERPRINT, true, selector = selector)
+
+    /**
+     * occurs when a CSS Animation has completed
+     */
+    val animationendsCaptured: Listener<Event, T> get() = subscribe(ANIMATIONEND, true)
+
+    /**
+     * occurs when a CSS Animation has completed
+     *
+     * @param init expression to manipulate the event dispatching like calling `stopPropagation` or similar DOM-API.
+     *
+     * @return a [Listener] that emits [Event]s on its [Flow]
+     */
+    fun animationendsCaptured(init: Event.() -> Unit): Listener<Event, T> =
+        subscribe(ANIMATIONEND, true) { init(); true }
+
+    /**
+     * occurs when a CSS Animation has completed
+     *
+     * @param selector expression to evaluate, which specific event should be emitted to the [Flow]. It is also
+     * possible and encouraged to manipulate the event dispatching by calling `stopPropagation` or similar DOM-API.
+     *
+     * @return a [Listener] that emits [Event]s on its [Flow]
+     */
+    fun animationendsCapturedIf(selector: Event.() -> Boolean): Listener<Event, T> =
+        subscribe(ANIMATIONEND, true, selector = selector)
+
+    /**
+     * occurs when an iteration of a CSS Animation ends, and another one begins
+     */
+    val animationiterationsCaptured: Listener<Event, T> get() = subscribe(ANIMATIONITERATION, true)
+
+    /**
+     * occurs when an iteration of a CSS Animation ends, and another one begins
+     *
+     * @param init expression to manipulate the event dispatching like calling `stopPropagation` or similar DOM-API.
+     *
+     * @return a [Listener] that emits [Event]s on its [Flow]
+     */
+    fun animationiterationsCaptured(init: Event.() -> Unit): Listener<Event, T> =
+        subscribe(ANIMATIONITERATION, true) { init(); true }
+
+    /**
+     * occurs when an iteration of a CSS Animation ends, and another one begins
+     *
+     * @param selector expression to evaluate, which specific event should be emitted to the [Flow]. It is also
+     * possible and encouraged to manipulate the event dispatching by calling `stopPropagation` or similar DOM-API.
+     *
+     * @return a [Listener] that emits [Event]s on its [Flow]
+     */
+    fun animationiterationsCapturedIf(selector: Event.() -> Boolean): Listener<Event, T> =
+        subscribe(ANIMATIONITERATION, true, selector = selector)
+
+    /**
+     * occurs when a CSS Animation has started
+     */
+    val animationstartsCaptured: Listener<Event, T> get() = subscribe(ANIMATIONSTART, true)
+
+    /**
+     * occurs when a CSS Animation has completed
+     *
+     * @param init expression to manipulate the event dispatching like calling `stopPropagation` or similar DOM-API.
+     *
+     * @return a [Listener] that emits [Event]s on its [Flow]
+     */
+    fun animationstartsCaptured(init: Event.() -> Unit): Listener<Event, T> =
+        subscribe(ANIMATIONSTART, true) { init(); true }
+
+    /**
+     * occurs when a CSS Animation has started
+     *
+     * @param selector expression to evaluate, which specific event should be emitted to the [Flow]. It is also
+     * possible and encouraged to manipulate the event dispatching by calling `stopPropagation` or similar DOM-API.
+     *
+     * @return a [Listener] that emits [Event]s on its [Flow]
+     */
+    fun animationstartsCapturedIf(selector: Event.() -> Boolean): Listener<Event, T> =
+        subscribe(ANIMATIONSTART, true, selector = selector)
 
     /**
      * occurs when a page is about to be printed
@@ -2626,6 +2833,31 @@ interface WithEvents<out T : EventTarget> {
      */
     fun endedsCapturedIf(selector: Event.() -> Boolean): Listener<Event, T> =
         subscribe(ENDED, true, selector = selector)
+
+    /**
+     * occurs when a CSS Animation has completed
+     */
+    val errorsCaptured: Listener<Event, T> get() = subscribe(ERROR, true)
+
+    /**
+     * occurs when there is an error while loading an external file (e.g. a document or an image).
+     *
+     * @param init expression to manipulate the event dispatching like calling `stopPropagation` or similar DOM-API.
+     *
+     * @return a [Listener] that emits [Event]s on its [Flow]
+     */
+    fun errorsCaptured(init: Event.() -> Unit): Listener<Event, T> = subscribe(ERROR, true) { init(); true }
+
+    /**
+     * occurs when there is an error while loading an external file (e.g. a document or an image).
+     *
+     * @param selector expression to evaluate, which specific event should be emitted to the [Flow]. It is also
+     * possible and encouraged to manipulate the event dispatching by calling `stopPropagation` or similar DOM-API.
+     *
+     * @return a [Listener] that emits [Event]s on its [Flow]
+     */
+    fun errorsCapturedIf(selector: Event.() -> Boolean): Listener<Event, T> =
+        subscribe(ERROR, true, selector = selector)
 
     /**
      * occurs when an element gets focus
@@ -3978,6 +4210,32 @@ interface WithEvents<out T : EventTarget> {
         subscribe(TOUCHSTART, true, selector = selector)
 
     /**
+     * occurs when a CSS transition has completed
+     */
+    val transitionendsCaptured: Listener<Event, T> get() = subscribe(TRANSITIONEND, true)
+
+    /**
+     * occurs when a CSS transition has completed
+     *
+     * @param init expression to manipulate the event dispatching like calling `stopPropagation` or similar DOM-API.
+     *
+     * @return a [Listener] that emits [Event]s on its [Flow]
+     */
+    fun transitionendsCaptured(init: Event.() -> Unit): Listener<Event, T> =
+        subscribe(TRANSITIONEND, true) { init(); true }
+
+    /**
+     * occurs when a CSS transition has completed
+     *
+     * @param selector expression to evaluate, which specific event should be emitted to the [Flow]. It is also
+     * possible and encouraged to manipulate the event dispatching by calling `stopPropagation` or similar DOM-API.
+     *
+     * @return a [Listener] that emits [Event]s on its [Flow]
+     */
+    fun transitionendsCapturedIf(selector: Event.() -> Boolean): Listener<Event, T> =
+        subscribe(TRANSITIONEND, true, selector = selector)
+
+    /**
      * occurs once a page has unloaded (for <body>)
      */
     val unloadsCaptured: Listener<Event, T> get() = subscribe(UNLOAD, true)
@@ -4095,6 +4353,9 @@ object Window : WithEvents<Window> {
 
     override val aborts by lazy { super.aborts }
     override val afterprints by lazy { super.afterprints }
+    override val animationends by lazy { super.animationends }
+    override val animationiterations by lazy { super.animationiterations }
+    override val animationstarts by lazy { super.animationstarts }
     override val beforeprints by lazy { super.beforeprints }
     override val beforeunloads by lazy { super.beforeunloads }
     override val blurs by lazy { super.blurs }
@@ -4115,6 +4376,7 @@ object Window : WithEvents<Window> {
     override val drops by lazy { super.drops }
     override val durationchanges by lazy { super.durationchanges }
     override val endeds by lazy { super.endeds }
+    override val errors by lazy { super.errors }
     override val focuss by lazy { super.focuss }
     override val focusins by lazy { super.focusins }
     override val focusouts by lazy { super.focusouts }
@@ -4168,6 +4430,7 @@ object Window : WithEvents<Window> {
     override val touchends by lazy { super.touchends }
     override val touchmoves by lazy { super.touchmoves }
     override val touchstarts by lazy { super.touchstarts }
+    override val transitionends by lazy { super.transitionends }
     override val unloads by lazy { super.unloads }
     override val volumechanges by lazy { super.volumechanges }
     override val waitings by lazy { super.waitings }
@@ -4175,6 +4438,9 @@ object Window : WithEvents<Window> {
 
     override val abortsCaptured by lazy { super.abortsCaptured }
     override val afterprintsCaptured by lazy { super.afterprintsCaptured }
+    override val animationendsCaptured by lazy { super.animationendsCaptured }
+    override val animationiterationsCaptured by lazy { super.animationiterationsCaptured }
+    override val animationstartsCaptured by lazy { super.animationstartsCaptured }
     override val beforeprintsCaptured by lazy { super.beforeprintsCaptured }
     override val beforeunloadsCaptured by lazy { super.beforeunloadsCaptured }
     override val blursCaptured by lazy { super.blursCaptured }
@@ -4195,6 +4461,7 @@ object Window : WithEvents<Window> {
     override val dropsCaptured by lazy { super.dropsCaptured }
     override val durationchangesCaptured by lazy { super.durationchangesCaptured }
     override val endedsCaptured by lazy { super.endedsCaptured }
+    override val errorsCaptured by lazy { super.errorsCaptured }
     override val focussCaptured by lazy { super.focussCaptured }
     override val focusinsCaptured by lazy { super.focusinsCaptured }
     override val focusoutsCaptured by lazy { super.focusoutsCaptured }
@@ -4248,6 +4515,7 @@ object Window : WithEvents<Window> {
     override val touchendsCaptured by lazy { super.touchendsCaptured }
     override val touchmovesCaptured by lazy { super.touchmovesCaptured }
     override val touchstartsCaptured by lazy { super.touchstartsCaptured }
+    override val transitionendsCaptured by lazy { super.transitionendsCaptured }
     override val unloadsCaptured by lazy { super.unloadsCaptured }
     override val volumechangesCaptured by lazy { super.volumechangesCaptured }
     override val waitingsCaptured by lazy { super.waitingsCaptured }
