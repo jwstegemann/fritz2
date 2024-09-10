@@ -166,7 +166,6 @@ private fun RenderContext.quickSelectButton(country: Country, store: Store<Count
 }
 
 private fun RenderContext.checkbox(text: String, value: Store<Boolean>, testId: String) {
-    val id = Id.next()
     div("flex items-center gap-2") {
         input("", id = testId) {
             type("checkbox")
