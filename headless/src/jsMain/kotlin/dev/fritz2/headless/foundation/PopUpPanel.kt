@@ -235,7 +235,7 @@ abstract class PopUpPanel<C : HTMLElement>(
      *
      * @see PopUpPanel.size
      */
-    var size: PopUpPanelSize = PopUpPanelSize.None
+    var size: PopUpPanelSize = None
 
     private val computedPositionStore: Store<ComputePositionReturn> = storeOf(obj {})
 
@@ -310,17 +310,9 @@ abstract class PopUpPanel<C : HTMLElement>(
                     .then { computedPositionStore.update(it) }
             }
 
-            /*
-            val cleanup = autoUpdate(
-                reference.domNode,
-                domNode,
-                options = obj { animationFrame = true },
-                update = { computePosition() }
-            )
-
-             */
-
-            afterMount { _, _ -> computePosition() }
+            // call it once to initialize some position definitely inside the page's content.
+            // otherwise the page would grow with invisible space in bottom direction.
+            computePosition()
 
             var cleanup: () -> Unit = {}
 
@@ -329,15 +321,17 @@ abstract class PopUpPanel<C : HTMLElement>(
                     cleanup = autoUpdate(
                         reference.domNode,
                         domNode,
-                        options = obj { animationFrame = true; elementResize = false },
+                        options = obj {
+                            animationFrame = true
+                            // apply workaround in order to bypass [issue](https://github.com/floating-ui/floating-ui/issues/1740)
+                            elementResize = false
+                        },
                         update = { computePosition() }
                     )
                 } else {
                     cleanup()
                 }
             }
-
-            //beforeUnmount { _, _ -> cleanup.invoke() }
 
             afterMount { _, _ ->
                 var parent: Node? = reference.domNode
@@ -378,7 +372,6 @@ abstract class PopUpPanel<C : HTMLElement>(
             className(
                 opened.transform {
                     if (it) {
-                        //computePosition()
                         emit(true)
                         this@PopUpPanel.waitForAnimation()
                     } else {

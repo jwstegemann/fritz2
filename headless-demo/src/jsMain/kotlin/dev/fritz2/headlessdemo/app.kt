@@ -16,12 +16,6 @@ data class DemoPage(val title: String, val description: String, override val con
 data class TestDrive(override val content: RenderContext.() -> Unit) : Page
 
 val pages: Map<String, Page> = mapOf(
-    "stress" to DemoPage(
-        "PopUpPanel Stresstest",
-        """Checkbox groups give you the same functionality as native HTML checkbox inputs, without any of the styling. 
-            |They're perfect for building out custom UIs for multi selection.""".trimMargin(),
-        RenderContext::stresstest
-    ),
     "checkboxGroup" to DemoPage(
         "Headless Checkboxgroup",
         """Checkbox groups give you the same functionality as native HTML checkbox inputs, without any of the styling. 
