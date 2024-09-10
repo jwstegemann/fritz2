@@ -422,7 +422,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
             current.copy(opened = opened)
         }
 
-        val select: EmittingHandler<T, T> = handleAndEmit { current, selection ->
+        val select: EmittingHandler<T?, T?> = handleAndEmit { current, selection ->
             current.copy(query = "", opened = false).also {
                 emit(selection)
             }
@@ -546,12 +546,14 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
             } handledBy internalState.select
         }
 
+        private fun format(value: T?): String = value?.let(itemFormat) ?: ""
+
         fun render() {
             value(
                 merge(
-                    internalState.select.map { itemFormat(it) },
+                    internalState.select.map {  format(it) },
                     value.data.flatMapLatest { value ->
-                        internalState.resetQuery.map { value?.let { itemFormat(it) } ?: "" }
+                        internalState.resetQuery.map { format(value) }
                     },
                     // Update the input every time the user types in a new value. This is needed because `mountSimple`
                     // (used internally by `value()`) does not work with repeating identical values. This is needed,
@@ -828,7 +830,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
         hook(items)
 
 
-        value.data.mapNotNull { it } handledBy internalState.select
+        value.data handledBy internalState.select
         value.handler?.invoke(this, internalState.select)
 
         opened handledBy internalState.setOpened
@@ -854,7 +856,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
  *
  *     var itemFormat: (T) -> String
  *
- *     val value: DatabindingProperty<T>
+ *     val value: DatabindingProperty<T?>
  *
  *     var filterBy: FilterFunctionProperty
  *     // params: (Sequence<T>, String) -> Sequence<T> / T.() -> String
@@ -923,7 +925,7 @@ fun <E : HTMLElement, T> RenderContext.combobox(
  *
  *     var itemFormat: (T) -> String
  *
- *     val value: DatabindingProperty<T>
+ *     val value: DatabindingProperty<T?>
  *
  *     var filterBy: FilterFunctionProperty
  *     // params: (Sequence<T>, String) -> Sequence<T> / T.() -> String
