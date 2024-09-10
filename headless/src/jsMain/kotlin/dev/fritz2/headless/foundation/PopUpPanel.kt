@@ -310,6 +310,7 @@ abstract class PopUpPanel<C : HTMLElement>(
                     .then { computedPositionStore.update(it) }
             }
 
+            /*
             val cleanup = autoUpdate(
                 reference.domNode,
                 domNode,
@@ -317,9 +318,26 @@ abstract class PopUpPanel<C : HTMLElement>(
                 update = { computePosition() }
             )
 
+             */
+
             afterMount { _, _ -> computePosition() }
 
-            beforeUnmount { _, _ -> cleanup.invoke() }
+            var cleanup: () -> Unit = {}
+
+            opened handledBy {
+                if (it) {
+                    cleanup = autoUpdate(
+                        reference.domNode,
+                        domNode,
+                        options = obj { animationFrame = true; elementResize = false },
+                        update = { computePosition() }
+                    )
+                } else {
+                    cleanup()
+                }
+            }
+
+            //beforeUnmount { _, _ -> cleanup.invoke() }
 
             afterMount { _, _ ->
                 var parent: Node? = reference.domNode
@@ -337,18 +355,18 @@ abstract class PopUpPanel<C : HTMLElement>(
             }
 
             attr("data-popup-placement", computedPosition.map { it.placement ?: "" })
-            inlineStyle(computedPosition.map {
-                listOfNotNull(
-                    "position: ${it.strategy}",
-                    it.x?.let { x -> "left: ${x}px" },
-                    it.y?.let { y -> "top: ${y}px" },
+            inlineStyle(computedPosition.map { positionReturn ->
+                buildString {
+                    append("position: ${positionReturn.strategy}; ")
+                    positionReturn.x?.let { x -> append("left: ${x}px; ") }
+                    positionReturn.y?.let { y -> append("top: ${y}px; ") }
                     when (size) {
-                        PopUpPanelSize.Min -> "min-width: ${reference.domNode.offsetWidth}px"
-                        PopUpPanelSize.Max -> "max-width: ${reference.domNode.offsetWidth}px"
-                        PopUpPanelSize.Exact -> "width: ${reference.domNode.offsetWidth}px"
-                        PopUpPanelSize.None -> null
-                    }
-                ).joinToString("; ")
+                        Min -> "min-width: ${reference.domNode.offsetWidth}px"
+                        Max -> "max-width: ${reference.domNode.offsetWidth}px"
+                        Exact -> "width: ${reference.domNode.offsetWidth}px"
+                        None -> null
+                    }?.let { style -> append(style) }
+                }
             })
 
             reference.apply {
@@ -360,7 +378,7 @@ abstract class PopUpPanel<C : HTMLElement>(
             className(
                 opened.transform {
                     if (it) {
-                        computePosition()
+                        //computePosition()
                         emit(true)
                         this@PopUpPanel.waitForAnimation()
                     } else {
