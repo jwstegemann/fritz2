@@ -89,6 +89,44 @@ test.describe("To open and close a combobox", () => {
 
 });
 
+test("With a default value of 'null', the input is empty", async ({ page }) => {
+    const [input, _] = await createLocators(page);
+
+    const selection = page.locator("#countries-selection");
+    await expect(selection).toContainText("null");
+        
+    await expect(input).toHaveValue("");
+});
+
+test.describe("When updating the value via the data-binding", () => {
+
+    test("non-null values are reflected in the input element", async ({ page }) => {
+        const [input, _] = await createLocators(page);
+
+        const selection = page.locator("#countries-selection");
+        await expect(selection).toContainText("null");
+
+        const selectionButton = await page.locator('#btn-select-2');
+        const expectedValue = await selectionButton.textContent();
+
+        await selectionButton.click();
+
+        await expect(input).toHaveValue(expectedValue!);
+    });
+
+    test("null values are reflected in the input element", async ({ page }) => {
+        const [input, _] = await createLocators(page);
+
+        const selectionButton = await page.locator('#btn-select-2');
+        await selectionButton.click();
+
+        const resetButton = await page.locator('#btn-select-0');
+        await resetButton.click();
+
+        await expect(input).toHaveValue("");
+    });
+})
+
 test.describe("When the input is read-only", () => {
 
     const selectInputText = async (page: Page) => page.locator("#countries-input").selectText();
