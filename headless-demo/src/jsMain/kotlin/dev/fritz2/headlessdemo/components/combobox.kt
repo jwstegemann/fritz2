@@ -44,6 +44,7 @@ fun RenderContext.comboboxDemo() {
                     ),
                 ) {
                     readOnly(readOnlyStore.data)
+                    placeholder("Country")
                 }
 
                 icon("pl-2w-5 h-5", content = HeroIcons.selector).clicks handledBy open
@@ -127,10 +128,11 @@ fun RenderContext.comboboxDemo() {
             }
             div("flex flex-wrap gap-2") {
                 buildList {
+                    add(null)
                     addAll(COUNTRY_LIST.take(2))
                     addAll(COUNTRY_LIST.takeLast(2))
-                }.forEach { country ->
-                    quickSelectButton(country, selectionStore)
+                }.forEachIndexed { index, country ->
+                    quickSelectButton(country, selectionStore, id = "btn-select-$index")
                 }
             }
         }
@@ -159,9 +161,13 @@ private fun RenderContext.highlightedText(text: String, highlight: String) =
         }
     }
 
-private fun RenderContext.quickSelectButton(country: Country, store: Store<Country?>) {
-    button("p-2 bg-primary-500 hover:bg-primary-600 shadow rounded text-sm text-primary-900") {
-        +country.name
+private fun RenderContext.quickSelectButton(country: Country?, store: Store<Country?>, id: String? = null) {
+    button(
+        "p-2 bg-primary-500 hover:bg-primary-600 shadow rounded text-sm text-primary-900",
+        id
+    ) {
+        type("button")
+        +(country?.name ?: "Nothing")
     }.clicks.map { country } handledBy store.update
 }
 

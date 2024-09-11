@@ -22,12 +22,17 @@ such as a country.
 When the input created via `comboboxInput` is focused, a dropdown with suggestions is shown and updated as you
 type. When focused, the input shows the current input. Otherwise, the currently selected item is displayed.
 
-It is mandatory to specify a data stream or a store of type `T` as data binding via the `value` property. The component
+It is mandatory to specify a data stream or a store of type `T?` as data binding via the `value` property. The component
 supports two-way data binding, i.e. it reflects a selected element from the outside by a `Flow<T>`
-but also emits the updated selection to the outside via a `Handler`.
+but also emits the updated selection to the outside via a `Handler`.  
 
-You can navigate within the selection list using the keyboard. By [[Enter]], [[Space]] or a mouse click an item is
-selected. If the combo box input loses focus or the user clicks outside the selection list, the dropdown is hidden.
+A combo box may not hold a value (e.g. if initially there is  no selection or the implementation lets the user
+un-select his choice). Thus, the type parameter of the data-binding is nullable. It is possible to specify a
+placeholder text via the vanilla `placeholder` attribute exposed by the [`comboboxInput`](#comboboxinput)'s 
+input element.
+
+Within the selection list the user can navigate using the keyboard. An item is selected via [[Enter]], [[Space]] or a 
+mouse click. If the combo box input loses focus or the user clicks outside the selection list, the dropdown is hidden.
 
 As typical use cases may offer thousands of items to choose from, the component reduces and filters those in order to
 support the visual recognition of a user down to a feasible size, which can be configured via `maximumDisplayedItems`.
@@ -325,7 +330,7 @@ combobox<T> {
 
     var itemFormat: (T) -> String
 
-    val value: DatabindingProperty<T>
+    val value: DatabindingProperty<T?>
 
     var filterBy: FilterFunctionProperty
     // params: (Sequence<T>, String) -> Sequence<T> / T.() -> String
