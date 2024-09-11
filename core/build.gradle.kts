@@ -30,7 +30,6 @@ kotlin {
             dependencies {
                 implementation(Kotlin.test)
                 implementation(Kotlin.test.common)
-                implementation(Kotlin.test.junit)
                 implementation(Kotlin.test.annotationsCommon)
             }
         }

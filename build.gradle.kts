@@ -54,6 +54,7 @@ apiValidation {
             "todomvc",
             "validation",
             "webcomponent",
+            "serialization"
         )
     )
 }
