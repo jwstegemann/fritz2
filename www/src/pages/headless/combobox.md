@@ -217,6 +217,27 @@ combobox {
 }
 ```
 
+## Auto-Selecting Items
+
+By default, the user needs to manually select an item for it to be accepted as the combo box's value.
+It can, however, also be configured to automatically select matching items for a query via the `selectionStrategy`
+property.
+
+The following modes are offered:
+
+| Configuration method  | Description                                 |
+|-----------------------|---------------------------------------------|
+| `autoSelectMatches()` | Matching items are automatically selected   |
+| `manual()`            | Matching items need to be selected manually |
+
+```kotlin
+combobox {
+    selectionStrategy.autoSelectMatches()
+    // OR
+    selectionStrategy.manual()
+}
+```
+
 ## Transitions
 
 Showing and hiding the selection list can be easily animated with the help of `transition`:
