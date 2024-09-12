@@ -174,7 +174,7 @@ comboboxItems {
 }
 ```
 
-## Add a Label
+## Adding a Label
 
 The combo box can be supplemented with a label using `comboboxLabel`, e.g. for use in forms or for a screen reader:
 
@@ -192,6 +192,30 @@ Combobox is an [`OpenClose` component](#closable-content---openclose). There are
 like `opened` available in its scope to control the open state of the combo box based on state changes.
 
 Most of the time, the open state managed by the component itself should be enough for all use cases, though.
+
+### Automatic Opening Behavior
+
+The combo box's dropdown can be configured to automatically open based on different events:
+
+| Configuration method | Description                                                                      |
+|----------------------|----------------------------------------------------------------------------------|
+| `lazily()`           | The dropdown is opened when the user starts typing.                              |
+| `eagerly()`          | The dropdown is opened as soon as the user focuses the combo box's input element |
+
+The configuration is done via the `openDropdown` hook available in the configuration scope.
+
+Both strategies are good choices and mostly depend on subjective preferences. By __default__, the dropdown opens 
+itself _eagerly_.
+
+Example:
+
+```kotlin
+combobox {
+    openDropdown.lazily()
+    // OR
+    openDropdown.eagerly()
+}
+```
 
 ## Transitions
 
@@ -335,6 +359,9 @@ combobox<T> {
     var filterBy: FilterFunctionProperty
     // params: (Sequence<T>, String) -> Sequence<T> / T.() -> String
 
+    val openDropdown: DropdownOpeningHook
+    // methods: lazily() / eagerly()
+
     val selectionStrategy: SelectionStrategyProperty
     // methods: autoSelectMatches() / manual()
 
@@ -376,12 +403,13 @@ Parameters: `classes`, `id`, `scope`, `tag`, `initialize`
 
 Default-Tag: `div`
 
-| Scope property          | Typ                            | Description                                                                                                                                                                                                                            |
+| Scope property          | Type                           | Description                                                                                                                                                                                                                            |
 |:------------------------|:-------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `items`                 | `Combobox<T>.ItemsHook`        | Mandatory `List<T>` or `Flow<List<T>>` of items to offer (invoke)                                                                                                                                                                      |
 | `itemFormat`            | `(T) -> String`                | Recommended formatting function used to display an item's String representation in the `comboboxInput`.                                                                                                                                |
 | `value`                 | `DatabindingProperty<T>`       | Mandatory (tow-way) data binding for a selected item.                                                                                                                                                                                  |
 | `filterBy`              | `FilterFunctionProperty`       | Recommended filter function to find matching items based on the query. Accepts either a String getter (`T.() -> String`) or a fully custom filter function (`(Sequence<T>, String) -> Sequence<T>`). _Mandatory for non-String items!_ |
+| `openDropdown`          | `DropdownOpeningHook`          | Optional strategy to configure when the combo box's dropdown should open (lazily or eagerly)                                                                                                                                           |                     
 | `selectionStrategy`     | `SelectionStrategyProperty`    | Optional strategy to configure whether exact matches are automatically selected. Invoke either `autoSelectMatches()` or `manual()`                                                                                                     |
 | `maximumDisplayedItems` | `Int`                          | Maxmimum number of items to display in the dropdown. Defaults to 20                                                                                                                                                                    |
 | `inputDebounceMillis`   | `Long`                         | Time to wait and debounce before the filter function is invoked. Defaults to 50 milliseconds.                                                                                                                                          |
