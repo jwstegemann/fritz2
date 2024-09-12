@@ -488,9 +488,10 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
                 // All subsequent states are computed based on the changing internal state:
                 data
                     .drop(1)
-                    .filter { it.opened }
+                    .map { it.items to it.query }
+                    .distinctUntilChanged()
                     .debounce(inputDebounceMillis)
-                    .mapLatest { state -> computeQueryResult(state.items, state.query) }
+                    .mapLatest { (items, query) -> computeQueryResult(items, query) }
                     .debounce(renderDebounceMillis)
             )
 
