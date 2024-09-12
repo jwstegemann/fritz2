@@ -318,10 +318,11 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
      * match in the combobox's input or not.
      *
      * The following strategies can be configured:
-     * - [autoSelectMatch()][SelectionStrategyProperty.autoSelectMatch] (__default__): Automatically select elements if
+     * - [autoSelectMatch()][SelectionStrategyProperty.autoSelectMatch]: Automatically select elements if
      *   they are an exact match
-     * - [manual()][SelectionStrategyProperty.manual]: Render exact matches as part of the regular dropdown for the user
-     *   to manually select. If no selection is made, the input is reset to the last selected value.
+     * - [manual()][SelectionStrategyProperty.manual] (__default__): Render exact matches as part of the regular
+     *   dropdown for the user to manually select. If no selection is made, the input is reset to the last selected
+     *   value.
      *
      * Example:
      * ```kotlin
