@@ -4,117 +4,129 @@ import dev.fritz2.core.*
 import dev.fritz2.headless.components.combobox
 import dev.fritz2.headless.foundation.utils.floatingui.core.middleware.offset
 import dev.fritz2.headlessdemo.result
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 
 fun RenderContext.comboboxDemo() {
     val selectionStore = storeOf<Country?>(null)
-    val readOnlyStore = storeOf(false)
-    val enableAutoselectStore = storeOf(false)
+
+    val configurationStore = storeOf(ComboboxDemoConfig())
+    val readOnlyStore = configurationStore.map(ComboboxDemoConfig.readOnly())
+    val autoSelectMatchesStore = configurationStore.map(ComboboxDemoConfig.autoSelectMatches())
+    val openDropdownLazilyStore = configurationStore.map(ComboboxDemoConfig.openDropdownLazily())
 
     div("max-w-96 flex flex-col gap-4") {
-        combobox<Country>(id = "countries") {
-            items(COUNTRY_LIST)
-            itemFormat = Country::name
-            value(selectionStore)
-            filterBy(Country::name)
+        combine(
+            autoSelectMatchesStore.data,
+            openDropdownLazilyStore.data,
+            ::Pair
+        ).render { (autoSelectMatches, openDropdownLazily) ->
+            combobox<Country>(id = "countries") {
+                items(COUNTRY_LIST)
+                itemFormat = Country::name
+                value(selectionStore)
+                filterBy(Country::name)
 
-            enableAutoselectStore.data handledBy {
-                if (it) selectionStrategy.autoSelectMatch()
+                if (autoSelectMatches) selectionStrategy.autoSelectMatch()
                 else selectionStrategy.manual()
-            }
 
-            maximumDisplayedItems = 20
+                if (openDropdownLazily) openDropdown.lazily()
+                else openDropdown.eagerly()
 
-            comboboxLabel("sr-only") {
-                +"Select a Country"
-            }
+                maximumDisplayedItems = 20
 
-            comboboxPanelReference(
-                joinClasses(
-                    "w-full py-2.5 px-4 flex items-center bg-white rounded border border-primary-600",
-                    "cursor-default font-sans text-sm text-left text-primary-800 hover:border-primary-800",
-                    "focus-within:outline-none focus-within:ring-4 focus-within:ring-primary-600 focus-within:border-primary-800"
-                ),
-            ) {
-                comboboxInput(
-                    joinClasses(
-                        "w-full block flex-grow bg-transparent border-0 outline-0 placeholder-gray-700",
-                        "vui-label-4 p-0 focus:ring-transparent focus:shadow-none disabled:text-gray-400",
-                        "text-ellipsis",
-                    ),
-                ) {
-                    readOnly(readOnlyStore.data)
-                    placeholder("Country")
+                comboboxLabel("sr-only") {
+                    +"Select a Country"
                 }
 
-                icon("pl-2w-5 h-5", content = HeroIcons.selector).clicks handledBy open
-            }
+                comboboxPanelReference(
+                    joinClasses(
+                        "w-full py-2.5 px-4 flex items-center bg-white rounded border border-primary-600",
+                        "cursor-default font-sans text-sm text-left text-primary-800 hover:border-primary-800",
+                        "focus-within:outline-none focus-within:ring-4 focus-within:ring-primary-600",
+                        "focus-within:border-primary-800"
+                    ),
+                ) {
+                    comboboxInput(
+                        joinClasses(
+                            "w-full block flex-grow bg-transparent border-0 outline-0 placeholder-gray-700",
+                            "vui-label-4 p-0 focus:ring-transparent focus:shadow-none disabled:text-gray-400",
+                            "text-ellipsis",
+                        ),
+                    ) {
+                        readOnly(readOnlyStore.data)
+                        placeholder("Country")
+                    }
 
-            comboboxValidationMessages {
-                ul("list-disc list-inside") {
-                    msgs.render(into = this) { messages ->
-                        messages.forEach { message ->
-                            li {
-                                +"(${message.severity}) ${message.message}"
+                    icon("pl-2w-5 h-5", content = HeroIcons.selector).clicks handledBy open
+                }
+
+                comboboxValidationMessages {
+                    ul("list-disc list-inside") {
+                        msgs.render(into = this) { messages ->
+                            messages.forEach { message ->
+                                li {
+                                    +"(${message.severity}) ${message.message}"
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            comboboxItems(
-                joinClasses(
-                    "max-h-60 py-1 overflow-auto origin-top z-30 bg-white rounded shadow-md divide-y divide-gray-100",
-                    "ring-1 ring-primary-600 ring-opacity-5 focus:outline-none"
-                )
-            ) {
-                addMiddleware(offset(5))
+                comboboxItems(
+                    joinClasses(
+                        "max-h-60 py-1 overflow-auto origin-top z-30 bg-white rounded shadow-md divide-y divide-gray-100",
+                        "ring-1 ring-primary-600 ring-opacity-5 focus:outline-none"
+                    )
+                ) {
+                    addMiddleware(offset(5))
 
-                transition(
-                    opened,
-                    enter = "transition duration-100 ease-out",
-                    enterStart = "opacity-0 scale-95",
-                    enterEnd = "opacity-100 scale-100",
-                    leave = "transition duration-100 ease-in",
-                    leaveStart = "opacity-100 scale-100",
-                    leaveEnd = "opacity-0 scale-95"
-                )
+                    transition(
+                        opened,
+                        enter = "transition duration-100 ease-out",
+                        enterStart = "opacity-0 scale-95",
+                        enterEnd = "opacity-100 scale-100",
+                        leave = "transition duration-100 ease-in",
+                        leaveStart = "opacity-100 scale-100",
+                        leaveEnd = "opacity-0 scale-95"
+                    )
 
-                results.render(into = this) { (query, results, truncated) ->
-                    if (results.isEmpty()) {
-                        p("px-4 py-2 text-gray-400") {
-                            +"No results found"
-                        }
-                    } else {
-                        results.forEach { item ->
-                            comboboxItem(
-                                item,
-                                "w-full relative py-2 pl-10 pr-4 cursor-default select-none disabled:opacity-50 text-sm"
-                            ) {
-                                className(active.map { active->
-                                    if (active) "bg-primary-600 text-white"
-                                    else "text-primary-800"
-                                })
-
-                                highlightedText(item.value.name, query).run {
-                                    className(selected.map {
-                                        if (it) "font-semibold"
-                                        else "font-normal"
+                    results.render(into = this) { (query, results, truncated) ->
+                        if (results.isEmpty()) {
+                            p("px-4 py-2 text-gray-400") {
+                                +"No results found"
+                            }
+                        } else {
+                            results.forEach { item ->
+                                comboboxItem(
+                                    item,
+                                    "w-full relative py-2 pl-10 pr-4 cursor-default select-none disabled:opacity-50 text-sm"
+                                ) {
+                                    className(active.map { active->
+                                        if (active) "bg-primary-600 text-white"
+                                        else "text-primary-800"
                                     })
-                                }
 
-                                selected.render {
-                                    if (it) {
-                                        span("absolute left-0 inset-y-0 flex items-center pl-3") {
-                                            icon("w-5 h-5", content = HeroIcons.check)
+                                    highlightedText(item.value.name, query).run {
+                                        className(selected.map {
+                                            if (it) "font-semibold"
+                                            else "font-normal"
+                                        })
+                                    }
+
+                                    selected.render {
+                                        if (it) {
+                                            span("absolute left-0 inset-y-0 flex items-center pl-3") {
+                                                icon("w-5 h-5", content = HeroIcons.check)
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
-                        if (truncated) {
-                            div("py-2 pl-10 pr-4 text-sm text-gray-400") {
-                                +"Refine your query for more results"
+                            if (truncated) {
+                                div("py-2 pl-10 pr-4 text-sm text-gray-400") {
+                                    +"Refine your query for more results"
+                                }
                             }
                         }
                     }
@@ -138,7 +150,8 @@ fun RenderContext.comboboxDemo() {
         }
 
         checkbox("Read-only", readOnlyStore, "checkbox-enable-readonly")
-        checkbox("Auto-select exact matches (try 'oman')", enableAutoselectStore, "checkbox-enable-autoselect")
+        checkbox("Auto-select exact matches (try 'oman')", autoSelectMatchesStore, "checkbox-enable-autoselect")
+        checkbox("Open dropdown lazily", openDropdownLazilyStore, "checkbox-enable-lazy-opening")
 
         result {
             p {

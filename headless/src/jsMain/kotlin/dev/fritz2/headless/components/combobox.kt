@@ -200,6 +200,48 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
     val filterBy: FilterFunctionProperty = FilterFunctionProperty()
 
 
+    inner class DropdownOpeningHook : Hook<Tag<HTMLInputElement>, Unit, Unit>() {
+
+        private val openOnFocus: Effect<Tag<HTMLInputElement>, Unit, Unit> = { _, _ ->
+            focuss.filterNot { domNode.readOnly } handledBy open
+            selects.filterNot { domNode.readOnly }.map { true } handledBy internalState.setOpened
+        }
+
+        init {
+            value = openOnFocus
+        }
+
+        fun eagerly() {
+            value = openOnFocus
+        }
+
+        fun lazily() {
+            value = { _, _ -> }
+        }
+    }
+
+    /**
+     * Specifies the opening-behavior of the selection dropdown.
+     *
+     * The dropdown can be configured to either open
+     * - _lazily_ (when the user starts typing) or
+     * - _eagerly_ (when the user focuses the input field).
+     *
+     * Both behaviors can be set by calling the respective method [lazily][DropdownOpeningHook.lazily] or
+     * [eagerly][DropdownOpeningHook.eagerly].
+     *
+     * Example:
+     * ```kotlin
+     * combobox {
+     *     openDropdown.lazily()
+     *     // OR
+     *     openDropdown.eagerly()
+     * }
+     * ```
+     */
+    val openDropdown: DropdownOpeningHook = DropdownOpeningHook()
+
+
     inner class SelectionStrategyProperty : Property<(String, Sequence<T>) -> QueryResult<T>>() {
 
         private fun isExactMatch(item: T, query: String) =
@@ -566,11 +608,9 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
 
 
             focuss.filterNot { domNode.readOnly } handledBy {
-                open()
                 domNode.select()
             }
-
-            selects.filterNot { domNode.readOnly }.map { true } handledBy internalState.setOpened
+            hook(openDropdown)
 
 
             Window.keydowns.mapNotNull { event ->
@@ -861,6 +901,9 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
  *     var filterBy: FilterFunctionProperty
  *     // params: (Sequence<T>, String) -> Sequence<T> / T.() -> String
  *
+ *     val openDropdown: DropdownOpeningHook
+ *     // methods: lazily() / eagerly()
+ *
  *     val selectionStrategy: SelectionStrategyProperty
  *     // methods: autoSelectMatches() / manual()
  *
@@ -929,6 +972,9 @@ fun <E : HTMLElement, T> RenderContext.combobox(
  *
  *     var filterBy: FilterFunctionProperty
  *     // params: (Sequence<T>, String) -> Sequence<T> / T.() -> String
+ *
+ *     val openDropdown: DropdownOpeningHook
+ *     // methods: lazily() / eagerly()
  *
  *     val selectionStrategy: SelectionStrategyProperty
  *     // methods: autoSelectMatches() / manual()

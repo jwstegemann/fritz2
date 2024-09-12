@@ -40,53 +40,83 @@ test("Dropdown is initially closed", async ({ page }) => {
 });
 
 
-test.describe("To open and close a combobox", () => {
+test.describe("Trying to open and close a combobox", () => {
 
-    const testArgs = [
+    const openCloseArgs = [
         {
-            desc: "click into the input field, then click outside",
+            desc: "clicking into the input field, then clicking outside",
             open: clickInput,
             close: clickOutside,
         },
         {
-            desc: "tab into the input field, then press tab again",
+            desc: "tabbing into the input field, then pressing tab again",
             open: pressTab,
             close: pressTab,
         },
         {
-            desc: "click into the input field, then press tab",
+            desc: "clicking into the input field, then pressing tab",
             open: clickInput,
             close: pressTab,
         },
         {
-            desc: "tab into the input field, then click outside",
+            desc: "tabbing into the input field, then clicking outside",
             open: pressTab,
             close: clickOutside,
         },
         {
-            desc: "click into the input field, then press escape",
+            desc: "clicking into the input field, then pressing escape",
             open: clickInput,
             close: pressEscape,
         },
         {
-            desc: "tab into the input field, then press escape",
+            desc: "tabbing into the input field, then pressing escape",
             open: pressTab,
             close: pressEscape,
         },
     ];
 
-    for (const { desc, open, close } of testArgs) {
-        test(desc, async ({ page }) => {
+    test.describe("with the dropdown opening eagerly", () => {
+        for (const { desc, open, close } of openCloseArgs) {
+            test(`by ${desc} opens and closes the dropdown`, async ({ page }) => {
+                const [input, items] = await createLocators(page);
+
+                await open(page);
+                await assertIsOpen(input, items);
+
+                await close(page);
+                await assertIsClosed(input, items);
+            });
+        }
+    });
+
+    test.describe("with the dropdown opening lazily", () => {
+
+        for (const { desc, open, close } of openCloseArgs) {
+            test(`by ${desc} does not open the dropdown`, async ({ page }) => {
+                const [input, items] = await createLocators(page);
+
+                await page.locator("#checkbox-enable-lazy-opening").check();
+
+                await open(page);
+                await assertIsClosed(input, items);
+
+                await close(page);
+                await assertIsClosed(input, items);
+            });
+        }
+
+        test("by typing a query opens the dropdown", async ({ page }) => {
             const [input, items] = await createLocators(page);
 
-            await open(page);
-            await assertIsOpen(input, items);
+            await page.locator("#checkbox-enable-lazy-opening").check();
 
-            await close(page);
-            await assertIsClosed(input, items);
-        });
-    }
+            await input.click();
+            await expect(items).not.toBeVisible();
 
+            await input.pressSequentially("ger");
+            await expect(items).toBeVisible();
+        })
+    });
 });
 
 test("With a default value of 'null', the input is empty", async ({ page }) => {
@@ -331,4 +361,16 @@ test.describe("When typing a query", () => {
         await expect(items).not.toBeVisible();
         await expect(selection).toContainText("Oman");
     });
+
+    test("in lazy dropdown opening mode, the dropdown is first hidden and then opened", async ({ page }) => {
+        const [input, items] = await createLocators(page);
+
+        await page.locator("#checkbox-enable-lazy-opening").check();
+
+        await input.click();
+        await expect(items).not.toBeVisible();
+
+        await input.pressSequentially("ger");
+        await expect(items).toBeVisible();
+    })
 });
