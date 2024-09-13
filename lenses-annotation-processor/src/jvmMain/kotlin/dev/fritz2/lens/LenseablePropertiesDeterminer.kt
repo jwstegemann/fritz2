@@ -15,7 +15,7 @@ internal val determineLensablePropertiesInConstructor = LenseablePropertiesDeter
     classDeclaration.getDeclaredProperties()
         .filter { it.isPublic() && allPublicCtorProps.contains(it.simpleName) }.toList()
 }
-internal val determineLensablePropertiesInBody = LenseablePropertiesDeterminer { classDeclaration ->
+internal val determineLensablePropertiesInWholeType = LenseablePropertiesDeterminer { classDeclaration ->
     classDeclaration.getDeclaredProperties()
         .filter { it.isPublic() }
         .filter { it.annotations.none { annotation -> annotation.shortName.asString() == NoLens::class.simpleName } }

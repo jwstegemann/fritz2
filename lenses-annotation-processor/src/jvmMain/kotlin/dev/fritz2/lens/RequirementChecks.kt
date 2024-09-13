@@ -155,10 +155,7 @@ internal val thereAreLenseableProperties = RequirementChecker { classDeclaration
                 Severity.Warning,
                 buildString {
                     append("@Lenses annotated data class, sealed class or sealed interface $classDeclaration found,")
-                    if (classDeclaration.isTypeVariant() == TypeVariant.DataClass)
-                        append(" but it has no public properties defined in constructor ")
-                    else
-                        append(" but it has no public properties defined in ist body ")
+                    append(" but it has no public properties defined in constructor ")
                     append("-> can not create any lenses though...")
                 }
             )
