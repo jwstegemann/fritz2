@@ -77,7 +77,6 @@ private class LensesVisitor(
         val packageName = classDeclaration.packageName.asString()
         val companionObject = extractCompanionObject(classDeclaration)
         val checker = AggregatingRequirementCheckerDecorator(
-            thereAreLenseableProperties,
             LensesPropertyNamesAreAvailable.forDefaultLensFactories(companionObject),
             CompanionObjectFound(companionObject)
         )
@@ -88,13 +87,15 @@ private class LensesVisitor(
                 companionObject,
                 packageName,
                 determineLensablePropertiesInConstructor,
-                checker.with(
-                    LensesPropertyNamesAreAvailable.forDownTypingLensesInSealedChild(
-                        classDeclaration,
-                        resolver,
-                        companionObject
-                    )
-                ),
+                checker
+                    .with(thereAreLenseableProperties)
+                    .with(
+                        LensesPropertyNamesAreAvailable.forDownTypingLensesInSealedChild(
+                            classDeclaration,
+                            resolver,
+                            companionObject
+                        )
+                    ),
                 createLens
             )
 
@@ -102,7 +103,7 @@ private class LensesVisitor(
                 classDeclaration,
                 companionObject,
                 packageName,
-                determineLensablePropertiesInBody,
+                determineLensablePropertiesInWholeType,
                 checker
                     .with(allImplementationsOfSealedTypeAreDataClasses)
                     .with(thereIsAtLeastOneImplementationOfSealedType)
@@ -119,7 +120,7 @@ private class LensesVisitor(
                 classDeclaration,
                 companionObject,
                 packageName,
-                determineLensablePropertiesInBody,
+                determineLensablePropertiesInWholeType,
                 checker
                     .with(allImplementationsOfSealedTypeAreDataClasses)
                     .with(thereIsAtLeastOneImplementationOfSealedType)
