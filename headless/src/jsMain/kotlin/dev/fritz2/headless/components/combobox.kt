@@ -564,9 +564,11 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
             val selectShortcuts = internalState.data.map { it.opened }.distinctUntilChanged().flatMapLatest { opened ->
                 if (opened) {
                     keydownsIf {
-                        shortcutOf(this) in (itemActivationKeys + Keys.Enter)
+                        if (shortcutOf(this) in (itemActivationKeys + Keys.Enter)) {
+                            preventDefault()
+                            true
+                        } else false
                     }.map { event ->
-                        event.preventDefault()
                         shortcutOf(event)
                     }
                 } else emptyFlow()
