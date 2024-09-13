@@ -203,8 +203,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
     inner class DropdownOpeningHook : Hook<Tag<HTMLInputElement>, Unit, Unit>() {
 
         private val openOnFocus: Effect<Tag<HTMLInputElement>, Unit, Unit> = { _, _ ->
-            focuss.filterNot { domNode.readOnly } handledBy open
-            selects.filterNot { domNode.readOnly }.map { true } handledBy internalState.setOpened
+            merge(focuss, selects).filterNot { domNode.readOnly } handledBy internalState.open
         }
 
         init {
@@ -465,6 +464,14 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
             current.copy(opened = opened)
         }
 
+        val open: Handler<Unit> = handle { current ->
+            current.copy(opened = true)
+        }
+
+        val close: Handler<Unit> = handle { current ->
+            current.copy(opened = false)
+        }
+
         val select: EmittingHandler<T?, T?> = handleAndEmit { current, selection ->
             current.copy(query = "", opened = false).also {
                 emit(selection)
@@ -551,21 +558,27 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
 
     inner class ComboboxInput(tag: Tag<HTMLInputElement>) : Tag<HTMLInputElement> by tag {
 
+        private val itemActivationKeys = setOf(Keys.ArrowUp, Keys.ArrowDown, Keys.Home, Keys.End)
+
         private fun handleKeyboardSelections() {
-            val selectionKeydowns = keydowns {
-                if (shortcutOf(key) in setOf(Keys.ArrowUp, Keys.ArrowDown, Keys.Enter, Keys.Home, Keys.End))
-                    preventDefault()
+            val selectShortcuts = internalState.data.map { it.opened }.distinctUntilChanged().flatMapLatest { opened ->
+                if (opened) {
+                    keydownsIf {
+                        if (shortcutOf(this) in (itemActivationKeys + Keys.Enter)) {
+                            preventDefault()
+                            true
+                        } else false
+                    }.map { event ->
+                        shortcutOf(event)
+                    }
+                } else emptyFlow()
             }
 
             internalState.queryResults.flatMapLatest { result ->
                 when (result) {
                     is QueryResult.ExactMatch<T> -> flowOnceOf(null)
-                    is QueryResult.ItemList<T> -> selectionKeydowns
-                        .mapNotNull { event ->
-                            shortcutOf(event).takeIf {
-                                it in setOf(Keys.ArrowUp, Keys.ArrowDown, Keys.Enter, Keys.Home, Keys.End)
-                            }
-                        }
+                    is QueryResult.ItemList<T> -> selectShortcuts
+                        .filter { it in itemActivationKeys }
                         .mapNotNull { shortcut ->
                             val index = activeIndexStore.current ?: -1
                             val lastIndex = result.items.size - 1
@@ -581,9 +594,9 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
             } handledBy activeIndexStore.update
 
             internalState.queryResults.flatMapLatest { result ->
-                selectionKeydowns.mapNotNull {
+                selectShortcuts.mapNotNull { shortcut ->
                     val active = activeIndexStore.current
-                    if (result is QueryResult.ItemList<T> && active != null && shortcutOf(it) == Keys.Enter) {
+                    if (result is QueryResult.ItemList<T> && active != null && shortcut == Keys.Enter) {
                         result.items.getOrNull(active)?.value
                     } else null
                 }
@@ -615,10 +628,9 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
             hook(openDropdown)
 
 
-            Window.keydowns.mapNotNull { event ->
-                if (internalState.current.opened && shortcutOf(event) == Keys.Tab) false
-                else null
-            } handledBy internalState.setOpened
+            Window.keydownsIf {
+                internalState.current.opened && shortcutOf(this) in setOf(Keys.Tab, Keys.Shift + Keys.Tab)
+            } handledBy internalState.close
 
             handleKeyboardSelections()
 
@@ -782,10 +794,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
 
             attr(Aria.activedescendant, activeIndexStore.data.map { it?.let(::itemId) })
 
-            onDismiss {
-                internalState.resetQuery()
-                close()
-            }
+            closeOnDismiss()
         }
     }
 
@@ -877,6 +886,9 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
 
         opened handledBy internalState.setOpened
         openState.handler?.invoke(this, internalState.data.map { it.opened }.distinctUntilChanged())
+
+        opened.filterNot { it }.map { } handledBy internalState.resetQuery
+
 
         internalState.data.map { null } handledBy activeIndexStore.update
 

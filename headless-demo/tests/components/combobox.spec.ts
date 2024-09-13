@@ -33,6 +33,39 @@ const pressTab = (page: Page) => page.keyboard.down("Tab");
 
 const pressEscape = (page: Page) => page.keyboard.down("Escape");
 
+const openCloseArgs = [
+    {
+        desc: "clicking into the input field, then clicking outside",
+        open: clickInput,
+        close: clickOutside,
+    },
+    {
+        desc: "tabbing into the input field, then pressing tab again",
+        open: pressTab,
+        close: pressTab,
+    },
+    {
+        desc: "clicking into the input field, then pressing tab",
+        open: clickInput,
+        close: pressTab,
+    },
+    {
+        desc: "tabbing into the input field, then clicking outside",
+        open: pressTab,
+        close: clickOutside,
+    },
+    {
+        desc: "clicking into the input field, then pressing escape",
+        open: clickInput,
+        close: pressEscape,
+    },
+    {
+        desc: "tabbing into the input field, then pressing escape",
+        open: pressTab,
+        close: pressEscape,
+    },
+];
+
 
 test("Dropdown is initially closed", async ({ page }) => {
     const [input, items] = await createLocators(page);
@@ -41,39 +74,6 @@ test("Dropdown is initially closed", async ({ page }) => {
 
 
 test.describe("Trying to open and close a combobox", () => {
-
-    const openCloseArgs = [
-        {
-            desc: "clicking into the input field, then clicking outside",
-            open: clickInput,
-            close: clickOutside,
-        },
-        {
-            desc: "tabbing into the input field, then pressing tab again",
-            open: pressTab,
-            close: pressTab,
-        },
-        {
-            desc: "clicking into the input field, then pressing tab",
-            open: clickInput,
-            close: pressTab,
-        },
-        {
-            desc: "tabbing into the input field, then clicking outside",
-            open: pressTab,
-            close: clickOutside,
-        },
-        {
-            desc: "clicking into the input field, then pressing escape",
-            open: clickInput,
-            close: pressEscape,
-        },
-        {
-            desc: "tabbing into the input field, then pressing escape",
-            open: pressTab,
-            close: pressEscape,
-        },
-    ];
 
     test.describe("with the dropdown opening eagerly", () => {
         for (const { desc, open, close } of openCloseArgs) {
@@ -117,6 +117,23 @@ test.describe("Trying to open and close a combobox", () => {
             await expect(items).toBeVisible();
         })
     });
+});
+
+test.describe("Entering an leaving the input", () => {
+
+    for (const { desc, open, close } of openCloseArgs) {
+        test(`by ${desc} resets the input`, async ({ page }) => {
+            const [input, items] = await createLocators(page);
+
+            await open(page);
+
+            await input.pressSequentially("xxx");
+            await expect(input).toHaveValue("xxx");
+
+            await close(page);
+            await expect(input).toBeEmpty();
+        });
+    }
 });
 
 test("With a default value of 'null', the input is empty", async ({ page }) => {
@@ -373,4 +390,44 @@ test.describe("When typing a query", () => {
         await input.pressSequentially("ger");
         await expect(items).toBeVisible();
     })
+});
+
+/*
+ * Regression test based on a niche bug encountered during development
+ *
+ * Bug:
+ *
+ * 1) Enable lazy dropdown mode
+ * 2) Type a query that yields results
+ * 3) Close the dropdown
+ * 4) Re-enter input
+ * 5) Select invisible items via keyboard
+ * 6) Selection is updated - BUG
+ *
+ * Keyboard selections should not be possible when the dropdown is closed.
+ */
+test("Keyboard selection in lazy mode does nothing when the dropdown is closed", async ({ page }) => {
+    const [input, items] = await createLocators(page);
+
+    await page.locator("#checkbox-enable-lazy-opening").check();
+
+    await input.click();
+
+    await input.pressSequentially("oma");
+
+    await page.mouse.click(0, 0);
+
+    await input.click();
+    await expect(input).toBeFocused();
+    await expect(input).toBeEmpty();
+
+    await page.waitForTimeout(100);
+
+    await page.keyboard.press("ArrowDown");
+    await page.waitForTimeout(100);
+    await page.keyboard.press("Enter");
+    await page.waitForTimeout(100);
+
+    await expect(input).toBeEmpty();
+    await expect(page.locator("#countries-selection")).toContainText("null");
 });
