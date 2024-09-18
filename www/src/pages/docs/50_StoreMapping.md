@@ -150,7 +150,7 @@ This can be used to identify your elements semantically (for validation or autom
 
 If you have deep nested structures or a lot of them, you may want to automate this behavior.
 
-fritz2 offers an `@Lenses` annotation you can add to your data-classes, sealed-classes and sealed-interfaces in the 
+fritz2 offers a `@Lenses` annotation you can add to your data-classes, sealed-classes and sealed-interfaces in the 
 `commonMain` source-set of your multiplatform project:
 ```kotlin
 @Lenses
@@ -521,7 +521,7 @@ A `Wish` is a `sealed interface` that defines a `label` for all common children.
 The `WhishList` simply serves as a root node of the model to integrate the sealed hierarchy into another type.
 
 :::info
-Our support for sealed type hierarchies comes with an exception:
+Our support for sealed type hierarchies has the following restriction:
 All children of an annotated sealed base type need to be `data class`es that are themselves annotated with the `@Lenses`
 annotation. The annotation processor will fail with an error if this constraint is violated.
 :::
@@ -791,7 +791,7 @@ val labelLens: Lens<Wish, String> = lensOf(
 )
 ```
 
-As the work is *delegated* to the different child types, we call this kind of lens *delegating lens*.
+Because the work is *delegated* to the different child types, we call this kind of lens *delegating lens*.
 
 As this is tedious to write, the fritz2's annotation processor will create those lenses for you. Because it needs to 
 be sure it can use the `copy()`-functions, there is the restriction that every child of a sealed base type needs 
@@ -862,7 +862,7 @@ data class Computer(
 #### Complete Wishlist Example
 
 As this example is rather complex, the full working implementation of the preceding wishlist
-code snippets can be found below. The styling is done with [TailwindCSS](https://tailwindcss.com/), so you can copy and 
+code snippets can be found below. The styling is done with [tailwindcss](https://tailwindcss.com/), so you can copy and 
 paste it in our well known [fritz2-tailwind-template](https://github.com/jwstegemann/fritz2-tailwind-template) project:
 
 ```kotlin
@@ -1006,8 +1006,9 @@ render {
 ```
 
 :::warning
-The above example is intentionally kept very simple in to reduce complexity and show the code in a straight-forward way.
+The above example is intentionally simply structured in order to reduce complexity and show the code in a 
+straight-forward manner.
 
-For real world application we encourage you to [structure](/docs/render/#structure-ui) it better and divide the UI
+For real world application we encourage you to apply better [structure](/docs/render/#structure-ui) and divide the UI
 into smaller and reusable parts, of course.
 :::
