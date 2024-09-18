@@ -70,6 +70,8 @@ module.exports = (config) => {
         }).toFormat("dd-MM-yyyy");
     });
 
+    config.addShortcode("year", () => `${new Date().getFullYear()}`);
+
     // Markdown
     config.setLibrary(
         'md',
