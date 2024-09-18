@@ -109,3 +109,9 @@ object PersonStore: ValidatingStore<Person, Unit, Message>(Person("", 0), Person
 By calling the `resetMessages()` function you can manually reset the list of messages if needed.
 
 Have a look at a more complete example [here](/examples/validation).
+
+### Delegating Validation in Sealed Hierarchies
+
+:::warning
+Documentation coming soon
+:::
