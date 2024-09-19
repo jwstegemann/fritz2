@@ -930,7 +930,7 @@ render {
                 +"Wishlist's name"
                 `for`("name")
             }
-            input("col-span-3", id = "name") {
+            input("col-span-3 p-2 rounded", id = "name") {
                 type("text")
                 value(storedName.data)
                 changes.values() handledBy storedName.update
@@ -948,7 +948,7 @@ render {
                             +wish.typeName
                             `for`("$index-label")
                         }
-                        input(id = "$index-label") {
+                        input("p-2 rounded", id = "$index-label") {
                             type("text")
                             value(storedLabel.data)
                             changes.values() handledBy storedLabel.update
@@ -962,7 +962,7 @@ render {
                                     +"Color"
                                     `for`("$index")
                                 }
-                                select("w-full", id = "$index") {
+                                select("w-full p-2 rounded", id = "$index") {
                                     changes.values().map { Color.valueOf(it) } handledBy storedColor.update
                                     Color.entries.forEach { color ->
                                         option {
@@ -980,7 +980,7 @@ render {
                                     +"RAM (KB)"
                                     `for`("$index")
                                 }
-                                input(id = "$index") {
+                                input("p-2 rounded", id = "$index") {
                                     type("text")
                                     value(storedRam.data)
                                     changes.values() handledBy storedRam.update
