@@ -1,13 +1,17 @@
 package dev.fritz2.headless.components
 
 import dev.fritz2.core.*
-import dev.fritz2.core.Window
+import dev.fritz2.headless.components.Combobox.QueryResult.ExactMatch
+import dev.fritz2.headless.components.Combobox.QueryResult.ItemList
 import dev.fritz2.headless.foundation.*
 import dev.fritz2.headless.foundation.utils.floatingui.utils.PlacementValues
 import dev.fritz2.headless.foundation.utils.scrollintoview.HeadlessScrollOptions
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
-import org.w3c.dom.*
+import org.w3c.dom.HTMLDivElement
+import org.w3c.dom.HTMLElement
+import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.HTMLLabelElement
 import kotlin.math.max
 import kotlin.math.min
 
@@ -399,7 +403,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
      * Instances of this class are part of the [ItemList][QueryResult.ItemList] [QueryResult] and are passed to the
      * [comboboxItem][ComboboxItems.comboboxItem] brick in order for it to know which item it represents.
      */
-    data class Item<T> internal constructor(
+    data class Item<T>(
         val index: Int,
         val value: T
     )
@@ -434,7 +438,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
          *
          * See [QueryResult] for more information.
          */
-        data class ItemList<T> internal constructor(
+        data class ItemList<T>(
             val query: String,
             val items: List<Item<T>>,
             val truncated: Boolean

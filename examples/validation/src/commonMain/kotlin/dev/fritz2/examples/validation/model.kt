@@ -4,7 +4,6 @@ import dev.fritz2.core.Lens
 import dev.fritz2.core.Lenses
 import dev.fritz2.core.lensOf
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.toLocalDate
 
 @Lenses
 data class Person(
@@ -46,6 +45,6 @@ data class Activity(
 
 
 object Formats {
-    val date: Lens<LocalDate, String> = lensOf(LocalDate::toString, String::toLocalDate)
+    val date: Lens<LocalDate, String> = lensOf(LocalDate::toString, LocalDate::parse)
     val currency: Lens<Double, String> = lensOf(Double::toString, String::toDouble)
 }

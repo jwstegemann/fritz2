@@ -4,6 +4,7 @@ import com.tschuchort.compiletesting.KotlinCompilation
 import com.tschuchort.compiletesting.SourceFile
 import com.tschuchort.compiletesting.symbolProcessorProviders
 import org.assertj.core.api.Assertions.assertThat
+import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.params.ParameterizedTest
@@ -16,6 +17,7 @@ import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.createTempDirectory
 import kotlin.test.Test
 
+@OptIn(ExperimentalCompilerApi::class)
 class LensesProcessorTests {
 
     @ExperimentalPathApi
