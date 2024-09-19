@@ -62,7 +62,7 @@ import kotlin.jvm.JvmInline
  * @param T metadata which perhaps is needed in validation process
  */
 @JvmInline
-value class Validation<D, T, M>(private inline val validate: (Inspector<D>, T) -> List<M>) {
+value class Validation<D, T, M>(private val validate: (Inspector<D>, T) -> List<M>) {
     operator fun invoke(inspector: Inspector<D>, metadata: T): List<M> = this.validate(inspector, metadata)
     operator fun invoke(data: D, metadata: T): List<M> = this.validate(inspectorOf(data), metadata)
 }

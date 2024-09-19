@@ -55,7 +55,7 @@ operator fun Handler<Unit>.invoke() = this.process(flowOnceOf(Unit), Job())
  *
  * @param process defines how to handle the values of the connected [Flow]
  */
-value class SimpleHandler<A>(override inline val process: (Flow<A>, Job) -> Unit) : Handler<A>
+value class SimpleHandler<A>(override val process: (Flow<A>, Job) -> Unit) : Handler<A>
 
 /**
  * An [EmittingHandler] is a special [Handler] that constitutes a new [Flow] by itself. You can emit values to this [Flow] from your code
@@ -65,7 +65,7 @@ value class SimpleHandler<A>(override inline val process: (Flow<A>, Job) -> Unit
  * @property process function defining how this [Handler] collects a [Flow] when connected using [handledBy]
  */
 class EmittingHandler<A, E>(
-    inline val collectWithChannel: (Flow<A>, FlowCollector<E>, Job) -> Unit,
+    private val collectWithChannel: (Flow<A>, FlowCollector<E>, Job) -> Unit,
     private val flow: MutableSharedFlow<E> = MutableSharedFlow()
 ) : Handler<A>, Flow<E> by flow {
 
