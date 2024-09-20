@@ -40,23 +40,21 @@ abstract class OpenClose : WithJob {
     }
 
     /**
-     * Combines all events relevant for toggling an element that implements the [OpenClose] behavior. By default, these
-     * events are clicking the left mouse button or pressing the Enter or Space keys.
+     * Combines all events relevant for toggling an element that implements the [OpenClose] behavior.
      *
-     * @param init pass an optional lambda to execute event handling manipulations, like calling
-     * `stopPropagation` or alike
+     * Events included in the returned [Flow] are:
+     * - clicks on the wrapped element
+     * - pressing the Enter or Space keys on the wrapped element
      */
-    internal fun Tag<*>.activations(init: Event.() -> Unit = {}): Flow<Event> =
+    internal fun Tag<*>.activations(): Flow<Event> =
         // If the wrapped element is a button, click events are already triggered by the Enter and Space keys.
         if (domNode is HTMLButtonElement) {
-            clicks { init() }
+            clicks
         } else {
             merge(
-                clicks { init() },
+                clicks,
                 keydownsIf {
-                    (shortcutOf(this) in setOf(Keys.Space, Keys.Enter)).also {
-                        if(it) init()
-                    }
+                    shortcutOf(this) in setOf(Keys.Space, Keys.Enter)
                 })
         }
 

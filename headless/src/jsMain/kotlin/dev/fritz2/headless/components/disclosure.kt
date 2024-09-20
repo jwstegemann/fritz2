@@ -49,7 +49,7 @@ class Disclosure<C : HTMLElement>(tag: Tag<C>, id: String?) : Tag<C> by tag, Ope
             content()
             attr(Aria.expanded, opened.asString())
             attr("tabindex", "0")
-            activations { preventDefault(); stopPropagation() } handledBy toggle
+            activations() handledBy toggle
         }.also { button = it }
     }
 
