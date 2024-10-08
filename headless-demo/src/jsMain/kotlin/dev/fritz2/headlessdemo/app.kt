@@ -132,9 +132,9 @@ fun RenderContext.overview() {
 
 }
 
-fun main() {
+val router = routerOf("")
 
-    val router = routerOf("")
+fun main() {
 
     render {
         router.data.render { route ->
@@ -143,6 +143,6 @@ fun main() {
             }
         }
 
-        portalRoot()
+        portalRoot( { set(SHOW_COMPONENT_STRUCTURE, true) })
     }
 }

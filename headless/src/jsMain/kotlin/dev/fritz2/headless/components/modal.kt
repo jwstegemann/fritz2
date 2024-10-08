@@ -5,6 +5,7 @@ import dev.fritz2.headless.foundation.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.take
 import org.w3c.dom.*
 
@@ -30,12 +31,16 @@ class Modal(id: String?) : OpenClose() {
     fun init() {
         opened.filter { it }.handledBy {
             PortalRenderContext.run {
-                portal(id = componentId, tag = RenderContext::dialog, scope = scopeContext) { close ->
+                portal(id = componentId, tag = RenderContext::dialog, scope = scopeContext) { remove, portal ->
                     inlineStyle("display: contents")
                     panel?.invoke(this)!!.apply {
                         trapFocusInMountpoint(restoreFocus, setInitialFocus)
                     }
-                    opened.filter { !it }.map { }.take(1) handledBy close
+                    opened.onCompletion {
+                        console.log("Remove Modal mit Portal-Id: ${portal.portalId}")
+                        remove(Unit)
+                        //portal.remove()
+                    }.filter { !it }.map { }.take(1) handledBy remove
                 }
             }
         }

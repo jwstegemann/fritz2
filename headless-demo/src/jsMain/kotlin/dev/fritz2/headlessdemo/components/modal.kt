@@ -2,11 +2,30 @@ package dev.fritz2.headlessdemo.components
 
 import dev.fritz2.core.*
 import dev.fritz2.headless.components.modal
+import dev.fritz2.headlessdemo.router
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
+import org.w3c.dom.HTMLDivElement
 
 fun RenderContext.modalDemo() {
 
     val toggle = storeOf(false)
+
+    /*
+    val ref = this as Tag<*>
+
+    ref.beforeUnmount { _, _ ->
+        toggle.update(false)
+        delay(2000)
+        console.log("Schließe Dialog wegen unmount")
+    }
+
+     */
+
+    button {
+        +"BACK"
+        clicks.map { "" } handledBy router.navTo
+    }
 
     button(
         """inline-flex justify-center w-32 px-4 py-2 sm:col-start-2
@@ -63,6 +82,7 @@ fun RenderContext.modalDemo() {
                                     |At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd 
                                     |gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.""".trimMargin()
                             }
+                            toggle.data.asString().renderText()
                         }
                     }
                     div("flex flex-col items-center sm:flex-row sm:justify-end gap-2 mt-6") {

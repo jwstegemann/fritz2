@@ -814,7 +814,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
         tag: TagFactory<Tag<EI>>,
         initialize: ComboboxItems<EI>.() -> Unit
     ) {
-        portal {
+        portal { _, _ ->
             addComponentStructureInfo("combobox-items", this.scope, this)
             ComboboxItems(this, tag, classes, scope).run {
                 size = PopUpPanelSize.Exact

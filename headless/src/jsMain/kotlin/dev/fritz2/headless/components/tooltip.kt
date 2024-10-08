@@ -54,7 +54,7 @@ fun <C : HTMLElement> Tag<HTMLElement>.tooltip(
     tag: TagFactory<Tag<C>>,
     initialize: Tooltip<C>.() -> Unit
 ) {
-    portal {
+    portal { _, _ ->
         Tooltip(this, this@tooltip, tag, classes, id, scope).apply {
             addComponentStructureInfo("parent is tooltip", this@tooltip.scope, this)
         }.run {

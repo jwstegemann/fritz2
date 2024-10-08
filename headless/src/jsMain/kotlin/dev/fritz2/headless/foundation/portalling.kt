@@ -14,15 +14,21 @@ private val portalRootId by lazy { "portal-root".also { addGlobalStyle("#$it { d
 private object PortalStack : RootStore<List<PortalContainer<out HTMLElement>>>(emptyList(), job = Job()) {
     val add = handle<PortalContainer<out HTMLElement>> { stack, it -> stack + it }
     val remove = handle<String> { stack, id -> stack.filterNot { it.portalId == id } }
+
+    init {
+        data handledBy {
+            console.log(it.map { it.portalId }.joinToString())
+        }
+    }
 }
 
-private data class PortalContainer<C : HTMLElement>(
+data class PortalContainer<C : HTMLElement>(
     val classes: String?,
     val id: String?,
     val scope: (ScopeContext.() -> Unit),
     val tag: TagFactory<Tag<C>>,
     val reference: MountPoint?,
-    val content: Tag<C>.(close: suspend (Unit) -> Unit) -> Unit
+    val content: Tag<C>.(close: suspend (Unit) -> Unit, portal: PortalContainer<C>) -> Unit
 ) {
     val portalId = Id.next() // used for renderEach only
 
@@ -30,8 +36,20 @@ private data class PortalContainer<C : HTMLElement>(
 
     fun render(ctx: RenderContext) =
         tag(ctx, classes, id, scope + { ctx.scope[MOUNT_POINT_KEY]?.let { set(MOUNT_POINT_KEY, it) } }) {
-            content.invoke(this) { remove.invoke() }
-            reference?.beforeUnmount(this, null) { _, _ -> remove.invoke() }
+            scope[SHOW_COMPONENT_STRUCTURE]?.let {
+                if (it) attr(
+                    "data-portal-id",
+                    portalId
+                ) else console.log("Setze kein Data-Attribut für $portalId")
+            } ?: console.log("Setze kein Data-Attribut für $portalId")
+            content.invoke(this, {
+                console.log("Portal ID=$portalId was actively removed")
+                remove.invoke()
+            }, this@PortalContainer)
+            reference?.beforeUnmount(this, null) { _, _ ->
+                remove.invoke()
+                console.log("Portal ID=$portalId was removed by context unmouting")
+            }
         }
 }
 
@@ -87,7 +105,7 @@ fun <C : HTMLElement> RenderContext.portal(
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
     tag: TagFactory<Tag<C>>,
-    content: Tag<C>.(close: suspend (Unit) -> Unit) -> Unit = {}
+    content: Tag<C>.(close: suspend (Unit) -> Unit, portal: PortalContainer<C>) -> Unit = { _, _ -> }
 ) {
     val portalId = id ?: Id.next()
 
@@ -113,5 +131,5 @@ fun RenderContext.portal(
     classes: String? = null,
     id: String? = null,
     scope: (ScopeContext.() -> Unit) = {},
-    content: Tag<HTMLDivElement>.(close: suspend (Unit) -> Unit) -> Unit,
+    content: Tag<HTMLDivElement>.(close: suspend (Unit) -> Unit, portal: PortalContainer<HTMLDivElement>) -> Unit,
 ) = portal(classes, id, scope, RenderContext::div, content)

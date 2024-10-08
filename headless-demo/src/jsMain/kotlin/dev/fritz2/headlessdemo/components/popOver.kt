@@ -6,6 +6,7 @@ import dev.fritz2.core.transition
 import dev.fritz2.headless.components.popOver
 import dev.fritz2.headless.foundation.utils.floatingui.core.middleware.offset
 import dev.fritz2.headless.foundation.utils.floatingui.utils.PlacementValues
+import dev.fritz2.headlessdemo.router
 import kotlinx.coroutines.flow.map
 
 
@@ -26,6 +27,11 @@ fun RenderContext.popOverDemo() {
             { icon("w-10 h-10 text-primary-800", content = HeroIcons.color_swatch) }
         )
     )
+
+    button {
+        +"BACK"
+        clicks.map { "" } handledBy router.navTo
+    }
 
     popOver(id = "popOver") {
         popOverButton(
