@@ -5,6 +5,7 @@ import dev.fritz2.headless.foundation.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.take
 import org.w3c.dom.*
 
@@ -30,12 +31,35 @@ class Modal(id: String?) : OpenClose() {
     fun init() {
         opened.filter { it }.handledBy {
             PortalRenderContext.run {
-                portal(id = componentId, tag = RenderContext::dialog, scope = scopeContext) { close ->
+                portal(id = componentId, tag = RenderContext::dialog, scope = scopeContext) { remove ->
                     inlineStyle("display: contents")
                     panel?.invoke(this)!!.apply {
                         trapFocusInMountpoint(restoreFocus, setInitialFocus)
                     }
-                    opened.filter { !it }.map { }.take(1) handledBy close
+                    opened.onCompletion {
+                        /*
+                         * This needs to be explained:
+                         * As a `modal` is not dependent on any `Tag<*>`, we cannot provide some
+                         * `PortalContainer.reference`-object. The latter is needed to couple the portal-portion of
+                         * a component to its counterpart inside the normal `RenderContext` (or fritz2 controlled
+                         * subtree if that is more understandable). From that reference we can get its nearest
+                         * `MountPoint` and rely on the latter to register some `DomLifecycleHandler` by the
+                         * `beforeUnmount`-lifecycle hook. In the case of a portal, we can call its `remove`-handler,
+                         * which itself will change the global `PortalStack`, which will then reactively execute
+                         * `renderEach` on all portals. So the portal-portion will get removed if its reference is
+                         * reactively removed. This is always the case if the reference lives inside some reactive
+                         * scope, which are created by any `render*`-call. (This is true for `Router`-based content
+                         * too of course!)
+                         *
+                         * As we do not have such a reference here, we can only refer to the data-binding-flow, which
+                         * will normally reside inside some reactive scope. So if the `Job` of this `Flow` is canceled
+                         * due to some normal fritz2 reactive action, we know that the modal must also be removed from
+                         * the DOM.
+                         */
+                        remove(Unit)
+                    }.filter { !it }
+                        .map { }
+                        .take(1) handledBy remove
                 }
             }
         }

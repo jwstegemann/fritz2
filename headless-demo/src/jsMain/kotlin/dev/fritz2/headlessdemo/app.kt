@@ -137,12 +137,14 @@ fun main() {
     val router = routerOf("")
 
     render {
-        router.data.render { route ->
-            div("p-4", scope = { set(SHOW_COMPONENT_STRUCTURE, true) }) {
-                (pages[route]?.content ?: RenderContext::overview)()
+        main(scope = { set(SHOW_COMPONENT_STRUCTURE, true) }) {
+            router.data.render { route ->
+                div("p-4") {
+                    (pages[route]?.content ?: RenderContext::overview)()
+                }
             }
-        }
 
-        portalRoot()
+            portalRoot()
+        }
     }
 }
