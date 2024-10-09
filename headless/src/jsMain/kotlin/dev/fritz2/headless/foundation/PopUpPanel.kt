@@ -302,13 +302,29 @@ abstract class PopUpPanel<C : HTMLElement>(
         }
     }
 
+    /**
+     * Triggers the calculation of the panel's position.
+     *
+     * The calculation process is _asynchronous_ - once the computation has finished, the resulting values are
+     * applied in the right places _internally_.
+     *
+     * In most cases it is not needed to call this method manually. There are cases, however, where this may be
+     * necessary: e.g. when you are using a panel that is positioned at the bottom-end of the reference and that has a
+     * changing size. Whenever the size changes, the position needs to be updated.
+     *
+     * ###### Background
+     * Normally, the underlying floating-ui library can be configured to handle such cases automatically. There is a
+     * [bug](https://github.com/floating-ui/floating-ui/issues/1740), however, that prevents us from using this feature.
+     * As a result, manual re-computation of the position is needed in those cases.
+     */
+    protected fun computePosition() {
+        reference?.let { ref ->
+            computePosition(ref.domNode, domNode, config).then { computedPositionStore.update(it) }
+        }
+    }
+
     open fun render() {
         if (reference != null) {
-
-            val computePosition = {
-                computePosition(reference.domNode, domNode, config)
-                    .then { computedPositionStore.update(it) }
-            }
 
             // call it once to initialize some position definitely inside the page's content.
             // otherwise the page would grow with invisible space in bottom direction.
