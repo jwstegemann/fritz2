@@ -19,6 +19,7 @@ import kotlin.math.min
  *
  * For more information refer to the [official documentation](https://www.fritz2.dev/headless/combobox/).
  */
+@Suppress("MemberVisibilityCanBePrivate")
 class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, OpenClose() {
 
     private val componentId: String by lazy { id ?: Id.next() }
@@ -530,12 +531,14 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
         scope: (ScopeContext.() -> Unit) = {},
         tag: TagFactory<Tag<ER>>,
         initialize: Tag<ER>.() -> Unit
-    ): Tag<ER> =
-        tag(this, classes, "", scope) {
+    ): Tag<ER> {
+        addComponentStructureInfo("combobox-panel-reference", this@Combobox.scope, this)
+        return tag(this, classes, "$componentId-panel-reference", scope) {
             initialize()
         }.also {
             panelReference = it
         }
+    }
 
     /**
      * Factory function to create a [comboboxPanelReference] with an [HTMLDivElement] as default root [Tag].
@@ -793,6 +796,15 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
             super.render()
 
             attr(Aria.activedescendant, activeIndexStore.data.map { it?.let(::itemId) })
+
+            // FIXME: This manual computation is needed due to a bug in floating-ui preventing us from using the
+            //  built-in auto-update functionality.
+            //  See https://github.com/floating-ui/floating-ui/issues/1740
+            internalState.queryResults handledBy {
+                if (size != PopUpPanelSize.Exact) {
+                    computePosition()
+                }
+            }
 
             closeOnDismiss()
         }
