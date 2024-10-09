@@ -308,7 +308,7 @@ abstract class PopUpPanel<C : HTMLElement>(
      * The calculation process is _asynchronous_ - once the computation has finished, the resulting values are
      * applied in the right places _internally_.
      *
-     * In most cases it is not needed to call this method manually. There are cases, however, where this may be
+     * In most cases there is no need to call this method manually. There are cases, however, where this may be
      * necessary: e.g. when you are using a panel that is positioned at the bottom-end of the reference and that has a
      * changing size. Whenever the size changes, the position needs to be updated.
      *
