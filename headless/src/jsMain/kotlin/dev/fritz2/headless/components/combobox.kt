@@ -340,6 +340,13 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
      * Number of maximum suggested items displayed in the dropdown.
      *
      * If more items match the query than specified in this threshold, only the first n items are displayed.
+     *
+     * > __Important:__ Since the rendering of the dropdown-items is by far the most expensive operation in the
+     * > combobox's rendering workflow, this value has a direct impact on the overall performance of the component!
+     *
+     * In most cases, due to the expensive rendering, a smaller number of items should be favored over larger lists.
+     * If a larger amount is explicitly needed it may be necessary to adjust [inputDebounceMillis] and
+     * [renderDebounceMillis] too, as rendering should occur as few times as possible in this case.
      */
     var maximumDisplayedItems: Int = 20
 
@@ -355,7 +362,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
      * - A higher value may lower the perceived responsiveness but can in turn result in a better performance with large
      *   amounts of data
      *
-     * > Important:__ In most cases, the default value should be the optimal value. It is a well-balanced compromise
+     * > __Important:__ In most cases, the default value should be the optimal value. It is a well-balanced compromise
      * > between responsiveness and general performance.
      */
     var inputDebounceMillis: Long = 50L
@@ -371,7 +378,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
      *   render performance
      * - A higher value may lower the perceived responsiveness but generally results in a more efficient rendering
      *
-     * > Important:__ In most cases, the default value should be the optimal value. It is a well-balanced compromise
+     * > __Important:__ In most cases, the default value should be the optimal value. It is a well-balanced compromise
      *      * > between responsiveness and general performance.
      */
     var renderDebounceMillis: Long = 50L
@@ -487,7 +494,6 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
                     selectionStrategy.buildResult(query, itemSequence)
                 }
 
-        @OptIn(FlowPreview::class)
         val queryResults: Flow<QueryResult<T>> =
             merge(
                 // Emit initial data straight-away to avoid flickering upon first opening of the dropdown:
@@ -499,9 +505,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
                     .drop(1)
                     .map { it.items to it.query }
                     .distinctUntilChanged()
-                    .debounce(inputDebounceMillis)
                     .mapLatest { (items, query) -> computeQueryResult(items, query) }
-                    .debounce(renderDebounceMillis)
             )
 
         init {
@@ -608,21 +612,24 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
 
         private fun format(value: T?): String = value?.let(itemFormat) ?: ""
 
+        @OptIn(FlowPreview::class)
         fun render() {
             value(
                 merge(
-                    internalState.select.map {  format(it) },
+                    internalState.select.map { format(it) },
                     value.data.flatMapLatest { value ->
-                        internalState.resetQuery.map { format(value) }
+                        internalState.resetQuery.transform {
+                            // Before the input's value can be reset to the previous one we need to set it to
+                            // the current typed value. This is needed because the underlying `mountSimple` function
+                            // cannot handle repeating values.
+                            emit(domNode.value)
+                            emit(format(value))
+                        }
                     },
-                    // Update the input every time the user types in a new value. This is needed because `mountSimple`
-                    // (used internally by `value()`) does not work with repeating identical values. This is needed,
-                    // however, when the previous selection should be re-applied to the input.
-                    inputs.values()
                 ).distinctUntilChanged()
             )
 
-            inputs.values() handledBy internalState.updateQuery
+            inputs.values().debounce(inputDebounceMillis) handledBy internalState.updateQuery
 
 
             focuss.filterNot { domNode.readOnly } handledBy {
@@ -729,8 +736,9 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
          *
          * @see comboboxItem
          */
+        @OptIn(FlowPreview::class)
         val results: Flow<QueryResult.ItemList<T>> =
-            internalState.queryResults.mapNotNull { it as? QueryResult.ItemList<T> }
+            internalState.queryResults.mapNotNull { it as? QueryResult.ItemList<T> }.debounce(renderDebounceMillis)
 
 
         private fun itemId(index: Int) = "$componentId-item-$index"
