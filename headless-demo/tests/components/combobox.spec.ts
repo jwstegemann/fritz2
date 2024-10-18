@@ -412,10 +412,11 @@ test("Keyboard selection in lazy mode does nothing when the dropdown is closed",
     await page.locator("#checkbox-enable-lazy-opening").check();
 
     await input.click();
-
     await input.pressSequentially("oma");
+    await expect(items).toBeVisible();
 
     await page.mouse.click(0, 0);
+    await expect(items).toBeHidden();
 
     await input.click();
     await expect(input).toBeFocused();
