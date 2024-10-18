@@ -498,7 +498,6 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
                     selectionStrategy.buildResult(query, itemSequence)
                 }
 
-        @OptIn(FlowPreview::class)
         val queryResults: Flow<QueryResult<T>> =
             merge(
                 // Emit initial data straight-away to avoid flickering upon first opening of the dropdown:
@@ -510,9 +509,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
                     .drop(1)
                     .map { it.items to it.query }
                     .distinctUntilChanged()
-                    .debounce(inputDebounceMillis)
                     .mapLatest { (items, query) -> computeQueryResult(items, query) }
-                    .debounce(renderDebounceMillis)
             )
 
         init {
@@ -619,21 +616,24 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
 
         private fun format(value: T?): String = value?.let(itemFormat) ?: ""
 
+        @OptIn(FlowPreview::class)
         fun render() {
             value(
                 merge(
-                    internalState.select.map {  format(it) },
+                    internalState.select.map { format(it) },
                     value.data.flatMapLatest { value ->
-                        internalState.resetQuery.map { format(value) }
+                        internalState.resetQuery.transform {
+                            // Before the input's value can be reset to the previous one we need to set it to
+                            // the current typed value. This is needed because the underlying `mountSimple` function
+                            // cannot handle repeating values.
+                            emit(domNode.value)
+                            emit(format(value))
+                        }
                     },
-                    // Update the input every time the user types in a new value. This is needed because `mountSimple`
-                    // (used internally by `value()`) does not work with repeating identical values. This is needed,
-                    // however, when the previous selection should be re-applied to the input.
-                    inputs.values()
                 ).distinctUntilChanged()
             )
 
-            inputs.values() handledBy internalState.updateQuery
+            inputs.values().debounce(inputDebounceMillis) handledBy internalState.updateQuery
 
 
             focuss.filterNot { domNode.readOnly } handledBy {
@@ -740,8 +740,9 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
          *
          * @see comboboxItem
          */
+        @OptIn(FlowPreview::class)
         val results: Flow<ItemList<T>> =
-            internalState.queryResults.mapNotNull { it as? ItemList<T> }
+            internalState.queryResults.mapNotNull { it as? ItemList<T> }.debounce(renderDebounceMillis)
 
 
         private fun itemId(index: Int) = "$componentId-item-$index"
