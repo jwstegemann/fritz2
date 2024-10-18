@@ -96,7 +96,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
             var warningShown = false
             value = { items, query ->
                 // The following expression checks whether the List of available items is likely to be a List<String>
-                // or not. Since we cannot type-check the generic type of a List, we have to check an actual element and
+                // or not. Since we cannot type-check the generic type of List, we have to check an actual element and
                 // assume all elements have the same type. In some edge cases this might not be true but this check is
                 // good enough for now :-)
                 if (!warningShown && items.firstOrNull()?.let { it !is String } == true) {
@@ -280,9 +280,9 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
          * > [sortedBy][Sequence.sortedBy] do still iterate over the whole Sequence internally, which is why they should
          * > be used with caution here.
          */
-        private fun buildItemListResult(query: String, itemSequence: Sequence<T>): QueryResult.ItemList<T> {
+        private fun buildItemListResult(query: String, itemSequence: Sequence<T>): ItemList<T> {
             val (resultList, truncated) = itemSequence.mapIndexed(::Item).toListTruncating(maximumDisplayedItems)
-            return QueryResult.ItemList(
+            return ItemList(
                 query,
                 resultList,
                 truncated
@@ -293,7 +293,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
             { query, itemSequence ->
                 when (val exactMatch = itemSequence.find { isExactMatch(it, query) }) {
                     null -> buildItemListResult(query, itemSequence)
-                    else -> QueryResult.ExactMatch(exactMatch)
+                    else -> ExactMatch(exactMatch)
                 }
             }
 
@@ -344,6 +344,13 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
      * Number of maximum suggested items displayed in the dropdown.
      *
      * If more items match the query than specified in this threshold, only the first n items are displayed.
+     *
+     * > __Important:__ Since the rendering of the dropdown-items is by far the most expensive operation in the
+     * > combobox's rendering workflow, this value has a direct impact on the overall performance of the component!
+     *
+     * In most cases, due to the expensive rendering, a smaller number of items should be favored over larger lists.
+     * If a larger amount is explicitly needed it may be necessary to adjust [inputDebounceMillis] and
+     * [renderDebounceMillis] too, as rendering should occur as few times as possible in this case.
      */
     var maximumDisplayedItems: Int = 20
 
@@ -359,7 +366,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
      * - A higher value may lower the perceived responsiveness but can in turn result in a better performance with large
      *   amounts of data
      *
-     * > Important:__ In most cases, the default value should be the optimal value. It is a well-balanced compromise
+     * > __Important:__ In most cases, the default value should be the optimal value. It is a well-balanced compromise
      * > between responsiveness and general performance.
      */
     var inputDebounceMillis: Long = 50L
@@ -375,7 +382,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
      *   render performance
      * - A higher value may lower the perceived responsiveness but generally results in a more efficient rendering
      *
-     * > Important:__ In most cases, the default value should be the optimal value. It is a well-balanced compromise
+     * > __Important:__ In most cases, the default value should be the optimal value. It is a well-balanced compromise
      *      * > between responsiveness and general performance.
      */
     var renderDebounceMillis: Long = 50L
@@ -509,7 +516,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
             )
 
         init {
-            queryResults.mapNotNull { (it as? QueryResult.ExactMatch<T>)?.item } handledBy select
+            queryResults.mapNotNull { (it as? ExactMatch<T>)?.item } handledBy select
         }
     }
 
@@ -583,8 +590,8 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
 
             internalState.queryResults.flatMapLatest { result ->
                 when (result) {
-                    is QueryResult.ExactMatch<T> -> flowOnceOf(null)
-                    is QueryResult.ItemList<T> -> selectShortcuts
+                    is ExactMatch<T> -> flowOnceOf(null)
+                    is ItemList<T> -> selectShortcuts
                         .filter { it in itemActivationKeys }
                         .mapNotNull { shortcut ->
                             val index = activeIndexStore.current ?: -1
@@ -603,7 +610,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
             internalState.queryResults.flatMapLatest { result ->
                 selectShortcuts.mapNotNull { shortcut ->
                     val active = activeIndexStore.current
-                    if (result is QueryResult.ItemList<T> && active != null && shortcut == Keys.Enter) {
+                    if (result is ItemList<T> && active != null && shortcut == Keys.Enter) {
                         result.items.getOrNull(active)?.value
                     } else null
                 }
@@ -733,8 +740,8 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
          *
          * @see comboboxItem
          */
-        val results: Flow<QueryResult.ItemList<T>> =
-            internalState.queryResults.mapNotNull { it as? QueryResult.ItemList<T> }
+        val results: Flow<ItemList<T>> =
+            internalState.queryResults.mapNotNull { it as? ItemList<T> }
 
 
         private fun itemId(index: Int) = "$componentId-item-$index"
