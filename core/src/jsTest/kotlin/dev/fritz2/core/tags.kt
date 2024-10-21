@@ -543,4 +543,49 @@ class TagTests {
         assertEquals("fourth", getAttribute())
     }
 
+    @Test
+    fun testClassNameWithFlowInsideReactiveScopeBasedUponListMapping_WontThrowUnhandledCollectionLensGetException() =
+        runTest {
+            val items = listOf("red", "green", "blue")
+
+            fun extractClasses() = items.mapNotNull { item -> document.getElementById(item) }
+                .joinToString(",") { it.className }
+
+            val storedItems = storeOf(items, Job())
+            val removeItem = storedItems.handle<String> { allItems, toRemove ->
+                allItems.filterNot { it == toRemove }
+            }
+
+            render {
+                storedItems.data.renderEach { item ->
+                    val storedItem = storedItems.mapByElement(item) { it }
+                    div(id = item) {
+                        // access to mapped item will throw `CollectionLensGetException` after deletion
+                        // -> must be catched internally like handlers do!
+                        className(storedItem.data)
+
+                        // we give some time to the `className`-function to try to access a mapped lens for an object
+                        // that might not exist anymore.
+                        beforeUnmount { _, _ -> delay(100) }
+                    }
+                }
+            }
+
+            delay(100)
+            assertEquals("red,green,blue", extractClasses())
+
+            // this is the source of possible problem: By removing mapped lenses won't find their targeting object
+            // anymore. This will lead to `CollectionLensGetException`, that must be handled internally!
+            removeItem("green")
+
+            delay(200)
+            assertEquals("red,blue", extractClasses())
+
+            removeItem("blue")
+
+            // if not exception handling on the `classes`-Flow is done, rendering will freeze and the node for green
+            // will remain.
+            delay(200)
+            assertEquals("red", extractClasses())
+        }
 }
