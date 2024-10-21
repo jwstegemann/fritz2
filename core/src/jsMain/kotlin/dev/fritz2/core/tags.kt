@@ -361,7 +361,10 @@ open class HtmlTag<out E : Element>(
     }
 
     override fun className(value: Flow<String>, initial: String) {
-        classesStateFlow.value += value.stateIn(MainScope() + job, SharingStarted.Eagerly, initial)
+        classesStateFlow.value += value
+            .catch { printErrorIgnoreLensException(it) }
+            .stateIn(MainScope() + job, SharingStarted.Eagerly, initial)
+
         // this ensures that the set state is applied *immediately* without `Flow`-"delay".
         // in this case, the `initial` value gets applied as "promised".
         attr("class", buildClasses())
