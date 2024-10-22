@@ -39,7 +39,69 @@ interface RenderContext : WithJob, WithScope {
     }
 
     /**
-     * Renders the data of a [Flow] only if the [predicate] is true.
+     * Renders the data of a [Flow] only if the given [predicate] is true.
+     *
+     * Example:
+     * ```kotlin
+     * data class Delivery(
+     *     val state: String,
+     *     val isVisible: Boolean
+     * )
+     *
+     * val storedDelivery = storeOf(Delivery("in production", true))
+     *
+     * storedDelivery.data.renderIf(Delivery::isVisible) { delivery ->
+     *     // This whole block might be re-rendered if the state is changed! (read on)
+     *     p { +"The state of your delivery is ${delivery.state}" }
+     * }
+     * ```
+     *
+     * Beware that the data value [V] and its changes are still handled reactively inside the [content] expression!
+     *
+     * So while the [predicate] may remain stably `true`, some other aspect of the model [V] may change in between.
+     * As a result, the whole [content]-block would be re-rendered accordingly of course!
+     *
+     * Example:
+     * ```kotlin
+     * val storedDelivery = object : Store<Delivery> by storeOf(Delivery("in production", true)) {
+     *     val proceed = handle<String> { delivery, newState ->
+     *         // we dont change the visibility, so the condition will remain the same, while the state changes!
+     *         delivery.copy(state = newState)
+     *     }
+     * }
+     *
+     * button {
+     *     +"Proceed to conveyed"
+     *     clicks.map { "conveyed" } handledBy storedDelivery.proceed
+     * }
+     *
+     * storedDelivery.data.renderIf(Delivery::isVisible) { delivery ->
+     *     // This whole block will re re-rendered on button click above!
+     *     p { +"The state of your delivery is ${delivery.state}" }
+     * }
+     * ```
+     *
+     * If you want the content to only change once if the condition changes (i.e. switches from true to false or back)
+     * you need to rely on an appropriate [Flow]-function like
+     * [distinctUntilChangedBy](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/distinct-until-changed-by.html)
+     *
+     * Example:
+     * ```kotlin
+     * storedDelivery.data.distinctUntilChangedBy(Delivery::isVisible).renderIf(Delivery::isVisible) { delivery ->
+     *     // This wont be re-rendered if `Delivery.state` changes!
+     *     // The whole block will disappear on `Delivery.isVisible` changes to `false`,
+     *     // and appear again on `Delivery.isVisible == true`. Then with the current `state` at that moment of course!
+     *     p { +"The state of your delivery is ${delivery.state}" }
+     * }
+     * ```
+     *
+     * But in most cases, that is not what you really want! Strive for solutions, where the UI portions really adopt
+     * reactively. The above is a strange hybrid case, where not all state changes are reflected by the UI.
+     *
+     * @see renderTrue
+     * @see renderFalse
+     * @see renderIs
+     * @see renderNotNull
      *
      * @receiver [Flow] containing the data
      * @param predicate must be true for the value to be rendered
@@ -67,6 +129,8 @@ interface RenderContext : WithJob, WithScope {
      *
      * @see renderIf
      * @see renderFalse
+     * @see renderIs
+     * @see renderNotNull
      */
     fun Flow<Boolean>.renderTrue(
         into: Tag<HTMLElement>? = null,
@@ -86,6 +150,8 @@ interface RenderContext : WithJob, WithScope {
      *
      * @see renderIf
      * @see renderTrue
+     * @see renderIs
+     * @see renderNotNull
      */
     fun Flow<Boolean>.renderFalse(
         into: Tag<HTMLElement>? = null,
@@ -98,6 +164,11 @@ interface RenderContext : WithJob, WithScope {
 
     /**
      * Renders the non-null data of a [Flow].
+     *
+     * @see renderIf
+     * @see renderTrue
+     * @see renderFalse
+     * @see renderIs
      *
      * @receiver [Flow] containing the data
      * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
@@ -117,13 +188,18 @@ interface RenderContext : WithJob, WithScope {
     /**
      * Renders the data of a [Flow] of type [W].
      *
+     * @see renderIf
+     * @see renderTrue
+     * @see renderFalse
+     * @see renderNotNull
+     *
      * @receiver [Flow] containing the data
      * @param klass reference to the type we want to check
      * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
      * @param content [RenderContext] for rendering the data to the DOM
      */
     @Suppress("UNCHECKED_CAST")
-    fun <W: Any> Flow<*>.renderIs(
+    fun <W : Any> Flow<*>.renderIs(
         klass: KClass<W>,
         into: Tag<HTMLElement>? = null,
         content: Tag<*>.(W) -> Unit
@@ -922,7 +998,7 @@ interface RenderContext : WithJob, WithScope {
         content: HtmlTag<HTMLQuoteElement>.() -> Unit
     ): HtmlTag<HTMLQuoteElement> =
         register(HtmlTag("q", id, baseClass, job, evalScope(scope)), content)
-    
+
     fun dfn(
         baseClass: String? = null,
         id: String? = null,
@@ -954,7 +1030,7 @@ interface RenderContext : WithJob, WithScope {
         content: HtmlTag<HTMLElement>.() -> Unit
     ): HtmlTag<HTMLElement> =
         register(HtmlTag("var", id, baseClass, job, evalScope(scope)), content)
-    
+
     fun samp(
         baseClass: String? = null,
         id: String? = null,
