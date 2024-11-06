@@ -92,7 +92,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
             var warningShown = false
             value = { items, query ->
                 // The following expression checks whether the List of available items is likely to be a List<String>
-                // or not. Since we cannot type-check the generic type of a List, we have to check an actual element and
+                // or not. Since we cannot type-check the generic type of List, we have to check an actual element and
                 // assume all elements have the same type. In some edge cases this might not be true but this check is
                 // good enough for now :-)
                 if (!warningShown && items.firstOrNull()?.let { it !is String } == true) {
@@ -277,7 +277,10 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
          * > be used with caution here.
          */
         private fun buildItemListResult(query: String, itemSequence: Sequence<T>): QueryResult.ItemList<T> {
-            val (resultList, truncated) = itemSequence.mapIndexed(::Item).toListTruncating(maximumDisplayedItems)
+            val (resultList, truncated) = itemSequence
+                .mapIndexed(::Item)
+                .toListTruncating(maximumDisplayedItems)
+
             return QueryResult.ItemList(
                 query,
                 resultList,
@@ -397,7 +400,8 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
     private data class InternalState<T>(
         val items: List<T> = emptyList(),
         val query: String = "",
-        val opened: Boolean = false
+        val opened: Boolean = false,
+        val lastSelection: T? = null,
     )
 
 
@@ -480,11 +484,24 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
             current.copy(opened = false)
         }
 
+
+        private fun InternalState<T>.select(selection: T?): InternalState<T> =
+            copy(query = "", opened = false, lastSelection = selection)
+
         val select: EmittingHandler<T?, T?> = handleAndEmit { current, selection ->
-            current.copy(query = "", opened = false).also {
+            current.select(selection).also {
                 emit(selection)
             }
         }
+
+        val selectIfDifferent: EmittingHandler<T?, T?> = handleAndEmit { current, selection ->
+            if (selection != current.lastSelection) {
+                emit(selection)
+                current.select(selection)
+            } else current
+        }
+
+        val selections: Flow<T?> = merge(select, selectIfDifferent)
 
 
         private fun computeQueryResult(items: List<T>, query: String): QueryResult<T> =
@@ -616,8 +633,8 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
         fun render() {
             value(
                 merge(
-                    internalState.select.map { format(it) },
-                    value.data.flatMapLatest { value ->
+                    internalState.selections.map { format(it) },
+                    internalState.data.map { it.lastSelection }.distinctUntilChanged().flatMapLatest { value ->
                         internalState.resetQuery.transform {
                             // Before the input's value can be reset to the previous one we need to set it to
                             // the current typed value. This is needed because the underlying `mountSimple` function
@@ -901,8 +918,8 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
         hook(items)
 
 
-        value.data handledBy internalState.select
-        value.handler?.invoke(this, internalState.select)
+        value.data handledBy internalState.selectIfDifferent
+        value.handler?.invoke(this, internalState.selections)
 
         opened handledBy internalState.setOpened
         openState.handler?.invoke(this, internalState.data.map { it.opened }.distinctUntilChanged())
