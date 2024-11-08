@@ -12,22 +12,22 @@ fun RenderContext.comboboxDemo() {
 
     val configurationStore = storeOf(ComboboxDemoConfig())
     val readOnlyStore = configurationStore.map(ComboboxDemoConfig.readOnly())
-    val autoSelectMatchesStore = configurationStore.map(ComboboxDemoConfig.autoSelectMatches())
+    val autoSelectMatchStore = configurationStore.map(ComboboxDemoConfig.autoSelectMatch())
     val openDropdownLazilyStore = configurationStore.map(ComboboxDemoConfig.openDropdownLazily())
 
     div("max-w-96 flex flex-col gap-4") {
         combine(
-            autoSelectMatchesStore.data,
+            autoSelectMatchStore.data,
             openDropdownLazilyStore.data,
             ::Pair
-        ).render { (autoSelectMatches, openDropdownLazily) ->
+        ).render { (autoSelectMatch, openDropdownLazily) ->
             combobox<Country>(id = "countries") {
                 items(COUNTRY_LIST)
                 itemFormat = Country::name
                 value(selectionStore)
                 filterBy(Country::name)
 
-                if (autoSelectMatches) selectionStrategy.autoSelectMatch()
+                if (autoSelectMatch) selectionStrategy.autoSelectMatch()
                 else selectionStrategy.manual()
 
                 if (openDropdownLazily) openDropdown.lazily()
@@ -150,7 +150,7 @@ fun RenderContext.comboboxDemo() {
         }
 
         checkbox("Read-only", readOnlyStore, "checkbox-enable-readonly")
-        checkbox("Auto-select exact matches (try 'oman')", autoSelectMatchesStore, "checkbox-enable-autoselect")
+        checkbox("Auto-select exact matches (try 'oman')", autoSelectMatchStore, "checkbox-enable-autoselect")
         checkbox("Open dropdown lazily", openDropdownLazilyStore, "checkbox-enable-lazy-opening")
 
         result {

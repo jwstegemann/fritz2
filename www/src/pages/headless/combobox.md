@@ -225,14 +225,14 @@ property.
 
 The following modes are offered:
 
-| Configuration method  | Description                                 |
-|-----------------------|---------------------------------------------|
-| `autoSelectMatches()` | Matching items are automatically selected   |
-| `manual()`            | Matching items need to be selected manually |
+| Configuration method | Description                                 |
+|----------------------|---------------------------------------------|
+| `autoSelectMatch()`  | Matching items are automatically selected   |
+| `manual()`           | Matching items need to be selected manually |
 
 ```kotlin
 combobox {
-    selectionStrategy.autoSelectMatches()
+    selectionStrategy.autoSelectMatch()
     // OR
     selectionStrategy.manual()
 }
@@ -384,7 +384,7 @@ combobox<T> {
     // methods: lazily() / eagerly()
 
     val selectionStrategy: SelectionStrategyProperty
-    // methods: autoSelectMatches() / manual()
+    // methods: autoSelectMatch() / manual()
 
     var maximumDisplayedItems: Int = 20
     var inputDebounceMillis: Long = 50L
@@ -431,7 +431,7 @@ Default-Tag: `div`
 | `value`                 | `DatabindingProperty<T>`       | Mandatory (tow-way) data binding for a selected item.                                                                                                                                                                                  |
 | `filterBy`              | `FilterFunctionProperty`       | Recommended filter function to find matching items based on the query. Accepts either a String getter (`T.() -> String`) or a fully custom filter function (`(Sequence<T>, String) -> Sequence<T>`). _Mandatory for non-String items!_ |
 | `openDropdown`          | `DropdownOpeningHook`          | Optional strategy to configure when the combo box's dropdown should open (lazily or eagerly)                                                                                                                                           |                     
-| `selectionStrategy`     | `SelectionStrategyProperty`    | Optional strategy to configure whether exact matches are automatically selected. Invoke either `autoSelectMatches()` or `manual()`                                                                                                     |
+| `selectionStrategy`     | `SelectionStrategyProperty`    | Optional strategy to configure whether exact matches are automatically selected. Invoke either `autoSelectMatch()` or `manual()`                                                                                                       |
 | `maximumDisplayedItems` | `Int`                          | Maxmimum number of items to display in the dropdown. Defaults to 20                                                                                                                                                                    |
 | `inputDebounceMillis`   | `Long`                         | Time to wait and debounce before the filter function is invoked. Defaults to 50 milliseconds.                                                                                                                                          |
 | `renderDebounceMillis`  | `Long`                         | Time to wait and debounce before the filter results are rendered. Defaults to 50 milliseconds.                                                                                                                                         |

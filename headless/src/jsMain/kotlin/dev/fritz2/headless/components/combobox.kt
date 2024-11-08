@@ -334,7 +334,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
      * Example:
      * ```kotlin
      * combobox {
-     *     selectionStrategy.autoSelectMatches()
+     *     selectionStrategy.autoSelectMatch()
      *     // OR
      *     selectionStrategy.manual()
      * }
@@ -960,7 +960,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
  *     // methods: lazily() / eagerly()
  *
  *     val selectionStrategy: SelectionStrategyProperty
- *     // methods: autoSelectMatches() / manual()
+ *     // methods: autoSelectMatch() / manual()
  *
  *     var maximumDisplayedItems: Int = 20
  *     var inputDebounceMillis: Long = 50L
@@ -1032,7 +1032,7 @@ fun <E : HTMLElement, T> RenderContext.combobox(
  *     // methods: lazily() / eagerly()
  *
  *     val selectionStrategy: SelectionStrategyProperty
- *     // methods: autoSelectMatches() / manual()
+ *     // methods: autoSelectMatch() / manual()
  *
  *     var maximumDisplayedItems: Int = 20
  *     var inputDebounceMillis: Long = 50L
