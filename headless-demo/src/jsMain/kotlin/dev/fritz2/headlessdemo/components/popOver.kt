@@ -39,7 +39,12 @@ fun RenderContext.popOverDemo() {
             className(opened.map { if (it) "" else "text-opacity-90" })
             opened.map { if (it) "Close Popover" else "Open Popover" }.renderText()
             opened.render { isOpen ->
-                icon("w-5 h-5 ml-2 -mr-1", content = if (isOpen) HeroIcons.chevron_up else HeroIcons.chevron_down)
+                icon(
+                    "w-5 h-5 ml-2 -mr-1",
+                    content = if (isOpen) HeroIcons.chevron_up else HeroIcons.chevron_down
+                ).run {
+                    clicks { stopPropagation() } handledBy toggle
+                }
             }
         }
 
