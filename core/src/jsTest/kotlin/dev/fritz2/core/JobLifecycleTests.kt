@@ -10,7 +10,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 
-class JobLifecycle {
+class JobLifecycleTests {
     @BeforeTest
     fun init() {
         RootStore.resetCounters()
