@@ -982,7 +982,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
  *
  *         val results: Flow<QueryResult.ItemList<T>>
  *
- *         // state.render {
+ *         // results.render {
  *             // for each QueryResult.ItemList<T>.Item<T> {
  *                 comboboxItem(Item<T>) { }
  *             // }
@@ -994,7 +994,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
  * }
  * ```
  *
- * For more information refer to the [official documentation](https://www.fritz2.dev/headless/listbox/#listbox)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/combobox/)
  */
 fun <E : HTMLElement, T> RenderContext.combobox(
     classes: String? = null,
@@ -1054,7 +1054,7 @@ fun <E : HTMLElement, T> RenderContext.combobox(
  *
  *         val results: Flow<QueryResult.ItemList<T>>
  *
- *         // state.render {
+ *         // results.render {
  *             // for each QueryResult.ItemList<T>.Item<T> {
  *                 comboboxItem(Item<T>) { }
  *             // }
@@ -1066,7 +1066,7 @@ fun <E : HTMLElement, T> RenderContext.combobox(
  * }
  * ```
  *
- * For more information refer to the [official documentation](https://www.fritz2.dev/headless/listbox/#listbox)
+ * For more information refer to the [official documentation](https://www.fritz2.dev/headless/combobox/)
  */
 fun <T> RenderContext.combobox(
     classes: String? = null,

@@ -259,7 +259,7 @@ comboboxItems {
 ## Positioning
 
 `comboboxItems` is a [`PopUpPanel`](#floating-content---popuppanel) and therefore provides a set of
-configuration options to control the position or distance of the list box from the `listboxButton`
+configuration options to control the position or distance of the list box from the `comboboxButton`
 as a reference element:
 
 ```kotlin
@@ -322,12 +322,12 @@ Clicking on an item when the list is open selects it and closes the list.
 
 ## Keyboard Interaction
 
-| Command                                       | Description                    |
-|:----------------------------------------------|:-------------------------------|
-| [[⬆]] [[⬇]] when listbox is open              | Activates previous / next item |
-| [[Home]] [[End]] when listbox is open         | Activates first / last item    |
-| [[Esc]] when listbox is open                  | Closes the combobox            |
-| [[Enter]] [[Space]] when the combobox is open | Selects the active item        |
+| Command                                          | Description                    |
+|:-------------------------------------------------|:-------------------------------|
+| [[⬆]] [[⬇]] when the combobox is open            | Activates previous / next item |
+| [[Home]] [[End]] when the combobox is open       | Activates first / last item    |
+| [[Esc]] when the combobox is open                | Closes the combobox            |
+| [[Enter]] [[Space]] when the combobox is open    | Selects the active item        |
 
 ## Performance
 
@@ -406,7 +406,7 @@ combobox<T> {
 
         val results: Flow<QueryResult.ItemList<T>>
 
-        // state.render {
+        // results.render {
             // for each QueryResult.ItemList<T>.Item<T> {
                 comboboxItem(Item<T>) { }
             // }
@@ -463,7 +463,7 @@ Parameters: `classes`, `scope`, `tag`, `initialize`
 
 Default-Tag: `label`
 
-### listboxValidationMessages
+### comboboxValidationMessages
 
 Available in the scope of: `combobox`, `comboboxPanelReference`
 
