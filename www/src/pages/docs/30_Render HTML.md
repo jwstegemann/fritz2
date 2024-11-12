@@ -271,7 +271,7 @@ Based upon the `data`-property, which provides a `Flow` of the store's generic d
 
 There is one more `renderEach` variant which is defined as an extension to a `Store` instead of a `Flow`.
 This special variant and its application are described in the 
-[chapter about store mapping](/docs/storemapping/#reactive-rendering-of-lists-of-entities-with-automatically-mapped-element-store).
+[chapter about store mapping](/docs/storemapping/#reactive-rendering-of-entity-lists-with-auto-mapped-element-store).
 
 | Render-Function             | Additional parameters | Description                                                                                                                       | Default Tag |    
 |-----------------------------|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------|-------------|
@@ -536,7 +536,7 @@ As the identity is stable, the following properties hold for the rendered items:
 The latter is an important aspect to consider before the use of `renderEach` for entities. If you still need to reflect 
 changes to the data within an entity and want to apply precise rendering, use this application of `renderEach`, 
 but add additional mount-points inside the elements subtrees. You will learn about those in the 
-[chapter about store mapping](/docs/storemapping/#reactive-rendering-of-lists-of-entities-with-automatically-mapped-element-store).
+[chapter about store mapping](/docs/storemapping/#reactive-rendering-of-entity-lists-with-auto-mapped-element-store).
 
 Otherwise, it might be a better choice to stick to the default `renderEach` application relying on equality.
 Have a look at its application in our [todomvc](/examples/todomvc/) example.
