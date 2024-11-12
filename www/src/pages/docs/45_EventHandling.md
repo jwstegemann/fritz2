@@ -180,7 +180,7 @@ div {
 ```
 
 The user can now click on the button. The expected result is:
-- a log message in the console: `stopPropagation clicked!` - nothing more!
+- a log message in the console: `stopImmediatePropagation clicked!` - nothing more!
 
 The difference becomes obvious now: All listeners following the `stopImmediatePropagation` call will not get any of the 
 emitted values. Additionally, the bubbling also is stopped, so no handlers of any parent-elements will be called.
