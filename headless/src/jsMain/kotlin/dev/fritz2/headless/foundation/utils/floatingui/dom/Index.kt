@@ -5,7 +5,6 @@ package dev.fritz2.headless.foundation.utils.floatingui.dom
 
 import dev.fritz2.headless.foundation.utils.floatingui.core.ComputePositionConfig
 import dev.fritz2.headless.foundation.utils.floatingui.core.ComputePositionReturn
-import dev.fritz2.headless.foundation.utils.floatingui.dom.AutoUpdateOptions
 import org.w3c.dom.Element
 import kotlin.js.Promise
 
