@@ -4,10 +4,7 @@ import dev.fritz2.core.RenderContext
 import dev.fritz2.core.storeOf
 import dev.fritz2.core.transition
 import dev.fritz2.headless.components.listbox
-import dev.fritz2.headless.foundation.utils.floatingui.core.middleware.flip
 import dev.fritz2.headless.foundation.utils.floatingui.core.middleware.offset
-import dev.fritz2.headless.foundation.utils.floatingui.obj
-import dev.fritz2.headless.foundation.utils.floatingui.utils.Placement
 import dev.fritz2.headless.foundation.utils.floatingui.utils.PlacementValues
 import dev.fritz2.headlessdemo.result
 import kotlinx.coroutines.flow.combine

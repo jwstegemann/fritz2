@@ -1,7 +1,5 @@
 package dev.fritz2.headless.foundation.utils.floatingui.utils
 
-import dev.fritz2.headless.foundation.utils.floatingui.core.RootBoundary
-
 typealias Alignment = String
 
 object AlignmentValues {
