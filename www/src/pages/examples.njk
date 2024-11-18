@@ -14,7 +14,7 @@ eleventyNavigation:
 <div class="text-center px-4 sm:px-6 lg:px-8 py-12 grow overflow-y-auto overscroll-none">
     <div class="mx-auto max-w-md sm:max-w-3xl lg:max-w-7xl">
         <div class="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-3">
-        {% for example in examples.internal %}
+        {% for example in examples %}
             <a href="/examples{{ example.route }}" target="_blank" class="pt-6 bg-gray-800 hover:bg-gray-700 rounded-lg">
                 <div class="flow-root px-6 pb-8">
                     <div class="-mt-10">
@@ -33,27 +33,6 @@ eleventyNavigation:
                 </div>
             </a>
         {% endfor %}
-        </div>
-        <div class="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {% for example in examples.external %}
-                <a href="{{ example.route }}" target="_blank" class="pt-6  bg-gray-800 hover:bg-gray-700 rounded-lg">
-                    <div class="flow-root px-6 pb-8">
-                        <div class="-mt-10">
-                            <div>
-                              <span class="inline-flex items-center justify-center p-3 bg-gradient-to-r from-bg-start to-bg-end rounded-md shadow-lg">
-                                <span class="h-6 w-6 text-white">
-                                    {% heroicon "outline", example.icon %}
-                                </span>
-                              </span>
-                            </div>
-                            <h3 class="mt-5 text-lg font-medium text-white tracking-tight">{{ example.title }}</h3>
-                            <p class="mt-5 text-base text-gray-400">
-                                {{ example.description }}
-                            </p>
-                        </div>
-                    </div>
-                </a>
-            {% endfor %}
         </div>
     </div>
 </div>
