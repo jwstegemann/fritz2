@@ -638,7 +638,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
             value(
                 merge(
                     internalState.selections.map { format(it) },
-                    internalState.data.map { it.lastSelection }.distinctUntilChanged().flatMapLatest { value ->
+                    internalState.data.drop(1).map { it.lastSelection }.distinctUntilChanged().flatMapLatest { value ->
                         internalState.resetQuery.transform {
                             // Before the input's value can be reset to the previous one we need to set it to
                             // the current typed value. This is needed because the underlying `mountSimple` function
