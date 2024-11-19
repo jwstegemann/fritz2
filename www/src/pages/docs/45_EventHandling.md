@@ -14,7 +14,7 @@ eleventyNavigation:
 
 In fritz2, all HTML-Events are either encapsulated within a `Tag`-scope or within the special `Window`-object, which both
 offer access to all global events. A complete list can be found in the
-[events.kt](https://github.com/jwstegemann/fritz2/blob/master/core/src/jsMain/kotlin/dev/fritz2/core/Events.kt) file.
+[Events.kt](https://github.com/jwstegemann/fritz2/blob/master/core/src/jsMain/kotlin/dev/fritz2/core/Events.kt) file.
 
 The most important aspect to understand is that an event in fritz2 is just a type derived by `Flow`. You can
 use all events as the source of an action which should be handled by a handler-function.
