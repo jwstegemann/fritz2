@@ -263,7 +263,7 @@ In addition, one would still have to style each building block accordingly withi
 and fully functional surface unit, which was omitted here for reasons of space and simplicity. In principle, one injects
 the styling into the function block as the first parameter, analogous to the known tag factory functions. The source
 code of
-the [example for a RadioGroup](https://github.com/jwstegemann/fritz2/blob/master/headless-demo/src/jsMain/kotlin/dev/fritz2/headlessdemo/radioGroup.kt)
+the [example for a RadioGroup](https://github.com/jwstegemann/fritz2/blob/master/headless-demo/src/jsMain/kotlin/dev/fritz2/headlessdemo/components/RadioGroup.kt)
 from the `headless-demo` project clearly shows that the styling specifications make the whole thing only slightly more
 complex.
 
