@@ -103,4 +103,30 @@ class LensesTests {
             "not null lens does not throw exception when set on null parent"
         ) { notNullLens.set(null, newValue)?.street }
     }
+
+    sealed interface ConsultationModel {
+        val stockNumber: String
+
+        data class Agency(override val stockNumber: String, val branch: String) : ConsultationModel
+
+        data class Private(override val stockNumber: String) : ConsultationModel
+    }
+
+    @Test
+    fun lensForUpcasting_withSuitableSubtypeTarget_willGetSubtype() {
+        val agency: ConsultationModel = ConsultationModel.Agency("123", "woodworking")
+        val sut = lensForUpcasting<ConsultationModel, ConsultationModel.Agency>()
+
+        val result = sut.get(agency)
+
+        assertEquals(agency, result)
+    }
+
+    @Test
+    fun lensForUpcasting_withInvalidTarget_willThrow() {
+        val agency: ConsultationModel = ConsultationModel.Agency("123", "woodworking")
+        val sut = lensForUpcasting<ConsultationModel, ConsultationModel.Private>()
+
+        assertFailsWith<CollectionLensGetException> { sut.get(agency) }
+    }
 }
