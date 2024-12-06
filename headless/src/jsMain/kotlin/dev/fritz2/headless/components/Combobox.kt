@@ -248,8 +248,16 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
 
     inner class SelectionStrategyProperty : Property<(String, Sequence<T>) -> QueryResult<T>>() {
 
-        private fun isExactMatch(item: T, query: String) =
-            itemFormat(item).contentEquals(query, ignoreCase = true)
+        /**
+         * Returns `true` if the given [item] produces an _exact match_.
+         *
+         * An item is an exact match iff its formatted value is the same as the provided [query].
+         * Empty formatted values are not considered exact matches regardless whether they are matches or not.
+         */
+        private fun isExactMatch(item: T, query: String): Boolean {
+            val formatted = itemFormat(item)
+            return formatted.isNotEmpty() && formatted.contentEquals(query, ignoreCase = true)
+        }
 
         /**
          * Helper function taking [n] elements from a [Sequence] and storing them in a [List].
