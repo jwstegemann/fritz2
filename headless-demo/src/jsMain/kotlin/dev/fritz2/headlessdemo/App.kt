@@ -50,6 +50,7 @@ val pages: Map<String, Page> = mapOf(
             | robust support for keyboard naigation.""".trimMargin(),
         RenderContext::comboboxDemo
     ),
+    "comboboxTestdrive" to TestDrive(RenderContext::comboboxTestdrive),
     "menu" to DemoPage(
         "Headless Menu",
         """Menus offer an easy way to build custom, accessible dropdown components with robust support for keyboard

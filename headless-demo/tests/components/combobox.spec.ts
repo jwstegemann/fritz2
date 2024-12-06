@@ -2,7 +2,7 @@ import { expect, Locator, Page, test } from "@playwright/test";
 
 
 test.beforeEach(async ({ page }) => {
-    await page.goto("#combobox");
+    await page.goto("#comboboxTestdrive");
     await expect(page.locator("#portal-root")).toBeAttached();
     await page.waitForTimeout(200);
 });
