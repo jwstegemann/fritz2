@@ -179,6 +179,15 @@ fun <K, V> lensForElement(key: K): Lens<Map<K, V>, V> = object : Lens<Map<K, V>,
 }
 
 /**
+ * create a [Lens] for upcasting a base (sealed) class or interface to a specific subtype.
+ */
+inline fun <P, reified C : P> lensForUpcasting(): Lens<P, C> = object : Lens<P, C> {
+    override val id: String = ""
+    override fun get(parent: P): C = (parent as? C) ?: throw CollectionLensGetException()
+    override fun set(parent: P, value: C): P = value
+}
+
+/**
  * Creates a lens from a nullable parent to a non-nullable value using a given default-value.
  * Use this method to apply a default value that will be used in the case that the real value is null.
  * When setting that value to the default value it will accordingly translate to null.

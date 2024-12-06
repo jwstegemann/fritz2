@@ -412,13 +412,14 @@ Take a look at our complete [validation example](/examples/validation) to get an
 
 ### Summary Lens-Factories
 
-| Factory                                                                   | Use case                                                                                        |
-|---------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|
-| `lensOf(id: String, getter: (P) -> T, setter: (P, T) -> P): Lens<P, T>`   | Most generic lens (used by `lenses-annotation-processor`. Fits for complex model destructuring. |
-| `lensOf(parse: (String) -> P, format: (P) -> String): Lens<P, String>`    | Formatting lens: Use for mapping into `String`s.                                                |
-| `lensForElement(element: T, idProvider: IdProvider<T, I>): Lens<List, T>` | Select one element from a list of entities, therefore a stable Id is needed.                    |
-| `lensForElement(index: Int): Lens<List, T>`                               | Select one element from a list by index. Useful for value objects.                              |
-| `lensForElement(key: K): Lens<Map<K, V>, V>`                              | Select one element from a map by key.                                                           |
+| Factory                                                                   | Use case                                                                                               |
+|---------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------|
+| `lensOf(id: String, getter: (P) -> T, setter: (P, T) -> P): Lens<P, T>`   | Most generic lens (used by `lenses-annotation-processor`. Fits for complex model destructuring.        |
+| `lensOf(parse: (String) -> P, format: (P) -> String): Lens<P, String>`    | Formatting lens: Use for mapping into `String`s.                                                       |
+| `lensForElement(element: T, idProvider: IdProvider<T, I>): Lens<List, T>` | Select one element from a list of entities, therefore a stable Id is needed.                           |
+| `lensForElement(index: Int): Lens<List, T>`                               | Select one element from a list by index. Useful for value objects.                                     |
+| `lensForElement(key: K): Lens<Map<K, V>, V>`                              | Select one element from a map by key.                                                                  |
+| `lensForUpcasting(): Lens<Map<P, C>`                                      | Casting lens: Interpret parent as specific subtype. Handles `ClassCastException` for render edge-cases |
 
 ## Advanced Topics
 
@@ -639,6 +640,14 @@ Casting from the base type to a more specific type is called up-casting.
 Since we apply this to a lens, we call this kind of lens *up-casting* lens.
 :::
 
+But beware that the above code behaves still a bit brittle, as we do not cope with casting problems!
+That's why fritz2 offers a dedicated lens factory for this use case: `lensForUpcasting`:
+```kotlin
+val computerLens: Lens<Wish, Computer> = lensForUpcasting<Wish, Computer>()
+```
+Our automatic lens generator relies on this factory too. So strive to use this, if you craft your up-casting lenses 
+manually. 
+
 Armed with such an up-casting lenses, we can easily access or change values of our example `WishList`-object:
 ```kotlin
 val wishlist = Wishlist(
@@ -649,11 +658,7 @@ val wishlist = Wishlist(
     )
 )
 
-val upcastingLens: Lens<Wish, Computer> = lensOf(
-    "",
-    { it as Computer },
-    { _, v -> v }
-)
+val upcastingLens: Lens<Wish, Computer> = lensForUpcasting<Wish, Computer>()
 
 // craft a lens to access the `Computer.raminKb`-property from a `WishList` by combining the
 // intermediate lenses by `+`-operator:

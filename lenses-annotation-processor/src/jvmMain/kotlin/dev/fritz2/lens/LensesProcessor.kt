@@ -265,14 +265,9 @@ private class LensesVisitor(
                     .receiver(compObj.asType(emptyList()).toTypeName())
                     .apply {
                         addCode(
-                            """ 
-                            |return %M(
-                            |    "",
-                            |    { it as %T },
-                            |    { _, v -> v }
-                            |)
-                            """.trimMargin(),
-                            MemberName("dev.fritz2.core", "lensOf"),
+                            "return %M<%T,%T>()",
+                            MemberName("dev.fritz2.core", "lensForUpcasting"),
+                            classDeclaration.toClassName(),
                             child.toClassName(),
                         )
                     }
