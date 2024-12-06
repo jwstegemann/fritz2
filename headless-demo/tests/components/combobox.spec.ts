@@ -2,15 +2,15 @@ import { expect, Locator, Page, test } from "@playwright/test";
 
 
 test.beforeEach(async ({ page }) => {
-    await page.goto("#combobox");
+    await page.goto("#comboboxTestdrive");
     await expect(page.locator("#portal-root")).toBeAttached();
     await page.waitForTimeout(200);
 });
 
 
-async function createLocators(page: Page): Promise<[Locator, Locator]> {
-    const btn = page.locator("#countries-input")
-    const listBoxItems = page.locator("#countries-items")
+async function createLocators(testId: string, page: Page): Promise<[Locator, Locator]> {
+    const btn = page.locator(`#${testId}-input`)
+    const listBoxItems = page.locator(`#${testId}-items`)
     return [btn, listBoxItems]
 }
 
@@ -68,7 +68,7 @@ const openCloseArgs = [
 
 
 test("Dropdown is initially closed", async ({ page }) => {
-    const [input, items] = await createLocators(page);
+    const [input, items] = await createLocators("countries", page);
     await assertIsClosed(input, items);
 });
 
@@ -78,7 +78,7 @@ test.describe("Trying to open and close a combobox", () => {
     test.describe("with the dropdown opening eagerly", () => {
         for (const { desc, open, close } of openCloseArgs) {
             test(`by ${desc} opens and closes the dropdown`, async ({ page }) => {
-                const [input, items] = await createLocators(page);
+                const [input, items] = await createLocators("countries", page);
 
                 await open(page);
                 await assertIsOpen(input, items);
@@ -93,7 +93,7 @@ test.describe("Trying to open and close a combobox", () => {
 
         for (const { desc, open, close } of openCloseArgs) {
             test(`by ${desc} does not open the dropdown`, async ({ page }) => {
-                const [input, items] = await createLocators(page);
+                const [input, items] = await createLocators("countries", page);
 
                 await page.locator("#checkbox-enable-lazy-opening").check();
 
@@ -106,7 +106,7 @@ test.describe("Trying to open and close a combobox", () => {
         }
 
         test("by typing a query opens the dropdown", async ({ page }) => {
-            const [input, items] = await createLocators(page);
+            const [input, items] = await createLocators("countries", page);
 
             await page.locator("#checkbox-enable-lazy-opening").check();
 
@@ -123,7 +123,7 @@ test.describe("Entering an leaving the input", () => {
 
     for (const { desc, open, close } of openCloseArgs) {
         test(`by ${desc} resets the input`, async ({ page }) => {
-            const [input, items] = await createLocators(page);
+            const [input, items] = await createLocators("countries", page);
 
             await open(page);
 
@@ -137,7 +137,7 @@ test.describe("Entering an leaving the input", () => {
 });
 
 test("With a default value of 'null', the input is empty", async ({ page }) => {
-    const [input, _] = await createLocators(page);
+    const [input, _] = await createLocators("countries", page);
 
     const selection = page.locator("#countries-selection");
     await expect(selection).toContainText("null");
@@ -148,7 +148,7 @@ test("With a default value of 'null', the input is empty", async ({ page }) => {
 test.describe("When updating the value via the data-binding", () => {
 
     test("non-null values are reflected in the input element", async ({ page }) => {
-        const [input, _] = await createLocators(page);
+        const [input, _] = await createLocators("countries", page);
 
         const selection = page.locator("#countries-selection");
         await expect(selection).toContainText("null");
@@ -162,7 +162,7 @@ test.describe("When updating the value via the data-binding", () => {
     });
 
     test("null values are reflected in the input element", async ({ page }) => {
-        const [input, _] = await createLocators(page);
+        const [input, _] = await createLocators("countries", page);
 
         const selectionButton = await page.locator('#btn-select-2');
         await selectionButton.click();
@@ -189,7 +189,7 @@ test.describe("When the input is read-only", () => {
         },
     ]) {
         test(desc, async ({ page }) => {
-            const [input, items] = await createLocators(page);
+            const [input, items] = await createLocators("countries", page);
 
             await page.locator('#checkbox-enable-readonly').check();
 
@@ -212,7 +212,7 @@ test.describe("Activating an item", () => {
         },
     ]) {
         test(`${desc} sets 'aria-activedescendant'`, async ({ page }) => {
-            const [input, items] = await createLocators(page);
+            const [input, items] = await createLocators("countries", page);
             await input.click();
 
             await expect(items).not.toHaveAttribute("aria-activedescendant");
@@ -227,7 +227,7 @@ test.describe("Activating an item", () => {
 });
 
 test("Changing the active item updates 'aria-activedescendant'", async ({ page }) => {
-    const [input, items] = await createLocators(page);
+    const [input, items] = await createLocators("countries", page);
     await input.click();
 
     await expect(items).not.toHaveAttribute("aria-activedescendant");
@@ -252,7 +252,7 @@ test.describe("When activating an item via keyboard", () => {
         { key: "End", index: 19 }
     ]) {
         test(`'pressing ${{ key }}' jumps to the ${index}th item`, async ({ page }) => {
-            const [input, items] = await createLocators(page);
+            const [input, items] = await createLocators("countries", page);
             await input.click();
 
             const item = page.locator("#countries-item-0");
@@ -268,7 +268,7 @@ test.describe("When activating an item via keyboard", () => {
         { setupKey: "End", testKey: "ArrowDown", index: 19, indexName: "last" }
     ]) {
         test(`'pressing ${testKey}' on the ${indexName} item does nothing`, async ({ page }) => {
-            const [input, items] = await createLocators(page);
+            const [input, items] = await createLocators("countries", page);
             await input.click();
 
             await expect(page.locator("#countries-item-0")).toBeVisible();
@@ -285,7 +285,7 @@ test.describe("When activating an item via keyboard", () => {
 test.describe("Select an item", () => {
 
     test("by clicking on it", async ({ page }) => {
-        const [input, items] = await createLocators(page);
+        const [input, items] = await createLocators("countries", page);
         const selection = page.locator("#countries-selection");
 
         await expect(selection).toContainText("null");
@@ -300,7 +300,7 @@ test.describe("Select an item", () => {
     });
 
     test("by activating it via the keyboard and pressing Enter", async ({ page }) => {
-        const [input, items] = await createLocators(page);
+        const [input, items] = await createLocators("countries", page);
         const selection = page.locator("#countries-selection");
 
         await expect(selection).toContainText("null");
@@ -321,7 +321,7 @@ test.describe("Select an item", () => {
 test.describe("When typing a query", () => {
 
     test("the result dropdown is updated", async ({ page }) => {
-        const [input, items] = await createLocators(page);
+        const [input, items] = await createLocators("countries", page);
 
         await input.click();
         await expect(page.locator("#countries-item-0")).toBeVisible();
@@ -337,7 +337,7 @@ test.describe("When typing a query", () => {
     });
 
     test("closing the dropdown resets the input field", async ({ page }) => {
-        const [input, items] = await createLocators(page);
+        const [input, items] = await createLocators("countries", page);
 
         await input.click();
         await expect(page.locator("#countries-item-0")).toBeVisible();
@@ -351,7 +351,7 @@ test.describe("When typing a query", () => {
     });
 
     test("by default, exact matches are not auto-selected", async ({ page }) => {
-        const [input, items] = await createLocators(page);
+        const [input, items] = await createLocators("countries", page);
 
         await input.click();
         await expect(page.locator("#countries-item-0")).toBeVisible();
@@ -365,7 +365,7 @@ test.describe("When typing a query", () => {
     });
 
     test("exact matches are auto-selected if configured", async ({ page }) => {
-        const [input, items] = await createLocators(page);
+        const [input, items] = await createLocators("countries", page);
 
         await page.locator("#checkbox-enable-autoselect").check();
 
@@ -380,7 +380,7 @@ test.describe("When typing a query", () => {
     });
 
     test("in lazy dropdown opening mode, the dropdown is first hidden and then opened", async ({ page }) => {
-        const [input, items] = await createLocators(page);
+        const [input, items] = await createLocators("countries", page);
 
         await page.locator("#checkbox-enable-lazy-opening").check();
 
@@ -407,7 +407,7 @@ test.describe("When typing a query", () => {
  * Keyboard selections should not be possible when the dropdown is closed.
  */
 test("Keyboard selection in lazy mode does nothing when the dropdown is closed", async ({ page }) => {
-    const [input, items] = await createLocators(page);
+    const [input, items] = await createLocators("countries", page);
 
     await page.locator("#checkbox-enable-lazy-opening").check();
 
@@ -431,4 +431,33 @@ test("Keyboard selection in lazy mode does nothing when the dropdown is closed",
 
     await expect(input).toBeEmpty();
     await expect(page.locator("#countries-selection")).toContainText("null");
+});
+
+test.describe("Selecting an item via mouse twice does not result in looping", () => {
+
+    for (const { testId, desc } of [
+        { testId: "countries", desc: "when using a regular store" },
+        { testId: "countries-null-enabling-lens", desc: "when using a non-nullable Store with a null-enabling lens" }
+    ]) {
+        test(desc, async ({ page }) => {
+            const [input, items] = await createLocators(testId, page);
+
+            const openingCount = page.locator(`#${testId}-opening-count`);
+            await expect(openingCount).toHaveText("0");
+
+            await input.click();
+            await expect(items).toBeVisible();
+            await expect(openingCount).toHaveText("1");
+
+            const firstItem = page.locator(`#${testId}-item-0`);
+            await expect(firstItem).toBeVisible();
+            await firstItem.click();
+
+            // Using timeout is okay here as the test needs to check the number of times the dropdown has been opened 
+            // after a given amount of time (similar to debouncing). Since the issue that is reproduced is typically 
+            // based on race conditions, there is no other way to check.
+            await page.waitForTimeout(2000);
+            await expect(openingCount).toHaveText("1");
+        });
+    }
 });
