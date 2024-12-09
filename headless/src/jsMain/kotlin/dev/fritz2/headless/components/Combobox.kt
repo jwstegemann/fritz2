@@ -6,7 +6,9 @@ import dev.fritz2.headless.components.Combobox.QueryResult.ItemList
 import dev.fritz2.headless.foundation.*
 import dev.fritz2.headless.foundation.utils.floatingui.utils.PlacementValues
 import dev.fritz2.headless.foundation.utils.scrollintoview.HeadlessScrollOptions
+import kotlinx.browser.window
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.HTMLElement
@@ -606,6 +608,10 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
 
         private fun format(value: T?): String = value?.let(itemFormat) ?: ""
 
+        private fun clearSelection() {
+            window.asDynamic().getSelection().empty()
+        }
+
         @OptIn(FlowPreview::class)
         fun render() {
             value(
@@ -630,6 +636,10 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
             focuss.filterNot { domNode.readOnly } handledBy {
                 domNode.select()
             }
+            internalState.select handledBy {
+                clearSelection()
+            }
+
             hook(openDropdown)
 
 
