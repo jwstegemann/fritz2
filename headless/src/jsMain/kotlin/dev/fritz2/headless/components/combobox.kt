@@ -5,7 +5,9 @@ import dev.fritz2.core.Window
 import dev.fritz2.headless.foundation.*
 import dev.fritz2.headless.foundation.utils.floatingui.utils.PlacementValues
 import dev.fritz2.headless.foundation.utils.scrollintoview.HeadlessScrollOptions
+import kotlinx.browser.window
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import org.w3c.dom.*
 import kotlin.math.max
@@ -204,7 +206,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
     inner class DropdownOpeningHook : Hook<Tag<HTMLInputElement>, Unit, Unit>() {
 
         private val openOnFocus: Effect<Tag<HTMLInputElement>, Unit, Unit> = { _, _ ->
-            merge(focuss, selects).filterNot { domNode.readOnly } handledBy internalState.open
+            merge(focuss, selects).filterNot { domNode.readOnly } handledBy open
         }
 
         init {
@@ -244,8 +246,16 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
 
     inner class SelectionStrategyProperty : Property<(String, Sequence<T>) -> QueryResult<T>>() {
 
-        private fun isExactMatch(item: T, query: String) =
-            itemFormat(item).contentEquals(query, ignoreCase = true)
+        /**
+         * Returns `true` if the given [item] produces an _exact match_.
+         *
+         * An item is an exact match iff its formatted value is the same as the provided [query].
+         * Empty formatted values are not considered exact matches regardless whether they are matches or not.
+         */
+        private fun isExactMatch(item: T, query: String): Boolean {
+            val formatted = itemFormat(item)
+            return formatted.isNotEmpty() && formatted.contentEquals(query, ignoreCase = true)
+        }
 
         /**
          * Helper function taking [n] elements from a [Sequence] and storing them in a [List].
@@ -400,8 +410,6 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
     private data class InternalState<T>(
         val items: List<T> = emptyList(),
         val query: String = "",
-        val opened: Boolean = false,
-        val lastSelection: T? = null,
     )
 
 
@@ -461,7 +469,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
         }
 
         val updateQuery: EmittingHandler<String, String> = handleAndEmit { current, query ->
-            current.copy(query = query, opened = true).also {
+            current.copy(query = query).also {
                 emit(query)
             }
         }
@@ -472,36 +480,12 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
             }
         }
 
-        val setOpened: Handler<Boolean> = handle { current, opened ->
-            current.copy(opened = opened)
-        }
-
-        val open: Handler<Unit> = handle { current ->
-            current.copy(opened = true)
-        }
-
-        val close: Handler<Unit> = handle { current ->
-            current.copy(opened = false)
-        }
-
-
-        private fun InternalState<T>.select(selection: T?): InternalState<T> =
-            copy(query = "", opened = false, lastSelection = selection)
 
         val select: EmittingHandler<T?, T?> = handleAndEmit { current, selection ->
-            current.select(selection).also {
+            current.copy(query = "").also {
                 emit(selection)
             }
         }
-
-        val selectIfDifferent: EmittingHandler<T?, T?> = handleAndEmit { current, selection ->
-            if (selection != current.lastSelection) {
-                emit(selection)
-                current.select(selection)
-            } else current
-        }
-
-        val selections: Flow<T?> = merge(select, selectIfDifferent)
 
 
         private fun computeQueryResult(items: List<T>, query: String): QueryResult<T> =
@@ -511,19 +495,10 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
                     selectionStrategy.buildResult(query, itemSequence)
                 }
 
-        val queryResults: Flow<QueryResult<T>> =
-            merge(
-                // Emit initial data straight-away to avoid flickering upon first opening of the dropdown:
-                flowOnceOf(
-                    computeQueryResult(current.items, current.query)
-                ),
-                // All subsequent states are computed based on the changing internal state:
-                data
-                    .drop(1)
-                    .map { it.items to it.query }
-                    .distinctUntilChanged()
-                    .mapLatest { (items, query) -> computeQueryResult(items, query) }
-            )
+        val queryResults: Flow<QueryResult<T>> = data
+            .map { it.items to it.query }
+            .distinctUntilChanged()
+            .mapLatest { (items, query) -> computeQueryResult(items, query) }
 
         init {
             queryResults.mapNotNull { (it as? QueryResult.ExactMatch<T>)?.item } handledBy select
@@ -585,7 +560,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
         private val itemActivationKeys = setOf(Keys.ArrowUp, Keys.ArrowDown, Keys.Home, Keys.End)
 
         private fun handleKeyboardSelections() {
-            val selectShortcuts = internalState.data.map { it.opened }.distinctUntilChanged().flatMapLatest { opened ->
+            val selectShortcuts = opened.distinctUntilChanged().flatMapLatest { opened ->
                 if (opened) {
                     keydownsIf {
                         if (shortcutOf(this) in (itemActivationKeys + Keys.Enter)) {
@@ -629,35 +604,44 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
 
         private fun format(value: T?): String = value?.let(itemFormat) ?: ""
 
+        private fun clearSelection() {
+            window.asDynamic().getSelection().empty()
+        }
+
         @OptIn(FlowPreview::class)
         fun render() {
             value(
                 merge(
-                    internalState.selections.map { format(it) },
-                    internalState.data.drop(1).map { it.lastSelection }.distinctUntilChanged().flatMapLatest { value ->
+                    internalState.select.map { format(it) },
+                    value.data.flatMapLatest { lastSelection ->
                         internalState.resetQuery.transform {
                             // Before the input's value can be reset to the previous one we need to set it to
                             // the current typed value. This is needed because the underlying `mountSimple` function
                             // cannot handle repeating values.
                             emit(domNode.value)
-                            emit(format(value))
+                            emit(format(lastSelection))
                         }
                     },
                 ).distinctUntilChanged()
             )
 
+            inputs handledBy open
             inputs.values().debounce(inputDebounceMillis) handledBy internalState.updateQuery
 
 
             focuss.filterNot { domNode.readOnly } handledBy {
                 domNode.select()
             }
+            internalState.select handledBy {
+                clearSelection()
+            }
+
             hook(openDropdown)
 
 
-            Window.keydownsIf {
-                internalState.current.opened && shortcutOf(this) in setOf(Keys.Tab, Keys.Shift + Keys.Tab)
-            } handledBy internalState.close
+            this@ComboboxInput.keydownsIf {
+                shortcutOf(this) in setOf(Keys.Tab, Keys.Shift + Keys.Tab)
+            } handledBy close
 
             handleKeyboardSelections()
 
@@ -782,11 +766,13 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
         ): Tag<EJ> {
             addComponentStructureInfo("combobox-item", this.scope, this)
             return tag(this, classes, itemId(item.index), scope) {
-                with(ComboboxItem(
-                    this,
-                    active = activeIndexStore.data.map { activeIndex -> item.index == activeIndex },
-                    selected = value.data.map { selected -> item.value == selected }
-                )) {
+                with(
+                    ComboboxItem(
+                        this,
+                        active = activeIndexStore.data.map { activeIndex -> item.index == activeIndex },
+                        selected = value.data.map { selected -> item.value == selected }
+                    )
+                ) {
                     clicks.map { item.value } handledBy internalState.select
                     mouseenters.mapNotNull { item.index } handledBy activeIndexStore.update
 
@@ -918,16 +904,17 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
         hook(items)
 
 
-        value.data handledBy internalState.selectIfDifferent
-        value.handler?.invoke(this, internalState.selections)
-
-        opened handledBy internalState.setOpened
-        openState.handler?.invoke(this, internalState.data.map { it.opened }.distinctUntilChanged())
-
-        opened.filterNot { it }.map { } handledBy internalState.resetQuery
-
+        value.data handledBy internalState.select
+        value.handler?.invoke(this, internalState.select)
 
         internalState.data.map { null } handledBy activeIndexStore.update
+
+
+        // opening the dropdown when typing is handled directly in the `comboboxInput` brick
+        // opening the dropdown on focus is handled in the `DropdownOpeningHook`
+        internalState.select.map { } handledBy close
+
+        opened.filterNot { it }.map { } handledBy internalState.resetQuery
 
 
         label?.let {
