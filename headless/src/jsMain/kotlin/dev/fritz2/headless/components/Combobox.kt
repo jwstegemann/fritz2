@@ -208,9 +208,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
     inner class DropdownOpeningHook : Hook<Tag<HTMLInputElement>, Unit, Unit>() {
 
         private val openOnFocus: Effect<Tag<HTMLInputElement>, Unit, Unit> = { _, _ ->
-            // TODO Open on focus when focus is obtained non-programmatically
-            //  (previous implementation results in infinite open-close loop)
-            focuss.filterNot { domNode.readOnly } handledBy open
+            merge(focuss, selects).filterNot { domNode.readOnly } handledBy open
         }
 
         init {
