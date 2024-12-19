@@ -66,7 +66,7 @@ class SubInspector<P, T>(
  * was called on an equivalent store of the same value.
  */
 fun <D> Inspector<D?>.mapNull(default: D): Inspector<D> =
-    SubInspector(this, defaultLens("", default))
+    SubInspector(this, mapToNonNullLens("", default))
 
 /**
  * Creates a new [Inspector] containing the element for the given [element] and [idProvider]

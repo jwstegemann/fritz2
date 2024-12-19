@@ -64,7 +64,7 @@ class LensesTests {
     fun testDefaultLens() {
         val defaultValue = "fritz2"
         val nonNullValue = "some value"
-        val defaultLens = defaultLens("", defaultValue)
+        val defaultLens = mapToNonNullLens("", defaultValue)
 
         assertEquals(defaultValue, defaultLens.get(null), "default value not applied on null")
         assertEquals(nonNullValue, defaultLens.get(nonNullValue), "wrong value on not-null")
