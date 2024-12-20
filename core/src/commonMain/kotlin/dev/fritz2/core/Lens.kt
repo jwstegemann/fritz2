@@ -188,14 +188,33 @@ inline fun <P, reified C : P> lensForUpcasting(): Lens<P, C> = object : Lens<P, 
 }
 
 /**
- * Creates a lens from a nullable parent to a non-nullable value using a given default-value.
+ * Creates a [Lens] from a nullable parent to a non-nullable value using the provided [default] value.
+ *
  * Use this method to apply a default value that will be used in the case that the real value is null.
  * When setting that value to the default value it will accordingly translate to null.
  *
- * @param default value to be used instead of null
+ * The inverse Lens can be created using the [mapToNullableLens] factory.
+ *
+ * @param default value to be used instead of `null`
  */
-internal fun <T> defaultLens(id: String, default: T): Lens<T?, T> = object : Lens<T?, T> {
-    override val id: String = id
+internal fun <T> mapToNonNullLens(default: T): Lens<T?, T> = object : Lens<T?, T> {
+    override val id: String = ""
     override fun get(parent: T?): T = parent ?: default
     override fun set(parent: T?, value: T): T? = value.takeUnless { it == default }
+}
+
+/**
+ * Creates a [Lens] from a _non-nullable_ parent to a _nullable_ value, mapping the provided [placeholder] to `null`
+ * and vice versa.
+ *
+ * Use this method in cases where a nullable Store is needed but the data model used is actually non-nullable.
+ *
+ * The inverse Lens can be created using the [mapToNonNullLens] factory.
+ *
+ * @param placeholder value to be mapped to `null`
+ */
+internal fun <T> mapToNullableLens(placeholder: T): Lens<T, T?> = object : Lens<T, T?> {
+    override val id: String = ""
+    override fun get(parent: T): T? = parent.takeUnless { parent == placeholder }
+    override fun set(parent: T, value: T?): T = value ?: placeholder
 }

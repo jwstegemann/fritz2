@@ -104,7 +104,19 @@ fun <P, T> Store<P?>.map(lens: Lens<P & Any, T>): Store<T> =
  * null is used instead updating the parent. When this [Store]'s value would be null according to it's parent's
  * value, the [default] value will be used instead.
  *
- * @param default value to translate null to and from
+ * @param default value to be used instead of `null`
  */
 fun <T> Store<T?>.mapNull(default: T): Store<T> =
-    map(defaultLens("", default))
+    map(mapToNonNullLens(default))
+
+/**
+ * Creates a new [Store] from a _non-nullable_ parent store that either contains the original value or `null` if its
+ * value matches the given [placeholder].
+ *
+ * When updating the value of the resulting [Store] to `null`, the [placeholder] is used instead.
+ * When the resulting [Store]'s value would be the [placeholder], `null` will be used instead.
+ *
+ * @param placeholder value to be mapped to `null`
+ */
+fun <T> Store<T>.mapNullable(placeholder: T): Store<T?> =
+    map(mapToNullableLens(placeholder))
