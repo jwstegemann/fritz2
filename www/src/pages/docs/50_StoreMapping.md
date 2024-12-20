@@ -299,6 +299,24 @@ val personStore = storeOf(Person(null), job = Job())
 val nameStore = personStore.map(Person.name()).mapNull("")
 ```
 
+#### The other way around
+
+You may also encounter special cases where you would like to apply the above-mentioned mapping the other way around:
+e.g. when dealing with a non-nullable data model in combination with a nullable data-binding of a component such as a
+combobox.
+
+For those cases, use the `mapNullable` mapper function:
+
+```kotlin
+val nonNullableStore: Store<String> = storeOf("")
+
+val nullableStore: Store<String?> = 
+    nonNullableStore.mapNullable(placeholder = "Unknown")
+//                               ^^^^^^^^^^^^^^^^^^^^^^^
+//                               When the parent has the specified placeholder value,
+//                               the mapped Store will have `null` as its value.
+```
+
 ### Combining Lenses
 
 A `Lens` supports the `plus`-operator with another lens in order to create a new lens which combines the two. 
