@@ -213,7 +213,6 @@ internal fun <T> mapToNonNullLens(default: T): Lens<T?, T> = object : Lens<T?, T
  *
  * @param placeholder value to be mapped to `null`
  */
-// TODO KDoc
 internal fun <T> mapToNullableLens(placeholder: T): Lens<T, T?> = object : Lens<T, T?> {
     override val id: String = ""
     override fun get(parent: T): T? = parent.takeUnless { parent == placeholder }
