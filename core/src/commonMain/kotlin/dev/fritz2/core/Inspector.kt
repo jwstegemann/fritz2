@@ -58,7 +58,7 @@ class SubInspector<P, T>(
 }
 
 /**
- * Creates a new [Inspector] from a _nullable_ parent store that either contains the original value or a given
+ * Creates a new [Inspector] from a _nullable_ parent inspector that either contains the original value or a given
  * [default] value if the original value was `null`.
  *
  * When updating the value of the resulting [Inspector] to this [default] value,
@@ -71,8 +71,8 @@ fun <D> Inspector<D?>.mapNull(default: D): Inspector<D> =
     SubInspector(this, mapToNonNullLens(default))
 
 /**
- * Creates a new [Inspector] from a _non-nullable_ parent store that either contains the original value or `null` if its
- * value matches the given [placeholder].
+ * Creates a new [Inspector] from a _non-nullable_ parent inspector that either contains the original value or `null` if
+ * its value matches the given [placeholder].
  *
  * When updating the value of the resulting [Store] to `null`, the [placeholder] is used instead.
  * When the resulting [Inspector]'s value would be the [placeholder], `null` will be used instead.
