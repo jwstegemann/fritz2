@@ -418,15 +418,16 @@ Take a look at our complete [validation example](/examples/validation) to get an
 
 ### Summary of Store-Mapping-Factories
 
-| Factory                                                         | Use case                                                                                                                                                  |
-|-----------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `Store<P>.map(lens: Lens<P, T>): Store<T>`                      | Most generic map-function. Maps any `Store` given a `Lens`. Use for model destructuring with automatic generated lenses for example.                      |
-| `Store<P?>.map(lens: Lens<P & Any, T>): Store<T>`               | Maps any nullable `Store` given a `Lens` to a `Store` of a definitely none nullable `T`. Use in `render*`-content expressions combined with a null check. |
-| `Store<List<T>>.mapByElement(element: T, idProvider): Store<T>` | Maps a `Store` of a `List<T>` to one element of that list. Works for entities, as a stable Id is needed.                                                  |
-| `Store<List<T>>.mapByIndex(index: Int): Store<T>`               | Maps a `Store` of a `List<T>` to one element of that list using the index.                                                                                |
-| `Store<Map<K, V>>.mapByKey(key: K): Store<V>`                   | Maps a `Store` of a `Map<T>` to one element of that map using the key.                                                                                    |
-| `Store<T?>.mapNull(default: T): Store<T>`                       | Maps a `Store` of a nullable `T` to a `Store` of a definitely none nullable `T` using a default value in case of `null` in source-store.                  |
-| `MapRouter.mapByKey(key: String): Store<String>`                | Maps a `MapRouter` to a `Store`. See [chapter about routers](/docs/routing/#maprouter) for more information.                                              |
+| Factory                                                         | Use case                                                                                                                                                                          |
+|-----------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `Store<P>.map(lens: Lens<P, T>): Store<T>`                      | Most generic map-function. Maps any `Store` given a `Lens`. Use for model destructuring with automatic generated lenses for example.                                              |
+| `Store<P?>.map(lens: Lens<P & Any, T>): Store<T>`               | Maps any nullable `Store` given a `Lens` to a `Store` of a definitely none nullable `T`. Use in `render*`-content expressions combined with a null check.                         |
+| `Store<List<T>>.mapByElement(element: T, idProvider): Store<T>` | Maps a `Store` of a `List<T>` to one element of that list. Works for entities, as a stable Id is needed.                                                                          |
+| `Store<List<T>>.mapByIndex(index: Int): Store<T>`               | Maps a `Store` of a `List<T>` to one element of that list using the index.                                                                                                        |
+| `Store<Map<K, V>>.mapByKey(key: K): Store<V>`                   | Maps a `Store` of a `Map<T>` to one element of that map using the key.                                                                                                            |
+| `Store<T?>.mapNull(default: T): Store<T>`                       | Maps a `Store` of a nullable `T` to a `Store` of a definitely none nullable `T` using a default value in case of `null` in source-store.                                          |
+| `Store<T>.mapNullable(placeholder: T): Store<T?>`               | Maps a `Store` of `T` to a `Store` of `T?`, replacing the given `placeholder` from the parent with `null` in the sub Store. This function is the reverse equivalent of `mapNull`. |
+| `MapRouter.mapByKey(key: String): Store<String>`                | Maps a `MapRouter` to a `Store`. See [chapter about routers](/docs/routing/#maprouter) for more information.                                                                      |
 
 ### Summary Lens-Factories
 
