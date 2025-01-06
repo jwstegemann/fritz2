@@ -1,8 +1,10 @@
 package dev.fritz2.core
 
+import kotlin.js.JsName
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
 
 class LensesTests {
 
@@ -64,7 +66,7 @@ class LensesTests {
     fun testDefaultLens() {
         val defaultValue = "fritz2"
         val nonNullValue = "some value"
-        val defaultLens = defaultLens("", defaultValue)
+        val defaultLens = mapToNonNullLens(defaultValue)
 
         assertEquals(defaultValue, defaultLens.get(null), "default value not applied on null")
         assertEquals(nonNullValue, defaultLens.get(nonNullValue), "wrong value on not-null")
@@ -75,7 +77,7 @@ class LensesTests {
     }
 
     @Test
-    fun testNotNullLens() {
+    fun test_mapToNonNullLens() {
         data class PostalAddress(val street: String, val co: String?)
 
         val streetLens = lensOf("street", PostalAddress::street) { p, v -> p.copy(street = v) }
@@ -102,6 +104,48 @@ class LensesTests {
             NullPointerException::class,
             "not null lens does not throw exception when set on null parent"
         ) { notNullLens.set(null, newValue)?.street }
+    }
+
+    @Test
+    fun mapToNullableLens_replaces_placeholder_with_null_when_getting() {
+        val placeholder = "Unknown"
+        val sut = mapToNullableLens(placeholder)
+
+        val result = sut.get(placeholder)
+
+        assertNull(result, "The placeholder should be returned as `null` when getting")
+    }
+
+    @Test
+    fun mapToNullableLens_returns_same_value_as_parent_when_parent_is_not_the_placeholder() {
+        val placeholder = "Unknown"
+        val sut = mapToNullableLens(placeholder)
+
+        val parent = "Some actual value"
+        val result = sut.get("Some actual value")
+
+        assertEquals(expected = parent, actual = result)
+    }
+
+    @Test
+    fun mapToNullableLens_sets_parent_to_placeholder_when_given_null() {
+        val placeholder = "Unknown"
+        val sut = mapToNullableLens(placeholder)
+
+        val result = sut.set("", null)
+
+        assertEquals(expected = placeholder, actual = result)
+    }
+
+    @Test
+    fun mapToNullableLens_set_parent_to_given_value_when_other_than_null() {
+        val placeholder = "Unknown"
+        val sut = mapToNullableLens(placeholder)
+
+        val newValue = "New value"
+        val result = sut.set("", newValue)
+
+        assertEquals(expected = newValue, actual = result)
     }
 
     sealed interface ConsultationModel {

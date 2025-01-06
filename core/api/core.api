@@ -36,6 +36,7 @@ public final class dev/fritz2/core/InspectorKt {
 	public static final fun mapByIndex (Ldev/fritz2/core/Inspector;I)Ldev/fritz2/core/Inspector;
 	public static final fun mapByKey (Ldev/fritz2/core/Inspector;Ljava/lang/Object;)Ldev/fritz2/core/Inspector;
 	public static final fun mapNull (Ldev/fritz2/core/Inspector;Ljava/lang/Object;)Ldev/fritz2/core/Inspector;
+	public static final fun mapNullable (Ldev/fritz2/core/Inspector;Ljava/lang/Object;)Ldev/fritz2/core/Inspector;
 }
 
 public abstract interface class dev/fritz2/core/Lens {

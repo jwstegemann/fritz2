@@ -61,12 +61,26 @@ class SubInspector<P, T>(
  * Creates a new [Inspector] from a _nullable_ parent inspector that either contains the original value or a given
  * [default] value if the original value was `null`.
  *
- * The resulting inspector behaves similarly to a `Store` created via `Store.mapNull`.
- * This means that the resulting [Inspector.path] will be the same as if `mapNull`
- * was called on an equivalent store of the same value.
+ * When updating the value of the resulting [Inspector] to this [default] value,
+ * null is used instead updating the parent. When this [Inspector]'s value would be null according to it's parent's
+ * value, the [default] value will be used instead.
+ *
+ * @param default value to be used instead of `null`
  */
 fun <D> Inspector<D?>.mapNull(default: D): Inspector<D> =
-    SubInspector(this, defaultLens("", default))
+    SubInspector(this, mapToNonNullLens(default))
+
+/**
+ * Creates a new [Inspector] from a _non-nullable_ parent inspector that either contains the original value or `null` if
+ * its value matches the given [placeholder].
+ *
+ * When updating the value of the resulting [Store] to `null`, the [placeholder] is used instead.
+ * When the resulting [Inspector]'s value would be the [placeholder], `null` will be used instead.
+ *
+ * @param placeholder value to be mapped to `null`
+ */
+fun <T> Inspector<T>.mapNullable(placeholder: T): Inspector<T?> =
+    map(mapToNullableLens(placeholder))
 
 /**
  * Creates a new [Inspector] containing the element for the given [element] and [idProvider]
