@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package dev.fritz2.headless.foundation.utils.floatingui.core
 
 import dev.fritz2.headless.foundation.utils.floatingui.utils.*
