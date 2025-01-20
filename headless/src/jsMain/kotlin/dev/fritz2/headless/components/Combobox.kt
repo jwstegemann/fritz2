@@ -569,6 +569,7 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
                     keydownsIf {
                         if (shortcutOf(this) in (itemActivationKeys + Keys.Enter)) {
                             preventDefault()
+                            stopPropagation()
                             true
                         } else false
                     }.map { event ->
