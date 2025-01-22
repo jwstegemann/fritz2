@@ -54,7 +54,7 @@ interface Lens<P, T> {
      * @param other [Lens] to append to this one
      */
     operator fun <X> plus(other: Lens<T, X>): Lens<P, X> = object : Lens<P, X> {
-        override val id = "${this@Lens.id}.${other.id}".trimEnd('.')
+        override val id = "${this@Lens.id}.${other.id}".trimEnd('.').also { println("plus this.id: ${this@Lens.id}, other.id: ${other.id} ergibt $it") }
         override fun get(parent: P): X = other.get(this@Lens.get(parent))
         override fun set(parent: P, value: X): P = this@Lens.set(parent, other.set(this@Lens.get(parent), value))
     }

@@ -49,7 +49,10 @@ class SubInspector<P, T>(
     /**
      * generates the corresponding [path]
      */
-    override val path: String by lazy { "${parent.path}.${lens.id}".trimEnd('.') }
+    // FIXME: Auch im Store prüfen!
+    //  Idee: An `.` splitten und dann per `joinToString` verarbeiten? Dann kann man doppelte ausschließen!
+    //  https://github.com/jwstegemann/fritz2/issues/780 mitdenken!
+    override val path: String by lazy { "${parent.path}.${lens.id.trimStart('.')}".trimEnd('.').also { println("SubInspector: parent.path: ${parent.path}, lens.id: ${lens.id}") } }
 
     /**
      * returns the underlying [data]
