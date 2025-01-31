@@ -569,7 +569,9 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
                     keydownsIf {
                         if (shortcutOf(this) in (itemActivationKeys + Keys.Enter)) {
                             preventDefault()
-                            stopImmediatePropagation()
+                            // Using stopImmediatePropagation() would prevent the event from being handled in all
+                            // relevant places
+                            stopPropagation()
                             true
                         } else false
                     }.map { event ->
@@ -600,6 +602,8 @@ class Combobox<E : HTMLElement, T>(tag: Tag<E>, id: String?) : Tag<E> by tag, Op
             internalState.queryResults.flatMapLatest { result ->
                 selectShortcuts.mapNotNull { shortcut ->
                     val active = activeIndexStore.current
+                    println("Active: $active")
+                    println("Shortcut: $shortcut")
                     if (result is ItemList<T> && active != null && shortcut == Keys.Enter) {
                         result.items.getOrNull(active)?.value
                     } else null
