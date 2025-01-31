@@ -35,7 +35,10 @@ abstract class AbstractSwitch<C : HTMLElement>(
         attr(Aria.checked, enabled.asString())
         attr(Aria.invalid, "true".whenever(value.hasError))
         attr("tabindex", "0")
-        value.handler?.invoke(this, clicks.map { !value.data.first() })
+        value.handler?.invoke(this, clicks {
+            stopImmediatePropagation()
+            preventDefault()
+        }.map { !value.data.first() })
         value.handler?.invoke(
             this,
             keydownsIf {
