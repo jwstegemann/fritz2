@@ -35,9 +35,10 @@ abstract class AbstractSwitch<C : HTMLElement>(
         attr(Aria.checked, enabled.asString())
         attr(Aria.invalid, "true".whenever(value.hasError))
         attr("tabindex", "0")
+        /*
         value.handler?.invoke(this, clicks {
             stopImmediatePropagation()
-            preventDefault()
+            //preventDefault()
         }.map { !value.data.first() })
         value.handler?.invoke(
             this,
@@ -49,6 +50,38 @@ abstract class AbstractSwitch<C : HTMLElement>(
                 } else false
             }.map { !value.data.first() }
         )
+
+         */
+        var withKeyboardNavigation = true
+        var toggleEvent: Listener<*, *> = clicks
+
+        if (domNode is HTMLInputElement) {
+            console.log("Bin InputElement")
+            if (domNode.getAttribute("name") == null) {
+                attr("name", componentId)
+            }
+            withKeyboardNavigation = false
+            toggleEvent = changes {
+                console.log("Stoppe Propagation")
+                stopImmediatePropagation()
+                preventDefault()
+            }
+        }
+        value.handler?.invoke(this, toggleEvent.map { !value.data.first() })
+        if (withKeyboardNavigation) {
+            value.handler?.invoke(
+                this,
+                keydownsIf {
+                    if (shortcutOf(this) == Keys.Space) {
+                        preventDefault()
+                        stopImmediatePropagation()
+                        true
+                    } else false
+                }.map { !value.data.first() }
+            )
+        }
+
+
     }
 
     /**

@@ -1,18 +1,54 @@
 package dev.fritz2.headlessdemo.components
 
-import dev.fritz2.core.RenderContext
-import dev.fritz2.core.storeOf
+import dev.fritz2.core.*
 import dev.fritz2.headless.components.switch
 import dev.fritz2.headless.components.switchWithLabel
 import dev.fritz2.headless.foundation.Aria
+import dev.fritz2.validation.messages
+import kotlinx.browser.localStorage
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 
 fun RenderContext.switchDemo() {
 
     val switchState = storeOf(false, id = "switch")
+
+    val trigger = storeOf(Unit).handleAndEmit<Unit, Unit> { _, _ -> emit(Unit) }.also { it(Unit) }
+
     val switchWithLabelState = storeOf(true, id = "switchWithLabel")
 
     div("max-w-sm") {
+        trigger.onEach { console.log("Rendere neu...") }.map { Id.next() }.render {
+            switchWithLabel {
+                value(switchState.id, switchState.data, switchState.messages()) { values ->
+                    /*
+                    values.map {
+                        if (localStorage.getItem("switch") == "pass") true
+                        else false
+                    }.onEach { console.log("Wert ist jetzt: $it") } handledBy switchState.update
+
+                     */
+
+                    values.map {
+                        if (localStorage.getItem("switch") == "pass") true
+                        else false
+                    }.onEach { console.log("Wert ist jetzt: $it") } handledBy {
+                        switchState.update(it)
+                        trigger(Unit)
+                    }
+
+
+                }
+                switchLabel {
+                    +"Input based"
+                }
+                switchToggle(tag = RenderContext::input) {
+                    type("checkbox")
+                    checked(enabled)
+                }
+            }
+        }
+
         switch(
             """relative inline-flex flex-shrink-0 h-6 w-11
                 | cursor-pointer rounded-full
