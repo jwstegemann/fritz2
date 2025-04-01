@@ -112,7 +112,7 @@ typealias IdProvider<T, I> = (T) -> I
 /**
  * Occurs when [Lens] points to non-existing element.
  */
-class CollectionLensGetException : Exception() // is needed to cancel the coroutine correctly
+class CollectionLensGetException(message: String) : Exception(message) // is needed to cancel the coroutine correctly
 
 /**
  * Occurs when [Lens] tries to update a non-existing element.
@@ -130,7 +130,9 @@ fun <T, I> lensForElement(element: T, idProvider: IdProvider<T, I>): Lens<List<T
 
     override fun get(parent: List<T>): T = parent.find {
         idProvider(it) == idProvider(element)
-    } ?: throw CollectionLensGetException()
+    } ?: throw CollectionLensGetException(
+        "no item found with id='$id' in `lensForElement(element: T, idProvider: IdProvider<T, I>)`"
+    )
 
     override fun set(parent: List<T>, value: T): List<T> = ArrayList<T>(parent.size).apply {
         var count = 0
@@ -154,7 +156,9 @@ fun <T> lensForElement(index: Int): Lens<List<T>, T> = object : Lens<List<T>, T>
     override val id: String = index.toString()
 
     override fun get(parent: List<T>): T =
-        parent.getOrNull(index) ?: throw CollectionLensGetException()
+        parent.getOrNull(index) ?: throw CollectionLensGetException(
+            "no item found with id='$id' in `lensForElement(index: Int)`"
+        )
 
     override fun set(parent: List<T>, value: T): List<T> =
         if (index < 0 || index >= parent.size) throw CollectionLensSetException("no item found with index='$index'")
@@ -171,7 +175,7 @@ fun <K, V> lensForElement(key: K): Lens<Map<K, V>, V> = object : Lens<Map<K, V>,
     override val id: String = key.toString()
 
     override fun get(parent: Map<K, V>): V =
-        parent[key] ?: throw CollectionLensGetException()
+        parent[key] ?: throw CollectionLensGetException("no item found with id='$id' in `lensForElement(key: K)`")
 
     override fun set(parent: Map<K, V>, value: V): Map<K, V> =
         if (parent.containsKey(key)) parent + (key to value)
@@ -183,7 +187,9 @@ fun <K, V> lensForElement(key: K): Lens<Map<K, V>, V> = object : Lens<Map<K, V>,
  */
 inline fun <P, reified C : P> lensForUpcasting(): Lens<P, C> = object : Lens<P, C> {
     override val id: String = ""
-    override fun get(parent: P): C = (parent as? C) ?: throw CollectionLensGetException()
+    override fun get(parent: P): C =
+        (parent as? C) ?: throw CollectionLensGetException("no parent='${parent.toString()}' found for upcasting")
+
     override fun set(parent: P, value: C): P = value
 }
 
