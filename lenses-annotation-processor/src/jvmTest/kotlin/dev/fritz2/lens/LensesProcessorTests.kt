@@ -1,8 +1,6 @@
 package dev.fritz2.lens
 
-import com.tschuchort.compiletesting.KotlinCompilation
-import com.tschuchort.compiletesting.SourceFile
-import com.tschuchort.compiletesting.symbolProcessorProviders
+import com.tschuchort.compiletesting.*
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import org.junit.jupiter.api.DisplayName
@@ -22,22 +20,21 @@ class LensesProcessorTests {
 
     @ExperimentalPathApi
     private fun compileSource(vararg source: SourceFile) = KotlinCompilation().apply {
-        sources = source.toList()
-        symbolProcessorProviders = listOf(LensesProcessorProvider())
-        workingDir = createTempDirectory("fritz2-tests").toFile()
-        inheritClassPath = true
-        verbose = false
+        configureKsp(useKsp2 = true) {
+            jvmTarget = "17"
+            languageVersion = "2.1"
+            sources = source.toList()
+            symbolProcessorProviders += LensesProcessorProvider()
+            workingDir = createTempDirectory("fritz2-tests").toFile()
+            inheritClassPath = true
+            verbose = false
+        }
     }.compile()
 
-    // workaround copied by https://github.com/tschuchortdev/kotlin-compile-testing/issues/129#issuecomment-804390310
-    internal val KotlinCompilation.Result.workingDir: File
-        get() =
-            outputDirectory.parentFile!!
-
     // workaround inspired by https://github.com/tschuchortdev/kotlin-compile-testing/issues/129#issuecomment-804390310
-    val KotlinCompilation.Result.kspGeneratedSources: List<File>
+    private val CompilationResult.kspGeneratedSources: List<File>
         get() {
-            val kspWorkingDir = workingDir.resolve("ksp")
+            val kspWorkingDir = outputDirectory.parentFile!!.resolve("ksp")
             val kspGeneratedDir = kspWorkingDir.resolve("sources")
             val kotlinGeneratedDir = kspGeneratedDir.resolve("kotlin")
             val javaGeneratedDir = kspGeneratedDir.resolve("java")
@@ -635,8 +632,7 @@ class LensesProcessorTests {
             |    }
             |)
             |
-            |public fun <PARENT> Lens<PARENT, Framework>.fooBar(): Lens<PARENT, MyType> = this +
-            |    Framework.fooBar()
+            |public fun <PARENT> Lens<PARENT, Framework>.fooBar(): Lens<PARENT, MyType> = this + Framework.fooBar()
             |
             |public fun Framework.Companion.baz(): Lens<Framework, MyGenericType<Int>> = lensOf(
             |    "baz",
@@ -654,14 +650,11 @@ class LensesProcessorTests {
             |    }
             |)
             |
-            |public fun <PARENT> Lens<PARENT, Framework>.baz(): Lens<PARENT, MyGenericType<Int>> = this +
-            |    Framework.baz()
+            |public fun <PARENT> Lens<PARENT, Framework>.baz(): Lens<PARENT, MyGenericType<Int>> = this + Framework.baz()
             |
-            |public fun Framework.Companion.fritz2(): Lens<Framework, Fritz2> =
-            |    lensForUpcasting<Framework,Fritz2>()
+            |public fun Framework.Companion.fritz2(): Lens<Framework, Fritz2> = lensForUpcasting<Framework,Fritz2>()
             |
-            |public fun Framework.Companion.spring(): Lens<Framework, Spring> =
-            |    lensForUpcasting<Framework,Spring>()
+            |public fun Framework.Companion.spring(): Lens<Framework, Spring> = lensForUpcasting<Framework,Spring>()
             """.trimMargin()
 
         @JvmStatic
@@ -720,8 +713,7 @@ class LensesProcessorTests {
                 |    { p, v -> p.copy(fooBar = v)}
                 |  )
                 |
-                |public fun <PARENT> Lens<PARENT, Framework>.fooBar(): Lens<PARENT, MyType> = this +
-                |    Framework.fooBar()
+                |public fun <PARENT> Lens<PARENT, Framework>.fooBar(): Lens<PARENT, MyType> = this + Framework.fooBar()
                 |
                 |public fun Framework.Companion.baz(): Lens<Framework, MyGenericType<Int>> = lensOf(
                 |    "baz",
@@ -729,8 +721,7 @@ class LensesProcessorTests {
                 |    { p, v -> p.copy(baz = v)}
                 |  )
                 |
-                |public fun <PARENT> Lens<PARENT, Framework>.baz(): Lens<PARENT, MyGenericType<Int>> = this +
-                |    Framework.baz()
+                |public fun <PARENT> Lens<PARENT, Framework>.baz(): Lens<PARENT, MyGenericType<Int>> = this + Framework.baz()
                 """.trimMargin()
             ),
             arguments(
@@ -963,6 +954,8 @@ class LensesProcessorTests {
                         package dev.fritz2.lenstest
         
                         import dev.fritz2.core.Lenses
+                        import dev.fritz2.core.Lens
+                        import dev.fritz2.core.NoLens
         
                         @Lenses
                         sealed class Foo(
@@ -998,6 +991,8 @@ class LensesProcessorTests {
                         package dev.fritz2.lenstest
         
                         import dev.fritz2.core.Lenses
+                        import dev.fritz2.core.Lens
+                        import dev.fritz2.core.NoLens
         
                         @Lenses
                         sealed interface Foo {
