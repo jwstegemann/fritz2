@@ -37,8 +37,8 @@ kotlin {
                 implementation(Kotlin.test.junit5)
                 implementation(Testing.junit.jupiter.params)
                 implementation(Testing.assertj.core)
-                implementation("com.github.tschuchortdev:kotlin-compile-testing:_")
-                implementation("com.github.tschuchortdev:kotlin-compile-testing-ksp:_")
+                implementation("dev.zacsweers.kctfork:core:_")
+                implementation("dev.zacsweers.kctfork:ksp:_")
             }
         }
     }
