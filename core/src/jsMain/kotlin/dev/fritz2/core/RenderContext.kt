@@ -217,7 +217,9 @@ interface RenderContext : WithJob, WithScope {
      * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
      * when an element stays the same, but changes its internal values.
      *
-     * @param idProvider function to identify a unique entity in the list
+     * @param idProvider optional function to identify a unique entity in the list. If not given, the default [equals]
+     * operator ist used as a fallback. So prefer using _data classes_ in order to rely on a solid equality
+     * implementation
      * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
      * @param batch hide [into] while rendering patches. Useful to avoid flickering when you make many changes (like sorting)
      * @param content [RenderContext] for rendering the data to the DOM
@@ -227,6 +229,43 @@ interface RenderContext : WithJob, WithScope {
         into: Tag<HTMLElement>? = null,
         batch: Boolean = false,
         content: RenderContext.(V) -> Tag<HTMLElement>
+    ) {
+        doRenderEach(idProvider, into, batch) { renderContext: RenderContext, value: V ->
+            with(renderContext) { content(value) }
+        }
+    }
+
+    /**
+     * Renders each element of a [Flow]s content.
+     * Internally the [Patch]es are determined using Myer's diff-algorithm.
+     * This allows the detection of moves. Keep in mind, that no [Patch] is derived,
+     * when an element stays the same, but changes its internal values.
+     *
+     * This variant requires the [idProvider] parameter, which is internally used to determine, new, deleted or
+     * position swapped entities. The resulting `id` after evaluating the lambda with the current element is passed
+     * into the [content]-lambda therefore in this variant. You can use this to mark DOM elements for example.
+     *
+     * @param idProvider function to identify a unique entity in the list
+     * @param into target to mount content to. If not set a child div is added to the [Tag] this method is called on
+     * @param batch hide [into] while rendering patches. Useful to avoid flickering when you make many changes (like sorting)
+     * @param content [RenderContext] for rendering the data to the DOM
+     */
+    fun <V, I> Flow<List<V>>.renderEach(
+        idProvider: IdProvider<V, I>,
+        into: Tag<HTMLElement>? = null,
+        batch: Boolean = false,
+        content: RenderContext.(I, V) -> Tag<HTMLElement>
+    ) {
+        doRenderEach(idProvider, into, batch) { renderContext: RenderContext, value: V ->
+            with(renderContext) { content(idProvider(value), value) }
+        }
+    }
+
+    private fun <V, I> Flow<List<V>>.doRenderEach(
+        idProvider: IdProvider<V, I>? = null,
+        into: Tag<HTMLElement>? = null,
+        batch: Boolean = false,
+        content: (RenderContext, V) -> Tag<HTMLElement> // Passt so noch nicht für das Auslagern
     ) {
         mountPatches(into, this, batch) { upstreamValues, mountPoints ->
             upstreamValues.scan(Pair(emptyList(), emptyList())) { acc: Pair<List<V>, List<V>>, new ->
@@ -242,8 +281,6 @@ interface RenderContext : WithJob, WithScope {
                 }
             }
         }
-
-
     }
 
     /**
