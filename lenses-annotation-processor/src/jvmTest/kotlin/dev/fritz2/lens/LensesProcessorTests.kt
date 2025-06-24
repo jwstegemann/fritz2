@@ -78,13 +78,13 @@ class LensesProcessorTests {
                 // lenses will appear in `BarLenses.kt`
                 @Lenses
                 sealed class Bar {
-                    val bar: Int
+                    abstract val bar: Int
                     companion object
                 }
 
                 data class BarImpl(
                     override val bar: Int,
-                ) : Bar
+                ) : Bar()
             """
         )
 
@@ -221,7 +221,7 @@ class LensesProcessorTests {
                 import dev.fritz2.core.Lenses
 
                 @Lenses
-                data class Foo(private val foo: Int, param: String) { // no public property defined in ctor!
+                data class Foo(private val foo: Int) { // no public property defined in ctor!
                     companion object
                     val someNoneCtorProp: Int = foo + 1
                 }
@@ -352,7 +352,7 @@ class LensesProcessorTests {
                 //                           private field -> no lens possible!
                     companion object {
                         // should not disturb
-                        fun toJson(foo: Foo) = Json.decodeFromString(serializer(), foo)
+                        fun displayValue(foo: Foo) = foo.toString()
                     }
                     val ignored = bar + 1 // must not appear in lens!
                     val ignoredDelegated by lazy { bar + 1 } // must not appear in lens!
@@ -735,17 +735,16 @@ class LensesProcessorTests {
             
                             class MyType
                             class MyGenericType<T>
-            
+                            
                             @Lenses
-                            sealed class Framework(
-                                val bar: Int,
-                                val foo: String
-                            ) {
+                            sealed class Framework {
+                                abstract val bar: Int
+                                abstract val foo: String
                                 abstract val fooBar: MyType
                                 abstract val baz: MyGenericType<Int>
                                 companion object
                             }
-    
+                            
                             data class Fritz2 (
                                 override val bar: Int,
                                 override val foo: String,
@@ -753,7 +752,7 @@ class LensesProcessorTests {
                                 override val baz: MyGenericType<Int>,
                                 val usesFlows: Boolean,
                             ) : Framework()
-    
+                            
                             data class Spring (
                                 override val bar: Int,
                                 override val foo: String,
@@ -954,7 +953,6 @@ class LensesProcessorTests {
                         package dev.fritz2.lenstest
         
                         import dev.fritz2.core.Lenses
-                        import dev.fritz2.core.Lens
                         import dev.fritz2.core.NoLens
         
                         @Lenses
@@ -964,11 +962,14 @@ class LensesProcessorTests {
                         ) {
                             companion object
                         }
-
-                        @Lens
+                        
+                        @Lenses
                         data class FooImpl (
                             val something: String
-                        ) : Foo {
+                        ) : Foo(
+                            alsoIgnored = "ignored", 
+                            ignored = 42
+                        ) {
                             companion object
                         }
                     """
@@ -991,21 +992,19 @@ class LensesProcessorTests {
                         package dev.fritz2.lenstest
         
                         import dev.fritz2.core.Lenses
-                        import dev.fritz2.core.Lens
                         import dev.fritz2.core.NoLens
         
                         @Lenses
                         sealed interface Foo {
-                            protected val ignored: Int
-                            
                             @NoLens
-                            val alsoIgnored: String
-                            
+                            val ignored: Int
+                        
                             companion object
                         }
-
-                        @Lens
+                        
+                        @Lenses
                         data class FooImpl (
+                            override val ignored: Int,
                             val something: String
                         ) : Foo {
                             companion object
@@ -1356,11 +1355,9 @@ class LensesProcessorTests {
             |
             |public fun <PARENT> Lens<PARENT, Framework>.foo(): Lens<PARENT, String> = this + Framework.foo()
             |
-            |public fun Framework.Companion.fritz2(): Lens<Framework, Fritz2> =
-            |    lensForUpcasting<Framework,Fritz2>()
+            |public fun Framework.Companion.fritz2(): Lens<Framework, Fritz2> = lensForUpcasting<Framework,Fritz2>()
             |
-            |public fun Framework.Companion.spring(): Lens<Framework, Spring> =
-            |    lensForUpcasting<Framework,Spring>()
+            |public fun Framework.Companion.spring(): Lens<Framework, Spring> = lensForUpcasting<Framework,Spring>()
             """.trimMargin()
 
 
@@ -1374,28 +1371,31 @@ class LensesProcessorTests {
                             package dev.fritz2.lenstest
             
                             import dev.fritz2.core.Lenses
+                            import dev.fritz2.core.NoLens
             
                             @Lenses
                             sealed class Framework(
                                 @NoLens val ignore: String
                             ) {
                                 @NoLens
-                                val alsoIgnore: String
+                                abstract val alsoIgnore: String
                                 abstract val foo: String
                                 companion object
                             }
-    
+                            
                             data class Fritz2 (
                                 override val foo: String,
-                            ) : Framework {
-                                override val ignore: String = "Fritz2"
+                            ) : Framework(
+                                ignore = "Fritz2"
+                            ) {
                                 override val alsoIgnore: String = "Fritz2"
                             }
-    
+                            
                             data class Spring (
                                 override val foo: String,
-                            ) : Framework {
-                                override val ignore: String = "Spring"
+                            ) : Framework(
+                                ignore = "Spring"
+                            ) {
                                 override val alsoIgnore: String = "Fritz2"
                             }
                         """
@@ -1410,6 +1410,7 @@ class LensesProcessorTests {
                             package dev.fritz2.lenstest
             
                             import dev.fritz2.core.Lenses
+                            import dev.fritz2.core.NoLens
             
                             @Lenses
                             sealed interface Framework {
