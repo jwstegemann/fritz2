@@ -1,6 +1,4 @@
-import com.google.devtools.ksp.gradle.KspTask
 import com.google.devtools.ksp.gradle.KspTaskMetadata
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
     kotlin("multiplatform")
@@ -9,6 +7,7 @@ plugins {
 
 kotlin {
     jvm() // needed for kspCommonMainMetadata
+    
     js(IR) {
         browser()
     }.binaries.executable()

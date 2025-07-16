@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsPlugin
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsPlugin.Companion.kotlinNodeJsEnvSpec
+
 plugins {
     kotlin("multiplatform") apply false
     kotlin("plugin.serialization")  apply false
@@ -12,6 +15,18 @@ allprojects {
     //manage common setting and dependencies
     repositories {
         mavenCentral()
+    }
+
+    // We use a fixed NodeJS LTS version since there are NPM dependencies that are not yet
+    // compatible with newer node versions. In our case, this is cliui.
+    // Have a look at https://nodejs.org/en/about/previous-releases for the available node
+    // versions. 
+    // NodeJS v20 is supported until April 2026.
+    plugins.withType<NodeJsPlugin> {
+        kotlinNodeJsEnvSpec.apply {
+            version = "20.19.4"
+            download = true
+        }
     }
 }
 
