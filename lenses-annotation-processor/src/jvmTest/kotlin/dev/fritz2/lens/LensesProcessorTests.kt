@@ -21,7 +21,7 @@ class LensesProcessorTests {
     @ExperimentalPathApi
     private fun compileSource(vararg source: SourceFile) = KotlinCompilation().apply {
         configureKsp(useKsp2 = true) {
-            jvmTarget = "17"
+            jvmTarget = "21"
             languageVersion = "2.1"
             sources = source.toList()
             symbolProcessorProviders += LensesProcessorProvider()
