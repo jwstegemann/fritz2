@@ -250,7 +250,7 @@ val storedPerson = storeOf<Person?>(null, job = Job())
 storedPerson.data.render { person ->
     if (person != null) { // Avoid NullPointerExceptions reading or updating storedPerson
                           // by manually creating a safe scope ensuring that person is not null
-        val storedName = customerStore.map(Person.name())
+        val storedName = storedPerson.map(Person.name())
         input {
             value(storedName.data)
             changes.values() handledBy storedName.update
