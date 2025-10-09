@@ -4,16 +4,27 @@ import com.google.devtools.ksp.getClassDeclarationByName
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.validate
-import com.squareup.kotlinpoet.*
-import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeName
-import com.squareup.kotlinpoet.ksp.toTypeParameterResolver
 import com.squareup.kotlinpoet.ksp.toTypeVariableName
 import dev.fritz2.core.Lens
 import dev.fritz2.core.Lenses
 import java.io.OutputStreamWriter
 import java.nio.charset.StandardCharsets
+
+data class MemberName(val packageName: String, val simpleName: String)
+
+data class LensFrame(
+    val header: StringBuilder,
+    val main: StringBuilder,
+    val imports: Set<MemberName>
+) {
+    fun toSource(): String = buildString {
+        appendLine(header.toString())
+        // TODO: Imports erzeugen
+        appendLine(main.toString())
+    }
+}
 
 /**
  * This Processor generates automatically functions of lenses for all public properties of a data class, a sealed class
@@ -203,11 +214,12 @@ private class LensesVisitor(
                 appendLine("package ${attributeName.packageName}")
                 appendLine()
                 createLensFactoryCode(prop, isGeneric, classDeclaration, compObj, addLensCode, attributeName)
-                //createLensChainingCode(prop, isGeneric, classDeclaration, attributeName)
+                appendLine()
+                createLensChainingCode(prop, isGeneric, classDeclaration, attributeName)
             }
-            /*
             when (classDeclaration.isTypeVariant()) {
                 TypeVariant.SealedInterface, TypeVariant.SealedDataClass -> {
+                    appendLine()
                     createUpTypingLensFactoryCodesForSealedBase(isGeneric, classDeclaration, compObj)
                 }
 
@@ -217,8 +229,6 @@ private class LensesVisitor(
 
                 else -> Unit
             }
-
-             */
         }
 
         val fileName = classDeclaration.simpleName.asString() + "Lenses"
@@ -269,45 +279,31 @@ private class LensesVisitor(
         append("<")
         append(classDeclaration.toClassName().simpleName)
         append(", ")
+        // TODO: Geht das immer? Auch bei komplexeren Typen?
         append(prop.type.toTypeName().toString().split(".").last())
         append(">")
         append(" = ")
         addLensCode(attributeName, classDeclaration)
     }
 
-    private fun FileSpec.Builder.createUpTypingLensFactoryCodesForSealedBase(
+    private fun StringBuilder.createUpTypingLensFactoryCodesForSealedBase(
         isGeneric: Boolean,
         classDeclaration: KSClassDeclaration,
         compObj: KSClassDeclaration,
     ) {
+        // TODO: Generics fehlen noch!
         val children = classDeclaration.getSealedSubclasses()
         children.forEach { child ->
-            addFunction(
-                FunSpec.builder(
-                    child.simpleName.getShortName().lowerCamelCased()
-                ).returns(
-                    Lens::class.asClassName().parameterizedBy(
-                        if (isGeneric) classDeclaration.toClassName()
-                            .parameterizedBy(classDeclaration.typeParameters.map { it.toTypeVariableName() })
-                        else classDeclaration.toClassName(),
-                        child.toClassName()
-                    )
-                ).addTypeVariables(classDeclaration.typeParameters.map { it.toTypeVariableName() })
-                    .receiver(compObj.asType(emptyList()).toTypeName())
-                    .apply {
-                        addCode(
-                            "return %M<%T,%T>()",
-                            MemberName("dev.fritz2.core", "lensForUpcasting"),
-                            classDeclaration.toClassName(),
-                            child.toClassName(),
-                        )
-                    }
-                    .build()
-            )
+            appendLine()
+            append("public fun ${classDeclaration.toClassName().simpleName}.Companion.")
+            append("${child.simpleName.getShortName().lowerCamelCased()}(): ")
+            append("Lens<${classDeclaration.toClassName().simpleName}, ${child.simpleName.getShortName()}> ")
+            append("= lensForUpcasting<")
+            append("${classDeclaration.toClassName().simpleName},${child.simpleName.getShortName()}>()")
         }
     }
 
-    private fun FileSpec.Builder.createDownTypingLensFactoryCodeForSealedChild(
+    private fun StringBuilder.createDownTypingLensFactoryCodeForSealedChild(
         isGeneric: Boolean,
         classDeclaration: KSClassDeclaration,
         compObj: KSClassDeclaration,
@@ -319,6 +315,7 @@ private class LensesVisitor(
             .toList()
 
         parents.forEach { parent ->
+            /*
             addFunction(
                 FunSpec.builder(
                     parent.simpleName.getShortName().lowerCamelCased()
@@ -346,41 +343,21 @@ private class LensesVisitor(
                     }
                     .build()
             )
+
+             */
         }
     }
 
-    private fun FileSpec.Builder.createLensChainingCode(
+    private fun StringBuilder.createLensChainingCode(
         prop: KSPropertyDeclaration,
         isGeneric: Boolean,
         classDeclaration: KSClassDeclaration,
         attributeName: MemberName
     ) {
-        val parentType = TypeVariableName("PARENT")
-
-        addFunction(
-            FunSpec.builder(prop.simpleName.getShortName())
-                .addTypeVariable(parentType)
-                .receiver(
-                    Lens::class.asClassName().parameterizedBy(
-                        parentType,
-                        if (isGeneric) classDeclaration.toClassName()
-                            .parameterizedBy(classDeclaration.typeParameters.map { it.toTypeVariableName() })
-                        else classDeclaration.toClassName()
-                    )
-                )
-                .returns(
-                    Lens::class.asClassName().parameterizedBy(
-                        parentType,
-                        prop.type.toTypeName(classDeclaration.typeParameters.toTypeParameterResolver())
-                    )
-                ).addTypeVariables(classDeclaration.typeParameters.map { it.toTypeVariableName() })
-                .addCode(
-                    "return this + %T.%L()",
-                    classDeclaration.toClassName(),
-                    attributeName.simpleName
-                )
-                .build()
-        )
+        // TODO: Generics fehlen noch!
+        append("public fun <PARENT> Lens<PARENT, ${classDeclaration.toClassName().simpleName}>")
+        append(".${attributeName.simpleName}(): Lens<PARENT, ${prop.type.toTypeName()}>")
+        append(" = this + ${classDeclaration.toClassName().simpleName}.${attributeName.simpleName}()")
     }
 
     private val createLens: StringBuilder.(MemberName, KSClassDeclaration) -> Unit = { attributeName, _ ->
@@ -394,55 +371,25 @@ private class LensesVisitor(
     private val createDelegatingLens: StringBuilder.(MemberName, KSClassDeclaration) -> Unit =
         { attributeName, classDeclaration ->
             val children = classDeclaration.getSealedSubclasses()
-
-            /*
-            addCode(
-                """ 
-                |return %M(
-                |    "%L",
-                |    { parent ->
-                |        when(parent) {
-                """.trimMargin(),
-                MemberName("dev.fritz2.core", "lensOf"),
-                attributeName.simpleName
-            )
-            addStatement("")
+            appendLine("lensOf(")
+            appendLine("    \"${attributeName.simpleName}\"")
+            appendLine("    { parent ->")
+            appendLine("        when(parent) {")
             children.forEach { child ->
-                addStatement(
-                    """ 
-                    |            is %T -> parent.%M
-                    """.trimMargin(),
-                    child.toClassName(),
-                    attributeName
-                )
+                append("            is ${child.toClassName().simpleName}")
+                append(" -> parent.${attributeName.simpleName}")
             }
-            addCode(
-                """
-                |        }
-                |    },
-                |    { parent, value ->
-                |        when(parent) {
-                """.trimMargin(),
-            )
-            addStatement("")
+            appendLine("        }")
+            appendLine("    },")
+            appendLine("    { parent, value ->")
+            appendLine("        when(parent) {")
             children.forEach { child ->
-                addStatement(
-                    """ 
-                    |            is %T -> parent.copy(%M = value)
-                    """.trimMargin(),
-                    child.toClassName(),
-                    attributeName
-                )
+                append("            is ${child.toClassName().simpleName}")
+                append(" -> parent.copy(${attributeName.simpleName} = value)")
             }
-            addCode(
-                """
-                |        }
-                |    }
-                |)
-                """.trimMargin(),
-            )
-
-             */
+            appendLine("        }")
+            appendLine("    }")
+            appendLine(")")
         }
 }
 
