@@ -141,7 +141,7 @@ class LensesProcessorTests {
                         |
                         |public fun <PARENT> Lens<PARENT, Bar>.bar(): Lens<PARENT, Int> = this + Bar.bar()
                         |
-                        |public fun Bar.Companion.barImpl(): Lens<Bar, BarImpl> = lensForUpcasting<Bar,BarImpl>()
+                        |public fun Bar.Companion.barImpl(): Lens<Bar, BarImpl> = lensForUpcasting<Bar, BarImpl>()
                         """.trimMargin()
                     )
             }
@@ -695,7 +695,7 @@ class LensesProcessorTests {
                 |    "bar",
                 |    { it.bar },
                 |    { p, v -> p.copy(bar = v)}
-                |  )
+                |)
                 |
                 |public fun <PARENT> Lens<PARENT, Framework>.bar(): Lens<PARENT, Int> = this + Framework.bar()
                 |
@@ -703,7 +703,7 @@ class LensesProcessorTests {
                 |    "foo",
                 |    { it.foo },
                 |    { p, v -> p.copy(foo = v)}
-                |  )
+                |)
                 |
                 |public fun <PARENT> Lens<PARENT, Framework>.foo(): Lens<PARENT, String> = this + Framework.foo()
                 |
@@ -711,7 +711,7 @@ class LensesProcessorTests {
                 |    "fooBar",
                 |    { it.fooBar },
                 |    { p, v -> p.copy(fooBar = v)}
-                |  )
+                |)
                 |
                 |public fun <PARENT> Lens<PARENT, Framework>.fooBar(): Lens<PARENT, MyType> = this + Framework.fooBar()
                 |
@@ -719,7 +719,7 @@ class LensesProcessorTests {
                 |    "baz",
                 |    { it.baz },
                 |    { p, v -> p.copy(baz = v)}
-                |  )
+                |)
                 |
                 |public fun <PARENT> Lens<PARENT, Framework>.baz(): Lens<PARENT, MyGenericType<Int>> = this + Framework.baz()
                 """.trimMargin()
