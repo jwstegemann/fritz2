@@ -107,7 +107,7 @@ class LensesProcessorTests {
                         |    "bar",
                         |    { it.bar },
                         |    { p, v -> p.copy(bar = v)}
-                        |  )
+                        |)
                         |
                         |public fun <PARENT> Lens<PARENT, Foo>.bar(): Lens<PARENT, Int> = this + Foo.bar()
                         """.trimMargin()
@@ -121,9 +121,9 @@ class LensesProcessorTests {
                         |package dev.fritz2.lenstest
                         |
                         |import dev.fritz2.core.Lens
-                        |import dev.fritz2.core.lensForUpcasting
                         |import dev.fritz2.core.lensOf
                         |import kotlin.Int
+                        |import dev.fritz2.core.lensForUpcasting
                         |
                         |public fun Bar.Companion.bar(): Lens<Bar, Int> = lensOf(
                         |    "bar",
