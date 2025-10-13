@@ -4,7 +4,6 @@ import com.google.devtools.ksp.getClassDeclarationByName
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.validate
-import com.squareup.kotlinpoet.ksp.toTypeVariableName
 import dev.fritz2.core.Lens
 import dev.fritz2.core.Lenses
 import java.io.OutputStreamWriter
@@ -423,15 +422,18 @@ private class LensesVisitor(
         "${classDeclaration.simpleName.getShortName()}${genericTagOf(classDeclaration)}"
 
     private fun genericPartOf(classDeclaration: KSClassDeclaration): String =
-        if (classDeclaration.typeParameters.isNotEmpty()) classDeclaration.typeParameters
-            .map { it.toTypeVariableName() }
-            .joinToString(separator = ", ", prefix = ", ")
+        if (classDeclaration.typeParameters.isNotEmpty()) classDeclaration.typeParameters.joinToString(
+            separator = ", ",
+            prefix = ", "
+        ) { it.simpleName.getShortName() }
         else ""
 
     private fun genericTagOf(classDeclaration: KSClassDeclaration): String =
-        if (classDeclaration.typeParameters.isNotEmpty()) classDeclaration.typeParameters
-            .map { it.toTypeVariableName() }
-            .joinToString(separator = ", ", prefix = "<", postfix = ">")
+        if (classDeclaration.typeParameters.isNotEmpty()) classDeclaration.typeParameters.joinToString(
+            separator = ", ",
+            prefix = "<",
+            postfix = ">"
+        ) { it.simpleName.getShortName() }
         else ""
 }
 
