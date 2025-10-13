@@ -301,8 +301,8 @@ private class LensesVisitor(
             append("<")
             append(genericClassNameOf(classDeclaration))
             append(", ")
-            append(member.simpleName)
-            append(genericTagOf(prop))
+            append(prop.type.resolve().toString())
+            //append(genericTagOf(prop))
             append(">")
             append(" = ")
             addLensCode(attributeName, classDeclaration, lensSourceBuilder)
@@ -317,7 +317,7 @@ private class LensesVisitor(
     ) {
         lensSourceBuilder.imports.add(
             MemberName("dev.fritz2.core", "lensForUpcasting")
-        )        // TODO: Generics fehlen noch!
+        )
         val children = classDeclaration.getSealedSubclasses()
         lensSourceBuilder.main.apply {
             children.forEach { child ->
@@ -382,11 +382,11 @@ private class LensesVisitor(
         classDeclaration: KSClassDeclaration,
         attributeName: MemberName
     ) {
-        val destTypeName = prop.type.resolve().declaration.simpleName.asString()
+        val destTypeName = prop.type.resolve().toString()
         lensSourceBuilder.main.apply {
             append("public fun <PARENT${genericPartOf(classDeclaration)}> ")
             append("Lens<PARENT, ${genericClassNameOf(classDeclaration)}>")
-            append(".${attributeName.simpleName}(): Lens<PARENT, $destTypeName${genericTagOf(prop)}>")
+            append(".${attributeName.simpleName}(): Lens<PARENT, $destTypeName>")
             append(" = this + ${classDeclaration.simpleName.getShortName()}.${attributeName.simpleName}()")
             appendLine()
         }
@@ -444,21 +444,5 @@ private class LensesVisitor(
             .map { it.toTypeVariableName() }
             .joinToString(separator = ", ", prefix = "<", postfix = ">")
         else ""
-
-    /**
-     * Creates and returns the generic part of a property declaration in its diamond String representation like this:
-     * ```
-     * class Foo {
-     *     val baz: MyGenericType<Int>
-     * }
-     *
-     * // baz -> "<Int>"
-     * ```
-     */
-    private fun genericTagOf(prop: KSPropertyDeclaration): String = prop.type.resolve().arguments.let { arguments ->
-        if (arguments.isNotEmpty())
-            arguments.joinToString(", ", prefix = "<", postfix = ">") { it.type.toString() }
-        else ""
-    }
 }
 
