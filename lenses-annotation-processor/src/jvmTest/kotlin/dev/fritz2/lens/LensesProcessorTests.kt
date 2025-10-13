@@ -103,13 +103,13 @@ class LensesProcessorTests {
                         |import dev.fritz2.core.lensOf
                         |import kotlin.Int
                         |
-                        |public fun Foo.Companion.bar(): Lens<Foo, Int> = lensOf(
+                        |fun Foo.Companion.bar(): Lens<Foo, Int> = lensOf(
                         |    "bar",
                         |    { it.bar },
                         |    { p, v -> p.copy(bar = v)}
                         |)
                         |
-                        |public fun <PARENT> Lens<PARENT, Foo>.bar(): Lens<PARENT, Int> = this + Foo.bar()
+                        |fun <PARENT> Lens<PARENT, Foo>.bar(): Lens<PARENT, Int> = this + Foo.bar()
                         """.trimMargin()
                     )
             },
@@ -125,7 +125,7 @@ class LensesProcessorTests {
                         |import kotlin.Int
                         |import dev.fritz2.core.lensForUpcasting
                         |
-                        |public fun Bar.Companion.bar(): Lens<Bar, Int> = lensOf(
+                        |fun Bar.Companion.bar(): Lens<Bar, Int> = lensOf(
                         |    "bar",
                         |    { parent ->
                         |        when(parent) {
@@ -139,9 +139,9 @@ class LensesProcessorTests {
                         |    }
                         |)
                         |
-                        |public fun <PARENT> Lens<PARENT, Bar>.bar(): Lens<PARENT, Int> = this + Bar.bar()
+                        |fun <PARENT> Lens<PARENT, Bar>.bar(): Lens<PARENT, Int> = this + Bar.bar()
                         |
-                        |public fun Bar.Companion.barImpl(): Lens<Bar, BarImpl> = lensForUpcasting<Bar, BarImpl>()
+                        |fun Bar.Companion.barImpl(): Lens<Bar, BarImpl> = lensForUpcasting<Bar, BarImpl>()
                         """.trimMargin()
                     )
             }
@@ -197,13 +197,13 @@ class LensesProcessorTests {
                         |import dev.fritz2.core.lensOf
                         |import kotlin.Int
                         |
-                        |public fun Foo.MySpecialCompanion.bar(): Lens<Foo, Int> = lensOf(
+                        |fun Foo.MySpecialCompanion.bar(): Lens<Foo, Int> = lensOf(
                         |    "bar",
                         |    { it.bar },
                         |    { p, v -> p.copy(bar = v)}
                         |)
                         |
-                        |public fun <PARENT> Lens<PARENT, Foo>.bar(): Lens<PARENT, Int> = this + Foo.bar()
+                        |fun <PARENT> Lens<PARENT, Foo>.bar(): Lens<PARENT, Int> = this + Foo.bar()
                         """.trimMargin()
                     )
             }
@@ -375,13 +375,13 @@ class LensesProcessorTests {
                         |import dev.fritz2.core.lensOf
                         |import kotlin.Int
                         |
-                        |public fun Foo.Companion.bar(): Lens<Foo, Int> = lensOf(
+                        |fun Foo.Companion.bar(): Lens<Foo, Int> = lensOf(
                         |    "bar",
                         |    { it.bar },
                         |    { p, v -> p.copy(bar = v)}
                         |)
                         |
-                        |public fun <PARENT> Lens<PARENT, Foo>.bar(): Lens<PARENT, Int> = this + Foo.bar()
+                        |fun <PARENT> Lens<PARENT, Foo>.bar(): Lens<PARENT, Int> = this + Foo.bar()
                         """.trimMargin()
                     )
             }
@@ -424,21 +424,21 @@ class LensesProcessorTests {
                         |import dev.fritz2.core.lensOf
                         |import kotlin.String
                         |
-                        |public fun <T> Foo.Companion.bar(): Lens<Foo<T>, T> = lensOf(
+                        |fun <T> Foo.Companion.bar(): Lens<Foo<T>, T> = lensOf(
                         |    "bar",
                         |    { it.bar },
                         |    { p, v -> p.copy(bar = v)}
                         |)
                         |
-                        |public fun <PARENT, T> Lens<PARENT, Foo<T>>.bar(): Lens<PARENT, T> = this + Foo.bar()
+                        |fun <PARENT, T> Lens<PARENT, Foo<T>>.bar(): Lens<PARENT, T> = this + Foo.bar()
                         |
-                        |public fun <T> Foo.Companion.baz(): Lens<Foo<T>, String> = lensOf(
+                        |fun <T> Foo.Companion.baz(): Lens<Foo<T>, String> = lensOf(
                         |    "baz",
                         |    { it.baz },
                         |    { p, v -> p.copy(baz = v)}
                         |)
                         |
-                        |public fun <PARENT, T> Lens<PARENT, Foo<T>>.baz(): Lens<PARENT, String> = this + Foo.baz()
+                        |fun <PARENT, T> Lens<PARENT, Foo<T>>.baz(): Lens<PARENT, String> = this + Foo.baz()
                         """.trimMargin()
                     )
             },
@@ -452,21 +452,21 @@ class LensesProcessorTests {
                         |import dev.fritz2.core.Lens
                         |import dev.fritz2.core.lensOf
                         |
-                        |public fun <T, E> Bar.Companion.foo(): Lens<Bar<T, E>, T> = lensOf(
+                        |fun <T, E> Bar.Companion.foo(): Lens<Bar<T, E>, T> = lensOf(
                         |    "foo",
                         |    { it.foo },
                         |    { p, v -> p.copy(foo = v)}
                         |)
                         |
-                        |public fun <PARENT, T, E> Lens<PARENT, Bar<T, E>>.foo(): Lens<PARENT, T> = this + Bar.foo()
+                        |fun <PARENT, T, E> Lens<PARENT, Bar<T, E>>.foo(): Lens<PARENT, T> = this + Bar.foo()
                         |
-                        |public fun <T, E> Bar.Companion.fooBar(): Lens<Bar<T, E>, E> = lensOf(
+                        |fun <T, E> Bar.Companion.fooBar(): Lens<Bar<T, E>, E> = lensOf(
                         |    "fooBar",
                         |    { it.fooBar },
                         |    { p, v -> p.copy(fooBar = v)}
                         |)
                         |
-                        |public fun <PARENT, T, E> Lens<PARENT, Bar<T, E>>.fooBar(): Lens<PARENT, E> = this + Bar.fooBar()
+                        |fun <PARENT, T, E> Lens<PARENT, Bar<T, E>>.fooBar(): Lens<PARENT, E> = this + Bar.fooBar()
                         """.trimMargin()
                     )
             }
@@ -506,13 +506,13 @@ class LensesProcessorTests {
                         |import dev.fritz2.core.Lens
                         |import dev.fritz2.core.lensOf
                         |
-                        |public fun <T> Data.Companion.item(): Lens<Data<T>, T?> = lensOf(
+                        |fun <T> Data.Companion.item(): Lens<Data<T>, T?> = lensOf(
                         |    "item",
                         |    { it.item },
                         |    { p, v -> p.copy(item = v)}
                         |)
                         |
-                        |public fun <PARENT, T> Lens<PARENT, Data<T>>.item(): Lens<PARENT, T?> = this + Data.item()
+                        |fun <PARENT, T> Lens<PARENT, Data<T>>.item(): Lens<PARENT, T?> = this + Data.item()
                         """.trimMargin()
                     )
             }
@@ -580,7 +580,7 @@ class LensesProcessorTests {
             |import kotlin.String
             |import dev.fritz2.core.lensForUpcasting
             |
-            |public fun Framework.Companion.bar(): Lens<Framework, Int> = lensOf(
+            |fun Framework.Companion.bar(): Lens<Framework, Int> = lensOf(
             |    "bar",
             |    { parent ->
             |        when(parent) {
@@ -596,9 +596,9 @@ class LensesProcessorTests {
             |    }
             |)
             |
-            |public fun <PARENT> Lens<PARENT, Framework>.bar(): Lens<PARENT, Int> = this + Framework.bar()
+            |fun <PARENT> Lens<PARENT, Framework>.bar(): Lens<PARENT, Int> = this + Framework.bar()
             |
-            |public fun Framework.Companion.foo(): Lens<Framework, String> = lensOf(
+            |fun Framework.Companion.foo(): Lens<Framework, String> = lensOf(
             |    "foo",
             |    { parent ->
             |        when(parent) {
@@ -614,9 +614,9 @@ class LensesProcessorTests {
             |    }
             |)
             |
-            |public fun <PARENT> Lens<PARENT, Framework>.foo(): Lens<PARENT, String> = this + Framework.foo()
+            |fun <PARENT> Lens<PARENT, Framework>.foo(): Lens<PARENT, String> = this + Framework.foo()
             |
-            |public fun Framework.Companion.fooBar(): Lens<Framework, MyType> = lensOf(
+            |fun Framework.Companion.fooBar(): Lens<Framework, MyType> = lensOf(
             |    "fooBar",
             |    { parent ->
             |        when(parent) {
@@ -632,9 +632,9 @@ class LensesProcessorTests {
             |    }
             |)
             |
-            |public fun <PARENT> Lens<PARENT, Framework>.fooBar(): Lens<PARENT, MyType> = this + Framework.fooBar()
+            |fun <PARENT> Lens<PARENT, Framework>.fooBar(): Lens<PARENT, MyType> = this + Framework.fooBar()
             |
-            |public fun Framework.Companion.baz(): Lens<Framework, MyGenericType<Int>> = lensOf(
+            |fun Framework.Companion.baz(): Lens<Framework, MyGenericType<Int>> = lensOf(
             |    "baz",
             |    { parent ->
             |        when(parent) {
@@ -650,11 +650,11 @@ class LensesProcessorTests {
             |    }
             |)
             |
-            |public fun <PARENT> Lens<PARENT, Framework>.baz(): Lens<PARENT, MyGenericType<Int>> = this + Framework.baz()
+            |fun <PARENT> Lens<PARENT, Framework>.baz(): Lens<PARENT, MyGenericType<Int>> = this + Framework.baz()
             |
-            |public fun Framework.Companion.fritz2(): Lens<Framework, Fritz2> = lensForUpcasting<Framework, Fritz2>()
+            |fun Framework.Companion.fritz2(): Lens<Framework, Fritz2> = lensForUpcasting<Framework, Fritz2>()
             |
-            |public fun Framework.Companion.spring(): Lens<Framework, Spring> = lensForUpcasting<Framework, Spring>()
+            |fun Framework.Companion.spring(): Lens<Framework, Spring> = lensForUpcasting<Framework, Spring>()
             """.trimMargin()
 
         @JvmStatic
@@ -691,37 +691,37 @@ class LensesProcessorTests {
                 |import kotlin.Int
                 |import kotlin.String
                 |
-                |public fun Framework.Companion.bar(): Lens<Framework, Int> = lensOf(
+                |fun Framework.Companion.bar(): Lens<Framework, Int> = lensOf(
                 |    "bar",
                 |    { it.bar },
                 |    { p, v -> p.copy(bar = v)}
                 |)
                 |
-                |public fun <PARENT> Lens<PARENT, Framework>.bar(): Lens<PARENT, Int> = this + Framework.bar()
+                |fun <PARENT> Lens<PARENT, Framework>.bar(): Lens<PARENT, Int> = this + Framework.bar()
                 |
-                |public fun Framework.Companion.foo(): Lens<Framework, String> = lensOf(
+                |fun Framework.Companion.foo(): Lens<Framework, String> = lensOf(
                 |    "foo",
                 |    { it.foo },
                 |    { p, v -> p.copy(foo = v)}
                 |)
                 |
-                |public fun <PARENT> Lens<PARENT, Framework>.foo(): Lens<PARENT, String> = this + Framework.foo()
+                |fun <PARENT> Lens<PARENT, Framework>.foo(): Lens<PARENT, String> = this + Framework.foo()
                 |
-                |public fun Framework.Companion.fooBar(): Lens<Framework, MyType> = lensOf(
+                |fun Framework.Companion.fooBar(): Lens<Framework, MyType> = lensOf(
                 |    "fooBar",
                 |    { it.fooBar },
                 |    { p, v -> p.copy(fooBar = v)}
                 |)
                 |
-                |public fun <PARENT> Lens<PARENT, Framework>.fooBar(): Lens<PARENT, MyType> = this + Framework.fooBar()
+                |fun <PARENT> Lens<PARENT, Framework>.fooBar(): Lens<PARENT, MyType> = this + Framework.fooBar()
                 |
-                |public fun Framework.Companion.baz(): Lens<Framework, MyGenericType<Int>> = lensOf(
+                |fun Framework.Companion.baz(): Lens<Framework, MyGenericType<Int>> = lensOf(
                 |    "baz",
                 |    { it.baz },
                 |    { p, v -> p.copy(baz = v)}
                 |)
                 |
-                |public fun <PARENT> Lens<PARENT, Framework>.baz(): Lens<PARENT, MyGenericType<Int>> = this + Framework.baz()
+                |fun <PARENT> Lens<PARENT, Framework>.baz(): Lens<PARENT, MyGenericType<Int>> = this + Framework.baz()
                 """.trimMargin()
             ),
             arguments(
@@ -838,15 +838,15 @@ class LensesProcessorTests {
                 |import dev.fritz2.core.lensOf
                 |import kotlin.Int
                 |
-                |public fun Fritz2.Companion.bar(): Lens<Fritz2, Int> = lensOf(
+                |fun Fritz2.Companion.bar(): Lens<Fritz2, Int> = lensOf(
                 |    "bar",
                 |    { it.bar },
                 |    { p, v -> p.copy(bar = v)}
                 |)
                 |
-                |public fun <PARENT> Lens<PARENT, Fritz2>.bar(): Lens<PARENT, Int> = this + Fritz2.bar()
+                |fun <PARENT> Lens<PARENT, Fritz2>.bar(): Lens<PARENT, Int> = this + Fritz2.bar()
                 |
-                |public fun Fritz2.Companion.framework(): Lens<Fritz2, Framework> = lensOf(
+                |fun Fritz2.Companion.framework(): Lens<Fritz2, Framework> = lensOf(
                 |    "",
                 |    { it },
                 |    { _, v -> v as Fritz2 }
@@ -882,15 +882,15 @@ class LensesProcessorTests {
                 |import dev.fritz2.core.lensOf
                 |import kotlin.Int
                 |
-                |public fun Fritz2.Companion.bar(): Lens<Fritz2, Int> = lensOf(
+                |fun Fritz2.Companion.bar(): Lens<Fritz2, Int> = lensOf(
                 |    "bar",
                 |    { it.bar },
                 |    { p, v -> p.copy(bar = v)}
                 |)
                 |
-                |public fun <PARENT> Lens<PARENT, Fritz2>.bar(): Lens<PARENT, Int> = this + Fritz2.bar()
+                |fun <PARENT> Lens<PARENT, Fritz2>.bar(): Lens<PARENT, Int> = this + Fritz2.bar()
                 |
-                |public fun Fritz2.Companion.framework(): Lens<Fritz2, Framework> = lensOf(
+                |fun Fritz2.Companion.framework(): Lens<Fritz2, Framework> = lensOf(
                 |    "",
                 |    { it },
                 |    { _, v -> v as Fritz2 }
@@ -981,7 +981,7 @@ class LensesProcessorTests {
                 |import dev.fritz2.core.Lens
                 |import dev.fritz2.core.lensForUpcasting
                 |
-                |public fun Foo.Companion.fooImpl(): Lens<Foo, FooImpl> = lensForUpcasting<Foo, FooImpl>()
+                |fun Foo.Companion.fooImpl(): Lens<Foo, FooImpl> = lensForUpcasting<Foo, FooImpl>()
                 """.trimMargin()
             ),
             arguments(
@@ -1018,7 +1018,7 @@ class LensesProcessorTests {
                 |import dev.fritz2.core.Lens
                 |import dev.fritz2.core.lensForUpcasting
                 |
-                |public fun Foo.Companion.fooImpl(): Lens<Foo, FooImpl> = lensForUpcasting<Foo, FooImpl>()
+                |fun Foo.Companion.fooImpl(): Lens<Foo, FooImpl> = lensForUpcasting<Foo, FooImpl>()
                 """.trimMargin()
             ),
         )
@@ -1337,7 +1337,7 @@ class LensesProcessorTests {
             |import kotlin.String
             |import dev.fritz2.core.lensForUpcasting
             |
-            |public fun Framework.Companion.foo(): Lens<Framework, String> = lensOf(
+            |fun Framework.Companion.foo(): Lens<Framework, String> = lensOf(
             |    "foo",
             |    { parent ->
             |        when(parent) {
@@ -1353,11 +1353,11 @@ class LensesProcessorTests {
             |    }
             |)
             |
-            |public fun <PARENT> Lens<PARENT, Framework>.foo(): Lens<PARENT, String> = this + Framework.foo()
+            |fun <PARENT> Lens<PARENT, Framework>.foo(): Lens<PARENT, String> = this + Framework.foo()
             |
-            |public fun Framework.Companion.fritz2(): Lens<Framework, Fritz2> = lensForUpcasting<Framework, Fritz2>()
+            |fun Framework.Companion.fritz2(): Lens<Framework, Fritz2> = lensForUpcasting<Framework, Fritz2>()
             |
-            |public fun Framework.Companion.spring(): Lens<Framework, Spring> = lensForUpcasting<Framework, Spring>()
+            |fun Framework.Companion.spring(): Lens<Framework, Spring> = lensForUpcasting<Framework, Spring>()
             """.trimMargin()
 
 

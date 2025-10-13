@@ -284,7 +284,7 @@ private class LensesVisitor(
                 )
             }
             lensSourceBuilder.imports.add(member)
-            append("public fun ")
+            append("fun ")
             append(genericTagOf(classDeclaration).let { tag -> if (tag.isNotEmpty()) "$tag " else tag })
             append(classDeclaration.simpleName.getShortName())
             append(".")
@@ -314,7 +314,7 @@ private class LensesVisitor(
         val children = classDeclaration.getSealedSubclasses()
         lensSourceBuilder.main.apply {
             children.forEach { child ->
-                append("public fun ${classDeclaration.simpleName.getShortName()}.${compObj.simpleName.getShortName()}.")
+                append("fun ${classDeclaration.simpleName.getShortName()}.${compObj.simpleName.getShortName()}.")
                 append("${child.simpleName.getShortName().lowerCamelCased()}(): ")
                 append("Lens<${classDeclaration.simpleName.getShortName()}, ${child.simpleName.getShortName()}> ")
                 append("= lensForUpcasting<")
@@ -340,7 +340,7 @@ private class LensesVisitor(
                 MemberName("dev.fritz2.core", "lensOf"),
             )
             lensSourceBuilder.main.apply {
-                append("public fun ")
+                append("fun ")
                 append(genericTagOf(classDeclaration).let { tag -> if (tag.isNotEmpty()) "$tag " else tag })
                 append(genericClassNameOf(classDeclaration))
                 append(".")
@@ -372,7 +372,7 @@ private class LensesVisitor(
     ) {
         val destTypeName = prop.type.resolve().toString()
         lensSourceBuilder.main.apply {
-            append("public fun <PARENT${genericPartOf(classDeclaration)}> ")
+            append("fun <PARENT${genericPartOf(classDeclaration)}> ")
             append("Lens<PARENT, ${genericClassNameOf(classDeclaration)}>")
             append(".${attributeName.simpleName}(): Lens<PARENT, $destTypeName>")
             append(" = this + ${classDeclaration.simpleName.getShortName()}.${attributeName.simpleName}()")
