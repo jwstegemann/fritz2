@@ -575,10 +575,10 @@ class LensesProcessorTests {
             |package dev.fritz2.lenstest
             |
             |import dev.fritz2.core.Lens
-            |import dev.fritz2.core.lensForUpcasting
             |import dev.fritz2.core.lensOf
             |import kotlin.Int
             |import kotlin.String
+            |import dev.fritz2.core.lensForUpcasting
             |
             |public fun Framework.Companion.bar(): Lens<Framework, Int> = lensOf(
             |    "bar",
@@ -652,9 +652,9 @@ class LensesProcessorTests {
             |
             |public fun <PARENT> Lens<PARENT, Framework>.baz(): Lens<PARENT, MyGenericType<Int>> = this + Framework.baz()
             |
-            |public fun Framework.Companion.fritz2(): Lens<Framework, Fritz2> = lensForUpcasting<Framework,Fritz2>()
+            |public fun Framework.Companion.fritz2(): Lens<Framework, Fritz2> = lensForUpcasting<Framework, Fritz2>()
             |
-            |public fun Framework.Companion.spring(): Lens<Framework, Spring> = lensForUpcasting<Framework,Spring>()
+            |public fun Framework.Companion.spring(): Lens<Framework, Spring> = lensForUpcasting<Framework, Spring>()
             """.trimMargin()
 
         @JvmStatic

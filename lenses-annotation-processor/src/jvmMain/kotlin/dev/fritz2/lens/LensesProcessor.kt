@@ -338,12 +338,12 @@ private class LensesVisitor(
         val children = classDeclaration.getSealedSubclasses()
         lensSourceBuilder.main.apply {
             children.forEach { child ->
-                appendLine()
                 append("public fun ${classDeclaration.toClassName().simpleName}.Companion.")
                 append("${child.simpleName.getShortName().lowerCamelCased()}(): ")
                 append("Lens<${classDeclaration.toClassName().simpleName}, ${child.simpleName.getShortName()}> ")
                 append("= lensForUpcasting<")
-                append("${classDeclaration.toClassName().simpleName}, ${child.simpleName.getShortName()}>()")
+                appendLine("${classDeclaration.toClassName().simpleName}, ${child.simpleName.getShortName()}>()")
+                appendLine()
             }
         }
     }
