@@ -23,8 +23,6 @@ kotlin {
             dependencies {
                 api(kotlin("stdlib"))
                 api(project(":core"))
-                implementation(Square.kotlinPoet)
-                implementation("com.squareup:kotlinpoet-ksp:_")
                 implementation("com.google.devtools.ksp:symbol-processing-api:_")
                 api(kotlin("reflect:_"))
                 api(kotlin("script-runtime:_"))
