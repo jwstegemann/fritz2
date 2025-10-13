@@ -4,7 +4,6 @@ import com.google.devtools.ksp.getClassDeclarationByName
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.validate
-import com.squareup.kotlinpoet.ksp.toClassName
 import com.squareup.kotlinpoet.ksp.toTypeVariableName
 import dev.fritz2.core.Lens
 import dev.fritz2.core.Lenses
@@ -229,7 +228,7 @@ private class LensesVisitor(
             }
             when (classDeclaration.isTypeVariant()) {
                 TypeVariant.SealedInterface, TypeVariant.SealedDataClass -> {
-                    appendUpTypingLensFactoryCodesForSealedBase(classDeclaration, result)
+                    appendUpTypingLensFactoryCodesForSealedBase(classDeclaration, compObj, result)
                 }
 
                 TypeVariant.DataClass -> {
@@ -290,7 +289,7 @@ private class LensesVisitor(
             append(genericTagOf(classDeclaration).let { tag -> if (tag.isNotEmpty()) "$tag " else tag })
             append(classDeclaration.simpleName.getShortName())
             append(".")
-            append(compObj.asType(emptyList()).toClassName().simpleName)
+            append(compObj.simpleName.getShortName())
             append(".")
             append(prop.simpleName.getShortName())
             append("(): ")
@@ -307,6 +306,7 @@ private class LensesVisitor(
 
     private fun appendUpTypingLensFactoryCodesForSealedBase(
         classDeclaration: KSClassDeclaration,
+        compObj: KSClassDeclaration,
         lensSourceBuilder: LensSourceBuilder
     ) {
         lensSourceBuilder.imports.add(
@@ -315,11 +315,11 @@ private class LensesVisitor(
         val children = classDeclaration.getSealedSubclasses()
         lensSourceBuilder.main.apply {
             children.forEach { child ->
-                append("public fun ${classDeclaration.toClassName().simpleName}.Companion.")
+                append("public fun ${classDeclaration.simpleName.getShortName()}.${compObj.simpleName.getShortName()}.")
                 append("${child.simpleName.getShortName().lowerCamelCased()}(): ")
-                append("Lens<${classDeclaration.toClassName().simpleName}, ${child.simpleName.getShortName()}> ")
+                append("Lens<${classDeclaration.simpleName.getShortName()}, ${child.simpleName.getShortName()}> ")
                 append("= lensForUpcasting<")
-                appendLine("${classDeclaration.toClassName().simpleName}, ${child.simpleName.getShortName()}>()")
+                appendLine("${classDeclaration.simpleName.getShortName()}, ${child.simpleName.getShortName()}>()")
                 appendLine()
             }
         }
@@ -345,7 +345,7 @@ private class LensesVisitor(
                 append(genericTagOf(classDeclaration).let { tag -> if (tag.isNotEmpty()) "$tag " else tag })
                 append(genericClassNameOf(classDeclaration))
                 append(".")
-                append(compObj.asType(emptyList()).toClassName().simpleName)
+                append(compObj.simpleName.getShortName())
                 append(".")
                 append(parent.simpleName.getShortName().lowerCamelCased())
                 append("(): ")
@@ -400,7 +400,7 @@ private class LensesVisitor(
                 appendLine("    { parent ->")
                 appendLine("        when(parent) {")
                 children.forEach { child ->
-                    append("            is ${child.toClassName().simpleName}")
+                    append("            is ${child.simpleName.getShortName()}")
                     append(" -> parent.${attributeName.simpleName}")
                     appendLine()
                 }
@@ -409,7 +409,7 @@ private class LensesVisitor(
                 appendLine("    { parent, value ->")
                 appendLine("        when(parent) {")
                 children.forEach { child ->
-                    append("            is ${child.toClassName().simpleName}")
+                    append("            is ${child.simpleName.getShortName()}")
                     append(" -> parent.copy(${attributeName.simpleName} = value)")
                     appendLine()
                 }
