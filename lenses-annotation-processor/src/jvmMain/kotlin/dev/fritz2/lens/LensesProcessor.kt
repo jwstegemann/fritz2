@@ -81,7 +81,6 @@ private class LensesVisitor(
         val main: StringBuilder = StringBuilder(),
         val imports: MutableSet<MemberName> = mutableSetOf(
             MemberName("dev.fritz2.core", "Lens"),
-            MemberName("dev.fritz2.core", "lensOf"),
         )
     ) {
         fun toSource(): String = buildString {
@@ -280,6 +279,9 @@ private class LensesVisitor(
         attributeName: MemberName
     ) {
         lensSourceBuilder.main.apply {
+            lensSourceBuilder.imports.add(
+                MemberName("dev.fritz2.core", "lensOf"),
+            )
             val member = prop.type.resolve().declaration.let { declaration ->
                 MemberName(
                     declaration.packageName.asString(),
@@ -288,7 +290,7 @@ private class LensesVisitor(
             }
             lensSourceBuilder.imports.add(member)
             append("public fun ")
-            append(genericTagOf(classDeclaration))
+            append(genericTagOf(classDeclaration).let { tag -> if (tag.isNotEmpty()) "$tag " else tag })
             append(classDeclaration.simpleName.getShortName())
             append(".")
             append(compObj.asType(emptyList()).toClassName().simpleName)
@@ -441,7 +443,6 @@ private class LensesVisitor(
         if (classDeclaration.typeParameters.isNotEmpty()) classDeclaration.typeParameters
             .map { it.toTypeVariableName() }
             .joinToString(separator = ", ", prefix = "<", postfix = ">")
-            .let { typeTag -> if(typeTag.isNotEmpty()) "$typeTag " else "" }
         else ""
 
     /**

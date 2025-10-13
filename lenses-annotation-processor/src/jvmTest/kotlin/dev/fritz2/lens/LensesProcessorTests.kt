@@ -201,7 +201,7 @@ class LensesProcessorTests {
                         |    "bar",
                         |    { it.bar },
                         |    { p, v -> p.copy(bar = v)}
-                        |  )
+                        |)
                         |
                         |public fun <PARENT> Lens<PARENT, Foo>.bar(): Lens<PARENT, Int> = this + Foo.bar()
                         """.trimMargin()
@@ -379,7 +379,7 @@ class LensesProcessorTests {
                         |    "bar",
                         |    { it.bar },
                         |    { p, v -> p.copy(bar = v)}
-                        |  )
+                        |)
                         |
                         |public fun <PARENT> Lens<PARENT, Foo>.bar(): Lens<PARENT, Int> = this + Foo.bar()
                         """.trimMargin()
@@ -510,7 +510,7 @@ class LensesProcessorTests {
                         |    "item",
                         |    { it.item },
                         |    { p, v -> p.copy(item = v)}
-                        |  )
+                        |)
                         |
                         |public fun <PARENT, T> Lens<PARENT, Data<T>>.item(): Lens<PARENT, T?> = this + Data.item()
                         """.trimMargin()
@@ -842,7 +842,7 @@ class LensesProcessorTests {
                 |    "bar",
                 |    { it.bar },
                 |    { p, v -> p.copy(bar = v)}
-                |  )
+                |)
                 |
                 |public fun <PARENT> Lens<PARENT, Fritz2>.bar(): Lens<PARENT, Int> = this + Fritz2.bar()
                 |
@@ -886,7 +886,7 @@ class LensesProcessorTests {
                 |    "bar",
                 |    { it.bar },
                 |    { p, v -> p.copy(bar = v)}
-                |  )
+                |)
                 |
                 |public fun <PARENT> Lens<PARENT, Fritz2>.bar(): Lens<PARENT, Int> = this + Fritz2.bar()
                 |
@@ -981,7 +981,7 @@ class LensesProcessorTests {
                 |import dev.fritz2.core.Lens
                 |import dev.fritz2.core.lensForUpcasting
                 |
-                |public fun Foo.Companion.fooImpl(): Lens<Foo, FooImpl> = lensForUpcasting<Foo,FooImpl>()
+                |public fun Foo.Companion.fooImpl(): Lens<Foo, FooImpl> = lensForUpcasting<Foo, FooImpl>()
                 """.trimMargin()
             ),
             arguments(
@@ -1018,7 +1018,7 @@ class LensesProcessorTests {
                 |import dev.fritz2.core.Lens
                 |import dev.fritz2.core.lensForUpcasting
                 |
-                |public fun Foo.Companion.fooImpl(): Lens<Foo, FooImpl> = lensForUpcasting<Foo,FooImpl>()
+                |public fun Foo.Companion.fooImpl(): Lens<Foo, FooImpl> = lensForUpcasting<Foo, FooImpl>()
                 """.trimMargin()
             ),
         )
