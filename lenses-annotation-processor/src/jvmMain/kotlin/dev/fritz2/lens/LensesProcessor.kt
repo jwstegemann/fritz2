@@ -227,7 +227,7 @@ private class LensesVisitor(
                 val attributeName = MemberName(prop.packageName.asString(), prop.simpleName.getShortName())
                 createLensFactoryCode(result, prop, isGeneric, classDeclaration, compObj, addLensCode, attributeName)
                 appendLine()
-                appendLensChainingCode(result, prop, isGeneric, classDeclaration, attributeName)
+                appendLensChainingCode(result, prop, classDeclaration, attributeName)
                 appendLine()
             }
             when (classDeclaration.isTypeVariant()) {
@@ -288,11 +288,8 @@ private class LensesVisitor(
             }
             lensSourceBuilder.imports.add(member)
             append("public fun ")
-            if (classDeclaration.typeParameters.isNotEmpty()) append(
-                classDeclaration.typeParameters.map { it.toTypeVariableName() }
-                    .joinTo(this, separator = ", ", prefix = "<", postfix = ">")
-            )
-            append(classDeclaration.toClassName().simpleName)
+            append(genericTagOf(classDeclaration))
+            append(classDeclaration.simpleName.getShortName())
             append(".")
             append(compObj.asType(emptyList()).toClassName().simpleName)
             append(".")
@@ -300,30 +297,14 @@ private class LensesVisitor(
             append("(): ")
             append(Lens::class.java.simpleName)
             append("<")
-            append(classDeclaration.toClassName().simpleName)
+            append(genericClassNameOf(classDeclaration))
             append(", ")
             append(member.simpleName)
-            append(genericPartOf(prop))
+            append(genericTagOf(prop))
             append(">")
             append(" = ")
             addLensCode(attributeName, classDeclaration, lensSourceBuilder)
         }
-    }
-
-    /**
-     * Creates and returns the generic part of a property declaration in its diamond String representation like this:
-     * ```
-     * class Foo {
-     *     val baz: MyGenericType<Int>
-     * }
-     *
-     * // baz -> "<Int>"
-     * ```
-     */
-    private fun genericPartOf(prop: KSPropertyDeclaration): String = prop.type.resolve().arguments.let { arguments ->
-        if (arguments.isNotEmpty())
-            arguments.joinToString(", ", prefix = "<", postfix = ">") { it.type.toString() }
-        else ""
     }
 
     private fun createUpTypingLensFactoryCodesForSealedBase(
@@ -396,16 +377,15 @@ private class LensesVisitor(
     private fun appendLensChainingCode(
         lensSourceBuilder: LensSourceBuilder,
         prop: KSPropertyDeclaration,
-        isGeneric: Boolean,
         classDeclaration: KSClassDeclaration,
         attributeName: MemberName
     ) {
         val destTypeName = prop.type.resolve().declaration.simpleName.asString()
         lensSourceBuilder.main.apply {
-            // TODO: Generics fehlen noch!
-            append("public fun <PARENT> Lens<PARENT, ${classDeclaration.toClassName().simpleName}>")
-            append(".${attributeName.simpleName}(): Lens<PARENT, $destTypeName${genericPartOf(prop)}>")
-            append(" = this + ${classDeclaration.toClassName().simpleName}.${attributeName.simpleName}()")
+            append("public fun <PARENT${genericPartOf(classDeclaration)}> ")
+            append("Lens<PARENT, ${genericClassNameOf(classDeclaration)}>")
+            append(".${attributeName.simpleName}(): Lens<PARENT, $destTypeName${genericTagOf(prop)}>")
+            append(" = this + ${classDeclaration.simpleName.getShortName()}.${attributeName.simpleName}()")
             appendLine()
         }
     }
@@ -447,5 +427,37 @@ private class LensesVisitor(
                 appendLine(")")
             }
         }
+
+    private fun genericClassNameOf(classDeclaration: KSClassDeclaration): String =
+        "${classDeclaration.simpleName.getShortName()}${genericTagOf(classDeclaration)}"
+
+    private fun genericPartOf(classDeclaration: KSClassDeclaration): String =
+        if (classDeclaration.typeParameters.isNotEmpty()) classDeclaration.typeParameters
+            .map { it.toTypeVariableName() }
+            .joinToString(separator = ", ", prefix = ", ")
+        else ""
+
+    private fun genericTagOf(classDeclaration: KSClassDeclaration): String =
+        if (classDeclaration.typeParameters.isNotEmpty()) classDeclaration.typeParameters
+            .map { it.toTypeVariableName() }
+            .joinToString(separator = ", ", prefix = "<", postfix = ">")
+            .let { typeTag -> if(typeTag.isNotEmpty()) "$typeTag " else "" }
+        else ""
+
+    /**
+     * Creates and returns the generic part of a property declaration in its diamond String representation like this:
+     * ```
+     * class Foo {
+     *     val baz: MyGenericType<Int>
+     * }
+     *
+     * // baz -> "<Int>"
+     * ```
+     */
+    private fun genericTagOf(prop: KSPropertyDeclaration): String = prop.type.resolve().arguments.let { arguments ->
+        if (arguments.isNotEmpty())
+            arguments.joinToString(", ", prefix = "<", postfix = ">") { it.type.toString() }
+        else ""
+    }
 }
 

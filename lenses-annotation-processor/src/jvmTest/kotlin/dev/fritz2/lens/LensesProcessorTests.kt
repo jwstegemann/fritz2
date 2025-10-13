@@ -428,7 +428,7 @@ class LensesProcessorTests {
                         |    "bar",
                         |    { it.bar },
                         |    { p, v -> p.copy(bar = v)}
-                        |  )
+                        |)
                         |
                         |public fun <PARENT, T> Lens<PARENT, Foo<T>>.bar(): Lens<PARENT, T> = this + Foo.bar()
                         |
@@ -436,7 +436,7 @@ class LensesProcessorTests {
                         |    "baz",
                         |    { it.baz },
                         |    { p, v -> p.copy(baz = v)}
-                        |  )
+                        |)
                         |
                         |public fun <PARENT, T> Lens<PARENT, Foo<T>>.baz(): Lens<PARENT, String> = this + Foo.baz()
                         """.trimMargin()
@@ -456,7 +456,7 @@ class LensesProcessorTests {
                         |    "foo",
                         |    { it.foo },
                         |    { p, v -> p.copy(foo = v)}
-                        |  )
+                        |)
                         |
                         |public fun <PARENT, T, E> Lens<PARENT, Bar<T, E>>.foo(): Lens<PARENT, T> = this + Bar.foo()
                         |
@@ -464,7 +464,7 @@ class LensesProcessorTests {
                         |    "fooBar",
                         |    { it.fooBar },
                         |    { p, v -> p.copy(fooBar = v)}
-                        |  )
+                        |)
                         |
                         |public fun <PARENT, T, E> Lens<PARENT, Bar<T, E>>.fooBar(): Lens<PARENT, E> = this + Bar.fooBar()
                         """.trimMargin()
