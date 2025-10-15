@@ -77,18 +77,24 @@ private class LensesVisitor(
     private class LensSourceBuilder(
         val header: String,
         val main: StringBuilder = StringBuilder(),
-        val imports: MutableSet<MemberName> = mutableSetOf(
+    ) {
+        private val imports: MutableSet<MemberName> = mutableSetOf(
             MemberName("dev.fritz2.core", "Lens"),
         )
-    ) {
-        fun toSource(): String = buildString {
+
+        fun addImport(memberName: MemberName) = imports.add(memberName)
+
+        fun toSource(packageName: String): String = buildString {
             appendLine(header)
-            imports.forEach { member ->
+            optimizedImports(packageName).forEach { member ->
                 appendLine("import ${member.fullyQualifiedName}")
             }
             appendLine()
             append(main.toString())
         }.trimEnd()
+
+        private fun optimizedImports(packageName: String): Iterable<MemberName> =
+            imports.filterNot { it.packageName == packageName }
     }
 
     override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: Unit) {
@@ -238,15 +244,13 @@ private class LensesVisitor(
             }
         }
 
-        result.imports.removeIf { it.packageName == packageName }
-
         val fileName = classDeclaration.simpleName.asString() + "Lenses"
         writeTo(
             codeGenerator = codeGenerator,
             Dependencies(false),
             packageName,
             fileName,
-            result.toSource()
+            result.toSource(packageName)
         )
     }
 
@@ -273,7 +277,7 @@ private class LensesVisitor(
         attributeName: MemberName
     ) {
         lensSourceBuilder.main.apply {
-            lensSourceBuilder.imports.add(
+            lensSourceBuilder.addImport(
                 MemberName("dev.fritz2.core", "lensOf"),
             )
             val member = prop.type.resolve().declaration.let { declaration ->
@@ -282,7 +286,7 @@ private class LensesVisitor(
                     declaration.simpleName.asString(),
                 )
             }
-            lensSourceBuilder.imports.add(member)
+            lensSourceBuilder.addImport(member)
             append("fun ")
             append(genericTagOf(classDeclaration).let { tag -> if (tag.isNotEmpty()) "$tag " else tag })
             append(classDeclaration.simpleName.getShortName())
@@ -307,7 +311,7 @@ private class LensesVisitor(
         compObj: KSClassDeclaration,
         lensSourceBuilder: LensSourceBuilder
     ) {
-        lensSourceBuilder.imports.add(
+        lensSourceBuilder.addImport(
             MemberName("dev.fritz2.core", "lensForUpcasting")
         )
         val children = classDeclaration.getSealedSubclasses()
@@ -335,7 +339,7 @@ private class LensesVisitor(
             .toList()
 
         parents.forEach { parent ->
-            lensSourceBuilder.imports.add(
+            lensSourceBuilder.addImport(
                 MemberName("dev.fritz2.core", "lensOf"),
             )
             lensSourceBuilder.main.apply {
