@@ -11,6 +11,7 @@ import kotlinx.dom.addClass
 import kotlinx.dom.removeClass
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.get
+import kotlin.time.ExperimentalTime
 
 object PersonListStore : RootStore<List<Person>>(emptyList(), job = Job()) {
     val add = handle<Person> { list, person ->
@@ -18,6 +19,7 @@ object PersonListStore : RootStore<List<Person>>(emptyList(), job = Job()) {
     }
 }
 
+@OptIn(ExperimentalTime::class)
 object PersonStore : ValidatingStore<Person, Unit, Message>(
     Person(), personValidator, Unit, Job(), id = Person.id
 ) {

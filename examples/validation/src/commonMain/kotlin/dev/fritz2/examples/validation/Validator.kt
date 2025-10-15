@@ -3,6 +3,7 @@ package dev.fritz2.examples.validation
 import dev.fritz2.core.Lens
 import dev.fritz2.validation.ValidationMessage
 import dev.fritz2.validation.validation
+import kotlin.time.Clock
 import kotlinx.datetime.*
 
 enum class Status(val inputClass: String, val messageClass: String) {
@@ -14,6 +15,7 @@ data class Message(override val path: String, val status: Status, val text: Stri
     override val isError: Boolean = status > Status.Valid
 }
 
+@kotlin.time.ExperimentalTime
 val personValidator = validation<Person, Message> { inspector ->
     // validate name
     val name = inspector.map(Person.name())
