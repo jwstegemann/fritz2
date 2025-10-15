@@ -259,11 +259,10 @@ private class LensesVisitor(
     ) {
         val file = codeGenerator.createNewFile(dependencies, packageName, fileName)
         // Don't use writeTo(file) because that tries to handle directories under the hood
-        val writer = OutputStreamWriter(file, StandardCharsets.UTF_8)
-        writer.write(generatedCode)
-        writer.close()
+        OutputStreamWriter(file, StandardCharsets.UTF_8).use { writer ->
+            writer.write(generatedCode)
+        }
     }
-
 
     private fun appendLensFactoryCode(
         lensSourceBuilder: LensSourceBuilder,
@@ -427,7 +426,7 @@ private class LensesVisitor(
      */
     private fun typeName(prop: KSPropertyDeclaration): String =
         prop.type.resolve().let { type ->
-            val nullSuffix = if(type.toString().endsWith("?")) "?" else ""
+            val nullSuffix = if (type.toString().endsWith("?")) "?" else ""
             if (type.declaration.typeParameters.isEmpty()) "${type.declaration.simpleName.getShortName()}$nullSuffix"
             else type.toString()
         }
