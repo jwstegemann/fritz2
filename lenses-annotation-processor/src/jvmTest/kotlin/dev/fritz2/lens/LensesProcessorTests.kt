@@ -21,8 +21,8 @@ class LensesProcessorTests {
     @ExperimentalPathApi
     private fun compileSource(vararg source: SourceFile) = KotlinCompilation().apply {
         configureKsp(useKsp2 = true) {
-            jvmTarget = "21"
-            languageVersion = "2.1"
+            jvmTarget = "23"
+            languageVersion = "2.2"
             sources = source.toList()
             symbolProcessorProviders += LensesProcessorProvider()
             workingDir = createTempDirectory("fritz2-tests").toFile()

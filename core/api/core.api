@@ -20,7 +20,7 @@ public final class dev/fritz2/core/Id {
 public abstract interface class dev/fritz2/core/Inspector {
 	public abstract fun getData ()Ljava/lang/Object;
 	public abstract fun getPath ()Ljava/lang/String;
-	public abstract fun map (Ldev/fritz2/core/Lens;)Ldev/fritz2/core/Inspector;
+	public fun map (Ldev/fritz2/core/Lens;)Ldev/fritz2/core/Inspector;
 }
 
 public final class dev/fritz2/core/Inspector$DefaultImpls {
@@ -40,12 +40,12 @@ public final class dev/fritz2/core/InspectorKt {
 }
 
 public abstract interface class dev/fritz2/core/Lens {
-	public abstract fun apply (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun apply (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun get (Ljava/lang/Object;)Ljava/lang/Object;
 	public abstract fun getId ()Ljava/lang/String;
-	public abstract fun plus (Ldev/fritz2/core/Lens;)Ldev/fritz2/core/Lens;
+	public fun plus (Ldev/fritz2/core/Lens;)Ldev/fritz2/core/Lens;
 	public abstract fun set (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-	public abstract fun withNullParent ()Ldev/fritz2/core/Lens;
+	public fun withNullParent ()Ldev/fritz2/core/Lens;
 }
 
 public final class dev/fritz2/core/Lens$DefaultImpls {
