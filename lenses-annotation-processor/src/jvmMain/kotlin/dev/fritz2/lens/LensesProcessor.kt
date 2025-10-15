@@ -296,7 +296,7 @@ private class LensesVisitor(
             append("<")
             append(genericClassNameOf(classDeclaration))
             append(", ")
-            append(prop.type.resolve().toString())
+            append(typeName(prop))
             append(">")
             append(" = ")
             addLensCode(attributeName, classDeclaration, lensSourceBuilder)
@@ -370,11 +370,10 @@ private class LensesVisitor(
         classDeclaration: KSClassDeclaration,
         attributeName: MemberName
     ) {
-        val destTypeName = prop.type.resolve().toString()
         lensSourceBuilder.main.apply {
             append("fun <PARENT${genericPartOf(classDeclaration)}> ")
             append("Lens<PARENT, ${genericClassNameOf(classDeclaration)}>")
-            append(".${attributeName.simpleName}(): Lens<PARENT, $destTypeName>")
+            append(".${attributeName.simpleName}(): Lens<PARENT, ${typeName(prop)}>")
             append(" = this + ${classDeclaration.simpleName.getShortName()}.${attributeName.simpleName}()")
             appendLine()
         }
@@ -416,6 +415,21 @@ private class LensesVisitor(
                 appendLine("    }")
                 appendLine(")")
             }
+        }
+
+    /**
+     * Determines the type-[String] of a given property.
+     *
+     * The implementation is kinda pieced together, but it seems to work for our known problems.
+     * We cannot relay on the simple `prop.type.resolve().toString()` as type aliases would get represented
+     * as `[TYPEALIAS name]`. But going with the `if`-solution we won't get the correct generic representation.
+     * So the `else` works as fallback for the former.
+     */
+    private fun typeName(prop: KSPropertyDeclaration): String =
+        prop.type.resolve().let { type ->
+            val nullSuffix = if(type.toString().endsWith("?")) "?" else ""
+            if (type.declaration.typeParameters.isEmpty()) "${type.declaration.simpleName.getShortName()}$nullSuffix"
+            else type.toString()
         }
 
     private fun genericClassNameOf(classDeclaration: KSClassDeclaration): String =

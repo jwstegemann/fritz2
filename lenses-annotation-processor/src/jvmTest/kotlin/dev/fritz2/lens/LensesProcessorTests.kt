@@ -668,12 +668,13 @@ class LensesProcessorTests {
         
                         import dev.fritz2.core.Lenses
         
+                        typealias Zahl = Int
                         class MyType
                         class MyGenericType<T>
         
                         @Lenses
                         data class Framework(
-                            val bar: Int,
+                            val bar: Zahl,
                             val foo: String,
                             val fooBar: MyType,
                             val baz: MyGenericType<Int>
@@ -688,16 +689,15 @@ class LensesProcessorTests {
                 |
                 |import dev.fritz2.core.Lens
                 |import dev.fritz2.core.lensOf
-                |import kotlin.Int
                 |import kotlin.String
                 |
-                |fun Framework.Companion.bar(): Lens<Framework, Int> = lensOf(
+                |fun Framework.Companion.bar(): Lens<Framework, Zahl> = lensOf(
                 |    "bar",
                 |    { it.bar },
                 |    { p, v -> p.copy(bar = v)}
                 |)
                 |
-                |fun <PARENT> Lens<PARENT, Framework>.bar(): Lens<PARENT, Int> = this + Framework.bar()
+                |fun <PARENT> Lens<PARENT, Framework>.bar(): Lens<PARENT, Zahl> = this + Framework.bar()
                 |
                 |fun Framework.Companion.foo(): Lens<Framework, String> = lensOf(
                 |    "foo",
