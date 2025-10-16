@@ -15,7 +15,7 @@ val javadocJar by tasks.creating(Jar::class) {
     group = JavaBasePlugin.DOCUMENTATION_GROUP
     description = "Assembles java doc to jar"
     archiveClassifier.set("javadoc")
-    from(tasks.named("dokkaHtml"))
+    from(tasks.named("dokkaGenerateHtml"))
 }
 
 the<SigningExtension>().apply {
