@@ -1,3 +1,11 @@
+> [!IMPORTANT]  
+> This repository is no longer actively maintained!
+> The official fritz2-framework's development has been moved to a dedicated organization and therefore a new repository:
+> https://www.github.com/fritztwo/fritz2
+> 
+> Read more about the reasons for this change, some dedicated words form the original project creator and some outlook
+> to the future developments in this blog [article](https://www.fritz2.dev/blog/posts/yesterday-today-tomorrow/).
+
 ![fritz2](https://www.fritz2.dev/img/fritz2_header.png)
 
 [![Actions Status](https://github.com/jwstegemann/fritz2/workflows/build/badge.svg)](https://github.com/jwstegemann/fritz2/actions)
